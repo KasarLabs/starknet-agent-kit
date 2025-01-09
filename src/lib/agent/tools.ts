@@ -11,6 +11,7 @@ import { getBlockTransactionCount } from "./method/read/rpc/getBlockTransactionC
 import { getStorageAt } from "./method/read/rpc/getStorageAt";
 import { getClassAt } from "./method/read/rpc/getClassAt";
 import { getClassHash } from "./method/read/rpc/getClassHash";
+import { createDomain } from "./method/starknet_id/createDomain";
 import { BlockIdentifier } from "starknet";
 
 // Types
@@ -100,14 +101,24 @@ const getClassHashSchema = z
   })
   .strict();
 
+const createDomainSchema = z.object({
+  domain: z.string().describe("The domain name to create (must end with .stark)"),
+  recipient: z.string().describe("The recipient address for the domain")
+});
+
 // Types for function parameters that match the schemas
 type GetClassAtParams = z.infer<typeof getClassAtSchema>;
 type GetClassHashParams = z.infer<typeof getClassHashSchema>;
 
 /**
- * Creates and returns balance checking tools with injected agent credentials
+ * Creates and returns all tools with injected agent credentials
  */
 export const createTools = (agent: StarknetAgentInterface) => [
+  tool(withWalletKey(createDomain, agent), {
+    name: "create_domain",
+    description: "Create a new Starknet ID domain name that must end with .stark",
+    schema: createDomainSchema,
+  }),
   tool(withWalletKey(getOwnBalance, agent), {
     name: "get_own_balance",
     description: "Get the balance of an asset in your wallet",

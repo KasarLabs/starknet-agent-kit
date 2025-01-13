@@ -39,7 +39,8 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
 
     const agent = new StarknetAgent({
       walletPrivateKey: privateKey,
-      anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+      aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
+      aiModel: process.env.AI_MODEL,
     });
 
     // Create account instance

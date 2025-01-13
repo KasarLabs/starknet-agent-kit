@@ -7,7 +7,6 @@ import { ConfigModule } from "./config/config.module";
 
 @Module({
   imports: [ConfigModule, AgentsModule],
-  controllers: [],
   providers: [
     {
       provide: APP_GUARD,

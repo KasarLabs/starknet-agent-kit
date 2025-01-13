@@ -1,25 +1,27 @@
 // src/lib/agent/starknetAgent.ts
 
-import { IAgent } from "../../agents/interfaces/agent.interface";
-import type { AgentExecutor } from "langchain/agents";
-import { createAgent } from "./agent";
-import { RpcProvider } from "starknet";
-import { RPC_URL } from "../constant";
-import { AccountManager } from "../utils/account/AccountManager";
-import { TransactionMonitor } from "../utils/monitoring/TransactionMonitor";
-import { ContractInteractor } from "../utils/contract/ContractInteractor";
+import { IAgent } from '../../agents/interfaces/agent.interface';
+import type { AgentExecutor } from 'langchain/agents';
+import { createAgent } from './agent';
+import { RpcProvider } from 'starknet';
+import { RPC_URL } from '../constant';
+import { AccountManager } from '../utils/account/AccountManager';
+import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
+import { ContractInteractor } from '../utils/contract/ContractInteractor';
 
 export const rpcProvider = new RpcProvider({ nodeUrl: RPC_URL });
 
 export interface StarknetAgentConfig {
   walletPrivateKey: string;
-  anthropicApiKey: string;
+  aiProviderApiKey: string;
+  aiModel: string;
 }
 
 export class StarknetAgent implements IAgent {
   private readonly walletPrivateKey: string;
   private readonly AgentExecutor: AgentExecutor;
-  private readonly anthropicApiKey: string;
+  private readonly aiProviderApiKey: string;
+  private readonly aiModel: string;
 
   // New utility instances
   public readonly accountManager: AccountManager;
@@ -30,8 +32,9 @@ export class StarknetAgent implements IAgent {
     this.validateConfig(config);
 
     this.walletPrivateKey = config.walletPrivateKey;
-    this.anthropicApiKey = config.anthropicApiKey;
-    this.AgentExecutor = createAgent(this, this.anthropicApiKey);
+    this.aiProviderApiKey = config.aiProviderApiKey;
+    this.aiModel = config.aiModel
+    this.AgentExecutor = createAgent(this, this.aiProviderApiKey);
 
     // Initialize utility classes
     this.accountManager = new AccountManager(rpcProvider);
@@ -42,18 +45,19 @@ export class StarknetAgent implements IAgent {
   private validateConfig(config: StarknetAgentConfig) {
     if (!config.walletPrivateKey) {
       throw new Error(
-        "Starknet wallet private key is required https://www.argent.xyz/argent-x",
+        'Starknet wallet private key is required https://www.argent.xyz/argent-x'
       );
     }
-    if (!config.anthropicApiKey) {
-      throw new Error("Anthropic API key is required");
+    if (config.aiModel !== 'ollama' && !config.aiProviderApiKey) {
+      throw new Error('Ai Provider API key is required');
     }
   }
 
   getCredentials() {
     return {
       walletPrivateKey: this.walletPrivateKey,
-      anthropicApiKey: this.anthropicApiKey,
+      aiProviderApiKey: this.aiProviderApiKey,
+      aiModel: this.aiModel,
     };
   }
 

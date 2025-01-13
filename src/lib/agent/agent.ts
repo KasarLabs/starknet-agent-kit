@@ -1,8 +1,8 @@
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { createToolCallingAgent, AgentExecutor } from "langchain/agents";
-import { ChatAnthropic } from "@langchain/anthropic";
-import { SystemMessage } from "@langchain/core/messages";
-import { createTools } from "./tools.js";
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { createToolCallingAgent, AgentExecutor } from 'langchain/agents';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { SystemMessage } from '@langchain/core/messages';
+import { createTools } from './tools.js';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -34,29 +34,29 @@ const systemMessage = new SystemMessage(`
 
 export const prompt = ChatPromptTemplate.fromMessages([
   systemMessage,
-  ["placeholder", "{chat_history}"],
-  ["user", "{input}"],
-  ["placeholder", "{agent_scratchpad}"],
+  ['placeholder', '{chat_history}'],
+  ['user', '{input}'],
+  ['placeholder', '{agent_scratchpad}'],
 ]);
 
 export const createAgent = (
   starknetAgent: { getCredentials: () => { walletPrivateKey: string } },
-  anthropicApiKey: string,
+  aiProviderApiKey: string
 ) => {
   const model = () => {
-    if (!anthropicApiKey) {
+    if (!aiProviderApiKey) {
       throw new Error(
-        "Valid Anthropic api key is required https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key",
+        'Valid Anthropic api key is required https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key'
       );
     }
     return new ChatAnthropic({
-      modelName: "claude-3-5-sonnet-latest",
-      anthropicApiKey: anthropicApiKey,
+      modelName: 'claude-3-5-sonnet-latest',
+      anthropicApiKey: aiProviderApiKey,
     });
   };
   const modelselected = model();
   if (!modelselected) {
-    throw new Error("Error initializing model");
+    throw new Error('Error initializing model');
   }
 
   const tools = createTools(starknetAgent);

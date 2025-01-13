@@ -1,4 +1,4 @@
-import { envSchema, type EnvConfig } from "./env.validation";
+import { envSchema, type EnvConfig } from './env.validation';
 
 export class ConfigurationService {
   private readonly config: EnvConfig;
@@ -8,10 +8,10 @@ export class ConfigurationService {
 
     if (!result.success) {
       console.error(
-        "❌ Invalid environment variables:",
-        JSON.stringify(result.error.format(), null, 2),
+        '❌ Invalid environment variables:',
+        JSON.stringify(result.error.format(), null, 2)
       );
-      throw new Error("Invalid environment variables");
+      throw new Error('Invalid environment variables');
     }
 
     this.config = result.data;
@@ -37,21 +37,23 @@ export class ConfigurationService {
     };
   }
 
-  get anthropic() {
+  get ai() {
     return {
-      apiKey: this.config.ANTHROPIC_API_KEY,
+      provider: this.config.AI_PROVIDER,
+      model: this.config.AI_MODEL,
+      apiKey: this.config.AI_PROVIDER_API_KEY,
     };
   }
 
   get isDevelopment(): boolean {
-    return this.config.NODE_ENV === "development";
+    return this.config.NODE_ENV === 'development';
   }
 
   get isProduction(): boolean {
-    return this.config.NODE_ENV === "production";
+    return this.config.NODE_ENV === 'production';
   }
 
   get isTest(): boolean {
-    return this.config.NODE_ENV === "test";
+    return this.config.NODE_ENV === 'test';
   }
 }

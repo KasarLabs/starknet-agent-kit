@@ -66,10 +66,10 @@ export class AgentService implements IAgentService {
 
       return {
         isReady: Boolean(
-          credentials.walletPrivateKey && credentials.anthropicApiKey,
+          credentials.walletPrivateKey && credentials.aiProviderApiKey,
         ),
         walletConnected: Boolean(credentials.walletPrivateKey),
-        apiKeyValid: Boolean(credentials.anthropicApiKey),
+        apiKeyValid: Boolean(credentials.aiProviderApiKey),
       };
     } catch (error) {
       this.logger.error("Error checking agent status", error);

@@ -69,7 +69,7 @@ type StarknetAgentInterface = {
  * Wraps a function to inject the wallet private key from the agent
  */
 const withWalletKey = <T>(
-  fn: (params: T, privateKey: string) => Promise<any>,
+  fn: (params: T, privateKey: string) => Promise<unknown>,
   agent: StarknetAgentInterface
 ) => {
   return (params: T) => fn(params, agent.getCredentials().walletPrivateKey);

@@ -1,4 +1,4 @@
-import { Account, EstimateFee, constants } from 'starknet';
+import { Account, constants } from 'starknet';
 import { rpcProvider } from '../../starknetAgent';
 
 export type EstimateAccountDeployFeeParams = {

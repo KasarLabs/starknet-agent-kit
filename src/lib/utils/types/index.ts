@@ -34,7 +34,7 @@ export type TypedData = {
   };
   primaryType: string;
   domain: StarkNetDomain;
-  message: Record<string, any>;
+  message: Record<string, unknown>;
 };
 
 export type TypeElement = {
@@ -52,4 +52,10 @@ export type WeierstrassSignatureType = {
   r: string;
   s: string;
   recoveryParam?: number | null;
+};
+
+export type AiConfig = {
+  apiKey: string;
+  aiModel: string;
+  aiProvider: string;
 };

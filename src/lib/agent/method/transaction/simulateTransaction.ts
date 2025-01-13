@@ -2,17 +2,13 @@ import {
   Account,
   Call,
   TransactionType,
-  SimulateTransactionResponse,
-  BigNumberish,
   DeployAccountContractPayload,
 } from 'starknet';
 import { rpcProvider } from '../../starknetAgent';
 import { colorLog } from 'src/lib/utils/Output/console_log';
 import {
-  InvocationInvokePayload,
   Invocation_Deploy_Account,
   Invocation_Invoke,
-  Invocation_Deploy_Account_Payload,
 } from 'src/lib/utils/types/simulatetransaction';
 
 export type simulateInvokeTransactionParams = {
@@ -32,7 +28,6 @@ export const simulateInvokeTransaction = async (
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
-    let index = 1;
     const invocations: Invocation_Invoke[] = params.calls.map((call, index) => {
       colorLog.info(`\n--- Call ${index + 1} ---`);
       colorLog.info(`Contract Address: ${call.contractAddress}`);
@@ -40,7 +35,7 @@ export const simulateInvokeTransaction = async (
       colorLog.info('Calldata:');
 
       if (Array.isArray(call.calldata)) {
-        call.calldata.forEach((data: any, dataIndex: number) => {
+        call.calldata.forEach((data: unknown, dataIndex: number) => {
           colorLog.info(`  Param ${dataIndex + 1}: ${data}`);
         });
       }
@@ -123,9 +118,8 @@ export const simulateDeployAccountTransaction = async (
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
-    let index = 1;
     const invocations: Invocation_Deploy_Account[] = params.payloads.map(
-      (payload, index) => {
+      (payload) => {
         if (Array.isArray(payload.constructorCalldata)) {
           payload.constructorCalldata.forEach((data, dataIndex) => {
             console.log(`  Param ${dataIndex + 1}:`, data);

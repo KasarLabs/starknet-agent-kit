@@ -31,7 +31,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rimraf dist && nest build",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -49,6 +49,7 @@
     "@langchain/anthropic": "^0.3.11",
     "@langchain/core": "^0.3.27",
     "@langchain/google-genai": "^0.1.6",
+    "@langchain/ollama": "^0.1.4",
     "@langchain/openai": "^0.3.17",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",

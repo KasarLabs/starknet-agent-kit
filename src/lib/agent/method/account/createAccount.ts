@@ -7,6 +7,7 @@ export const CreateOZAccount = async () => {
       walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
       aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
       aiModel: process.env.AI_MODEL,
+      aiProvider: process.env.AI_PROVIDER,
     }).accountManager;
 
     const accountDetails = await accountManager.createAccount();

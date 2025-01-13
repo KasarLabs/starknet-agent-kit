@@ -1,5 +1,5 @@
 // method/contract/declareContract.ts
-import { Contract, Account, CompiledContract } from 'starknet';
+import { Account, CompiledContract } from 'starknet';
 import { rpcProvider } from '../../starknetAgent';
 
 export type DeclareContractParams = {

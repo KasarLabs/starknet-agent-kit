@@ -15,6 +15,7 @@ export interface StarknetAgentConfig {
   walletPrivateKey: string;
   aiProviderApiKey: string;
   aiModel: string;
+  aiProvider: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -33,8 +34,12 @@ export class StarknetAgent implements IAgent {
 
     this.walletPrivateKey = config.walletPrivateKey;
     this.aiProviderApiKey = config.aiProviderApiKey;
-    this.aiModel = config.aiModel
-    this.AgentExecutor = createAgent(this, this.aiProviderApiKey);
+    this.aiModel = config.aiModel;
+    this.AgentExecutor = createAgent(this, {
+      aiModel: this.aiModel,
+      apiKey: this.aiProviderApiKey,
+      aiProvider: config.aiProvider,
+    });
 
     // Initialize utility classes
     this.accountManager = new AccountManager(rpcProvider);

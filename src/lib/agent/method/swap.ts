@@ -41,6 +41,7 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
       walletPrivateKey: privateKey,
       aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
       aiModel: process.env.AI_MODEL,
+      aiProvider: process.env.AI_PROVIDER,
     });
 
     // Create account instance

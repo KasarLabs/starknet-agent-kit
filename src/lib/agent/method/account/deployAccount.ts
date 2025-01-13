@@ -1,4 +1,4 @@
-import { RPC_URL } from 'src/lib/constant';
+import { RPC_URL } from '../../../../lib/constant';
 import {
   Account,
   RpcProvider,

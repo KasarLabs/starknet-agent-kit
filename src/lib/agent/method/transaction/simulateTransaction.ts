@@ -32,7 +32,7 @@ export const simulateInvokeTransaction = async (
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
-    let index = 1;
+    const index = 1;
     const invocations: Invocation_Invoke[] = params.calls.map((call, index) => {
       colorLog.info(`\n--- Call ${index + 1} ---`);
       colorLog.info(`Contract Address: ${call.contractAddress}`);
@@ -123,7 +123,7 @@ export const simulateDeployAccountTransaction = async (
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
-    let index = 1;
+    const index = 1;
     const invocations: Invocation_Deploy_Account[] = params.payloads.map(
       (payload, index) => {
         if (Array.isArray(payload.constructorCalldata)) {

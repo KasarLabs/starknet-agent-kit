@@ -1,4 +1,4 @@
-import { ProviderInterface } from "starknet";
+import { ProviderInterface } from 'starknet';
 
 export interface AccountDetails {
   address: string;
@@ -8,7 +8,7 @@ export interface AccountDetails {
 }
 
 export interface TransactionResult {
-  status: "success" | "failure";
+  status: 'success' | 'failure';
   transactionHash?: string;
   error?: string;
 }

@@ -1,15 +1,15 @@
-import { TransactionReceipt, TransactionStatus } from "starknet";
-import { BaseUtilityClass } from "../types";
+import { TransactionReceipt, TransactionStatus } from 'starknet';
+import { BaseUtilityClass } from '../types';
 
 export class TransactionMonitor implements BaseUtilityClass {
   constructor(
     public provider: any,
-    private readonly pollingInterval: number = 5000,
+    private readonly pollingInterval: number = 5000
   ) {}
 
   async waitForTransaction(
     txHash: string,
-    callback?: (status: TransactionStatus) => void,
+    callback?: (status: TransactionStatus) => void
   ): Promise<TransactionReceipt> {
     let receipt: TransactionReceipt;
 
@@ -23,23 +23,23 @@ export class TransactionMonitor implements BaseUtilityClass {
         }
 
         if (
-          receipt.finality_status === "ACCEPTED_ON_L2" ||
-          receipt.finality_status === "ACCEPTED_ON_L1"
+          receipt.finality_status === 'ACCEPTED_ON_L2' ||
+          receipt.finality_status === 'ACCEPTED_ON_L1'
         ) {
           break;
         }
 
-        if (receipt.execution_status === "REVERTED") {
+        if (receipt.execution_status === 'REVERTED') {
           throw new Error(`Transaction ${txHash} was reverted`);
         }
 
         await new Promise((resolve) =>
-          setTimeout(resolve, this.pollingInterval),
+          setTimeout(resolve, this.pollingInterval)
         );
       } catch (error) {
-        if (error.message.includes("Transaction hash not found")) {
+        if (error.message.includes('Transaction hash not found')) {
           await new Promise((resolve) =>
-            setTimeout(resolve, this.pollingInterval),
+            setTimeout(resolve, this.pollingInterval)
           );
           continue;
         }
@@ -61,15 +61,15 @@ export class TransactionMonitor implements BaseUtilityClass {
 
   async watchEvents(
     fromBlock: number,
-    toBlock: number | "latest" = "latest",
-    callback: (events: Event[]) => void,
+    toBlock: number | 'latest' = 'latest',
+    callback: (events: Event[]) => void
   ): Promise<void> {
     let currentBlock = fromBlock;
 
     while (true) {
       try {
         const latestBlock =
-          toBlock === "latest" ? await this.provider.getBlockNumber() : toBlock;
+          toBlock === 'latest' ? await this.provider.getBlockNumber() : toBlock;
 
         if (currentBlock > latestBlock) {
           break;
@@ -81,7 +81,7 @@ export class TransactionMonitor implements BaseUtilityClass {
         for (const tx of block.transactions) {
           if (tx.transaction_hash) {
             const receipt = await this.provider.getTransactionReceipt(
-              tx.transaction_hash,
+              tx.transaction_hash
             );
             if (receipt.events) {
               events.push(...receipt.events);
@@ -95,12 +95,12 @@ export class TransactionMonitor implements BaseUtilityClass {
 
         currentBlock++;
         await new Promise((resolve) =>
-          setTimeout(resolve, this.pollingInterval),
+          setTimeout(resolve, this.pollingInterval)
         );
       } catch (error) {
-        console.error("Error watching events:", error);
+        console.error('Error watching events:', error);
         await new Promise((resolve) =>
-          setTimeout(resolve, this.pollingInterval),
+          setTimeout(resolve, this.pollingInterval)
         );
       }
     }

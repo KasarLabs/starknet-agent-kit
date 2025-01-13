@@ -10,6 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/kasarlabs/starknet-agent-kit.git"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "keywords": [
     "starknet",
     "blockchain",
@@ -19,6 +26,7 @@
   ],
   "files": [
     "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],

@@ -1,5 +1,5 @@
-import { BaseError } from "./base.error";
-import { ErrorType, ErrorMetadata } from "./error.types";
+import { BaseError } from './base.error';
+import { ErrorType, ErrorMetadata } from './error.types';
 
 export class AgentExecutionError extends BaseError {
   constructor(message: string, metadata?: ErrorMetadata) {

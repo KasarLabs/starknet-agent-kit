@@ -16,7 +16,10 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "declarationMap": true,
+    "rootDir": "./src"
   },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test"]
 }

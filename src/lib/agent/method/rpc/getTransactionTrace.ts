@@ -1,5 +1,5 @@
-import { TransactionHashParams } from "src/lib/agent/schema";
-import { rpcProvider } from "src/lib/agent/starknetAgent";
+import { TransactionHashParams } from 'src/lib/agent/schema';
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
 
 export const getTransactionTrace = async (params: TransactionHashParams) => {
   try {
@@ -7,13 +7,13 @@ export const getTransactionTrace = async (params: TransactionHashParams) => {
     const transactionTrace =
       await rpcProvider.getTransactionTrace(transactionHash);
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       transactionTrace,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

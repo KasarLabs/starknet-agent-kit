@@ -5,10 +5,10 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from "@nestjs/common";
-import { FastifyReply } from "fastify";
-import { BaseError } from "../errors/base.error";
-import { ConfigurationService } from "../../config/configuration";
+} from '@nestjs/common';
+import { FastifyReply } from 'fastify';
+import { BaseError } from '../errors/base.error';
+import { ConfigurationService } from '../../config/configuration';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<FastifyReply>();
 
-    this.logger.error("Exception caught:", {
+    this.logger.error('Exception caught:', {
       name: exception.name,
       message: exception.message,
       stack: exception.stack,
@@ -48,7 +48,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       message: this.config.isDevelopment
         ? exception.message
-        : "Internal server error",
+        : 'Internal server error',
       error: exception.name,
     });
   }

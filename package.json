@@ -4,8 +4,8 @@
   "description": "A toolkit for creating AI agents that can interact with the Starknet blockchain",
   "author": "Kasar Labs",
   "license": "MIT",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kasarlabs/starknet-agent-kit.git"
@@ -31,8 +31,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rimraf dist && nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -40,7 +41,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --passWithNoTests",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test",
+    "prepublishOnly": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },

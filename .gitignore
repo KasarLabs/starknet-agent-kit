@@ -1,10 +1,10 @@
-# compiled output
+# Compiled output
 /dist
 /node_modules
 .env
 
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 pnpm-debug.log*
@@ -12,21 +12,22 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# OS
+# Operating System files
 .DS_Store
+Thumbs.db
 
-# Tests
-/coverage
-/.nyc_output
+# Test output
+/coverage/
+/.nyc_output/
 
 # IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
+/.idea/
+/.project
+/.classpath
+/.c9/
 *.launch
-.settings/
-*.sublime-workspace
+/.settings/
+/*.sublime-workspace
 
 # IDE - VSCode
 .vscode/*
@@ -35,4 +36,9 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Build artifacts
 *.tgz
+*.tsbuildinfo
+
+# Miscellaneous
+*.lock

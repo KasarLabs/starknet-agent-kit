@@ -1,10 +1,10 @@
-import { ErrorType, ErrorMetadata, ErrorResponse } from "./error.types";
+import { ErrorType, ErrorMetadata, ErrorResponse } from './error.types';
 
 export class BaseError extends Error {
   constructor(
     public readonly type: ErrorType,
     message: string,
-    public readonly metadata?: ErrorMetadata,
+    public readonly metadata?: ErrorMetadata
   ) {
     super(message);
     this.name = this.constructor.name;

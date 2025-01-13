@@ -1,5 +1,5 @@
-import { Account, RpcProvider, uint256 } from "starknet";
-import { RPC_URL, tokenAddresses } from "src/lib/constant";
+import { Account, RpcProvider, uint256 } from 'starknet';
+import { RPC_URL, tokenAddresses } from 'src/lib/constant';
 
 // Types
 export interface transferParams {
@@ -9,7 +9,7 @@ export interface transferParams {
 }
 
 interface TransferResult {
-  status: "success" | "failure";
+  status: 'success' | 'failure';
   amount?: string;
   symbol?: string;
   recipients_address?: string;
@@ -32,8 +32,8 @@ const DECIMALS = {
  * @returns Formatted amount as a string
  */
 const formatTokenAmount = (amount: string, decimals: number): string => {
-  const [whole, fraction = ""] = amount.split(".");
-  const paddedFraction = fraction.padEnd(decimals, "0");
+  const [whole, fraction = ''] = amount.split('.');
+  const paddedFraction = fraction.padEnd(decimals, '0');
   return whole + paddedFraction;
 };
 
@@ -50,7 +50,7 @@ export const transfer = async (params: transferParams): Promise<string> => {
 
     if (!privateKey || !accountAddress) {
       throw new Error(
-        "STARKNET_PRIVATE_KEY or PUBLIC_ADDRESS not set in .env file",
+        'STARKNET_PRIVATE_KEY or PUBLIC_ADDRESS not set in .env file'
       );
     }
 
@@ -73,7 +73,7 @@ export const transfer = async (params: transferParams): Promise<string> => {
     // Execute transfer
     const result = await account.execute({
       contractAddress: tokenAddress,
-      entrypoint: "transfer",
+      entrypoint: 'transfer',
       calldata: [
         params.recipient_address,
         amountUint256.low,
@@ -82,15 +82,15 @@ export const transfer = async (params: transferParams): Promise<string> => {
     });
 
     console.log(
-      "transfer initiated. Transaction hash:",
-      result.transaction_hash,
+      'transfer initiated. Transaction hash:',
+      result.transaction_hash
     );
 
     // Wait for transaction confirmation
     await provider.waitForTransaction(result.transaction_hash);
 
     const transferResult: TransferResult = {
-      status: "success",
+      status: 'success',
       amount: params.amount,
       symbol: params.symbol,
       recipients_address: params.recipient_address,
@@ -99,12 +99,12 @@ export const transfer = async (params: transferParams): Promise<string> => {
 
     return JSON.stringify(transferResult);
   } catch (error) {
-    console.error("transfer failed:", error);
+    console.error('transfer failed:', error);
 
     const transferResult: TransferResult = {
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
-      step: "transfer execution",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      step: 'transfer execution',
     };
 
     return JSON.stringify(transferResult);

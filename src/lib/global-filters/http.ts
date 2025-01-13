@@ -4,15 +4,15 @@ import {
   ExceptionFilter,
   HttpException,
   Logger,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
   catch(exception: HttpException, host: ArgumentsHost) {
-    this.logger.log("Exception catched in HttpExceptionFilter", exception);
+    this.logger.log('Exception catched in HttpExceptionFilter', exception);
     const ctx = host.switchToHttp();
 
     const response = ctx.getResponse<FastifyReply>();
@@ -21,7 +21,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const statusCode = exception.getStatus();
 
     response.status(statusCode);
-    if (typeof exception.getResponse() === "string") {
+    if (typeof exception.getResponse() === 'string') {
       response.send({
         statusCode,
         error: exception.getResponse(),

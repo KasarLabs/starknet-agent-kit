@@ -1,25 +1,25 @@
 // src/main.ts
 
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import { ValidationPipe, Logger, BadRequestException } from "@nestjs/common";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
 import {
   FastifyAdapter,
   NestFastifyApplication,
-} from "@nestjs/platform-fastify";
-import { ValidationError as ClassValidatorError } from "class-validator";
-import helmet from "helmet";
-import { GlobalExceptionFilter } from "./common/filters/exception.filter";
-import ErrorLoggingInterceptor from "./common/interceptors/error-logging.interceptor";
-import { ConfigurationService } from "./config/configuration";
+} from '@nestjs/platform-fastify';
+import { ValidationError as ClassValidatorError } from 'class-validator';
+import helmet from 'helmet';
+import { GlobalExceptionFilter } from './common/filters/exception.filter';
+import ErrorLoggingInterceptor from './common/interceptors/error-logging.interceptor';
+import { ConfigurationService } from './config/configuration';
 
 async function bootstrap() {
-  const logger = new Logger("Bootstrap");
+  const logger = new Logger('Bootstrap');
 
   try {
     const app = await NestFactory.create<NestFastifyApplication>(
       AppModule,
-      new FastifyAdapter(),
+      new FastifyAdapter()
     );
 
     const config = app.get(ConfigurationService);
@@ -38,36 +38,36 @@ async function bootstrap() {
               }
               return acc;
             },
-            {},
+            {}
           );
 
           throw new BadRequestException({
             statusCode: 400,
-            message: "Validation failed",
+            message: 'Validation failed',
             errors: validationErrors,
           });
         },
-      }),
+      })
     );
 
     app.useGlobalFilters(new GlobalExceptionFilter(config));
     app.useGlobalInterceptors(new ErrorLoggingInterceptor());
 
     app.use(helmet({ crossOriginResourcePolicy: false }));
-    app.setGlobalPrefix("/api");
+    app.setGlobalPrefix('/api');
 
     app.enableCors({
       origin: true,
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
 
-    await app.listen(config.port, "0.0.0.0");
+    await app.listen(config.port, '0.0.0.0');
 
     logger.log(`Application is running on: ${await app.getUrl()}`);
     logger.log(`Environment: ${config.nodeEnv}`);
   } catch (error) {
-    logger.error("Failed to start application", error);
+    logger.error('Failed to start application', error);
     process.exit(1);
   }
 }

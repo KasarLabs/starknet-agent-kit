@@ -1,8 +1,8 @@
-import { AgentRequestDTO } from "../dto/agents";
-import { IAgent } from "./agent.interface";
+import { AgentRequestDTO } from '../dto/agents';
+import { IAgent } from './agent.interface';
 
 export interface AgentExecutionResponse {
-  status: "success" | "failure";
+  status: 'success' | 'failure';
   data?: unknown;
   error?: {
     message: string;
@@ -14,7 +14,7 @@ export interface AgentExecutionResponse {
 export interface IAgentService {
   handleUserRequest(
     agent: IAgent,
-    userRequest: AgentRequestDTO,
+    userRequest: AgentRequestDTO
   ): Promise<AgentExecutionResponse>;
   getAgentStatus(agent: IAgent): Promise<{
     isReady: boolean;

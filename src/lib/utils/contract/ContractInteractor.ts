@@ -1,11 +1,11 @@
 // src/lib/utils/contract/ContractInteractor.ts
 
-import { Account, Contract, Call, CallData, hash, EstimateFee } from "starknet";
+import { Account, Contract, Call, CallData, hash, EstimateFee } from 'starknet';
 import {
   BaseUtilityClass,
   ContractDeployResult,
   TransactionResult,
-} from "../types";
+} from '../types';
 
 export class ContractInteractor implements BaseUtilityClass {
   constructor(public provider: any) {}
@@ -14,7 +14,7 @@ export class ContractInteractor implements BaseUtilityClass {
     account: Account,
     classHash: string,
     constructorCalldata: any[] = [],
-    salt?: string,
+    salt?: string
   ): Promise<ContractDeployResult> {
     try {
       const deployPayload = {
@@ -40,7 +40,7 @@ export class ContractInteractor implements BaseUtilityClass {
     account: Account,
     classHash: string,
     constructorCalldata: any[] = [],
-    salt?: string,
+    salt?: string
   ): Promise<EstimateFee> {
     try {
       const deployPayload = {
@@ -61,12 +61,12 @@ export class ContractInteractor implements BaseUtilityClass {
       await this.provider.waitForTransaction(transaction_hash);
 
       return {
-        status: "success",
+        status: 'success',
         transactionHash: transaction_hash,
       };
     } catch (error) {
       return {
-        status: "failure",
+        status: 'failure',
         error: error.message,
       };
     }
@@ -74,7 +74,7 @@ export class ContractInteractor implements BaseUtilityClass {
 
   async estimateMulticall(
     account: Account,
-    calls: Call[],
+    calls: Call[]
   ): Promise<EstimateFee> {
     try {
       return account.estimateInvokeFee(calls);
@@ -90,7 +90,7 @@ export class ContractInteractor implements BaseUtilityClass {
   async readContract(
     contract: Contract,
     method: string,
-    args: any[] = [],
+    args: any[] = []
   ): Promise<any> {
     try {
       return await contract.call(method, args);
@@ -102,19 +102,19 @@ export class ContractInteractor implements BaseUtilityClass {
   async writeContract(
     contract: Contract,
     method: string,
-    args: any[] = [],
+    args: any[] = []
   ): Promise<TransactionResult> {
     try {
       const { transaction_hash } = await contract.invoke(method, args);
       await this.provider.waitForTransaction(transaction_hash);
 
       return {
-        status: "success",
+        status: 'success',
         transactionHash: transaction_hash,
       };
     } catch (error) {
       return {
-        status: "failure",
+        status: 'failure',
         error: error.message,
       };
     }
@@ -123,11 +123,11 @@ export class ContractInteractor implements BaseUtilityClass {
   async estimateContractWrite(
     contract: Contract,
     method: string,
-    args: any[] = [],
+    args: any[] = []
   ): Promise<EstimateFee> {
     if (!contract.account) {
       throw new Error(
-        "Contract must be connected to an account to estimate fees",
+        'Contract must be connected to an account to estimate fees'
       );
     }
 
@@ -139,9 +139,9 @@ export class ContractInteractor implements BaseUtilityClass {
   }
 
   formatTokenAmount(amount: string | number, decimals: number = 18): string {
-    const value = typeof amount === "string" ? amount : amount.toString();
-    const [whole, fraction = ""] = value.split(".");
-    const paddedFraction = fraction.padEnd(decimals, "0");
+    const value = typeof amount === 'string' ? amount : amount.toString();
+    const [whole, fraction = ''] = value.split('.');
+    const paddedFraction = fraction.padEnd(decimals, '0');
     return whole + paddedFraction;
   }
 
@@ -150,7 +150,7 @@ export class ContractInteractor implements BaseUtilityClass {
     const divisor = BigInt(10) ** BigInt(decimals);
     const wholePart = amountBigInt / divisor;
     const fractionPart = amountBigInt % divisor;
-    const paddedFraction = fractionPart.toString().padStart(decimals, "0");
+    const paddedFraction = fractionPart.toString().padStart(decimals, '0');
     return `${wholePart}.${paddedFraction}`;
   }
 }

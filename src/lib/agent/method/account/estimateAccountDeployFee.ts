@@ -1,5 +1,5 @@
-import { Account, EstimateFee, constants } from "starknet";
-import { rpcProvider } from "../../starknetAgent";
+import { Account, EstimateFee, constants } from 'starknet';
+import { rpcProvider } from '../../starknetAgent';
 
 export type EstimateAccountDeployFeeParams = {
   classHash: string;
@@ -9,12 +9,12 @@ export type EstimateAccountDeployFeeParams = {
 
 export const estimateAccountDeployFee = async (
   params: EstimateAccountDeployFeeParams,
-  privateKey: string,
+  privateKey: string
 ) => {
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
@@ -23,17 +23,17 @@ export const estimateAccountDeployFee = async (
     const estimatedFee = await account.estimateAccountDeployFee({
       classHash: params.classHash,
       constructorCalldata: params.constructorCalldata || [],
-      addressSalt: params.addressSalt || "0x0",
+      addressSalt: params.addressSalt || '0x0',
       contractAddress: constants.ZERO.toString(),
     });
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       maxFee: estimatedFee.suggestedMaxFee.toString(),
       overallFee: estimatedFee.overall_fee.toString(),
       gasPrice: estimatedFee.gas_price.toString(),
       gasUsage: estimatedFee.gas_consumed.toString(),
-      unit: "wei",
+      unit: 'wei',
       resourceBounds: {
         l1_gas: {
           maxAmount: estimatedFee.resourceBounds.l1_gas.max_amount.toString(),
@@ -49,8 +49,8 @@ export const estimateAccountDeployFee = async (
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

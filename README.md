@@ -34,7 +34,7 @@ You will need two things:
 ### Basic Usage
 
 ```typescript
-import { StarknetAgent } from "starknet-agent-kit";
+import { StarknetAgent } from 'starknet-agent-kit';
 
 const agent = new StarknetAgent({
   aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
@@ -44,16 +44,16 @@ const agent = new StarknetAgent({
 });
 
 // Execute commands in natural language
-await agent.execute("transfer 0.1 ETH to 0x123...");
+await agent.execute('transfer 0.1 ETH to 0x123...');
 
 // Get balance
-await agent.execute("What is my ETH balance?");
+await agent.execute('What is my ETH balance?');
 
 // Swap tokens
-await agent.execute("Swap 5 USDC for ETH");
+await agent.execute('Swap 5 USDC for ETH');
 
 // Create account
-await agent.execute("Create a new Argent account");
+await agent.execute('Create a new Argent account');
 ```
 
 ## Features
@@ -142,7 +142,7 @@ x-api-key: your_api_key
 All Langchain tools are available to be imported and used directly:
 
 ```typescript
-import { getBalance, transfer, swapTokens } from "starknet-agent-kit";
+import { getBalance, transfer, swapTokens } from 'starknet-agent-kit';
 ```
 
 ## Testing

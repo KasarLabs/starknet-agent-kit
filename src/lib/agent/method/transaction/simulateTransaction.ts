@@ -5,16 +5,15 @@ import {
   SimulateTransactionResponse,
   BigNumberish,
   DeployAccountContractPayload,
-} from "starknet";
-import { rpcProvider } from "../../starknetAgent";
-import { colorLog } from "src/lib/utils/Output/console_log";
+} from 'starknet';
+import { rpcProvider } from '../../starknetAgent';
+import { colorLog } from 'src/lib/utils/Output/console_log';
 import {
   InvocationInvokePayload,
   Invocation_Deploy_Account,
   Invocation_Invoke,
   Invocation_Deploy_Account_Payload,
-} from "src/lib/utils/types/simulatetransaction";
-
+} from 'src/lib/utils/types/simulatetransaction';
 
 export type simulateInvokeTransactionParams = {
   accountAddress: string;
@@ -28,23 +27,23 @@ export const simulateInvokeTransaction = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
     let index = 1;
     const invocations: Invocation_Invoke[] = params.calls.map((call, index) => {
-        colorLog.info(`\n--- Call ${index + 1} ---`);
-        colorLog.info(`Contract Address: ${call.contractAddress}`);
-        colorLog.info(`Entrypoint: ${call.entrypoint}`);
-        colorLog.info("Calldata:");
-        
-        if (Array.isArray(call.calldata)) {
-            call.calldata.forEach((data: any, dataIndex: number) => {
-                colorLog.info(`  Param ${dataIndex + 1}: ${data}`);
-            });
-        }
+      colorLog.info(`\n--- Call ${index + 1} ---`);
+      colorLog.info(`Contract Address: ${call.contractAddress}`);
+      colorLog.info(`Entrypoint: ${call.entrypoint}`);
+      colorLog.info('Calldata:');
+
+      if (Array.isArray(call.calldata)) {
+        call.calldata.forEach((data: any, dataIndex: number) => {
+          colorLog.info(`  Param ${dataIndex + 1}: ${data}`);
+        });
+      }
 
       return {
         type: TransactionType.INVOKE,
@@ -58,9 +57,8 @@ export const simulateInvokeTransaction = async (
 
     const simulate_transaction = await account.simulateTransaction(invocations);
 
-
-    colorLog.success("Simulation is succesfull !");
-    colorLog.info("Simulation response:");
+    colorLog.success('Simulation is succesfull !');
+    colorLog.info('Simulation response:');
     const transactionDetails = simulate_transaction.map(
       (transaction, index) => {
         const feeData = transaction.fee_estimation;
@@ -70,7 +68,7 @@ export const simulateInvokeTransaction = async (
           transaction_number: index + 1,
 
           fee_estimation: {
-            title: "Fee Estimation Breakdown",
+            title: 'Fee Estimation Breakdown',
             details: {
               ...feeData,
             },
@@ -94,7 +92,7 @@ export const simulateInvokeTransaction = async (
     console.log(JSON.stringify(transactionDetails, null, 2));
     return JSON.stringify(
       {
-        status: "success",
+        status: 'success',
         transaction_details: transactionDetails,
       },
       null,
@@ -102,8 +100,8 @@ export const simulateInvokeTransaction = async (
     );
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -120,7 +118,7 @@ export const simulateDeployAccountTransaction = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
@@ -149,13 +147,13 @@ export const simulateDeployAccountTransaction = async (
     const simulate_transaction = await account.simulateTransaction(
       invocations,
       {
-        nonce: "0x0",
+        nonce: '0x0',
       }
     );
 
-    colorLog.success("Simulation is succesfull !");
+    colorLog.success('Simulation is succesfull !');
 
-    colorLog.info("Simulation response:");
+    colorLog.info('Simulation response:');
     const transactionDetails = simulate_transaction.map(
       (transaction, index) => {
         const feeData = transaction.fee_estimation;
@@ -165,7 +163,7 @@ export const simulateDeployAccountTransaction = async (
           transaction_number: index + 1,
 
           fee_estimation: {
-            title: "Fee Estimation Breakdown",
+            title: 'Fee Estimation Breakdown',
             details: {
               ...feeData,
             },
@@ -190,7 +188,7 @@ export const simulateDeployAccountTransaction = async (
     console.log(JSON.stringify(transactionDetails, null, 2));
     return JSON.stringify(
       {
-        status: "success",
+        status: 'success',
         transaction_details: transactionDetails,
       },
       null,
@@ -198,8 +196,8 @@ export const simulateDeployAccountTransaction = async (
     );
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

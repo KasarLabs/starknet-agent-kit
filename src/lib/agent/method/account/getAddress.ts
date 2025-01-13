@@ -1,4 +1,4 @@
-import { rpcProvider } from "../../starknetAgent";
+import { rpcProvider } from '../../starknetAgent';
 
 export const getAddress = async () => {
   try {
@@ -6,18 +6,18 @@ export const getAddress = async () => {
 
     if (!accountAddress) {
       throw new Error(
-        "No public address found. Please set PUBLIC_ADDRESS in your .env file!",
+        'No public address found. Please set PUBLIC_ADDRESS in your .env file!'
       );
     }
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       accountAddress,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

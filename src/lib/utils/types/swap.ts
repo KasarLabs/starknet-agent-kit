@@ -1,7 +1,7 @@
-import { TransactionReceipt } from "starknet";
+import { TransactionReceipt } from 'starknet';
 
 export interface SwapResult {
-  status: "success" | "failure";
+  status: 'success' | 'failure';
   message?: string;
   transactionHash?: string;
   sellAmount?: number;

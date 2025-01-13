@@ -3,9 +3,9 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-} from "@nestjs/common";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AgentResponseInterceptor implements NestInterceptor {
@@ -15,7 +15,7 @@ export class AgentResponseInterceptor implements NestInterceptor {
         let parsedData;
 
         // If data is a string, try to parse it
-        if (typeof data === "string") {
+        if (typeof data === 'string') {
           try {
             parsedData = JSON.parse(data);
           } catch (e) {
@@ -32,11 +32,11 @@ export class AgentResponseInterceptor implements NestInterceptor {
 
         // Format the response
         return {
-          input: context.switchToHttp().getRequest().body?.request || "",
+          input: context.switchToHttp().getRequest().body?.request || '',
           output: [
             {
               index: 0,
-              type: "text",
+              type: 'text',
               text:
                 parsedData?.text ||
                 parsedData?.message ||
@@ -44,7 +44,7 @@ export class AgentResponseInterceptor implements NestInterceptor {
             },
           ],
         };
-      }),
+      })
     );
   }
 }

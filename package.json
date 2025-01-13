@@ -1,6 +1,6 @@
 {
   "name": "starknet-agent-kit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A toolkit for creating AI agents that can interact with the Starknet blockchain",
   "author": "Kasar Labs",
   "license": "MIT",
@@ -9,6 +9,13 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kasarlabs/starknet-agent-kit.git"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "keywords": [
     "starknet",
@@ -19,6 +26,7 @@
   ],
   "files": [
     "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],

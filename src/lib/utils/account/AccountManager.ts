@@ -1,5 +1,5 @@
-import { Account, CallData, stark, hash, ec } from "starknet";
-import { AccountDetails, BaseUtilityClass, TransactionResult } from "../types";
+import { Account, CallData, stark, hash, ec } from 'starknet';
+import { AccountDetails, BaseUtilityClass, TransactionResult } from '../types';
 
 export class AccountManager implements BaseUtilityClass {
   constructor(public provider: any) {}
@@ -9,13 +9,13 @@ export class AccountManager implements BaseUtilityClass {
       const privateKey = stark.randomAddress();
       const publicKey = ec.starkCurve.getStarkKey(privateKey);
       const accountClassHash =
-        "0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f";
+        '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
       const constructorCallData = CallData.compile({ publicKey });
       const address = hash.calculateContractAddressFromHash(
         publicKey,
         accountClassHash,
         constructorCallData,
-        0,
+        0
       );
 
       return {
@@ -30,17 +30,17 @@ export class AccountManager implements BaseUtilityClass {
   }
 
   async deployAccount(
-    accountDetails: AccountDetails,
+    accountDetails: AccountDetails
   ): Promise<TransactionResult> {
     try {
       const account = new Account(
         this.provider,
         accountDetails.address,
-        accountDetails.privateKey,
+        accountDetails.privateKey
       );
 
       const accountClassHash =
-        "0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f";
+        '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
       const constructorCallData = CallData.compile({
         publicKey: accountDetails.publicKey,
       });
@@ -54,12 +54,12 @@ export class AccountManager implements BaseUtilityClass {
       await this.provider.waitForTransaction(transaction_hash);
 
       return {
-        status: "success",
+        status: 'success',
         transactionHash: transaction_hash,
       };
     } catch (error) {
       return {
-        status: "failure",
+        status: 'failure',
         error: error.message,
       };
     }
@@ -97,11 +97,11 @@ export class AccountManager implements BaseUtilityClass {
       const account = new Account(
         this.provider,
         accountDetails.address,
-        accountDetails.privateKey,
+        accountDetails.privateKey
       );
 
       const accountClassHash =
-        "0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f";
+        '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
       const constructorCallData = CallData.compile({
         publicKey: accountDetails.publicKey,
       });

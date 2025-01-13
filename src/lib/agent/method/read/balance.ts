@@ -1,5 +1,5 @@
-import { RPC_URL, tokenAddresses } from "src/lib/constant";
-import { Account, Contract, RpcProvider } from "starknet";
+import { RPC_URL, tokenAddresses } from 'src/lib/constant';
+import { Account, Contract, RpcProvider } from 'starknet';
 
 // Initialize provider
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
@@ -9,30 +9,30 @@ export type GetOwnBalanceParams = {
 };
 
 const getTokenDecimals = (symbol: string): number => {
-  const stablecoinSymbols = ["USDC", "USDT"];
+  const stablecoinSymbols = ['USDC', 'USDT'];
   return stablecoinSymbols.includes(symbol.toUpperCase()) ? 6 : 18;
 };
 
 const formatBalance = (rawBalance: string, symbol: string): string => {
   const decimals = getTokenDecimals(symbol);
-  const balancePadded = rawBalance.padStart(decimals + 1, "0");
+  const balancePadded = rawBalance.padStart(decimals + 1, '0');
   const decimalPosition = balancePadded.length - decimals;
   const formattedBalance =
     balancePadded.slice(0, decimalPosition) +
-    "." +
+    '.' +
     balancePadded.slice(decimalPosition);
   return parseFloat(formattedBalance).toString();
 };
 
 export const getOwnBalance = async (
   params: GetOwnBalanceParams,
-  privateKey: string,
+  privateKey: string
 ) => {
   try {
     const walletAddress = process.env.PUBLIC_ADDRESS;
 
     if (!walletAddress) {
-      throw new Error("Wallet address not configured");
+      throw new Error('Wallet address not configured');
     }
 
     // Account Instance
@@ -48,17 +48,17 @@ export const getOwnBalance = async (
     const balance = await tokenContract.balanceOf(account.address);
     const formattedBalance = formatBalance(
       balance.balance.toString(),
-      params.symbol,
+      params.symbol
     );
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       balance: formattedBalance,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -79,17 +79,17 @@ export const getBalance = async (params: GetBalanceParams) => {
     const balance = await tokenContract.balanceOf(params.walletAddress);
     const formattedBalance = formatBalance(
       balance.balance.toString(),
-      params.assetSymbol,
+      params.assetSymbol
     );
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       balance: formattedBalance,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -97,20 +97,20 @@ export const getBalance = async (params: GetBalanceParams) => {
 // Basic ERC20 ABI for balanceOf
 const erc20ABI = [
   {
-    name: "balanceOf",
-    type: "function",
+    name: 'balanceOf',
+    type: 'function',
     inputs: [
       {
-        name: "account",
-        type: "felt",
+        name: 'account',
+        type: 'felt',
       },
     ],
     outputs: [
       {
-        name: "balance",
-        type: "Uint256",
+        name: 'balance',
+        type: 'Uint256',
       },
     ],
-    stateMutability: "view",
+    stateMutability: 'view',
   },
 ];

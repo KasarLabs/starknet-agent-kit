@@ -1,4 +1,4 @@
-import { envSchema, type EnvConfig } from "./env.validation";
+import { envSchema, type EnvConfig } from './env.validation';
 
 export class ConfigurationService {
   private readonly config: EnvConfig;
@@ -8,10 +8,10 @@ export class ConfigurationService {
 
     if (!result.success) {
       console.error(
-        "❌ Invalid environment variables:",
-        JSON.stringify(result.error.format(), null, 2),
+        '❌ Invalid environment variables:',
+        JSON.stringify(result.error.format(), null, 2)
       );
-      throw new Error("Invalid environment variables");
+      throw new Error('Invalid environment variables');
     }
 
     this.config = result.data;
@@ -25,9 +25,13 @@ export class ConfigurationService {
     return this.config.NODE_ENV;
   }
 
+  get apiKey(): string {
+    return this.config.API_KEY;
+  }
+
   get starknet() {
     return {
-      privateKey: this.config.STARKNET_PRIVATE_KEY,
+      privateKey: this.config.PRIVATE_KEY,
       publicAddress: this.config.PUBLIC_ADDRESS,
       rpcUrl: this.config.RPC_URL,
     };
@@ -40,14 +44,14 @@ export class ConfigurationService {
   }
 
   get isDevelopment(): boolean {
-    return this.config.NODE_ENV === "development";
+    return this.config.NODE_ENV === 'development';
   }
 
   get isProduction(): boolean {
-    return this.config.NODE_ENV === "production";
+    return this.config.NODE_ENV === 'production';
   }
 
   get isTest(): boolean {
-    return this.config.NODE_ENV === "test";
+    return this.config.NODE_ENV === 'test';
   }
 }

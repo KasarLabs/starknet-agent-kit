@@ -1,17 +1,17 @@
-import { rpcProvider } from "src/lib/agent/starknetAgent";
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
 
 export const getChainId = async () => {
   try {
     const chainId = await rpcProvider.getChainId();
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       chainId,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

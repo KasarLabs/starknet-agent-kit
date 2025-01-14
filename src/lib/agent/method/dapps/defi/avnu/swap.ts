@@ -1,10 +1,12 @@
-// src/lib/agent/method/swap.ts
-
-import { Account } from "starknet";
-import { executeSwap, fetchQuotes, QuoteRequest } from "@avnu/avnu-sdk";
-import { tokenAddresses } from "src/lib/constant";
-import { StarknetAgent } from "../starknetAgent";
-import { symbolToDecimal } from "src/lib/utils/symbolToDecimal";
+import { Account } from 'starknet';
+import {
+  executeSwap,
+  fetchQuotes,
+  QuoteRequest,
+  fetchTokens,
+} from '@avnu/avnu-sdk';
+import { tokenAddresses } from 'src/lib/constant';
+import { StarknetAgent } from '../../../../starknetAgent';
 
 export type SwapParams = {
   sellTokenSymbol: string;
@@ -12,11 +14,32 @@ export type SwapParams = {
   sellAmount: number;
 };
 
+interface IAvnuToken {
+  name: string;
+  address: string;
+  symbol: string;
+  decimals: number;
+  logoUri: string | null;
+  lastDailyVolumeUsd: number;
+  extensions: {
+    coingeckoId: number;
+  };
+  tags: string[];
+}
+
+interface IAvnuResponse {
+  content: IAvnuToken[];
+  size: number;
+  number: number;
+  totalElements: number;
+  totalPages: number;
+}
+
 export const swapTokens = async (params: SwapParams, privateKey: string) => {
   try {
     const walletAddress = process.env.PUBLIC_ADDRESS;
     if (!walletAddress) {
-      throw new Error("Wallet address not configured");
+      throw new Error('Wallet address not configured');
     }
 
     const agent = new StarknetAgent({
@@ -28,27 +51,47 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
     const account = new Account(
       agent.contractInteractor.provider,
       walletAddress,
-      privateKey,
+      privateKey
     );
+    params.sellTokenSymbol = params.sellTokenSymbol.toLowerCase();
+    params.buyTokenSymbol = params.buyTokenSymbol.toLowerCase();
 
-    // Validate tokens and get addresses
-    const sellTokenAddress = tokenAddresses[params.sellTokenSymbol];
+    const tokenList = await fetchTokens();
+    console.log('Token list:', tokenList);
+
+    let sellTokenAddress = undefined;
+    let buyTokenAddress = undefined;
+    let formattedAmount;
+    for (const token of tokenList.content) {
+      const symbol = token.symbol.toLowerCase();
+
+      if (symbol === params.sellTokenSymbol) {
+        sellTokenAddress = token.address;
+        // Format sell amount with correct decimals
+        formattedAmount = BigInt(
+          agent.contractInteractor.formatTokenAmount(
+            params.sellAmount.toString(),
+            token.decimals
+          )
+        );
+      }
+
+      if (symbol === params.buyTokenSymbol) {
+        buyTokenAddress = token.address;
+      }
+
+      if (buyTokenAddress && sellTokenAddress) {
+        break;
+      }
+    }
+
     if (!sellTokenAddress) {
       throw new Error(`Sell token ${params.sellTokenSymbol} not supported`);
     }
 
-    const buyTokenAddress = tokenAddresses[params.buyTokenSymbol];
     if (!buyTokenAddress) {
       throw new Error(`Buy token ${params.buyTokenSymbol} not supported`);
     }
-
-    // Format sell amount with correct decimals
-    const formattedAmount = BigInt(
-      agent.contractInteractor.formatTokenAmount(
-        params.sellAmount.toString(),
-        symbolToDecimal(params.sellTokenSymbol),
-      ),
-    );
 
     // Prepare quote request
     const quoteParams: QuoteRequest = {
@@ -62,7 +105,7 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
     // Fetch quotes
     const quotes = await fetchQuotes(quoteParams);
     if (!quotes || quotes.length === 0) {
-      throw new Error("No quotes available for this swap");
+      throw new Error('No quotes available for this swap');
     }
 
     // Execute the swap
@@ -73,12 +116,12 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
     // Monitor the swap transaction
     const receipt = await agent.transactionMonitor.waitForTransaction(
       swapResult.transactionHash,
-      (status) => console.log("Swap status:", status),
+      (status) => console.log('Swap status:', status)
     );
 
     // Get swap events
     const events = await agent.transactionMonitor.getTransactionEvents(
-      swapResult.transactionHash,
+      swapResult.transactionHash
     );
 
     // Parse amount received from events if available
@@ -89,7 +132,7 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
     }
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       message: `Successfully swapped ${params.sellAmount} ${params.sellTokenSymbol} for ${params.buyTokenSymbol}`,
       transactionHash: swapResult.transactionHash,
       sellAmount: params.sellAmount,
@@ -100,11 +143,11 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
       events,
     });
   } catch (error) {
-    console.error("Swap error:", error);
+    console.error('Swap error:', error);
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
-      step: "swap execution",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      step: 'swap execution',
     });
   }
 };
@@ -126,7 +169,7 @@ const validateTokens = (sellSymbol: string, buySymbol: string) => {
   const buyTokenAddress = tokenAddresses[buySymbol];
 
   if (!sellTokenAddress || !buyTokenAddress) {
-    throw new Error("Invalid token symbols");
+    throw new Error('Invalid token symbols');
   }
 
   return { sellTokenAddress, buyTokenAddress };
@@ -138,56 +181,56 @@ const checkAndApproveToken = async (
   account: Account,
   tokenAddress: string,
   spenderAddress: string,
-  amount: string,
+  amount: string
 ) => {
   const erc20Abi = [
     {
-      name: "allowance",
-      type: "function",
+      name: 'allowance',
+      type: 'function',
       inputs: [
-        { name: "owner", type: "felt" },
-        { name: "spender", type: "felt" },
+        { name: 'owner', type: 'felt' },
+        { name: 'spender', type: 'felt' },
       ],
-      outputs: [{ name: "remaining", type: "Uint256" }],
-      stateMutability: "view",
+      outputs: [{ name: 'remaining', type: 'Uint256' }],
+      stateMutability: 'view',
     },
     {
-      name: "approve",
-      type: "function",
+      name: 'approve',
+      type: 'function',
       inputs: [
-        { name: "spender", type: "felt" },
-        { name: "amount", type: "Uint256" },
+        { name: 'spender', type: 'felt' },
+        { name: 'amount', type: 'Uint256' },
       ],
-      outputs: [{ name: "success", type: "felt" }],
-      stateMutability: "external",
+      outputs: [{ name: 'success', type: 'felt' }],
+      stateMutability: 'external',
     },
   ];
 
   const contract = agent.contractInteractor.createContract(
     erc20Abi,
     tokenAddress,
-    account,
+    account
   );
 
   // Check current allowance
   const allowance = await agent.contractInteractor.readContract(
     contract,
-    "allowance",
-    [account.address, spenderAddress],
+    'allowance',
+    [account.address, spenderAddress]
   );
 
   if (BigInt(allowance.remaining.toString()) < BigInt(amount)) {
     // Approve if needed
     const result = await agent.contractInteractor.writeContract(
       contract,
-      "approve",
-      [spenderAddress, amount],
+      'approve',
+      [spenderAddress, amount]
     );
 
-    if (result.status === "success" && result.transactionHash) {
+    if (result.status === 'success' && result.transactionHash) {
       await agent.transactionMonitor.waitForTransaction(result.transactionHash);
     } else {
-      throw new Error("Failed to approve token");
+      throw new Error('Failed to approve token');
     }
   }
 };

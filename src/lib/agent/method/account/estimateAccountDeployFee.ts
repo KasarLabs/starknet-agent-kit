@@ -1,12 +1,6 @@
-import {
-  Account,
-  DeployAccountContractPayload,
-  EstimateFee,
-  constants,
-} from "starknet";
-import { rpcProvider } from "../../starknetAgent";
-import { Invocation_Deploy_Account_Payload } from "src/lib/utils/types/simulatetransaction";
-import { colorLog } from "src/lib/utils/output/console_log";
+import { rpcProvider } from '../../starknetAgent';
+import { colorLog } from 'src/lib/utils/Output/console_log';
+import { Account, EstimateFee, constants,DeployAccountContractPayload} from 'starknet';
 
 export type EstimateAccountDeployFeeParams = {
   accountAddress: string;
@@ -20,7 +14,7 @@ export const estimateAccountDeployFee = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
@@ -44,18 +38,18 @@ export const estimateAccountDeployFee = async (
     );
 
     const estimatedFee = await account.estimateAccountDeployFee(invocations[0]);
-    colorLog.success("Simulation is succesfull !");
+    colorLog.success('Simulation is succesfull !');
     colorLog.info(estimatedFee.suggestedMaxFee.toString());
     colorLog.info(estimatedFee.overall_fee.toString());
     colorLog.info(estimatedFee.gas_price.toString());
     colorLog.info(estimatedFee.gas_consumed.toString(),);
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       maxFee: estimatedFee.suggestedMaxFee.toString(),
       overallFee: estimatedFee.overall_fee.toString(),
       gasPrice: estimatedFee.gas_price.toString(),
       gasUsage: estimatedFee.gas_consumed.toString(),
-      unit: "wei",
+      unit: 'wei',
       resourceBounds: {
         l1_gas: {
           maxAmount: estimatedFee.resourceBounds.l1_gas.max_amount.toString(),
@@ -71,8 +65,8 @@ export const estimateAccountDeployFee = async (
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

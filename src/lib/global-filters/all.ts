@@ -4,17 +4,17 @@ import {
   ExceptionFilter,
   HttpStatus,
   Logger,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { FastifyRequest, FastifyReply } from "fastify";
-import { INTERNAL_SERVER_ERROR } from "../constant";
+import { FastifyRequest, FastifyReply } from 'fastify';
+import { INTERNAL_SERVER_ERROR } from '../constant';
 
 @Catch()
 export class allLeftOverExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(allLeftOverExceptionFilter.name);
 
   catch(exception: any, host: ArgumentsHost) {
-    this.logger.log("Excepetion catched in allLeftOverException");
+    this.logger.log('Excepetion catched in allLeftOverException');
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<FastifyReply>();
     const request = ctx.getRequest<FastifyRequest>();

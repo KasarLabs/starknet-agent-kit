@@ -20,7 +20,7 @@
 
 A NestJS-based toolkit for creating AI agents that can interact with the Starknet blockchain.
 
-> ⚠️ **Warning**: This kit is currently under development. Please note that sharing sensitive information (private keys, personal data, etc.) with AI models involves inherent security risks.
+> ⚠️ **Warning**: This kit is currently under development. Use it at your own risk! Please be aware that sharing sensitive information such as private keys, personal data, or confidential details with AI models or tools carries inherent security risks. The contributors of this repository are **not responsible** for any loss, damage, or issues arising from its use.
 
 ## Getting Started
 
@@ -36,24 +36,24 @@ You will need two things:
 ### Basic Usage
 
 ```typescript
-import { StarknetAgent } from "starknet-agent-kit";
+import { StarknetAgent } from 'starknet-agent-kit';
 
 const agent = new StarknetAgent({
   anthropicApiKey: process.env.ANTHROPIC_API_KEY,
-  walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+  walletPrivateKey: process.env.PRIVATE_KEY,
 });
 
 // Execute commands in natural language
-await agent.execute("transfer 0.1 ETH to 0x123...");
+await agent.execute('transfer 0.1 ETH to 0x123...');
 
 // Get balance
-await agent.execute("What is my ETH balance?");
+await agent.execute('What is my ETH balance?');
 
 // Swap tokens
-await agent.execute("Swap 5 USDC for ETH");
+await agent.execute('Swap 5 USDC for ETH');
 
 // Create account
-await agent.execute("Create a new Argent account");
+await agent.execute('Create a new Argent account');
 ```
 
 ## Features
@@ -70,10 +70,27 @@ await agent.execute("Create a new Argent account");
 Create a `.env` file with the following variables:
 
 ```env
-  STARKNET_PRIVATE_KEY=your_private_key
-  PUBLIC_ADDRESS=your_public_address
-  ANTHROPIC_API_KEY=your_anthropic_api_key
-  RPC_URL=your_rpc_url
+# Your Starknet wallet private key (required)
+PRIVATE_KEY=your_private_key
+
+# Your Starknet public address (required)
+PUBLIC_ADDRESS=your_public_address
+
+# Your Anthropic API key for AI functionality (required)
+# Get it from: https://console.anthropic.com/
+ANTHROPIC_API_KEY=your_anthropic_api_key
+
+# Your Starknet RPC URL (required)
+# You can use public endpoints or get a dedicated one from providers like Infura
+RPC_URL=your_rpc_url
+
+# Your custom API key for securing the endpoints (required)
+# Generate a strong random string to protect your API endpoints
+# This key must be included in the x-api-key header when making requests to your API
+# You can generate a secure random string using these commands:
+#   - Linux/macOS: openssl rand -hex 32
+#   - Windows (PowerShell): -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | % {[char]$_})
+API_KEY=your_api_key
 ```
 
 ## Local Development
@@ -123,7 +140,7 @@ x-api-key: your_api_key
 All Langchain tools are available to be imported and used directly:
 
 ```typescript
-import { getBalance, transfer, swapTokens } from "starknet-agent-kit";
+import { getBalance, transfer, swapTokens } from 'starknet-agent-kit';
 ```
 
 ## Testing

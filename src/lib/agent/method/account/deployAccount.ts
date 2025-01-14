@@ -1,4 +1,4 @@
-import { RPC_URL } from "src/lib/constant";
+import { RPC_URL } from 'src/lib/constant';
 import {
   Account,
   RpcProvider,
@@ -6,9 +6,9 @@ import {
   CallData,
   constants,
   TransactionFinalityStatus,
-} from "starknet";
-import { StarknetAgent } from "../../starknetAgent";
-import { AccountDetails } from "src/lib/utils/types";
+} from 'starknet';
+import { StarknetAgent } from '../../starknetAgent';
+import { AccountDetails } from 'src/lib/utils/types';
 
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
 
@@ -20,28 +20,28 @@ export type DeployOZAccountParams = {
 export const DeployOZAccount = async (params: DeployOZAccountParams) => {
   try {
     const agent = new StarknetAgent({
-      walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+      walletPrivateKey: process.env.PRIVATE_KEY,
       anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     });
 
     const accountDetails: AccountDetails = {
       publicKey: params.publicKey,
       privateKey: params.privateKey,
-      address: "", // Will be calculated during deployment
+      address: '', // Will be calculated during deployment
       deployStatus: false,
     };
 
     // Calculate deployment fee with max fee estimation
     const { suggestedMaxFee } =
       await agent.accountManager.estimateAccountDeployFee(accountDetails);
-    console.log("Estimated max deployment fee:", suggestedMaxFee);
+    console.log('Estimated max deployment fee:', suggestedMaxFee);
 
     // Deploy the account with the estimated fee
     const deployResponse =
       await agent.accountManager.deployAccount(accountDetails);
 
     if (!deployResponse.transactionHash) {
-      throw new Error("No transaction hash returned from deployment");
+      throw new Error('No transaction hash returned from deployment');
     }
 
     // Wait for transaction confirmation
@@ -50,19 +50,19 @@ export const DeployOZAccount = async (params: DeployOZAccountParams) => {
       {
         retryInterval: 5000,
         successStates: [TransactionFinalityStatus.ACCEPTED_ON_L1],
-      },
+      }
     );
 
     return {
-      status: "success",
-      wallet: "Open Zeppelin",
+      status: 'success',
+      wallet: 'Open Zeppelin',
       transaction_hash: deployResponse.transactionHash,
       receipt: receipt,
     };
   } catch (error) {
     return {
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 };
@@ -76,12 +76,12 @@ export const DeployArgentAccount = async (params: DeployArgentParams) => {
   try {
     // Use a specific class hash for Argent account
     const argentXaccountClassHash =
-      "0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003";
+      '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003';
 
     // Prepare constructor calldata
     const constructorCalldata = CallData.compile({
       owner: params.publicKeyAX,
-      guardian: "0x0", // Use hex string for consistency
+      guardian: '0x0', // Use hex string for consistency
     });
 
     // Calculate the contract address
@@ -89,7 +89,7 @@ export const DeployArgentAccount = async (params: DeployArgentParams) => {
       params.publicKeyAX,
       argentXaccountClassHash,
       constructorCalldata,
-      0,
+      0
     );
 
     // Create account instance
@@ -114,15 +114,15 @@ export const DeployArgentAccount = async (params: DeployArgentParams) => {
     });
 
     return {
-      status: "success",
-      wallet: "Argent X",
+      status: 'success',
+      wallet: 'Argent X',
       transaction_hash,
       contract_address,
     };
   } catch (error) {
     return {
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 };

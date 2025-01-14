@@ -1,25 +1,8 @@
-import {
-  Account,
-  Call,
-  TransactionType,
-  SimulateTransactionResponse,
-  BigNumberish,
-  DeployAccountContractPayload,
-  UniversalDeployerContractPayload,
-  DeclareContractPayload,
-  CompiledContract,
-  CairoAssembly,
-  Invocations,
-} from "starknet";
-import { rpcProvider } from "../../starknetAgent";
-import { colorLog } from "src/lib/utils/output/console_log";
-import {
-  Invocation_Deploy_Account,
-  Invocation_Invoke,
-  Invocation_Deploy,
-} from "src/lib/utils/types/simulatetransaction";
-import { TransactionReponseFormat } from "src/lib/utils/output/output_simulatetransaction";
-import { TradeStatus } from "@avnu/avnu-sdk";
+import { Account, Call, TransactionType, DeployAccountContractPayload, UniversalDeployerContractPayload, CompiledContract, CairoAssembly} from 'starknet';
+import { rpcProvider } from '../../starknetAgent';
+import { colorLog } from 'src/lib/utils/Output/console_log';
+import { Invocation_Deploy_Account, Invocation_Invoke, Invocation_Deploy} from 'src/lib/utils/types/simulatetransaction';
+import { TransactionReponseFormat } from 'src/lib/utils/Output/output_simulatetransaction';
 
 export type simulateInvokeTransactionParams = {
   accountAddress: string;
@@ -33,7 +16,7 @@ export const simulateInvokeTransaction = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
@@ -43,7 +26,7 @@ export const simulateInvokeTransaction = async (
       // colorLog.info(`\n--- Call ${index + 1} ---`);
       // colorLog.info(`Contract Address: ${call.contractAddress}`);
       // colorLog.info(`Entrypoint: ${call.entrypoint}`);
-      // colorLog.info("Calldata:");
+      // colorLog.info('Calldata:');
 
       if (Array.isArray(call.calldata)) {
         call.calldata.forEach((data: any, dataIndex: number) => {
@@ -63,21 +46,21 @@ export const simulateInvokeTransaction = async (
 
     const simulate_transaction = await account.simulateTransaction(invocations);
 
-    colorLog.success("Simulation is succesfull !");
-    colorLog.info("Simulation response:");
+    colorLog.success('Simulation is succesfull !');
+    colorLog.info('Simulation response:');
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
     return JSON.stringify(
       {
-        status: "success",
+        status: 'success',
         transaction_output: transaction_output,
       },
     );
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -94,7 +77,7 @@ export const simulateDeployAccountTransaction = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
@@ -123,26 +106,26 @@ export const simulateDeployAccountTransaction = async (
     const simulate_transaction = await account.simulateTransaction(
       invocations,
       {
-        nonce: "0x0",
+        nonce: '0x0',
       }
     );
 
-    colorLog.success("Simulation is succesfull !");
+    colorLog.success('Simulation is succesfull !');
 
-    colorLog.info("Simulation response:");
+    colorLog.info('Simulation response:');
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
     return JSON.stringify(
       {
-        status: "success",
+        status: 'success',
         transaction_output: transaction_output,
       }
     );
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -159,7 +142,7 @@ export const simulateDeployTransaction = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
@@ -187,22 +170,22 @@ export const simulateDeployTransaction = async (
 
     const simulate_transaction = await account.simulateTransaction(invocations);
 
-    colorLog.success("Simulation is succesfull !");
+    colorLog.success('Simulation is succesfull !');
 
-    colorLog.info("Simulation response:");
+    colorLog.info('Simulation response:');
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
     return JSON.stringify(
       {
-        status: "success",
+        status: 'success',
         transaction_output: transaction_output,
       }
     );
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -222,11 +205,11 @@ export const simulateDeclareTransaction = async (
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
     if (!accountAddress) {
-      throw new Error("Account address not configured");
+      throw new Error('Account address not configured');
     }
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
-    console.log("\nAccount created with address:", accountAddress);
+    console.log('\nAccount created with address:', accountAddress);
 
     const invocations = [
       {
@@ -240,20 +223,20 @@ export const simulateDeclareTransaction = async (
       },
     ];
 
-    console.log("\nPrepared invocations:");
-    console.log("\nStarting simulation...");
+    console.log('\nPrepared invocations:');
+    console.log('\nStarting simulation...');
 
     const simulate_transaction = await account.simulateTransaction(invocations);
-    colorLog.success("\nSimulation completed successfully");
+    colorLog.success('\nSimulation completed successfully');
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       transaction_output: transaction_output,
     });
   } catch (error) {
-    console.error("\nError occurred during simulation:");
+    console.error('\nError occurred during simulation:');
     console.error(error);
     throw error;
   }

@@ -1,15 +1,15 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigurationService } from "../../config/configuration";
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigurationService } from '../../config/configuration';
 import {
   AgentExecutionError,
   StarknetTransactionError,
-} from "../../common/errors";
+} from '../../common/errors';
 import {
   IAgentService,
   AgentExecutionResponse,
-} from "../interfaces/agent-service.interface";
-import { IAgent } from "../interfaces/agent.interface";
-import { AgentRequestDTO } from "../dto/agents";
+} from '../interfaces/agent-service.interface';
+import { IAgent } from '../interfaces/agent.interface';
+import { AgentRequestDTO } from '../dto/agents';
 
 @Injectable()
 export class AgentService implements IAgentService {
@@ -19,10 +19,10 @@ export class AgentService implements IAgentService {
 
   async handleUserRequest(
     agent: IAgent,
-    userRequest: AgentRequestDTO,
+    userRequest: AgentRequestDTO
   ): Promise<AgentExecutionResponse> {
     this.logger.debug({
-      message: "Processing agent request",
+      message: 'Processing agent request',
       request: userRequest.request,
     });
 
@@ -30,27 +30,27 @@ export class AgentService implements IAgentService {
       const result = await agent.execute(userRequest.request);
 
       this.logger.debug({
-        message: "Agent request processed successfully",
+        message: 'Agent request processed successfully',
         result,
       });
 
       return {
-        status: "success",
+        status: 'success',
         data: result,
       };
     } catch (error) {
-      this.logger.error("Error processing agent request", {
+      this.logger.error('Error processing agent request', {
         error,
         request: userRequest.request,
       });
 
-      if (error.message?.includes("transaction")) {
-        throw new StarknetTransactionError("Failed to execute transaction", {
+      if (error.message?.includes('transaction')) {
+        throw new StarknetTransactionError('Failed to execute transaction', {
           originalError: error.message,
         });
       }
 
-      throw new AgentExecutionError("Failed to process agent request", {
+      throw new AgentExecutionError('Failed to process agent request', {
         originalError: error.message,
       });
     }
@@ -66,13 +66,13 @@ export class AgentService implements IAgentService {
 
       return {
         isReady: Boolean(
-          credentials.walletPrivateKey && credentials.anthropicApiKey,
+          credentials.walletPrivateKey && credentials.anthropicApiKey
         ),
         walletConnected: Boolean(credentials.walletPrivateKey),
         apiKeyValid: Boolean(credentials.anthropicApiKey),
       };
     } catch (error) {
-      this.logger.error("Error checking agent status", error);
+      this.logger.error('Error checking agent status', error);
       return {
         isReady: false,
         walletConnected: false,

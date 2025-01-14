@@ -1,10 +1,10 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 // Schema definitions
 export const Transferschema = z.object({
-  recipient_address: z.string().describe("The recipient public address"),
-  amount: z.string().describe("The amount of erc20 token that will be send"),
-  symbol: z.string().describe("The symbol of the erc20 token"),
+  recipient_address: z.string().describe('The recipient public address'),
+  amount: z.string().describe('The amount of erc20 token that will be send'),
+  symbol: z.string().describe('The symbol of the erc20 token'),
 });
 
 export const blockIdSchema = z.object({
@@ -14,47 +14,47 @@ export const blockIdSchema = z.object({
       .describe(
         "The block identifier. Can be 'latest', 'pending', or a block hash.",
       ),
-    z.number().describe("A block number."),
+    z.number().describe('A block number.'),
   ]),
 });
 
 export const contractAddressSchema = z.object({
-  contractAddress: z.string().describe("The address of the contract"),
+  contractAddress: z.string().describe('The address of the contract'),
 });
 
 export const transactionHashSchema = z.object({
   transactionHash: z
     .string()
-    .describe("The hash of the requested transaction."),
+    .describe('The hash of the requested transaction.'),
 });
 
 export const DeployOZAccountSchema = z.object({
-  publicKey: z.string().describe("The public key to deploy the OZ Account"),
-  privateKey: z.string().describe("The private key to deploy the OZ Account"),
+  publicKey: z.string().describe('The public key to deploy the OZ Account'),
+  privateKey: z.string().describe('The private key to deploy the OZ Account'),
 });
 
 export const getOwnBalanceSchema = z.object({
   symbol: z
     .string()
-    .describe("The asset symbol to get the balance of. eg. USDC, ETH"),
+    .describe('The asset symbol to get the balance of. eg. USDC, ETH'),
 });
 
 export const getBalanceSchema = z.object({
   walletAddress: z
     .string()
-    .describe("The wallet address to get the balance of"),
+    .describe('The wallet address to get the balance of'),
   assetSymbol: z
     .string()
-    .describe("The asset symbol to get the balance of. eg. USDC, ETH"),
+    .describe('The asset symbol to get the balance of. eg. USDC, ETH'),
 });
 
 export const DeployArgentAccountSchema = z.object({
   publicKeyAX: z
     .string()
-    .describe("The public key to deploy the Argent Account"),
+    .describe('The public key to deploy the Argent Account'),
   privateKeyAX: z
     .string()
-    .describe("The private key to deploy the Argent Account"),
+    .describe('The private key to deploy the Argent Account'),
 });
 
 export const blockIdAndContractAddressSchema = blockIdSchema
@@ -68,14 +68,14 @@ export const swapSchema = z.object({
   buyTokenSymbol: z
     .string()
     .describe("Symbol of the token to buy (e.g., 'ETH', 'USDC')"),
-  sellAmount: z.number().positive().describe("Amount of tokens to sell"),
+  sellAmount: z.number().positive().describe('Amount of tokens to sell'),
 });
 
 export const getStorageAtSchema = blockIdAndContractAddressSchema.merge(
   z.object({
     key: z
       .string()
-      .describe("The key to the storage value for the given contract"),
+      .describe('The key to the storage value for the given contract'),
   }),
 );
 
@@ -85,7 +85,7 @@ export const getTransactionByBlockIdAndIndexSchema = blockIdSchema.merge(
       .number()
       .int()
       .nonnegative()
-      .describe("The index of the transaction within the block."),
+      .describe('The index of the transaction within the block.'),
   }),
 );
 
@@ -104,27 +104,27 @@ export type GetTransactionByBlockIdAndIndexParams = z.infer<
 
 /*  For declare contract */
 export const declareContractSchema = z.object({
-  contract: z.any().describe("The compiled contract to be declared"),
-  classHash: z.string().optional().describe("Optional pre-computed class hash"),
+  contract: z.any().describe('The compiled contract to be declared'),
+  classHash: z.string().optional().describe('Optional pre-computed class hash'),
   compiledClassHash: z
     .string()
     .optional()
-    .describe("Optional compiled class hash for Cairo 1 contracts"),
+    .describe('Optional compiled class hash for Cairo 1 contracts'),
 });
 
 
 /* For simulate Invoke Transaction */
 
 const callSchema = z.object({
-  contractAddress: z.string().describe("The contract Address"),
-  entrypoint: z.string().describe("The entrypoint"),
+  contractAddress: z.string().describe('The contract Address'),
+  entrypoint: z.string().describe('The entrypoint'),
   calldata: z.array(z.string()).or(z.record(z.any())).optional()
 });
 
 export const simulateInvokeTransactionSchema = z.object({
   accountAddress: z
       .string()
-      .describe("Account Address/public key"),
+      .describe('Account Address/public key'),
   calls: z.array(callSchema)
 });
 
@@ -132,18 +132,18 @@ export const simulateInvokeTransactionSchema = z.object({
  /* For simulate Deploy Account Transaction*/
 
 const PayloadDeployAccountSchema = z.object({
-  classHash: z.string().describe("The class Hash Address"),
+  classHash: z.string().describe('The class Hash Address'),
   constructorCalldata: z.array(z.string()).or(z.record(z.any())).optional(),
   addressSalt: z.union([
       z.string().regex(/^0x[0-9a-fA-F]+$/),
       z.number(),
       z.bigint()
   ]).optional(),
-  contractAddressSchema: z.string().describe("ContractAddress").optional(),
+  contractAddressSchema: z.string().describe('ContractAddress').optional(),
 });
 
 export const simulateDeployAccountTransactionSchema = z.object({
-  accountAddress: z.string().describe("Account Address"),
+  accountAddress: z.string().describe('Account Address'),
   payloads: z.array(PayloadDeployAccountSchema)
 });
 
@@ -154,7 +154,7 @@ const PayloadDeploySchema = z.object({
     z.string().regex(/^0x[0-9a-fA-F]+$/),
     z.number(),
     z.bigint()
-    .describe("The class Hash Address"),
+    .describe('The class Hash Address'),
   ]),
   addressSalt: z.union([
     z.string().regex(/^0x[0-9a-fA-F]+$/),
@@ -164,14 +164,14 @@ const PayloadDeploySchema = z.object({
   unique : z.union([
     z.string().regex(/^0x[0-9a-fA-F]+$/),
     z.boolean()
-    .describe("unique true or false"),
+    .describe('unique true or false'),
   ]).optional(),
   constructorCalldata : z.array(z.string()).or(z.record(z.any())).optional(),
 })
 
 
 export const simulateDeployTransactionSchema = z.object({
-  accountAddress : z.string().describe("Account Address"),
+  accountAddress : z.string().describe('Account Address'),
   payloads: z.array(PayloadDeploySchema)
 });
 
@@ -195,20 +195,20 @@ const compiledContractSchema = z.object({
 });
 
 export const simulateDeclareTransactionSchema = z.object({
-  accountAddress: z.string().describe("Account address"),
+  accountAddress: z.string().describe('Account address'),
   contract: z.union([
       z.string(),
       compiledContractSchema
-  ]).describe("Contract data"),
-  classHash: z.string().optional().describe("Class hash of the contract"),
-  casm: cairoAssemblySchema.optional().describe("Cairo assembly data"),
-  compiledClassHash: z.string().optional().describe("Compiled class hash")
+  ]).describe('Contract data'),
+  classHash: z.string().optional().describe('Class hash of the contract'),
+  casm: cairoAssemblySchema.optional().describe('Cairo assembly data'),
+  compiledClassHash: z.string().optional().describe('Compiled class hash')
 });
 
 
 /* for estimate account deploye fee */
 export const estimateAccountDeployFeeSchema = z.object({
-  accountAddress: z.string().describe("Account Address"),
+  accountAddress: z.string().describe('Account Address'),
   payloads: z.array(PayloadDeployAccountSchema)
 });
 
@@ -229,7 +229,7 @@ export const signMessageSchema = z.object({
       domain: z.record(z.string(), z.union([z.string(), z.number()])),
       message: z.record(z.string(), z.any()),
     })
-    .describe("The typed data object conforming to EIP-712"),
+    .describe('The typed data object conforming to EIP-712'),
 });
 
 // For verify message
@@ -249,12 +249,12 @@ export const verifyMessageSchema = z.object({
       domain: z.record(z.string(), z.union([z.string(), z.number()])),
       message: z.record(z.string(), z.any()),
     })
-    .describe("The typed data that was signed"),
+    .describe('The typed data that was signed'),
   signature: z
     .array(z.string())
     .length(2)
-    .describe("The signature as array of r and s values"),
-  publicKey: z.string().describe("The public key to verify against"),
+    .describe('The signature as array of r and s values'),
+  publicKey: z.string().describe('The public key to verify against'),
 });
 
 

@@ -1,32 +1,32 @@
-import { BlockIdAndContractAddressParams } from "src/lib/agent/schema";
-import { rpcProvider } from "src/lib/agent/starknetAgent";
-import { BlockNumber } from "starknet";
+import { BlockIdAndContractAddressParams } from 'src/lib/agent/schema';
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { BlockNumber } from 'starknet';
 
 export const getClassAt = async (params: BlockIdAndContractAddressParams) => {
   try {
-    let blockIdentifier: BlockNumber | string = params.blockId || "latest";
+    let blockIdentifier: BlockNumber | string = params.blockId || 'latest';
 
     if (
-      typeof blockIdentifier === "string" &&
+      typeof blockIdentifier === 'string' &&
       !isNaN(Number(blockIdentifier)) &&
-      blockIdentifier !== "latest"
+      blockIdentifier !== 'latest'
     ) {
       blockIdentifier = Number(blockIdentifier);
     }
 
     const contractClass = await rpcProvider.getClassAt(
       params.contractAddress,
-      blockIdentifier,
+      blockIdentifier
     );
 
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       contractClass,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "failure",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

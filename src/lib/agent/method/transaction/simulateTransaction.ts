@@ -7,7 +7,7 @@ import {
   DeployAccountContractPayload,
 } from 'starknet';
 import { rpcProvider } from '../../starknetAgent';
-import { colorLog } from 'src/lib/utils/Output/console_log';
+import { colorLog } from '../../../../lib/utils/Output/console_log';
 import {
   InvocationInvokePayload,
   Invocation_Deploy_Account,

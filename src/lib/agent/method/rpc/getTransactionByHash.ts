@@ -1,5 +1,5 @@
 import { TransactionHashParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { rpcProvider } from '../../../../lib/agent/starknetAgent';
 
 export const getTransactionByHash = async (params: TransactionHashParams) => {
   try {

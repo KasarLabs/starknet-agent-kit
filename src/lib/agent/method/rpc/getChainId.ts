@@ -1,4 +1,4 @@
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { rpcProvider } from '../../../../lib/agent/starknetAgent';
 
 export const getChainId = async () => {
   try {

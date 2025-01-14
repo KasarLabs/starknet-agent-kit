@@ -1,13 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "index",
-  "compilerOptions": {
-    "deleteOutDir": true,
-    "webpack": false,
-    "tsConfigPath": "tsconfig.json",
-    "assets": ["**/*.proto", "**/*.json"],
-    "watchAssets": true
-  }
+  "entryFile": "main"
 }

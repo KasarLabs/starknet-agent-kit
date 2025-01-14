@@ -1,6 +1,6 @@
 import { Account } from 'starknet';
 import { executeSwap, fetchQuotes, QuoteRequest } from '@avnu/avnu-sdk';
-import { AVNU_TOKEN_LIST, tokenAddresses } from 'src/lib/constant';
+import { AVNU_TOKEN_LIST, tokenAddresses } from '../../../lib/constant';
 import { StarknetAgent } from '../starknetAgent';
 
 export type SwapParams = {

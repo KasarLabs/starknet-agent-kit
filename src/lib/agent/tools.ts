@@ -2,16 +2,16 @@ import { tool } from '@langchain/core/tools';
 import {
   CreateOZAccount,
   CreateArgentAccount,
-} from 'src/lib/agent/method/account/createAccount';
+} from './method/account/createAccount';
 import {
   DeployArgentAccount,
   DeployOZAccount,
-} from 'src/lib/agent/method/account/deployAccount';
+} from './method/account/deployAccount';
 import { transfer } from './method/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
-} from 'src/lib/agent/method/transaction/simulateTransaction';
+} from './method/transaction/simulateTransaction';
 import { getOwnBalance, getBalance } from './method/read/balance';
 import { getBlockNumber } from './method/rpc/getBlockNumber';
 import { getBlockTransactionCount } from './method/rpc/getBlockTransactionCount';

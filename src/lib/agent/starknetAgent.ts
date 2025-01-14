@@ -1,5 +1,3 @@
-// src/lib/agent/starknetAgent.ts
-
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import type { AgentExecutor } from 'langchain/agents';
 import { createAgent } from './agent';

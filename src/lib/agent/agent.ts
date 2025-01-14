@@ -3,14 +3,10 @@ import { createToolCallingAgent, AgentExecutor } from 'langchain/agents';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { SystemMessage } from '@langchain/core/messages';
 import { createTools } from './tools.js';
-<<<<<<< HEAD
 import { AiConfig } from '../utils/types/index.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
-=======
-
->>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
@@ -25,15 +21,9 @@ const systemMessage = new SystemMessage(`
   }
   
   Guidelines:
-<<<<<<< HEAD
     - Keep technical explanations under 2-3 lines
     - Use bullet points for clarity
     - No lengthy apologies or explanations
-=======
-  - Keep technical explanations under 2-3 lines
-  - Use bullet points for clarity
-  - No lengthy apologies or explanations
->>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
   `);
 
 export const prompt = ChatPromptTemplate.fromMessages([
@@ -45,7 +35,6 @@ export const prompt = ChatPromptTemplate.fromMessages([
 
 export const createAgent = (
   starknetAgent: { getCredentials: () => { walletPrivateKey: string } },
-<<<<<<< HEAD
   aiConfig: AiConfig
 ) => {
   const model = () => {
@@ -84,20 +73,7 @@ export const createAgent = (
     }
 
     return new ChatOllama({
-      model: aiConfig.aiModel
-=======
-  anthropicApiKey: string
-) => {
-  const model = () => {
-    if (!anthropicApiKey) {
-      throw new Error(
-        'Valid Anthropic api key is required https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key'
-      );
-    }
-    return new ChatAnthropic({
-      modelName: 'claude-3-5-sonnet-latest',
-      anthropicApiKey: anthropicApiKey,
->>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
+      model: aiConfig.aiModel,
     });
   };
   const modelselected = model();

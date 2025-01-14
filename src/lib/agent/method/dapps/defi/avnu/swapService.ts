@@ -163,8 +163,10 @@ export const createSwapService = (
   }
 
   const agent = new StarknetAgent({
-    walletPrivateKey: privateKey,
-    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    walletPrivateKey: process.env.PRIVATE_KEY,
+    aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
+    aiModel: process.env.AI_MODEL,
+    aiProvider: process.env.AI_PROVIDER,
   });
 
   return new SwapService(agent, walletAddress, privateKey);

@@ -66,7 +66,7 @@ export class AgentService implements IAgentService {
 
       return {
         isReady: Boolean(
-          credentials.walletPrivateKey && credentials.aiProviderApiKey,
+          credentials.walletPrivateKey && credentials.aiProviderApiKey
         ),
         walletConnected: Boolean(credentials.walletPrivateKey),
         apiKeyValid: Boolean(credentials.aiProviderApiKey),

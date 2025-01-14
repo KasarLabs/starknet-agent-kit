@@ -28,6 +28,7 @@ npm install @nestjs/common @nestjs/core @nestjs/platform-fastify starknet @langc
 ```
 
 You will need two things:
+
 - A Starknet wallet private key (you can get one from [Argent X](https://www.argent.xyz/argent-x))
 - An AI provider API key (e.g., Anthropic, OpenAI)
 
@@ -37,15 +38,10 @@ You will need two things:
 import { StarknetAgent } from 'starknet-agent-kit';
 
 const agent = new StarknetAgent({
-<<<<<<< HEAD
   aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
   aiProvider: process.env.AI_PROVIDER,
   aiModel: process.env.AI_MODEL,
-  walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
-=======
-  anthropicApiKey: process.env.ANTHROPIC_API_KEY,
   walletPrivateKey: process.env.PRIVATE_KEY,
->>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
 });
 
 // Execute commands in natural language
@@ -62,6 +58,7 @@ await agent.execute('Create a new Argent account');
 ```
 
 ## Features
+
 - Retrieve account infos (Balance, public key, etc)
 - Create one or multiple accounts (Argent & OpenZeppelin)
 - transfer assets between accounts
@@ -112,16 +109,19 @@ API_KEY=""
 ## Local Development
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/starknet-agent-kit.git
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run start:dev
 ```
@@ -135,6 +135,7 @@ The API will be available at `http://localhost:3000/api`.
 Make requests to the Starknet agent.
 
 Request body:
+
 ```json
 {
   "request": "Your natural language request here"
@@ -142,6 +143,7 @@ Request body:
 ```
 
 Headers:
+
 ```
 x-api-key: your_api_key
 ```
@@ -157,11 +159,13 @@ import { getBalance, transfer, swapTokens } from 'starknet-agent-kit';
 ## Testing
 
 To run tests:
+
 ```bash
 npm run test
 ```
 
 For E2E tests:
+
 ```bash
 npm run test:e2e
 ```

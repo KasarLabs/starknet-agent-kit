@@ -27,7 +27,7 @@ export class AgentsController implements OnModuleInit {
       aiProviderApiKey: this.config.ai.apiKey,
       walletPrivateKey: this.config.starknet.privateKey,
       aiModel: this.config.ai.model,
-      aiProvider: this.config.ai.provider
+      aiProvider: this.config.ai.provider,
     });
   }
 

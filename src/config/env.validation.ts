@@ -87,7 +87,7 @@ export const envSchema = z
 
     // Starknet configuration
     /** Private key for Starknet blockchain interactions */
-    STARKNET_PRIVATE_KEY: z
+    PRIVATE_KEY: z
       .string()
       .min(1, 'Starknet private key is required for blockchain transactions'),
 

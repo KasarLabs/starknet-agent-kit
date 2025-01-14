@@ -17,9 +17,6 @@ export const BAD_REQUEST = 'Bad request';
 
 export const RPC_URL = process.env.RPC_URL;
 
-export const AVNU_TOKEN_LIST =
-  'https://starknet.api.avnu.fi/v1/starknet/tokens';
-
 const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',

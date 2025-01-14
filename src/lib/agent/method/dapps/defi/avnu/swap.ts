@@ -1,7 +1,7 @@
 import { Account } from 'starknet';
-import { executeSwap, fetchQuotes, QuoteRequest } from '@avnu/avnu-sdk';
-import { AVNU_TOKEN_LIST, tokenAddresses } from 'src/lib/constant';
-import { StarknetAgent } from '../starknetAgent';
+import { executeSwap, fetchQuotes, QuoteRequest, fetchTokens } from '@avnu/avnu-sdk';
+import { tokenAddresses } from 'src/lib/constant';
+import { StarknetAgent } from '../../../../starknetAgent';
 
 export type SwapParams = {
   sellTokenSymbol: string;
@@ -51,14 +51,13 @@ export const swapTokens = async (params: SwapParams, privateKey: string) => {
     params.sellTokenSymbol = params.sellTokenSymbol.toLowerCase();
     params.buyTokenSymbol = params.buyTokenSymbol.toLowerCase();
 
-    const tokenList = await fetch(AVNU_TOKEN_LIST);
-
-    const list: IAvnuResponse = await tokenList.json();
+    const tokenList = await fetchTokens();
+    console.log('Token list:', tokenList);
 
     let sellTokenAddress = undefined;
     let buyTokenAddress = undefined;
     let formattedAmount;
-    for (const token of list.content) {
+    for (const token of tokenList.content) {
       const symbol = token.symbol.toLowerCase();
 
       if (symbol === params.sellTokenSymbol) {

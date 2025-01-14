@@ -9,7 +9,7 @@ const systemMessage = new SystemMessage(`
   
   Response formats ⚡:
 
-  Return transaction hashes in this format: https://starkscan.com/tx/{transaction_hash}
+  Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash}
   
   Errors:
   {
@@ -17,18 +17,9 @@ const systemMessage = new SystemMessage(`
      details: "Quick explanation + next steps"
   }
   
-  Suggestions:
-  1. [Brief point]
-  2. [Brief point]
-  
-  Next steps:
-  - Option 1: [action]
-  - Option 2: [action]
-  
   Guidelines:
   - Keep technical explanations under 2-3 lines
   - Use bullet points for clarity
-  - Focus on actionable next steps
   - No lengthy apologies or explanations
   `);
 

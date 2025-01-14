@@ -1,15 +1,21 @@
-import { Account, EstimateFee, constants } from "starknet";
+import {
+  Account,
+  DeployAccountContractPayload,
+  EstimateFee,
+  constants,
+} from "starknet";
 import { rpcProvider } from "../../starknetAgent";
+import { Invocation_Deploy_Account_Payload } from "src/lib/utils/types/simulatetransaction";
+import { colorLog } from "src/lib/utils/output/console_log";
 
 export type EstimateAccountDeployFeeParams = {
-  classHash: string;
-  constructorCalldata?: string[];
-  addressSalt?: string;
+  accountAddress: string;
+  payloads: DeployAccountContractPayload[];
 };
 
 export const estimateAccountDeployFee = async (
   params: EstimateAccountDeployFeeParams,
-  privateKey: string,
+  privateKey: string
 ) => {
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;
@@ -19,14 +25,30 @@ export const estimateAccountDeployFee = async (
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
-    // Estimate fee for deployment
-    const estimatedFee = await account.estimateAccountDeployFee({
-      classHash: params.classHash,
-      constructorCalldata: params.constructorCalldata || [],
-      addressSalt: params.addressSalt || "0x0",
-      contractAddress: constants.ZERO.toString(),
-    });
+    let index = 1;
+    const invocations: DeployAccountContractPayload[] = params.payloads.map(
+      (payload) => {
+        if (Array.isArray(payload.constructorCalldata)) {
+          payload.constructorCalldata.forEach((data, dataIndex) => {
+            console.log(`  Param ${dataIndex + 1}:`, data);
+          });
+        }
 
+        return {
+          classHash: payload.classHash,
+          constructorCalldata: payload.constructorCalldata ?? [],
+          addressSalt: payload.addressSalt,
+          contractAddress: payload.contractAddress,
+        };
+      }
+    );
+
+    const estimatedFee = await account.estimateAccountDeployFee(invocations[0]);
+    colorLog.success("Simulation is succesfull !");
+    colorLog.info(estimatedFee.suggestedMaxFee.toString());
+    colorLog.info(estimatedFee.overall_fee.toString());
+    colorLog.info(estimatedFee.gas_price.toString());
+    colorLog.info(estimatedFee.gas_consumed.toString(),);
     return JSON.stringify({
       status: "success",
       maxFee: estimatedFee.suggestedMaxFee.toString(),

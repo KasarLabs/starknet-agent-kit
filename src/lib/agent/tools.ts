@@ -8,7 +8,7 @@ import {
   DeployOZAccount,
 } from "src/lib/agent/method/account/deployAccount";
 import { transfer } from "./method/token/transfer";
-import {simulateDeployAccountTransaction, simulateInvokeTransaction } from "src/lib/agent/method/transaction/simulateTransaction";
+import {simulateDeployAccountTransaction, simulateInvokeTransaction, simulateDeployTransaction , simulateDeclareTransaction} from "src/lib/agent/method/transaction/simulateTransaction";
 import { getOwnBalance, getBalance } from "./method/read/balance";
 import { getBlockNumber } from "./method/rpc/getBlockNumber";
 import { getBlockTransactionCount } from "./method/rpc/getBlockTransactionCount";
@@ -33,6 +33,8 @@ import {
   verifyMessageSchema,
   simulateInvokeTransactionSchema,
   simulateDeployAccountTransactionSchema,
+  simulateDeployTransactionSchema,
+  simulateDeclareTransactionSchema,
 } from "./schema";
 import { swapTokens } from "./method/swap";
 import { getSpecVersion } from "./method/rpc/getSpecVersion";
@@ -270,5 +272,14 @@ export const createTools = (agent: StarknetAgentInterface) => [
     description: "Simulate Deploy Account transaction without executing it",
     schema: simulateDeployAccountTransactionSchema,
   }),
-
+  tool(withWalletKey(simulateDeployTransaction,agent), {
+    name: "simulate_deploy_transaction",
+    description: "Simulate Deploy transaction without executing it",
+    schema: simulateDeployTransactionSchema,
+  }),
+  tool(withWalletKey(simulateDeclareTransaction,agent), {
+    name: "simulate_declare_transaction",
+    description: "Simulate Deploy transaction without executing it",
+    schema: simulateDeclareTransactionSchema,
+  }),
 ];

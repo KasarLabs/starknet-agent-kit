@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '../../config/configuration';
 import {
+  AgentCredentialsError,
   AgentExecutionError,
+  AgentValidationError,
   StarknetTransactionError,
 } from '../../common/errors';
 import {
@@ -25,33 +27,54 @@ export class AgentService implements IAgentService {
       message: 'Processing agent request',
       request: userRequest.request,
     });
-
+  
     try {
+      // Check agent status before processing
+      const status = await this.getAgentStatus(agent);
+      if (!status.isReady) {
+        throw new AgentCredentialsError('Agent is not properly configured');
+      }
+  
+      // Validate request
+      if (!(await agent.validateRequest(userRequest.request))) {
+        throw new AgentValidationError('Invalid request format or parameters');
+      }
+  
       const result = await agent.execute(userRequest.request);
-
+  
       this.logger.debug({
         message: 'Agent request processed successfully',
         result,
       });
-
+  
       return {
         status: 'success',
         data: result,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error processing agent request', {
-        error,
+        error: {
+          message: error.message,
+          name: error.name,
+          stack: error.stack,
+        },
         request: userRequest.request,
       });
-
+  
+      if (error instanceof AgentValidationError) {
+        throw error;
+      }
+  
       if (error.message?.includes('transaction')) {
         throw new StarknetTransactionError('Failed to execute transaction', {
           originalError: error.message,
+          cause: error,
         });
       }
-
+  
       throw new AgentExecutionError('Failed to process agent request', {
         originalError: error.message,
+        cause: error,
       });
     }
   }

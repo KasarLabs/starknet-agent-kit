@@ -72,11 +72,7 @@ Create a `.env` file with the following variables:
 
 ```env
 # Your Starknet wallet private key (required)
-<<<<<<< HEAD
-STARKNET_PRIVATE_KEY=""
-=======
-PRIVATE_KEY=your_private_key
->>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
+PRIVATE_KEY=""
 
 # Your Starknet public address (required)
 PUBLIC_ADDRESS=""

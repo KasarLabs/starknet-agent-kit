@@ -1,9 +1,4 @@
-import {
-  fetchQuotes,
-  QuoteRequest,
-  Quote,
-  Route
-} from '@avnu/avnu-sdk';
+import { fetchQuotes, QuoteRequest, Quote, Route } from '@avnu/avnu-sdk';
 import { TokenService } from './tokenService';
 import { z } from 'zod';
 
@@ -53,15 +48,15 @@ export class RouteFetchService {
         buyTokenAddress: buyToken.address,
         sellAmount: formattedAmount,
         takerAddress: process.env.PUBLIC_ADDRESS!,
-        size: 1
+        size: 1,
       };
 
       const quotes = await fetchQuotes(quoteParams);
-      
+
       if (!quotes?.length) {
         return {
           status: 'failure',
-          error: 'No routes available for this swap'
+          error: 'No routes available for this swap',
         };
       }
 
@@ -71,26 +66,28 @@ export class RouteFetchService {
       if (!route) {
         return {
           status: 'failure',
-          error: 'No valid route found in quote'
+          error: 'No valid route found in quote',
         };
       }
 
       return {
         status: 'success',
         route,
-        quote
+        quote,
       };
     } catch (error) {
       console.error('Route fetching error:', error);
       return {
         status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
 }
 
-export const getRoute = async (params: RouteSchemaType): Promise<RouteResult> => {
+export const getRoute = async (
+  params: RouteSchemaType
+): Promise<RouteResult> => {
   const routeService = new RouteFetchService();
   return routeService.fetchRoute(params);
 };

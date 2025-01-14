@@ -1,5 +1,3 @@
-// src/lib/agent/starknetAgent.ts
-
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import type { AgentExecutor } from 'langchain/agents';
 import { createAgent } from './agent';
@@ -64,6 +62,21 @@ export class StarknetAgent implements IAgent {
       aiProviderApiKey: this.aiProviderApiKey,
       aiModel: this.aiModel,
     };
+  }
+
+  async validateRequest(request: string): Promise<boolean> {
+    // Basic validation - check if request is non-empty and is a string
+    if (!request || typeof request !== 'string') {
+      return false;
+    }
+
+    try {
+      // Add your validation logic here
+      // For now, returning true as a basic implementation
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   async execute(input: string): Promise<unknown> {

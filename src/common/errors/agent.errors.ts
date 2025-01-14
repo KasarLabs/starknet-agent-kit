@@ -12,3 +12,23 @@ export class AgentInitializationError extends BaseError {
     super(ErrorType.AGENT_INITIALIZATION_ERROR, message, metadata);
   }
 }
+
+export class AgentValidationError extends Error {
+  public readonly details?: any;
+
+  constructor(message: string, details?: any) {
+    super(message);
+    this.name = 'AgentValidationError';
+    this.details = details;
+  }
+}
+
+export class AgentCredentialsError extends Error {
+  public readonly details?: any;
+
+  constructor(message: string, details?: any) {
+    super(message);
+    this.name = 'AgentCredentialsError';
+    this.details = details;
+  }
+}

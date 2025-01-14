@@ -38,26 +38,26 @@ export const createAgent = (
   aiConfig: AiConfig
 ) => {
   const model = () => {
-    switch (aiConfig.aiModel) {
+    switch (aiConfig.aiProvider) {
       case 'anthropic':
         if (!aiConfig.apiKey) {
           throw new Error(
             'Valid Anthropic api key is required https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key'
           );
         }
-        return new ChatOpenAI({
+        return new ChatAnthropic({
           modelName: aiConfig.aiModel,
-          apiKey: aiConfig.apiKey,
+          anthropicApiKey: aiConfig.apiKey,
         });
       case 'openai':
         if (!aiConfig.apiKey) {
           throw new Error(
-            'Valid Openai api key is required https://platform.openai.com/api-keys'
+            'Valid OpenAI api key is required https://platform.openai.com/api-keys'
           );
         }
-        return new ChatAnthropic({
+        return new ChatOpenAI({
           modelName: aiConfig.aiModel,
-          anthropicApiKey: aiConfig.apiKey,
+          apiKey: aiConfig.apiKey,
         });
       case 'gemini':
         if (!aiConfig.apiKey) {
@@ -70,21 +70,20 @@ export const createAgent = (
           apiKey: aiConfig.apiKey,
           convertSystemMessageToHumanContent: true,
         });
+      case 'ollama':
+        return new ChatOllama({
+          model: aiConfig.aiModel,
+        });
+      default:
+        throw new Error(`Unsupported AI provider: ${aiConfig.aiProvider}`);
     }
-
-    return new ChatOllama({
-      model: aiConfig.aiModel,
-    });
   };
-  const modelselected = model();
-  if (!modelselected) {
-    throw new Error('Error initializing model');
-  }
 
+  const modelSelected = model();
   const tools = createTools(starknetAgent);
 
   const agent = createToolCallingAgent({
-    llm: modelselected,
+    llm: modelSelected,
     tools,
     prompt,
   });

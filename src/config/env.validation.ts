@@ -1,5 +1,6 @@
 import { z } from 'zod';
-// Define available models per provider
+
+// Available AI models for each provider
 const AI_PROVIDER_MODELS = {
   openai: [
     'gpt-4o',

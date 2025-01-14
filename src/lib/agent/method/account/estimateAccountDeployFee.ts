@@ -1,5 +1,5 @@
-import { Account, constants } from 'starknet';
-import { rpcProvider } from '../../starknetAgent';
+import { Account, EstimateFee, constants } from 'starknet';
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
 
 export type EstimateAccountDeployFeeParams = {
   classHash: string;

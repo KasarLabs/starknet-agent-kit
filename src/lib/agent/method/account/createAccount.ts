@@ -1,10 +1,10 @@
 import { ec, stark, hash, CallData } from 'starknet';
-import { StarknetAgent } from '../../starknetAgent';
+import { StarknetAgent } from 'src/lib/agent/starknetAgent';
 
 export const CreateOZAccount = async () => {
   try {
     const accountManager = new StarknetAgent({
-      walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+      walletPrivateKey: process.env.PRIVATE_KEY,
       aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
       aiModel: process.env.AI_MODEL,
       aiProvider: process.env.AI_PROVIDER,

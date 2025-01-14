@@ -1,7 +1,7 @@
-import { RPC_URL, tokenAddresses } from 'src/lib/constant';
+import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
+import { ERC20_ABI } from 'src/lib/utils/constants/swap';
 import { Account, Contract, RpcProvider } from 'starknet';
 
-// Initialize provider
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
 
 export type GetOwnBalanceParams = {
@@ -43,7 +43,7 @@ export const getOwnBalance = async (
       throw new Error(`Token ${params.symbol} not supported`);
     }
 
-    const tokenContract = new Contract(erc20ABI, tokenAddress, provider);
+    const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
     const balance = await tokenContract.balanceOf(account.address);
     const formattedBalance = formatBalance(
@@ -75,7 +75,7 @@ export const getBalance = async (params: GetBalanceParams) => {
       throw new Error(`Token ${params.assetSymbol} not supported`);
     }
 
-    const tokenContract = new Contract(erc20ABI, tokenAddress, provider);
+    const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
     const balance = await tokenContract.balanceOf(params.walletAddress);
     const formattedBalance = formatBalance(
       balance.balance.toString(),
@@ -93,24 +93,3 @@ export const getBalance = async (params: GetBalanceParams) => {
     });
   }
 };
-
-// Basic ERC20 ABI for balanceOf
-const erc20ABI = [
-  {
-    name: 'balanceOf',
-    type: 'function',
-    inputs: [
-      {
-        name: 'account',
-        type: 'felt',
-      },
-    ],
-    outputs: [
-      {
-        name: 'balance',
-        type: 'Uint256',
-      },
-    ],
-    stateMutability: 'view',
-  },
-];

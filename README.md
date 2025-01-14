@@ -19,7 +19,7 @@
 
 A NestJS-based toolkit for creating AI agents that can interact with the Starknet blockchain.
 
-> ⚠️ **Warning**: This kit is currently under development. Please note that sharing sensitive information (private keys, personal data, etc.) with AI models involves inherent security risks.
+> ⚠️ **Warning**: This kit is currently under development. Use it at your own risk! Please be aware that sharing sensitive information such as private keys, personal data, or confidential details with AI models or tools carries inherent security risks. The contributors of this repository are **not responsible** for any loss, damage, or issues arising from its use.
 
 ## Getting Started
 
@@ -37,10 +37,15 @@ You will need two things:
 import { StarknetAgent } from 'starknet-agent-kit';
 
 const agent = new StarknetAgent({
+<<<<<<< HEAD
   aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
   aiProvider: process.env.AI_PROVIDER,
   aiModel: process.env.AI_MODEL,
   walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+=======
+  anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+  walletPrivateKey: process.env.PRIVATE_KEY,
+>>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
 });
 
 // Execute commands in natural language
@@ -70,7 +75,11 @@ Create a `.env` file with the following variables:
 
 ```env
 # Your Starknet wallet private key (required)
+<<<<<<< HEAD
 STARKNET_PRIVATE_KEY=""
+=======
+PRIVATE_KEY=your_private_key
+>>>>>>> f4039838276f66863d9be1b998ef46b29f1a4cd3
 
 # Your Starknet public address (required)
 PUBLIC_ADDRESS=""

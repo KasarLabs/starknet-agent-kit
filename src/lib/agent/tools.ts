@@ -37,7 +37,7 @@ import {
   simulateInvokeTransactionSchema,
   simulateDeployAccountTransactionSchema,
 } from './schema';
-import { swapTokens } from './method/swap';
+import { swapTokens } from './method/dapps/defi/avnu/swapService';
 import { getSpecVersion } from './method/rpc/getSpecVersion';
 import { getBlockWithTxHashes } from './method/rpc/getBlockWithTxHashes';
 import { getBlockWithTxs } from './method/rpc/getBlockWithTxs';

@@ -1,6 +1,5 @@
-// method/contract/declareContract.ts
 import { Account, CompiledContract } from 'starknet';
-import { rpcProvider } from '../../starknetAgent';
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
 
 export type DeclareContractParams = {
   contract: CompiledContract;

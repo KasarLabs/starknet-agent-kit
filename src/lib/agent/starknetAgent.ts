@@ -4,7 +4,7 @@ import { IAgent } from '../../agents/interfaces/agent.interface';
 import type { AgentExecutor } from 'langchain/agents';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { RPC_URL } from '../constant';
+import { RPC_URL } from '../utils/constants/constant';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';

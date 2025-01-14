@@ -1,4 +1,4 @@
-import { RPC_URL } from 'src/lib/constant';
+import { RPC_URL } from 'src/lib/utils/constants/constant';
 import {
   Account,
   RpcProvider,
@@ -6,7 +6,7 @@ import {
   CallData,
   TransactionFinalityStatus,
 } from 'starknet';
-import { StarknetAgent } from '../../starknetAgent';
+import { StarknetAgent } from 'src/lib/agent/starknetAgent';
 import { AccountDetails } from 'src/lib/utils/types';
 
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
@@ -19,7 +19,7 @@ export type DeployOZAccountParams = {
 export const DeployOZAccount = async (params: DeployOZAccountParams) => {
   try {
     const agent = new StarknetAgent({
-      walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+      walletPrivateKey: process.env.PRIVATE_KEY,
       aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
       aiModel: process.env.AI_MODEL,
       aiProvider: process.env.AI_PROVIDER,

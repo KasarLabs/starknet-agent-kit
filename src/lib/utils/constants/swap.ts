@@ -22,4 +22,21 @@ export const ERC20_ABI = [
     outputs: [{ name: 'success', type: 'felt' }],
     stateMutability: 'external',
   },
+  {
+    name: 'balanceOf',
+    type: 'function',
+    inputs: [
+      {
+        name: 'account',
+        type: 'felt',
+      },
+    ],
+    outputs: [
+      {
+        name: 'balance',
+        type: 'Uint256',
+      },
+    ],
+    stateMutability: 'view',
+  },
 ];

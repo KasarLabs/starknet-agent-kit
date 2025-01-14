@@ -7,7 +7,10 @@ import {
 } from '@avnu/avnu-sdk';
 import { Account } from 'starknet';
 import { SwapParams, SwapResult } from 'src/lib/utils/types/swap';
-import { SLIPPAGE_PERCENTAGE, DEFAULT_QUOTE_SIZE } from 'src/lib/utils/constants/swap';
+import {
+  SLIPPAGE_PERCENTAGE,
+  DEFAULT_QUOTE_SIZE,
+} from 'src/lib/utils/constants/swap';
 import { TokenService } from './tokenService';
 import { ApprovalService } from './approvalService';
 import { StarknetAgent } from 'src/lib/agent/starknetAgent';
@@ -30,9 +33,11 @@ export class SwapService {
   }
 
   private safeStringify(obj: unknown): string {
-    return JSON.stringify(obj, (key, value) => 
-      typeof value === 'bigint' ? value.toString() : value
-    , 2);
+    return JSON.stringify(
+      obj,
+      (key, value) => (typeof value === 'bigint' ? value.toString() : value),
+      2
+    );
   }
 
   private extractSpenderAddress(quote: Quote): string | undefined {
@@ -47,7 +52,7 @@ export class SwapService {
   async executeSwapTransaction(params: SwapParams): Promise<SwapResult> {
     try {
       await this.initialize();
-      
+
       const account = new Account(
         this.agent.contractInteractor.provider,
         this.walletAddress,
@@ -86,14 +91,16 @@ export class SwapService {
         console.log('Route information:', {
           name: quote.routes[0].name,
           address: quote.routes[0].address,
-          routeInfo: this.safeStringify(quote.routes[0].routeInfo)
+          routeInfo: this.safeStringify(quote.routes[0].routeInfo),
         });
       }
 
       const spenderAddress = this.extractSpenderAddress(quote);
-      
+
       if (!spenderAddress) {
-        throw new Error(`Could not determine spender address from quote. Available properties: ${Object.keys(quote).join(', ')}`);
+        throw new Error(
+          `Could not determine spender address from quote. Available properties: ${Object.keys(quote).join(', ')}`
+        );
       }
 
       await this.approvalService.checkAndApproveToken(
@@ -107,7 +114,9 @@ export class SwapService {
         slippage: SLIPPAGE_PERCENTAGE,
       });
 
-      const { receipt, events } = await this.monitorSwapStatus(swapResult.transactionHash);
+      const { receipt, events } = await this.monitorSwapStatus(
+        swapResult.transactionHash
+      );
 
       return {
         status: 'success',
@@ -138,8 +147,9 @@ export class SwapService {
       txHash,
       (status) => console.log('Swap status:', status)
     );
-    
-    const events = await this.agent.transactionMonitor.getTransactionEvents(txHash);
+
+    const events =
+      await this.agent.transactionMonitor.getTransactionEvents(txHash);
     return { receipt, events };
   }
 }
@@ -160,7 +170,10 @@ export const createSwapService = (
   return new SwapService(agent, walletAddress, privateKey);
 };
 
-export const swapTokens = async (params: SwapParams, privateKey: string): Promise<string> => {
+export const swapTokens = async (
+  params: SwapParams,
+  privateKey: string
+): Promise<string> => {
   const swapService = createSwapService(privateKey, process.env.PUBLIC_ADDRESS);
   const result = await swapService.executeSwapTransaction(params);
   return JSON.stringify(result);

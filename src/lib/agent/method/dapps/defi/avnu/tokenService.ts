@@ -2,11 +2,11 @@ import { Token, fetchTokens } from '@avnu/avnu-sdk';
 
 export class TokenService {
   private tokenCache: Map<string, Token> = new Map();
-  
+
   async initializeTokens(): Promise<void> {
     try {
       const response = await fetchTokens();
-      response.content.forEach(token => {
+      response.content.forEach((token) => {
         this.tokenCache.set(token.symbol.toLowerCase(), token);
       });
     } catch (error) {
@@ -18,9 +18,12 @@ export class TokenService {
     return this.tokenCache.get(symbol.toLowerCase());
   }
 
-  validateTokenPair(sellSymbol: string, buySymbol: string): { 
-    sellToken: Token; 
-    buyToken: Token 
+  validateTokenPair(
+    sellSymbol: string,
+    buySymbol: string
+  ): {
+    sellToken: Token;
+    buyToken: Token;
   } {
     const sellToken = this.getToken(sellSymbol);
     const buyToken = this.getToken(buySymbol);
@@ -31,4 +34,3 @@ export class TokenService {
     return { sellToken, buyToken };
   }
 }
-  

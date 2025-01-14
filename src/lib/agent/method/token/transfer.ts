@@ -45,12 +45,12 @@ const formatTokenAmount = (amount: string, decimals: number): string => {
 export const transfer = async (params: transferParams): Promise<string> => {
   try {
     // Environment validation
-    const privateKey = process.env.STARKNET_PRIVATE_KEY;
+    const privateKey = process.env.PRIVATE_KEY;
     const accountAddress = process.env.PUBLIC_ADDRESS;
 
     if (!privateKey || !accountAddress) {
       throw new Error(
-        'STARKNET_PRIVATE_KEY or PUBLIC_ADDRESS not set in .env file'
+        'PRIVATE_KEY or PUBLIC_ADDRESS not set in .env file'
       );
     }
 

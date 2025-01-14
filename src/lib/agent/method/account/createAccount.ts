@@ -5,7 +5,7 @@ import { AccountDetails } from '../../../utils/types';
 export const CreateOZAccount = async () => {
   try {
     const accountManager = new StarknetAgent({
-      walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+      walletPrivateKey: process.env.PRIVATE_KEY,
       anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     }).accountManager;
 

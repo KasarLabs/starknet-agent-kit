@@ -12,7 +12,7 @@ export const envSchema = z.object({
   API_KEY: z.string().min(1, 'API key is missing'),
 
   // Starknet configuration
-  STARKNET_PRIVATE_KEY: z.string().min(1, 'Starknet private key is required'),
+  PRIVATE_KEY: z.string().min(1, 'Starknet private key is required'),
   PUBLIC_ADDRESS: z.string().min(1, 'Public address is required'),
   RPC_URL: z.string().url('Invalid RPC URL'),
 

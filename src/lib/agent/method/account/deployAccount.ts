@@ -20,7 +20,7 @@ export type DeployOZAccountParams = {
 export const DeployOZAccount = async (params: DeployOZAccountParams) => {
   try {
     const agent = new StarknetAgent({
-      walletPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+      walletPrivateKey: process.env.PRIVATE_KEY,
       anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     });
 

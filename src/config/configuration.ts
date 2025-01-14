@@ -31,7 +31,7 @@ export class ConfigurationService {
 
   get starknet() {
     return {
-      privateKey: this.config.STARKNET_PRIVATE_KEY,
+      privateKey: this.config.PRIVATE_KEY,
       publicAddress: this.config.PUBLIC_ADDRESS,
       rpcUrl: this.config.RPC_URL,
     };

@@ -1,4 +1,4 @@
-import { TransactionType, BigNumberish, RawArgs, RawArgsArray } from 'starknet';
+import { TransactionType, BigNumberish, RawArgs, RawArgsArray,ContractClass, Signature} from "starknet";
 
 /*Invocation Invoke Type */
 export type InvocationInvokePayload = {
@@ -12,7 +12,7 @@ export type Invocation_Invoke = {
   payload: InvocationInvokePayload;
 };
 
-/*Invocation DEPLOY_ACCOUNT Type */
+/*Invocation Deploy_Account Type */
 
 export type Invocation_Deploy_Account_Payload = {
   classHash: string;
@@ -24,4 +24,18 @@ export type Invocation_Deploy_Account_Payload = {
 export type Invocation_Deploy_Account = {
   type: TransactionType.DEPLOY_ACCOUNT;
   payload: Invocation_Deploy_Account_Payload;
+};
+
+/*Invocation Deploy Type */
+
+export type Invocation_Deploy_Payload = {
+  classHash: BigNumberish;
+  salt?: string;
+  unique?: boolean;
+  constructorCalldata?: RawArgs;
+};
+
+export type Invocation_Deploy = {
+  type: TransactionType.DEPLOY;
+  payload: Invocation_Deploy_Payload;
 };

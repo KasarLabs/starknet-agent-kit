@@ -1,6 +1,11 @@
 import { rpcProvider } from '../../starknetAgent';
 import { colorLog } from 'src/lib/utils/Output/console_log';
-import { Account, EstimateFee, constants,DeployAccountContractPayload} from 'starknet';
+import {
+  Account,
+  EstimateFee,
+  constants,
+  DeployAccountContractPayload,
+} from 'starknet';
 
 export type EstimateAccountDeployFeeParams = {
   accountAddress: string;
@@ -42,7 +47,7 @@ export const estimateAccountDeployFee = async (
     colorLog.info(estimatedFee.suggestedMaxFee.toString());
     colorLog.info(estimatedFee.overall_fee.toString());
     colorLog.info(estimatedFee.gas_price.toString());
-    colorLog.info(estimatedFee.gas_consumed.toString(),);
+    colorLog.info(estimatedFee.gas_consumed.toString());
     return JSON.stringify({
       status: 'success',
       maxFee: estimatedFee.suggestedMaxFee.toString(),

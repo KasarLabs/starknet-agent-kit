@@ -1,7 +1,19 @@
-import { Account, Call, TransactionType, DeployAccountContractPayload, UniversalDeployerContractPayload, CompiledContract, CairoAssembly} from 'starknet';
+import {
+  Account,
+  Call,
+  TransactionType,
+  DeployAccountContractPayload,
+  UniversalDeployerContractPayload,
+  CompiledContract,
+  CairoAssembly,
+} from 'starknet';
 import { rpcProvider } from '../../starknetAgent';
 import { colorLog } from 'src/lib/utils/Output/console_log';
-import { Invocation_Deploy_Account, Invocation_Invoke, Invocation_Deploy} from 'src/lib/utils/types/simulatetransaction';
+import {
+  Invocation_Deploy_Account,
+  Invocation_Invoke,
+  Invocation_Deploy,
+} from 'src/lib/utils/types/simulatetransaction';
 import { TransactionReponseFormat } from 'src/lib/utils/Output/output_simulatetransaction';
 
 export type simulateInvokeTransactionParams = {
@@ -51,12 +63,10 @@ export const simulateInvokeTransaction = async (
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
-    return JSON.stringify(
-      {
-        status: 'success',
-        transaction_output: transaction_output,
-      },
-    );
+    return JSON.stringify({
+      status: 'success',
+      transaction_output: transaction_output,
+    });
   } catch (error) {
     return JSON.stringify({
       status: 'failure',
@@ -116,12 +126,10 @@ export const simulateDeployAccountTransaction = async (
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
-    return JSON.stringify(
-      {
-        status: 'success',
-        transaction_output: transaction_output,
-      }
-    );
+    return JSON.stringify({
+      status: 'success',
+      transaction_output: transaction_output,
+    });
   } catch (error) {
     return JSON.stringify({
       status: 'failure',
@@ -176,12 +184,10 @@ export const simulateDeployTransaction = async (
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
     colorLog.info(JSON.stringify(transaction_output, null, 2));
-    return JSON.stringify(
-      {
-        status: 'success',
-        transaction_output: transaction_output,
-      }
-    );
+    return JSON.stringify({
+      status: 'success',
+      transaction_output: transaction_output,
+    });
   } catch (error) {
     return JSON.stringify({
       status: 'failure',

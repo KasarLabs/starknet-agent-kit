@@ -1,5 +1,5 @@
 import { GetStorageParams } from 'src/lib/agent/schema';
-import { RPC_URL } from 'src/lib/constant';
+import { RPC_URL } from 'src/lib/utils/constants/constant';
 import { RpcProvider } from 'starknet';
 
 // Initialize provider

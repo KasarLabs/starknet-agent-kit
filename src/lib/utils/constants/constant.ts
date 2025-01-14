@@ -44,14 +44,3 @@ const colors = {
   bgCyan: '\x1b[46m',
   bgWhite: '\x1b[47m',
 };
-
-const colorLog = {
-  error: (msg: string) => console.log(`${colors.red}${msg}${colors.reset}`),
-  success: (msg: string) => console.log(`${colors.green}${msg}${colors.reset}`),
-  warning: (msg: string) =>
-    console.log(`${colors.yellow}${msg}${colors.reset}`),
-  info: (msg: string) => console.log(`${colors.cyan}${msg}${colors.reset}`),
-  debug: (msg: string) => console.log(`${colors.magenta}${msg}${colors.reset}`),
-  custom: (msg: string, color: keyof typeof colors) =>
-    console.log(`${colors[color]}${msg}${colors.reset}`),
-};

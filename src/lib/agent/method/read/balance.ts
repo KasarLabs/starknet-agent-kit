@@ -1,4 +1,4 @@
-import { RPC_URL, tokenAddresses } from 'src/lib/constant';
+import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
 import { Account, Contract, RpcProvider } from 'starknet';
 
 // Initialize provider

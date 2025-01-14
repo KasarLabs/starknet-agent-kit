@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { INTERNAL_SERVER_ERROR } from '../constant';
+import { INTERNAL_SERVER_ERROR } from '../utils/constants/constant';
 
 @Catch()
 export class allLeftOverExceptionFilter implements ExceptionFilter {

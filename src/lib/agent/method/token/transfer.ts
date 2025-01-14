@@ -1,5 +1,5 @@
 import { Account, RpcProvider, uint256 } from 'starknet';
-import { RPC_URL, tokenAddresses } from 'src/lib/constant';
+import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
 
 // Types
 export interface transferParams {

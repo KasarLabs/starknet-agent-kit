@@ -1,4 +1,4 @@
-import { RPC_URL } from 'src/lib/constant';
+import { RPC_URL } from 'src/lib/utils/constants/constant';
 import { RpcProvider } from 'starknet';
 
 const provider = new RpcProvider({ nodeUrl: RPC_URL });

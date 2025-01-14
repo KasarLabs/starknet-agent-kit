@@ -1,4 +1,3 @@
-// swapService.ts
 import {
   executeSwap,
   fetchQuotes,
@@ -37,16 +36,8 @@ export class SwapService {
   }
 
   private extractSpenderAddress(quote: Quote): string | undefined {
-    console.log('Examining quote structure:', {
-      directProperties: Object.keys(quote),
-      hasRoutes: Boolean(quote.routes?.length),
-      firstRoute: quote.routes?.[0]
-    });
-
-    // Si nous avons des routes, le spender est l'adresse de la première route
     if (quote.routes?.length > 0) {
       const mainRoute = quote.routes[0];
-      console.log('Main route:', this.safeStringify(mainRoute));
       return mainRoute.address;
     }
 
@@ -83,15 +74,12 @@ export class SwapService {
         size: DEFAULT_QUOTE_SIZE,
       };
 
-      console.log('Fetching quotes with params:', this.safeStringify(quoteParams));
       const quotes = await fetchQuotes(quoteParams);
       if (!quotes?.length) {
         throw new Error('No quotes available for this swap');
       }
 
       const quote = quotes[0];
-      console.log('Raw quote received:', this.safeStringify(quote));
-      console.log('Quote properties:', Object.keys(quote));
 
       // Log route information
       if (quote.routes?.length > 0) {
@@ -103,7 +91,6 @@ export class SwapService {
       }
 
       const spenderAddress = this.extractSpenderAddress(quote);
-      console.log('Extracted spender address:', spenderAddress);
       
       if (!spenderAddress) {
         throw new Error(`Could not determine spender address from quote. Available properties: ${Object.keys(quote).join(', ')}`);

@@ -1,28 +1,6 @@
 import { Account, uint256, CallData } from 'starknet';
 import { StarknetAgent } from 'src/lib/agent/starknetAgent';
-
-const ERC20_ABI = [
-  {
-    name: 'allowance',
-    type: 'function',
-    inputs: [
-      { name: 'owner', type: 'felt' },
-      { name: 'spender', type: 'felt' },
-    ],
-    outputs: [{ name: 'remaining', type: 'Uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    name: 'approve',
-    type: 'function',
-    inputs: [
-      { name: 'spender', type: 'felt' },
-      { name: 'amount', type: 'Uint256' },
-    ],
-    outputs: [{ name: 'success', type: 'felt' }],
-    stateMutability: 'external',
-  },
-];
+import { ERC20_ABI } from 'src/lib/utils/constants/swap';
 
 export class ApprovalService {
   constructor(private agent: StarknetAgent) {}
@@ -40,28 +18,17 @@ export class ApprovalService {
     amount: string
   ): Promise<void> {
     try {
-      console.log('Checking approval for:', {
-        tokenAddress,
-        spenderAddress,
-        amount,
-        accountAddress: account.address
-      });
-
       const contract = this.agent.contractInteractor.createContract(
         ERC20_ABI,
         tokenAddress,
         account
       );
 
-      console.log('Checking current allowance...');
       const allowanceResult = await contract.call('allowance', [
         account.address,
         spenderAddress,
       ]);
-      
-      console.log('Current allowance result:', this.safeStringify(allowanceResult));
 
-      // Handle the allowance result safely
       let currentAllowance: bigint;
       if (Array.isArray(allowanceResult)) {
         currentAllowance = BigInt(allowanceResult[0].toString());
@@ -74,16 +41,8 @@ export class ApprovalService {
 
       const requiredAmount = BigInt(amount);
 
-      console.log('Allowance comparison:', {
-        currentAllowance: currentAllowance.toString(),
-        requiredAmount: requiredAmount.toString(),
-        needsApproval: currentAllowance < requiredAmount
-      });
-
       if (currentAllowance < requiredAmount) {
-        console.log('Insufficient allowance, approving...');
 
-        // Create properly formatted calldata
         const calldata = CallData.compile({
           spender: spenderAddress,
           amount: uint256.bnToUint256(amount)
@@ -91,7 +50,6 @@ export class ApprovalService {
 
         console.log('Calldata:', calldata);
 
-        // Execute the approve transaction
         const approveCall = await contract.invoke(
           'approve',
           calldata

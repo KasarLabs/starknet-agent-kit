@@ -3,6 +3,12 @@
 /node_modules
 .env
 
+# Client
+/client/.next
+/client/node_modules
+/client/dist
+/client/.env.local
+
 # Logs
 logs
 *.log

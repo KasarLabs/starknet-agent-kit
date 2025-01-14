@@ -1,5 +1,10 @@
 import { Account } from 'starknet';
-import { executeSwap, fetchQuotes, QuoteRequest, fetchTokens } from '@avnu/avnu-sdk';
+import {
+  executeSwap,
+  fetchQuotes,
+  QuoteRequest,
+  fetchTokens,
+} from '@avnu/avnu-sdk';
 import { tokenAddresses } from 'src/lib/constant';
 import { StarknetAgent } from '../../../../starknetAgent';
 

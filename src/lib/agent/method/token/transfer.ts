@@ -49,9 +49,7 @@ export const transfer = async (params: transferParams): Promise<string> => {
     const accountAddress = process.env.PUBLIC_ADDRESS;
 
     if (!privateKey || !accountAddress) {
-      throw new Error(
-        'PRIVATE_KEY or PUBLIC_ADDRESS not set in .env file'
-      );
+      throw new Error('PRIVATE_KEY or PUBLIC_ADDRESS not set in .env file');
     }
 
     // Provider and account setup

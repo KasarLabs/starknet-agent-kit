@@ -25,7 +25,6 @@ export const estimateAccountDeployFee = async (
         };
       }
     );
-
     const estimatedFee = await account.estimateAccountDeployFee(invocations[0]);
     return JSON.stringify({
       status: 'success',

@@ -1,6 +1,11 @@
 import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
 import { ERC20_ABI } from 'src/lib/utils/constants/swap';
-import { Account, Contract, RpcProvider } from 'starknet';
+import {
+  Account,
+  Contract,
+  RpcProvider,
+  validateAndParseAddress,
+} from 'starknet';
 import {
   GetOwnBalanceParams,
   GetBalanceParams,

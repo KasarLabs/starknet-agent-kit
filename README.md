@@ -1,8 +1,9 @@
-<h1 align="center">
- <img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50"><br>
- starknet-agent-kit (alpha)
-</h1>
-<p align="center">
+<div align="center">
+<img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50" alt="Starknet Agent Kit Logo">
+
+**starknet-agent-kit (alpha)**
+
+<p>
 <a href="https://www.npmjs.com/package/starknet-agent-kit">
 <img src="https://img.shields.io/npm/v/starknet-agent-kit.svg" alt="NPM Version" />
 </a>
@@ -16,6 +17,7 @@
 <img src="https://img.shields.io/node/v/starknet-agent-kit.svg" alt="Node Version" />
 </a>
 </p>
+</div>
 
 A toolkit for creating AI agents that can interact with the Starknet blockchain, available both as an NPM package and a ready-to-use NestJS server.
 

@@ -1,11 +1,9 @@
-# <div align="center">
+<div align="center">
+<img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50" alt="Starknet Agent Kit Logo">
 
-<img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50"><br>
-starknet-agent-kit (alpha)
+**starknet-agent-kit (alpha)**
 
-</div>
-
-<p align="center">
+<p>
 <a href="https://www.npmjs.com/package/starknet-agent-kit">
 <img src="https://img.shields.io/npm/v/starknet-agent-kit.svg" alt="NPM Version" />
 </a>
@@ -19,6 +17,7 @@ starknet-agent-kit (alpha)
 <img src="https://img.shields.io/node/v/starknet-agent-kit.svg" alt="Node Version" />
 </a>
 </p>
+</div>
 
 A toolkit for creating AI agents that can interact with the Starknet blockchain, available both as an NPM package and a ready-to-use NestJS server with a web interface.
 
@@ -58,10 +57,14 @@ git clone https://github.com/kasarlabs/starknet-agent-kit.git
 cd starknet-agent-kit
 ```
 
-2. Run the setup script:
-
+2. Install dependencies:
 ```bash
-./scripts/setup.sh
+pnpm install
+```
+
+3. Run the setup script:
+```bash
+pnpm run setup
 ```
 
 This will install all dependencies and build both the backend and frontend.
@@ -128,27 +131,33 @@ PORT=3001  # Optional, defaults to 3000
 #### Development Mode
 
 ```bash
+# Install dependencies first (if not done already)
+pnpm install
+
 # Start both frontend and backend
-./scripts/dev.sh
+pnpm run dev
 
 # Start only frontend
-./scripts/dev.sh --frontend-only
+pnpm run dev --frontend-only
 
 # Start only backend
-./scripts/dev.sh --backend-only
+pnpm run dev --backend-only
 ```
 
 #### Production Mode
 
 ```bash
+# Install dependencies first (if not done already)
+pnpm install
+
 # Start both frontend and backend
-./scripts/start.sh
+pnpm run start
 
 # Start only frontend
-./scripts/start.sh --frontend-only
+pnpm run start --frontend-only
 
 # Start only backend
-./scripts/start.sh --backend-only
+pnpm run start --backend-only
 ```
 
 ### Server API Endpoints

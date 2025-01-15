@@ -132,7 +132,7 @@ const callSchema = z.object({
 
 export const simulateInvokeTransactionSchema = z.object({
   accountAddress: z.string().describe('Account Address/public key'),
-  calls: z.array(callSchema),
+  payloads: z.array(callSchema),
 });
 
 /* For simulate Deploy Account Transaction*/

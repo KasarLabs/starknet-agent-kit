@@ -1,5 +1,4 @@
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-import { colorLog } from 'src/lib/utils/Output/console_log';
 import { Account, DeployAccountContractPayload } from 'starknet';
 
 import { EstimateAccountDeployFeeParams } from 'src/lib/utils/types/estimate';
@@ -16,15 +15,8 @@ export const estimateAccountDeployFee = async (
 
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
-    let index = 1;
     const invocations: DeployAccountContractPayload[] = params.payloads.map(
       (payload) => {
-        if (Array.isArray(payload.constructorCalldata)) {
-          payload.constructorCalldata.forEach((data, dataIndex) => {
-            console.log(`  Param ${dataIndex + 1}:`, data);
-          });
-        }
-
         return {
           classHash: payload.classHash,
           constructorCalldata: payload.constructorCalldata ?? [],
@@ -35,11 +27,6 @@ export const estimateAccountDeployFee = async (
     );
 
     const estimatedFee = await account.estimateAccountDeployFee(invocations[0]);
-    colorLog.success('Simulation is succesfull !');
-    colorLog.info(estimatedFee.suggestedMaxFee.toString());
-    colorLog.info(estimatedFee.overall_fee.toString());
-    colorLog.info(estimatedFee.gas_price.toString());
-    colorLog.info(estimatedFee.gas_consumed.toString());
     return JSON.stringify({
       status: 'success',
       maxFee: estimatedFee.suggestedMaxFee.toString(),

@@ -1,6 +1,6 @@
 import { Account } from 'starknet';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-import { DeclareContractParams } from '../../schema';
+import { DeclareContractParams } from 'src/lib/utils/types/contract';
 
 export const declareContract = async (
   params: DeclareContractParams,

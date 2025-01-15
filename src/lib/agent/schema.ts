@@ -254,15 +254,3 @@ export const verifyMessageSchema = z.object({
     .describe('The signature as array of r and s values'),
   publicKey: z.string().describe('The public key to verify against'),
 });
-
-// Add type exports for the schemas
-export type DeclareContractParams = z.infer<typeof declareContractSchema>;
-export type EstimateAccountDeployFeeParams = z.infer<
-  typeof estimateAccountDeployFeeSchema
->;
-export type SignMessageParams = z.infer<typeof signMessageSchema>;
-export type VerifyMessageParams = z.infer<typeof verifyMessageSchema>;
-export type SimulateDeclareParams = z.infer<
-  typeof simulateDeclareTransactionSchema
->;
-export type DeclareParams = z.infer<typeof simulateDeclareTransactionSchema>;

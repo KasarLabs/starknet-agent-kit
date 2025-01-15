@@ -1,5 +1,3 @@
-import { rpcProvider } from '../../starknetAgent';
-
 export const getAddress = async () => {
   try {
     const accountAddress = process.env.PUBLIC_ADDRESS;

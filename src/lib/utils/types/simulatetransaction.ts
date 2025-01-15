@@ -2,9 +2,11 @@ import {
   TransactionType,
   BigNumberish,
   RawArgs,
-  RawArgsArray,
-  ContractClass,
-  Signature,
+  CompiledContract,
+  CairoAssembly,
+  DeployAccountContractPayload,
+  UniversalDeployerContractPayload,
+  Call,
 } from 'starknet';
 
 /*Invocation Invoke Type */
@@ -17,6 +19,11 @@ export type InvocationInvokePayload = {
 export type Invocation_Invoke = {
   type: TransactionType.INVOKE;
   payload: InvocationInvokePayload;
+};
+
+export type simulateInvokeTransactionParams = {
+  accountAddress: string;
+  payloads: Call[];
 };
 
 /*Invocation Deploy_Account Type */
@@ -33,6 +40,11 @@ export type Invocation_Deploy_Account = {
   payload: Invocation_Deploy_Account_Payload;
 };
 
+export type simulateDeployTransactionAccountParams = {
+  accountAddress: string;
+  payloads: DeployAccountContractPayload[];
+};
+
 /*Invocation Deploy Type */
 
 export type Invocation_Deploy_Payload = {
@@ -45,4 +57,19 @@ export type Invocation_Deploy_Payload = {
 export type Invocation_Deploy = {
   type: TransactionType.DEPLOY;
   payload: Invocation_Deploy_Payload;
+};
+
+export type simulateDeployTransactionParams = {
+  accountAddress: string;
+  payloads: UniversalDeployerContractPayload[];
+};
+
+/* Invocation Declare Type */
+
+export type simulateDeclareTransactionAccountParams = {
+  accountAddress: string;
+  contract: string | CompiledContract;
+  classHash?: string;
+  casm?: CairoAssembly;
+  compiledClassHash?: string;
 };

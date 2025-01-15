@@ -1,12 +1,11 @@
 import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
 import { ERC20_ABI } from 'src/lib/utils/constants/swap';
 import { Account, Contract, RpcProvider } from 'starknet';
-
+import {
+  GetOwnBalanceParams,
+  GetBalanceParams,
+} from 'src/lib/utils/types/balance';
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
-
-export type GetOwnBalanceParams = {
-  symbol: string;
-};
 
 const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
@@ -35,7 +34,6 @@ export const getOwnBalance = async (
       throw new Error('Wallet address not configured');
     }
 
-    // Account Instance
     const account = new Account(provider, walletAddress, privateKey);
 
     const tokenAddress = tokenAddresses[params.symbol];
@@ -61,11 +59,6 @@ export const getOwnBalance = async (
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
-};
-
-export type GetBalanceParams = {
-  walletAddress: string;
-  assetSymbol: string;
 };
 
 export const getBalance = async (params: GetBalanceParams) => {

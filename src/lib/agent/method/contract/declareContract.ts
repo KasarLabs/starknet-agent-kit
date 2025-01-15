@@ -1,11 +1,6 @@
-import { Account, CompiledContract } from 'starknet';
+import { Account } from 'starknet';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-
-export type DeclareContractParams = {
-  contract: CompiledContract;
-  classHash?: string;
-  compiledClassHash?: string;
-};
+import { DeclareContractParams } from '../../schema';
 
 export const declareContract = async (
   params: DeclareContractParams,

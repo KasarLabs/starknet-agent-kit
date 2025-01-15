@@ -1,25 +1,16 @@
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { Account, Call, TransactionType } from 'starknet';
 import {
-  Account,
-  Call,
-  TransactionType,
-  DeployAccountContractPayload,
-  UniversalDeployerContractPayload,
-  CompiledContract,
-  CairoAssembly,
-} from 'starknet';
-import { rpcProvider } from '../../starknetAgent';
-import { colorLog } from 'src/lib/utils/Output/console_log';
-import {
-  Invocation_Deploy_Account,
   Invocation_Invoke,
+  Invocation_Deploy_Account,
+  simulateDeployTransactionAccountParams,
+  simulateInvokeTransactionParams,
+  simulateDeployTransactionParams,
   Invocation_Deploy,
+  simulateDeclareTransactionAccountParams,
 } from 'src/lib/utils/types/simulatetransaction';
 import { TransactionReponseFormat } from 'src/lib/utils/Output/output_simulatetransaction';
-
-export type simulateInvokeTransactionParams = {
-  accountAddress: string;
-  calls: Call[];
-};
+import { colorLog } from 'src/lib/utils/Output/console_log';
 
 export const simulateInvokeTransaction = async (
   params: simulateInvokeTransactionParams,
@@ -30,31 +21,28 @@ export const simulateInvokeTransaction = async (
     if (!accountAddress) {
       throw new Error('Account address not configured');
     }
-
+    1;
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
     let index = 1;
-    const invocations: Invocation_Invoke[] = params.calls.map((call, index) => {
-      // colorLog.info(`\n--- Call ${index + 1} ---`);
-      // colorLog.info(`Contract Address: ${call.contractAddress}`);
-      // colorLog.info(`Entrypoint: ${call.entrypoint}`);
-      // colorLog.info('Calldata:');
+    const invocations: Invocation_Invoke[] = params.payloads.map(
+      (payload, index) => {
+        if (Array.isArray(payload.calldata)) {
+          payload.calldata.forEach((data: any, dataIndex: number) => {
+            colorLog.info(`  Param ${dataIndex + 1}: ${data}`);
+          });
+        }
 
-      if (Array.isArray(call.calldata)) {
-        call.calldata.forEach((data: any, dataIndex: number) => {
-          colorLog.info(`  Param ${dataIndex + 1}: ${data}`);
-        });
+        return {
+          type: TransactionType.INVOKE,
+          payload: {
+            contractAddress: payload.contractAddress,
+            entrypoint: payload.entrypoint,
+            calldata: payload.calldata as string[],
+          },
+        };
       }
-
-      return {
-        type: TransactionType.INVOKE,
-        payload: {
-          contractAddress: call.contractAddress,
-          entrypoint: call.entrypoint,
-          calldata: call.calldata as string[],
-        },
-      };
-    });
+    );
 
     const simulate_transaction = await account.simulateTransaction(invocations);
 
@@ -73,11 +61,6 @@ export const simulateInvokeTransaction = async (
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
-};
-
-export type simulateDeployTransactionAccountParams = {
-  accountAddress: string;
-  payloads: DeployAccountContractPayload[];
 };
 
 export const simulateDeployAccountTransaction = async (
@@ -138,11 +121,6 @@ export const simulateDeployAccountTransaction = async (
   }
 };
 
-export type simulateDeployTransactionParams = {
-  accountAddress: string;
-  payloads: UniversalDeployerContractPayload[];
-};
-
 export const simulateDeployTransaction = async (
   params: simulateDeployTransactionParams,
   privateKey: string
@@ -196,16 +174,8 @@ export const simulateDeployTransaction = async (
   }
 };
 
-type DeclareParams = {
-  accountAddress: string;
-  contract: string | CompiledContract;
-  classHash?: string;
-  casm?: CairoAssembly;
-  compiledClassHash?: string;
-};
-
 export const simulateDeclareTransaction = async (
-  params: DeclareParams,
+  params: simulateDeclareTransactionAccountParams,
   privateKey: string
 ) => {
   try {

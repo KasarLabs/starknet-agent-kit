@@ -32,11 +32,9 @@ export const CreateArgentAccount = async () => {
     const argentXaccountClassHash =
       '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003';
 
-    // Generate public and private key pair.
     const privateKeyAX = stark.randomAddress();
     const starkKeyPubAX = ec.starkCurve.getStarkKey(privateKeyAX);
 
-    // Calculate future address of the ArgentX account
     const AXConstructorCallData = CallData.compile({
       owner: starkKeyPubAX,
       guardian: '0x0',

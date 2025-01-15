@@ -1,16 +1,8 @@
-import { rpcProvider } from '../../starknetAgent';
+import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { colorLog } from 'src/lib/utils/Output/console_log';
-import {
-  Account,
-  EstimateFee,
-  constants,
-  DeployAccountContractPayload,
-} from 'starknet';
+import { Account, DeployAccountContractPayload } from 'starknet';
 
-export type EstimateAccountDeployFeeParams = {
-  accountAddress: string;
-  payloads: DeployAccountContractPayload[];
-};
+import { EstimateAccountDeployFeeParams } from 'src/lib/utils/types/estimate';
 
 export const estimateAccountDeployFee = async (
   params: EstimateAccountDeployFeeParams,

@@ -25,12 +25,6 @@ export const simulateInvokeTransaction = async (
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
     const invocations: Invocation_Invoke[] = params.payloads.map((payload) => {
-      if (Array.isArray(payload.calldata)) {
-        payload.calldata.forEach((data: any, dataIndex: number) => {
-          console.log(`  Param ${dataIndex + 1}: ${data}`);
-        });
-      }
-
       return {
         type: TransactionType.INVOKE,
         payload: {
@@ -43,11 +37,8 @@ export const simulateInvokeTransaction = async (
 
     const simulate_transaction = await account.simulateTransaction(invocations);
 
-    console.log('Simulation is succesfull !');
-    console.log('Simulation response:');
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
-    console.log(JSON.stringify(transaction_output, null, 2));
     return JSON.stringify({
       status: 'success',
       transaction_output: transaction_output,
@@ -74,12 +65,6 @@ export const simulateDeployAccountTransaction = async (
 
     const invocations: Invocation_Deploy_Account[] = params.payloads.map(
       (payload) => {
-        if (Array.isArray(payload.constructorCalldata)) {
-          payload.constructorCalldata.forEach((data, dataIndex) => {
-            console.log(`  Param ${dataIndex + 1}:`, data);
-          });
-        }
-
         return {
           type: TransactionType.DEPLOY_ACCOUNT,
           payload: {
@@ -98,13 +83,8 @@ export const simulateDeployAccountTransaction = async (
         nonce: DEFAULT_NONCE,
       }
     );
-
-    console.log('Simulation is succesfull !');
-
-    console.log('Simulation response:');
     const transaction_output = TransactionReponseFormat(simulate_transaction);
 
-    console.log(JSON.stringify(transaction_output, null, 2));
     return JSON.stringify({
       status: 'success',
       transaction_output: transaction_output,
@@ -130,12 +110,6 @@ export const simulateDeployTransaction = async (
     const account = new Account(rpcProvider, accountAddress, privateKey);
 
     const invocations: Invocation_Deploy[] = params.payloads.map((payload) => {
-      if (Array.isArray(payload.constructorCalldata)) {
-        payload.constructorCalldata.forEach((data, dataIndex) => {
-          console.log(`  Param ${dataIndex + 1}:`, data);
-        });
-      }
-
       return {
         type: TransactionType.DEPLOY,
         payload: {

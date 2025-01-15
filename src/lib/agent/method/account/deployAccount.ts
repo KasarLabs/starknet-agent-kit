@@ -1,6 +1,6 @@
 import { RPC_URL } from 'src/lib/utils/constants/constant';
 import {
-  ARGENTXCLASSHASH,
+  argentx_classhash,
   DEFAULT_GUARDIAN,
 } from 'src/lib/utils/constants/contract';
 import {
@@ -70,7 +70,7 @@ export const DeployOZAccount = async (params: DeployOZAccountParams) => {
 
 export const DeployArgentAccount = async (params: DeployArgentParams) => {
   try {
-    const argentXaccountClassHash = ARGENTXCLASSHASH;
+    const argentXaccountClassHash = argentx_classhash;
 
     const constructorCalldata = CallData.compile({
       owner: params.publicKeyAX,

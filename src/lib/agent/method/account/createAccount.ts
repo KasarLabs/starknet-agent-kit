@@ -1,7 +1,7 @@
 import { ec, stark, hash, CallData } from 'starknet';
 import { StarknetAgent } from 'src/lib/agent/starknetAgent';
 import {
-  ARGENTXCLASSHASH,
+  argentx_classhash,
   DEFAULT_GUARDIAN,
 } from 'src/lib/utils/constants/contract';
 
@@ -33,7 +33,7 @@ export const CreateOZAccount = async () => {
 
 export const CreateArgentAccount = async () => {
   try {
-    const argentXaccountClassHash = ARGENTXCLASSHASH;
+    const argentXaccountClassHash = argentx_classhash;
 
     const privateKeyAX = stark.randomAddress();
     const starkKeyPubAX = ec.starkCurve.getStarkKey(privateKeyAX);

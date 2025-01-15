@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -14,93 +14,13 @@ interface AgentResponse {
   isTyping: boolean;
 }
 
-const formatHash = (hash: string) => {
-  if (hash.length > 16) {
-    return `${hash.slice(0, 8)}...${hash.slice(-8)}`;
-  }
-  return hash;
-};
-
-const formatStarkscanUrl = (url: string) => {
-  try {
-    const urlObj = new URL(url);
-    if (urlObj.hostname === 'starkscan.com' && urlObj.pathname.startsWith('/tx/')) {
-      const hash = urlObj.pathname.split('/tx/')[1];
-      if (hash && hash.length > 16) {
-        return {
-          displayText: `Starkscan: ${hash.slice(0, 6)}...${hash.slice(-6)}`,
-          fullUrl: url
-        };
-      }
-    }
-  } catch (e) {
-    // Invalid URL, return as-is
-  }
-  return { displayText: url, fullUrl: url };
-};
-
-const TextWithLinks = ({ text }: { text: string }) => {
-  // Regular expression for matching URLs (including line breaks)
-  const urlRegex = /(https?:\/\/\S+)/g;
-  // Regular expression for matching hex hashes
-  const hashRegex = /\b([a-fA-F0-9]{32,})\b/g;
-
-  const parts = [];
-  let lastIndex = 0;
-  let match;
-
-  // Combined regex to match both URLs and hashes
-  const combinedRegex = new RegExp(`${urlRegex.source}|${hashRegex.source}`, 'g');
-
-  while ((match = combinedRegex.exec(text)) !== null) {
-    // Add text before the match
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
-    }
-
-    const matchedText = match[0];
-    
-    // Check if it's a URL
-    if (matchedText.startsWith('http')) {
-      const { displayText, fullUrl } = formatStarkscanUrl(matchedText);
-      parts.push(
-        <a
-          key={match.index}
-          href={fullUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-400 hover:text-blue-300 underline"
-        >
-          {displayText}
-        </a>
-      );
-    } 
-    // Otherwise it's a hash
-    else {
-      parts.push(
-        <span key={match.index} className="font-mono">
-          {formatHash(matchedText)}
-        </span>
-      );
-    }
-
-    lastIndex = match.index + matchedText.length;
-  }
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push(text.slice(lastIndex));
-  }
-
-  return <>{parts}</>;
-};
-
 const StarknetAgent = () => {
   const [input, setInput] = useState("");
   const [currentResponse, setCurrentResponse] = useState<AgentResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
 
+  // When in loading state for >5s, we show "Processing..."
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (isLoading) {
@@ -117,20 +37,125 @@ const StarknetAgent = () => {
     };
   }, [isLoading]);
 
+  /**
+   * Shorten a full StarkNet/Ethereum transaction hash (0x + 64 hex chars)
+   * e.g. "0x0123abcd...ffff" => "0x01...fff"
+   */
+  const shortenTxHash = (hash: string) => {
+    // "0x" (2 chars) + 2 + "..." + 3 = total ~10 visible chars
+    return `0x${hash.slice(2, 4)}...${hash.slice(-3)}`;
+  };
+
+  /**
+   * Shorten any URL, e.g. https://example.com/very/long/path => example.com/...
+   */
+  const shortenUrl = (url: string) => {
+    try {
+      const { hostname } = new URL(url);
+      return `${hostname}/...`;
+    } catch {
+      // Fallback: if parsing fails, just return the original (or do something else)
+      return url;
+    }
+  };
+
+  /**
+   * Convert transaction hashes and links into shortened clickable text.
+   *
+   * - If it's a direct hash like "0xabc123...." => link to https://starkscan.co/tx/{hash}
+   * - If it's already a Starkscan link => use that link directly
+   * - If it's any other URL => make it clickable + shorten
+   */
+  const parseAndDisplayWithShortLinks = (text: string) => {
+    // Matches:
+    // 1) https://starkscan.co/tx/0x + 64 hex chars
+    // 2) 0x + 64 hex chars (standalone hash)
+    // 3) any http(s):// link
+    const regex = /((?:https?:\/\/starkscan\.co\/tx\/0x[a-fA-F0-9]{64})|0x[a-fA-F0-9]{64}|https?:\/\/[^\s]+)/g;
+    const parts: Array<string | React.ReactElement> = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      const found = match[0];
+      const start = match.index;
+      const end = regex.lastIndex;
+
+      // Push the text before this match
+      parts.push(text.slice(lastIndex, start));
+
+      // Determine how to create the link
+      if (found.startsWith("0x") && found.length === 66) {
+        // It's a standalone hash (0x + 64 hex chars).
+        // Link to starkscan using the full hash:
+        const shortened = shortenTxHash(found);
+        parts.push(
+          <a
+            key={start}
+            href={`https://starkscan.co/tx/${found}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-500 underline"
+          >
+            {shortened}
+          </a>
+        );
+      } else if (found.includes("starkscan.co/tx/0x")) {
+        // It's already a Starkscan link
+        // Optionally parse out the raw hash for the display:
+        const rawHash = found.split("/tx/")[1] ?? "";
+        const shortened = rawHash.startsWith("0x") && rawHash.length === 66
+          ? shortenTxHash(rawHash)
+          : shortenUrl(found);
+        parts.push(
+          <a
+            key={start}
+            href={found}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-500 underline"
+          >
+            {shortened}
+          </a>
+        );
+      } else if (found.startsWith("http")) {
+        // Generic link: just shorten for display
+        parts.push(
+          <a
+            key={start}
+            href={found}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-500 underline"
+          >
+            {shortenUrl(found)}
+          </a>
+        );
+      } else {
+        // Fallback — in case something is matched unexpectedly
+        parts.push(found);
+      }
+
+      lastIndex = end;
+    }
+
+    // Push any remaining text after the last match
+    parts.push(text.slice(lastIndex));
+
+    return parts;
+  };
+
+  /**
+   * Strip away known extraneous OpenAI formatting from the JSON response.
+   */
   const formatResponse = (jsonString: string) => {
     try {
       const data = JSON.parse(jsonString);
-      if (data.output?.[0]?.text) {
-        // Remove JSON syntax and clean up the text
-        let cleanText = data.output[0].text
-          .replace(/\{"input":.*?"output":\[.*?"text":"|"\]\}$/g, '') // Remove JSON wrapper
-          .replace(/\\n/g, '\n') // Convert \n to actual newlines
-          .replace(/\\"/g, '"') // Convert escaped quotes
-          .replace(/"\}\}\]?\}?$/, '') // Remove trailing brackets and braces
-          .replace(/\}\}\]?\}?$/, ''); // Remove unquoted trailing brackets and braces
-        
-        // Clean up any remaining JSON artifacts at the end
-        cleanText = cleanText.replace(/["\]}]+$/, '');
+      if (data.data?.output?.[0]?.text) {
+        const cleanText = data.data.output[0].text
+          .replace(/\{"input":.*?"output":\[.*?"text":"|"\]\}$/g, "")
+          .replace(/\\n/g, "\n")
+          .replace(/\\"/g, "\"");
         return cleanText;
       }
       return jsonString;
@@ -139,6 +164,9 @@ const StarknetAgent = () => {
     }
   };
 
+  /**
+   * Simulate typing in the UI.
+   */
   const typeResponse = (response: AgentResponse) => {
     const text = response.text;
     let currentIndex = 0;
@@ -182,9 +210,7 @@ const StarknetAgent = () => {
           "Content-Type": "application/json",
           "x-api-key": "test",
         },
-        body: JSON.stringify({
-          request: input,
-        }),
+        body: JSON.stringify({ request: input }),
       });
 
       if (!response.ok) {
@@ -194,13 +220,13 @@ const StarknetAgent = () => {
       const data = await response.json();
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
-
     } catch (error) {
       console.error("Error details:", error);
-      const errorMessage = process.env.NODE_ENV === 'development' 
-        ? `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
-        : "Sorry, there was an error processing your request. Please try again.";
-      
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? `Error: ${error instanceof Error ? error.message : "Unknown error"}`
+          : "Sorry, there was an error processing your request. Please try again.";
+
       typeResponse({
         ...newResponse,
         text: errorMessage,
@@ -210,7 +236,7 @@ const StarknetAgent = () => {
       setInput("");
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-50 flex items-center justify-center px-4">
       <div className="w-full max-w-lg -mt-32 flex flex-col gap-4 md:gap-8">
@@ -256,7 +282,10 @@ const StarknetAgent = () => {
             {currentResponse && (
               <Alert className="bg-neutral-800 border-neutral-700">
                 <AlertDescription className="text-xs md:text-sm text-neutral-200 font-mono whitespace-pre-wrap break-words leading-relaxed">
-                  <TextWithLinks text={showLoadingMessage ? "Processing..." : currentResponse.text} />
+                  {showLoadingMessage
+                    ? "Processing..."
+                    : parseAndDisplayWithShortLinks(currentResponse.text)
+                  }
                   {(currentResponse.isTyping || isLoading) && (
                     <span className="animate-pulse ml-1">▋</span>
                   )}

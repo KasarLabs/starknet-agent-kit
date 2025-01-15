@@ -1,7 +1,8 @@
-<h1 align="center">
+# <div align="center">
  <img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50"><br>
  starknet-agent-kit (alpha)
-</h1>
+</div>
+
 <p align="center">
 <a href="https://www.npmjs.com/package/starknet-agent-kit">
 <img src="https://img.shields.io/npm/v/starknet-agent-kit.svg" alt="NPM Version" />
@@ -17,7 +18,7 @@
 </a>
 </p>
 
-A toolkit for creating AI agents that can interact with the Starknet blockchain, available both as an NPM package and a ready-to-use NestJS server.
+A toolkit for creating AI agents that can interact with the Starknet blockchain, available both as an NPM package and a ready-to-use NestJS server with a web interface.
 
 > ⚠️ **Warning**: This kit is currently under development. Use it at your own risk! Please be aware that sharing sensitive information such as private keys, personal data, or confidential details with AI models or tools carries inherent security risks. The contributors of this repository are **not responsible** for any loss, damage, or issues arising from its use.
 
@@ -29,8 +30,12 @@ A toolkit for creating AI agents that can interact with the Starknet blockchain,
 - DeFi operations (Swap on Avnu)
 - dApp interactions (Create a .stark domain)
 - All RPC read methods supported (getBlockNumber, getStorageAt, etc.)
+- Web interface for easy interaction
+- Full API server implementation
 
 ## Installation
+
+### As an NPM Package
 
 ```bash
 npm install starknet-agent-kit
@@ -41,6 +46,21 @@ Required peer dependencies:
 ```bash
 npm install @nestjs/common @nestjs/core @nestjs/platform-fastify starknet @langchain/anthropic
 ```
+
+### Running the Full Stack (Server + Web Interface)
+
+1. Clone the repository:
+```bash
+git clone https://github.com/kasarlabs/starknet-agent-kit.git
+cd starknet-agent-kit
+```
+
+2. Run the setup script:
+```bash
+./scripts/setup.sh
+```
+
+This will install all dependencies and build both the backend and frontend.
 
 ## Prerequisites
 
@@ -80,24 +100,10 @@ import { getBalance, transfer, swapTokens } from 'starknet-agent-kit';
 const balance = await getBalance(address);
 ```
 
-## Running as a Server
+### Running the Full Stack
 
-The package includes a ready-to-use NestJS server implementation.
+#### Configuration
 
-### Local Development
-
-1. Clone the repository:
-```bash
-git clone https://github.com/kasarlabs/starknet-agent-kit.git
-cd starknet-agent-kit
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Configure environment variables:
 Create a `.env` file:
 ```env
 # Required for both package and server
@@ -113,9 +119,30 @@ API_KEY=""  # Security key for API endpoints
 PORT=3001  # Optional, defaults to 3000
 ```
 
-4. Start the development server:
+#### Development Mode
+
 ```bash
-npm run start:dev
+# Start both frontend and backend
+./scripts/dev.sh
+
+# Start only frontend
+./scripts/dev.sh --frontend-only
+
+# Start only backend
+./scripts/dev.sh --backend-only
+```
+
+#### Production Mode
+
+```bash
+# Start both frontend and backend
+./scripts/start.sh
+
+# Start only frontend
+./scripts/start.sh --frontend-only
+
+# Start only backend
+./scripts/start.sh --backend-only
 ```
 
 ### Server API Endpoints
@@ -134,10 +161,13 @@ curl --location 'localhost:3001/api/agent/request' \
 
 ```bash
 # Run unit tests
-npm run test
+pnpm test
+
+# Run frontend tests
+pnpm test:frontend
 
 # Run end-to-end tests
-npm run test:e2e
+pnpm test:e2e
 ```
 
 ## Contributing

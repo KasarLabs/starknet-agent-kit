@@ -1,4 +1,4 @@
-import StarknetAgent from "@/components/StarknetAgent";
+import StarknetAgent from '@/components/StarknetAgent';
 
 export default function Home() {
   return (

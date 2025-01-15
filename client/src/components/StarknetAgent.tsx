@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { Send, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { Send, Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface AgentResponse {
   text: string;
@@ -15,8 +15,10 @@ interface AgentResponse {
 }
 
 const StarknetAgent = () => {
-  const [input, setInput] = useState("");
-  const [currentResponse, setCurrentResponse] = useState<AgentResponse | null>(null);
+  const [input, setInput] = useState('');
+  const [currentResponse, setCurrentResponse] = useState<AgentResponse | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
 
@@ -71,7 +73,8 @@ const StarknetAgent = () => {
     // 1) https://starkscan.co/tx/0x + 64 hex chars
     // 2) 0x + 64 hex chars (standalone hash)
     // 3) any http(s):// link
-    const regex = /((?:https?:\/\/starkscan\.co\/tx\/0x[a-fA-F0-9]{64})|0x[a-fA-F0-9]{64}|https?:\/\/[^\s]+)/g;
+    const regex =
+      /((?:https?:\/\/starkscan\.co\/tx\/0x[a-fA-F0-9]{64})|0x[a-fA-F0-9]{64}|https?:\/\/[^\s]+)/g;
     const parts: Array<string | React.ReactElement> = [];
     let lastIndex = 0;
     let match;
@@ -85,7 +88,7 @@ const StarknetAgent = () => {
       parts.push(text.slice(lastIndex, start));
 
       // Determine how to create the link
-      if (found.startsWith("0x") && found.length === 66) {
+      if (found.startsWith('0x') && found.length === 66) {
         // It's a standalone hash (0x + 64 hex chars).
         // Link to starkscan using the full hash:
         const shortened = shortenTxHash(found);
@@ -100,13 +103,14 @@ const StarknetAgent = () => {
             {shortened}
           </a>
         );
-      } else if (found.includes("starkscan.co/tx/0x")) {
+      } else if (found.includes('starkscan.co/tx/0x')) {
         // It's already a Starkscan link
         // Optionally parse out the raw hash for the display:
-        const rawHash = found.split("/tx/")[1] ?? "";
-        const shortened = rawHash.startsWith("0x") && rawHash.length === 66
-          ? shortenTxHash(rawHash)
-          : shortenUrl(found);
+        const rawHash = found.split('/tx/')[1] ?? '';
+        const shortened =
+          rawHash.startsWith('0x') && rawHash.length === 66
+            ? shortenTxHash(rawHash)
+            : shortenUrl(found);
         parts.push(
           <a
             key={start}
@@ -118,7 +122,7 @@ const StarknetAgent = () => {
             {shortened}
           </a>
         );
-      } else if (found.startsWith("http")) {
+      } else if (found.startsWith('http')) {
         // Generic link: just shorten for display
         parts.push(
           <a
@@ -153,9 +157,9 @@ const StarknetAgent = () => {
       const data = JSON.parse(jsonString);
       if (data.data?.output?.[0]?.text) {
         const cleanText = data.data.output[0].text
-          .replace(/\{"input":.*?"output":\[.*?"text":"|"\]\}$/g, "")
-          .replace(/\\n/g, "\n")
-          .replace(/\\"/g, "\"");
+          .replace(/\{"input":.*?"output":\[.*?"text":"|"\]\}$/g, '')
+          .replace(/\\n/g, '\n')
+          .replace(/\\"/g, '"');
         return cleanText;
       }
       return jsonString;
@@ -196,7 +200,7 @@ const StarknetAgent = () => {
     setShowLoadingMessage(false);
 
     const newResponse = {
-      text: "",
+      text: '',
       timestamp: Date.now(),
       isTyping: true,
     };
@@ -204,11 +208,11 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
-      const response = await fetch("/api/agent/request", {
-        method: "POST",
+      const response = await fetch('/api/agent/request', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-api-key": "test",
+          'Content-Type': 'application/json',
+          'x-api-key': 'test',
         },
         body: JSON.stringify({ request: input }),
       });
@@ -221,11 +225,11 @@ const StarknetAgent = () => {
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
     } catch (error) {
-      console.error("Error details:", error);
+      console.error('Error details:', error);
       const errorMessage =
-        process.env.NODE_ENV === "development"
-          ? `Error: ${error instanceof Error ? error.message : "Unknown error"}`
-          : "Sorry, there was an error processing your request. Please try again.";
+        process.env.NODE_ENV === 'development'
+          ? `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+          : 'Sorry, there was an error processing your request. Please try again.';
 
       typeResponse({
         ...newResponse,
@@ -233,7 +237,7 @@ const StarknetAgent = () => {
       });
     } finally {
       setIsLoading(false);
-      setInput("");
+      setInput('');
     }
   };
 
@@ -283,9 +287,8 @@ const StarknetAgent = () => {
               <Alert className="bg-neutral-800 border-neutral-700">
                 <AlertDescription className="text-xs md:text-sm text-neutral-200 font-mono whitespace-pre-wrap break-words leading-relaxed">
                   {showLoadingMessage
-                    ? "Processing..."
-                    : parseAndDisplayWithShortLinks(currentResponse.text)
-                  }
+                    ? 'Processing...'
+                    : parseAndDisplayWithShortLinks(currentResponse.text)}
                   {(currentResponse.isTyping || isLoading) && (
                     <span className="animate-pulse ml-1">▋</span>
                   )}

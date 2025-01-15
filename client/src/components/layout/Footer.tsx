@@ -1,7 +1,7 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { BsTelegram, BsTwitter, BsGithub } from "react-icons/bs";
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { BsTelegram, BsTwitter, BsGithub } from 'react-icons/bs';
 
 const Footer = () => {
   return (

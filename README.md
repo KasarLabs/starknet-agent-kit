@@ -1,6 +1,8 @@
 # <div align="center">
- <img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50"><br>
- starknet-agent-kit (alpha)
+
+<img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50"><br>
+starknet-agent-kit (alpha)
+
 </div>
 
 <p align="center">
@@ -50,12 +52,14 @@ npm install @nestjs/common @nestjs/core @nestjs/platform-fastify starknet @langc
 ### Running the Full Stack (Server + Web Interface)
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/kasarlabs/starknet-agent-kit.git
 cd starknet-agent-kit
 ```
 
 2. Run the setup script:
+
 ```bash
 ./scripts/setup.sh
 ```
@@ -65,6 +69,7 @@ This will install all dependencies and build both the backend and frontend.
 ## Prerequisites
 
 You will need:
+
 - A Starknet wallet private key (you can get one from [Argent X](https://www.argent.xyz/argent-x))
 - An AI provider API key (supported providers: Anthropic, OpenAI, Google (Gemini), Ollama)
 
@@ -80,7 +85,7 @@ const agent = new StarknetAgent({
   aiProvider: 'anthropic', // or 'openai', 'gemini', 'ollama'
   aiModel: 'claude-3-5-sonnet-latest',
   walletPrivateKey: 'your-wallet-private-key',
-  rpcUrl: 'your-rpc-url'
+  rpcUrl: 'your-rpc-url',
 });
 
 // Execute commands in natural language
@@ -105,6 +110,7 @@ const balance = await getBalance(address);
 #### Configuration
 
 Create a `.env` file:
+
 ```env
 # Required for both package and server
 PRIVATE_KEY=""
@@ -148,6 +154,7 @@ PORT=3001  # Optional, defaults to 3000
 ### Server API Endpoints
 
 #### Make Agent Requests
+
 ```bash
 curl --location 'localhost:3001/api/agent/request' \
 --header 'x-api-key: your-api-key' \

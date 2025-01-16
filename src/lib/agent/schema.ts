@@ -254,3 +254,19 @@ export const verifyMessageSchema = z.object({
     .describe('The signature as array of r and s values'),
   publicKey: z.string().describe('The public key to verify against'),
 });
+
+export const installMadaraSchema = z.object({
+  installDir: z.string().optional().describe('Custom installation directory for Madara'),
+  shell: z.enum(['zsh', 'bash', 'fish', 'ash']).optional().describe('Shell type for environment configuration')
+});
+
+export const launchNodeSchema = z.object({
+  nodeType: z.enum(['mainnet', 'testnet', 'integration']).describe('Type of node to launch'),
+  port: z.number().optional().describe('Port number for the node (default: 9944)'),
+  dataDir: z.string().optional().describe('Directory for node data'),
+  l1Endpoint: z.string().describe('Ethereum L1 endpoint URL'),
+  customConfig: z.record(z.any()).optional().describe('Additional custom configuration options')
+});
+
+export type InstallMadaraParams = z.infer<typeof installMadaraSchema>;
+export type LaunchNodeParams = z.infer<typeof launchNodeSchema>;

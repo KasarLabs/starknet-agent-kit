@@ -41,6 +41,8 @@ import {
   simulateDeployTransactionSchema,
   simulateDeclareTransactionSchema,
   routeSchema,
+  installMadaraSchema,
+  launchNodeSchema,
 } from './schema';
 import { swapTokens } from './method/dapps/defi/avnu/swapService';
 import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
@@ -65,6 +67,7 @@ import { declareContract } from './method/contract/declareContract';
 import { estimateAccountDeployFee } from './method/account/estimateAccountDeployFee';
 import { signMessage } from './method/account/signMessage';
 import { verifyMessage } from './method/account/verifyMessage';
+import { installMadara, launchNode } from './method/infra/madara/madaraFullNodeService';
 
 // Types
 type StarknetAgentInterface = {
@@ -294,4 +297,14 @@ export const createTools = (agent: StarknetAgentInterface) => [
     description: 'Simulate Deploy transaction without executing it',
     schema: simulateDeclareTransactionSchema,
   }),
+  tool(installMadara, {
+    name: 'install_madara',
+    description: 'Install Madara node software and configure the environment',
+    schema: installMadaraSchema,
+  }),
+  tool(launchNode, {
+    name: 'launch_madara_node',
+    description: 'Launch a Madara node (devnet or fullnode)',
+    schema: launchNodeSchema,
+  })
 ];

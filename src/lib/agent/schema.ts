@@ -254,3 +254,27 @@ export const verifyMessageSchema = z.object({
     .describe('The signature as array of r and s values'),
   publicKey: z.string().describe('The public key to verify against'),
 });
+
+export const createDcaOrderSchema = z.object({
+  sellTokenSymbol: z.string().describe("Symbol of the token to sell (e.g., 'ETH')"),
+  buyTokenSymbol: z.string().describe("Symbol of the token to buy (e.g., 'USDC')"),
+  sellAmount: z.string().describe('Total amount to invest (in hex format)'),
+  sellAmountPerCycle: z.string().describe('Amount that will be sold at each iteration (in hex format)'),
+  frequency: z.string().describe('Duration between iterations (ISO 8601, e.g., PT24H)'),
+  startDate: z.string().datetime().optional().describe('Optional start date'),
+  pricingStrategy: z.object({
+    tokenToMinAmount: z.string().optional(),
+    tokenToMaxAmount: z.string().optional()
+  }).optional()
+});
+
+export const cancelDcaOrderSchema = z.object({
+  orderAddress: z.string().describe('The address of the DCA order to cancel')
+});
+
+export const getDcaOrdersSchema = z.object({});
+
+// Types for function parameters that match the schemas
+export type CreateDcaOrderParams = z.infer<typeof createDcaOrderSchema>;
+export type CancelDcaOrderParams = z.infer<typeof cancelDcaOrderSchema>;
+export type GetDcaOrdersParams = z.infer<typeof getDcaOrdersSchema>;

@@ -41,6 +41,9 @@ import {
   simulateDeployTransactionSchema,
   simulateDeclareTransactionSchema,
   routeSchema,
+  cancelDcaOrderSchema,
+  getDcaOrdersSchema,
+  createDcaOrderSchema,
 } from './schema';
 import { swapTokens } from './method/dapps/defi/avnu/swapService';
 import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
@@ -65,6 +68,7 @@ import { declareContract } from './method/contract/declareContract';
 import { estimateAccountDeployFee } from './method/account/estimateAccountDeployFee';
 import { signMessage } from './method/account/signMessage';
 import { verifyMessage } from './method/account/verifyMessage';
+import { cancelDcaOrder, createDcaOrder, getDcaOrders } from './method/dapps/defi/avnu/dcaService';
 
 // Types
 type StarknetAgentInterface = {
@@ -293,5 +297,20 @@ export const createTools = (agent: StarknetAgentInterface) => [
     name: 'simulate_declare_transaction',
     description: 'Simulate Deploy transaction without executing it',
     schema: simulateDeclareTransactionSchema,
+  }),
+  tool(withWalletKey(createDcaOrder, agent), {
+    name: 'create_dca_order',
+    description: 'Create a new DCA (Dollar Cost Averaging) order for automated periodic token purchases',
+    schema: createDcaOrderSchema,
+  }),
+  tool(withWalletKey(getDcaOrders, agent), {
+    name: 'get_dca_orders',
+    description: 'Get all active and historical DCA orders for your account',
+    schema: getDcaOrdersSchema,
+  }),
+  tool(withWalletKey(cancelDcaOrder, agent), {
+    name: 'cancel_dca_order',
+    description: 'Cancel an existing DCA order',
+    schema: cancelDcaOrderSchema,
   }),
 ];

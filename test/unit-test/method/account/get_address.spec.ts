@@ -2,12 +2,8 @@ import { getAddress } from 'src/lib/agent/method/account/getAddress';
 
 describe('getAddress', () => {
   describe('With perfect match', () => {
-    const mockAddress = '0x123456789';
-
     it('returns success with account address', async () => {
       // Arrange
-      process.env = { PUBLIC_ADDRESS: mockAddress } as NodeJS.ProcessEnv;
-
       // Act
 
       const result = await getAddress();

@@ -1,5 +1,5 @@
 import { simulateInvokeTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
-
+import * as C from '../../../utils/constant';
 describe('Simulate Invoke Transaction', () => {
   describe('With perfect match inputs', () => {
     it('should simulate invoke transaction with valid payload', async () => {
@@ -8,8 +8,7 @@ describe('Simulate Invoke Transaction', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            contractAddress:
-              '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+            contractAddress: C.contract_address,
             entrypoint: 'transfer',
             calldata: ['0x123...', '1000000000000000000'],
           },
@@ -33,8 +32,7 @@ describe('Simulate Invoke Transaction', () => {
           accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
-              contractAddress:
-                '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+              contractAddress: C.contract_address,
               entrypoint: 'transfer',
               calldata: ['0x123...', '1000000000000000000'],
             },
@@ -44,8 +42,7 @@ describe('Simulate Invoke Transaction', () => {
           accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
-              contractAddress:
-                '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+              contractAddress: C.contract_address,
               entrypoint: 'approve',
               calldata: ['0x456...', '2000000000000000000'],
             },
@@ -55,8 +52,7 @@ describe('Simulate Invoke Transaction', () => {
           accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
-              contractAddress:
-                '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+              contractAddress: C.contract_address,
               entrypoint: 'transferFrom',
               calldata: ['0x789...', '3000000000000000000'],
             },
@@ -81,8 +77,7 @@ describe('Simulate Invoke Transaction', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            contractAddress:
-              '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+            contractAddress: C.contract_address,
             entrypoint: '',
           },
         ],
@@ -105,8 +100,7 @@ describe('Simulate Invoke Transaction', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            contractAddress:
-              '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+            contractAddress: C.contract_address,
             entrypoint: 'approve',
             calldata: ['0x789...', '3000000000000000000'],
           },

@@ -1,5 +1,5 @@
 import { estimateAccountDeployFee } from 'src/lib/agent/method/account/estimateAccountDeployFee';
-import { Account } from 'starknet';
+import * as C from '../../../utils/constant';
 
 describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
@@ -9,8 +9,7 @@ describe('Estimate Account Deploy Fee', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            classHash:
-              '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+            classHash: C.class_hash,
             constructorCalldata: [
               '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
               '0x0',
@@ -90,7 +89,6 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      console.log('DFHAJKHDJAKHDJAHDA', params.accountAddress);
       const result = await estimateAccountDeployFee(
         params,
         process.env.PRIVATE_KEY

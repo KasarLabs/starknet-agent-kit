@@ -1,4 +1,5 @@
 import { simulateDeployAccountTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
+import * as C from '../../../utils/constant';
 
 describe('Simulate Deploy_Account Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -8,8 +9,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            classHash:
-              '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+            classHash: C.class_hash,
             constructorCalldata: [
               '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
               '0x0',
@@ -35,14 +35,12 @@ describe('Simulate Deploy_Account Transaction ', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            classHash:
-              '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+            classHash: C.class_hash,
             constructorCalldata: [
               '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
               '0x0',
             ],
-            addressSalt:
-              '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+            addressSalt: C.addressSalt,
             contractAddress:
               '0x4321c775c55d2da6fc81b090fc5b71551755b6cdd0fe7bf4b00439afe0987654',
           },
@@ -65,14 +63,12 @@ describe('Simulate Deploy_Account Transaction ', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            classHash:
-              '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+            classHash: C.class_hash,
             constructorCalldata: [
               '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
               '0x0',
             ],
-            addressSalt:
-              '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+            addressSalt: C.addressSalt,
           },
         ],
       };
@@ -94,26 +90,22 @@ describe('Simulate Deploy_Account Transaction ', () => {
           accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
-              classHash:
-                '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+              classHash: C.class_hash,
               constructorCalldata: [
                 '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
                 '0x0',
               ],
-              addressSalt:
-                '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+              addressSalt: C.addressSalt,
               contractAddress:
                 '0x4321c775c55d2da6fc81b090fc5b71551755b6cdd0fe7bf4b00439afe0987654',
             },
           ],
         },
         {
-          accountAddress:
-            '0x7e89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459522',
+          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
           payloads: [
             {
-              classHash:
-                '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+              classHash: C.class_hash,
               constructorCalldata: [
                 '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
                 '0x1',
@@ -141,8 +133,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
-            classHash:
-              '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+            classHash: C.class_hash,
             constructorCalldata: [
               '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
               '0x0',
@@ -155,7 +146,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       const result = await simulateDeployAccountTransaction(
         params,
-        '0xinvalid'
+        C.invalid_private_key
       );
       const parsed = JSON.parse(result);
 
@@ -169,22 +160,19 @@ describe('Simulate Deploy_Account Transaction ', () => {
           accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
-              classHash:
-                '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+              classHash: C.class_hash,
               constructorCalldata: [
                 '0x6db97f20526e4426d8874148ee83448d370e003d042d669611f7b4cb3917c24',
                 '0x0',
               ],
-              addressSalt:
-                '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+              addressSalt: C.addressSalt,
               contractAddress:
                 '0x4321c775c55d2da6fc81b090fc5b71551755b6cdd0fe7bf4b00439afe0987654',
             },
           ],
         },
         {
-          accountAddress:
-            '0x7e89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459522',
+          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
           payloads: [
             {
               classHash:

@@ -1,4 +1,5 @@
 import { simulateDeclareTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
+import * as C from '../../../utils/constant';
 
 describe('Simulate Declare Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -156,10 +157,8 @@ describe('Simulate Declare Transaction ', () => {
             },
           ],
         },
-        classHash:
-          '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
-        compiledClassHash:
-          '0x2b847d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+        classHash: C.class_hash,
+        compiledClassHash: C.compiledClassHash,
       };
 
       // Act
@@ -218,8 +217,7 @@ describe('Simulate Declare Transaction ', () => {
           },
         },
         {
-          accountAddress:
-            '0x7e89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459522',
+          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -258,8 +256,7 @@ describe('Simulate Declare Transaction ', () => {
               },
             ],
           },
-          classHash:
-            '0x1a736d6ed154502257f02b1ccdf4d9d1089f80811cd6acad48e6b6a9d1f2003',
+          classHash: C.class_hash,
         },
       ];
 

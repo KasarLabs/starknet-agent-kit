@@ -7,21 +7,29 @@ import {
 
 export const CreateOZAccount = async () => {
   try {
-    const accountManager = new StarknetAgent({
-      walletPrivateKey: process.env.PRIVATE_KEY,
-      aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
-      aiModel: process.env.AI_MODEL,
-      aiProvider: process.env.AI_PROVIDER,
-    }).accountManager;
+    const privateKey = stark.randomAddress();
+    console.log('Random private Key :' + privateKey);
+    const starkKeyPub = ec.starkCurve.getStarkKey(privateKey);
+    console.log('publicKey=', starkKeyPub);
 
-    const accountDetails = await accountManager.createAccount();
-
+    const OZaccountClassHash =
+      '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
+    const OZaccountConstructorCallData = CallData.compile({
+      publicKey: starkKeyPub,
+    });
+    const OZcontractAddress = hash.calculateContractAddressFromHash(
+      starkKeyPub,
+      OZaccountClassHash,
+      OZaccountConstructorCallData,
+      0
+    );
+    console.log('Precalculated account address=', OZcontractAddress);
     return JSON.stringify({
       status: 'success',
       wallet: 'Open Zeppelin',
-      new_account_publickey: accountDetails.publicKey,
-      new_account_privatekey: accountDetails.privateKey,
-      precalculate_address: accountDetails.address,
+      new_account_publickey: OZcontractAddress,
+      new_account_privatekey: privateKey,
+      precalculate_address: OZcontractAddress,
     });
   } catch (error) {
     return JSON.stringify({
@@ -50,10 +58,10 @@ export const CreateArgentAccount = async () => {
     );
     return JSON.stringify({
       status: 'success',
+      wallet: 'Argent',
       new_account_publickey: starkKeyPubAX,
       new_account_privatekey: privateKeyAX,
       precalculate_address: AXcontractAddress,
-      wallet: 'Argent',
     });
   } catch (error) {
     return JSON.stringify({

@@ -1,13 +1,11 @@
 import { simulateDeclareTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
-import * as C from 'src/test/utils/constant.test';
 
 describe('Simulate Declare Transaction ', () => {
   describe('With perfect match inputs', () => {
     it('should simulate declare transaction with valid contract', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -51,7 +49,7 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -62,8 +60,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with valid contract and classHash', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -109,7 +106,7 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -120,8 +117,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with all optional parameters', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -169,7 +165,7 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -181,8 +177,7 @@ describe('Simulate Declare Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress:
-            '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -272,7 +267,7 @@ describe('Simulate Declare Transaction ', () => {
       for (const params of paramsArray) {
         const result = await simulateDeclareTransaction(
           params,
-          C.VALID_PRIVATE_KEY_1
+          process.env.PRIVATE_KEY
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -283,8 +278,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -314,10 +308,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        C.INVALID_PRIVATE_KEY_1
-      );
+      const result = await simulateDeclareTransaction(params, '0xinvalid');
       const parsed = JSON.parse(result);
       // Assert
 
@@ -328,8 +319,7 @@ describe('Simulate Declare Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress:
-            '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -378,12 +368,12 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         paramsArray[0],
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeclareTransaction(
         paramsArray[1],
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

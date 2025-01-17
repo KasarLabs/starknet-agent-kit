@@ -1,13 +1,12 @@
 import { estimateAccountDeployFee } from 'src/lib/agent/method/account/estimateAccountDeployFee';
 import { Account } from 'starknet';
-import * as C from 'src/test/utils/constant.test';
 
 describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
     it('should estimate fees successfully with valid payload', async () => {
       // Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -24,7 +23,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -53,7 +52,7 @@ describe('Estimate Account Deploy Fee', () => {
     it('should fail at estimate fee reason : class_hash unvalid', async () => {
       //Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: '',
@@ -69,7 +68,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -79,7 +78,7 @@ describe('Estimate Account Deploy Fee', () => {
     it('should fail at estimate fee reason : constructorCallData unvalid', async () => {
       //Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -91,9 +90,10 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
+      console.log('DFHAJKHDJAKHDJAHDA', params.accountAddress);
       const result = await estimateAccountDeployFee(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 

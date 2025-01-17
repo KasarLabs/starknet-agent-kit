@@ -258,7 +258,7 @@ export const createTools = (agent: StarknetAgentInterface) => [
     schema: declareContractSchema,
   }),
   tool(withWalletKey(estimateAccountDeployFee, agent), {
-    name: 'estimate_account_deploy_fee',
+    name: 'wd',
     description: 'Estimate the fee required to deploy an account',
     schema: estimateAccountDeployFeeSchema,
   }),

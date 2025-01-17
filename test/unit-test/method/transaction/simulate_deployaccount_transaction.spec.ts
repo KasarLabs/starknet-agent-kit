@@ -1,13 +1,11 @@
 import { simulateDeployAccountTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
-import * as C from 'src/test/utils/constant.test';
 
 describe('Simulate Deploy_Account Transaction ', () => {
   describe('With perfect match inputs', () => {
     it('should simulate deploy transaction with valid payload[classHash,constructorCalldata]', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -24,7 +22,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       const result = await simulateDeployAccountTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -34,8 +32,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should simulate deploy account transaction with valid payload[classHash,constructorCalldata,addressSalt,contractAddress]', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -55,7 +52,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
       const result = await simulateDeployAccountTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -65,8 +62,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should simulate deploy account transaction with full payload[classHash,constructorCalldata,addressSalt]', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -84,7 +80,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
       const result = await simulateDeployAccountTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -95,8 +91,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress:
-            '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               classHash:
@@ -132,7 +127,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       for (const params of paramsArray) {
         const result = await simulateDeployAccountTransaction(
           params,
-          C.VALID_PRIVATE_KEY_1
+          process.env.PRIVATE_KEY
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -143,8 +138,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
       const params = {
-        accountAddress:
-          '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -161,19 +155,18 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       const result = await simulateDeployAccountTransaction(
         params,
-        C.INVALID_PRIVATE_KEY_2
+        '0xinvalid'
       );
       const parsed = JSON.parse(result);
 
       // Assert
-      expect(parsed.status).toBe('success');
+      expect(parsed.status).toBe('failure');
     });
     it('should fail reason : invalid classHash for second payload', async () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress:
-            '0x6d89353032016c67ebd7c22058e013b5b71994a46be277d2336c3fac0459521',
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               classHash:
@@ -208,12 +201,12 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
       const result = await simulateDeployAccountTransaction(
         paramsArray[0],
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeployAccountTransaction(
         paramsArray[1],
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

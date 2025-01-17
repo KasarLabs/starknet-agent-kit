@@ -1,5 +1,4 @@
 import { getAddress } from 'src/lib/agent/method/account/getAddress';
-import { parseBuildCommand } from 'typescript';
 
 describe('getAddress', () => {
   describe('With perfect match', () => {

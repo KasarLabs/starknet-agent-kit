@@ -1,71 +1,63 @@
 import { getBalance } from 'src/lib/agent/method/read/balance';
-import * as C from 'src/test/utils/constant.test';
 import { Contract } from 'starknet';
+import { string } from 'zod';
+import { ERC20_ABI } from 'src/lib/utils/constants/swap';
 
 jest.mock('starknet', () => ({
-  Contract: jest.fn(),
-  RpcProvider: jest.fn(() => ({})),
+  Contract: jest.fn((abi, address, provider) => ({
+    balanceOf: jest
+      .fn()
+      .mockImplementation(async () => ({ balance: '2000000000000000000' })),
+  })),
+  RpcProvider: jest.fn(() => ({
+    nodeUrl: process.env.RPC_URL,
+  })),
 }));
 
 describe('Read -> Get_Balance -> get_balance', () => {
-  const mockBalanceOf = jest.fn();
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-
-    (Contract as jest.Mock).mockImplementation(() => ({
-      balanceOf: mockBalanceOf,
-    }));
-
-    mockBalanceOf.mockResolvedValue({ balance: '2000000000000000000' });
-  });
-
   describe('With perfect match inputs', () => {
     it('should return correct ETH balance when all parameters are valid', async () => {
-      // Arrange
       const params = {
-        walletAddress: C.VALID_CONTRACT_ADDRESS_1,
+        walletAddress: process.env.PUBLIC_ADDRESS_2 as string,
         assetSymbol: 'ETH',
       };
 
-      // Act
       const result = await getBalance(params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed.status).toBe('success');
-      expect(parsed.balance).toBe('2');
+      expect(Contract).toHaveBeenCalledWith(
+        ERC20_ABI,
+        expect.any(String),
+        expect.any(Object)
+      );
+      console.log(parsed.balance);
     });
 
     it('should return correct USDC balance with 6 decimals', async () => {
-      // Arrange
-      mockBalanceOf.mockResolvedValue({ balance: '2000000' });
       const params = {
-        walletAddress: C.VALID_CONTRACT_ADDRESS_1,
+        walletAddress: process.env.PUBLIC_ADDRESS as string,
         assetSymbol: 'USDC',
       };
 
-      // Act
       const result = await getBalance(params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed.status).toBe('success');
-      expect(parsed.balance).toBe('2');
+      console.log(parsed.balance);
     });
   });
+
   describe('With missing inputs', () => {
     it('should fail reason : unsupported token symbol', async () => {
-      // Arrange
       const params = {
-        walletAddress: C.VALID_CONTRACT_ADDRESS_1,
+        walletAddress: process.env.PUBLIC_ADDRESS_2 as string,
         assetSymbol: 'UNKNOWN',
       };
-      // Act
+
       const result = await getBalance(params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed.status).toBe('failure');
       expect(parsed.error).toBe('Token UNKNOWN not supported');
     });

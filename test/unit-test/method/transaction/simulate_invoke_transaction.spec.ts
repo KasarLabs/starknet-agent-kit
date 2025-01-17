@@ -1,12 +1,11 @@
 import { simulateInvokeTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
-import * as C from 'src/test/utils/constant.test';
 
 describe('Simulate Invoke Transaction', () => {
   describe('With perfect match inputs', () => {
     it('should simulate invoke transaction with valid payload', async () => {
       // Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress:
@@ -19,7 +18,7 @@ describe('Simulate Invoke Transaction', () => {
       // Act
       const result = await simulateInvokeTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY_2 as string
       );
 
       // Assert
@@ -31,7 +30,7 @@ describe('Simulate Invoke Transaction', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               contractAddress:
@@ -42,7 +41,7 @@ describe('Simulate Invoke Transaction', () => {
           ],
         },
         {
-          accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               contractAddress:
@@ -53,7 +52,7 @@ describe('Simulate Invoke Transaction', () => {
           ],
         },
         {
-          accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               contractAddress:
@@ -69,7 +68,7 @@ describe('Simulate Invoke Transaction', () => {
       for (const params of paramsArray) {
         const result = await simulateInvokeTransaction(
           params,
-          C.VALID_PRIVATE_KEY_1
+          process.env.PRIVATE_KEY_2 as string
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -79,7 +78,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should fail with empty calldata', async () => {
       // Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress:
@@ -92,7 +91,7 @@ describe('Simulate Invoke Transaction', () => {
       // Act
       const result = await simulateInvokeTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY_2 as string
       );
       const parsed = JSON.parse(result);
 
@@ -103,7 +102,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should fail reason : invalid privateKey ', async () => {
       // Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress:
@@ -115,10 +114,7 @@ describe('Simulate Invoke Transaction', () => {
       };
 
       // Act
-      const result = await simulateInvokeTransaction(
-        params,
-        C.INVALID_CONTRACT_ADDRESS_1
-      );
+      const result = await simulateInvokeTransaction(params, '0xinvalid');
       const parsed = JSON.parse(result);
 
       // Assert
@@ -128,7 +124,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should fail reason : empty contract address', async () => {
       // Arrange
       const params = {
-        accountAddress: C.VALID_PUBLIC_ADDRESS_2,
+        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress: '', // Adresse vide
@@ -144,7 +140,7 @@ describe('Simulate Invoke Transaction', () => {
       // Act
       const result = await simulateInvokeTransaction(
         params,
-        C.VALID_PRIVATE_KEY_1
+        process.env.PRIVATE_KEY_2 as string
       );
       const parsed = JSON.parse(result);
 

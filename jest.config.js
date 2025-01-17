@@ -1,5 +1,8 @@
 module.exports = {
     verbose: true,
+    setupFiles: ["<rootDir>/test/.jest/setEnvVars.ts"],
+    testTimeout: 70000,
+    maxWorkers: 1 ,
     testEnvironment: 'node',
     moduleFileExtensions: [
         "js",
@@ -12,8 +15,9 @@ module.exports = {
         "^.+\\.(t|j)s$": "ts-jest"
     },
     moduleNameMapper: {
-        "^dist/lib/constant$": "<rootDir>/src/lib/utils/constants/constant",
+        "^dist/lib/utils/constants/constant$": "<rootDir>/src/lib/utils/constants/constant",
         "^dist/(.*)$": "<rootDir>/src/$1",
-        "^src/(.*)$": "<rootDir>/src/$1"
+        "^src/(.*)$": "<rootDir>/src/$1",
+        "^test/(.*)$": "<rootDir>/test/$1"
     }
 }

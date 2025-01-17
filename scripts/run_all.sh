@@ -1,10 +1,17 @@
-#!/bin/bash
 DEVNET_PORT=5050
 DEVNET_SEED=42
 DEVNET_ACCOUNTS=3
 DEVNET_ACCOUNT_CLASS='cairo1'
 DEVNET_INITIAL_BALANCE='10000000000000000000000'
 FORK_NETWORK='https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky'
+
+cleanup() {
+    echo "🛑 Stopping server..."
+    kill -9 $SERVER_PID 2>/dev/null
+    lsof -ti:${DEVNET_PORT} | xargs -r kill -9
+    echo "🧹 Port ${DEVNET_PORT} cleaned"
+    exit 0
+}
 
 if ! command -v starknet-devnet &> /dev/null; then
     echo "❌ starknet-devnet not installed"
@@ -26,8 +33,8 @@ run_tests() {
     local iterations=${1:-10}
     local log_file="test-results.log"
     
-    echo "⏳ Waiting 4 seconds for server startup..."
-    sleep 4
+    echo "⏳ Waiting 7 seconds for server startup..."
+    sleep 7
     
     > "$log_file"
     echo "🧪 Running tests $iterations times..."
@@ -51,9 +58,9 @@ run_tests() {
 
 ITERATIONS=${1:-10}
 
+trap cleanup SIGINT SIGTERM EXIT
+
 launch_server &
 SERVER_PID=$!
 
 run_tests "$ITERATIONS"
-
-trap 'kill $SERVER_PID' EXIT

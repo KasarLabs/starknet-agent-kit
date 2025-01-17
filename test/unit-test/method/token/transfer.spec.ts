@@ -2,7 +2,7 @@ import { transfer } from 'src/lib/agent/method/token/transfer';
 import * as C from '../../../utils/constant';
 
 describe('Transfer token', () => {
-  describe('With perfect match', () => {
+  describe('With perfect match inputs', () => {
     it('should transfer 0.5 ETH to another address', async () => {
       // Arrange
       const params = {

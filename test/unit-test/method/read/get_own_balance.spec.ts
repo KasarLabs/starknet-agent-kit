@@ -2,7 +2,7 @@ import { getOwnBalance } from 'src/lib/agent/method/read/balance';
 import * as C from '../../../utils/constant';
 
 describe('getOwnBlance', () => {
-  describe('With perfect match', () => {
+  describe('With perfect match inputs', () => {
     it('should return actual ETH balance', async () => {
       // Arrange
       const params = {

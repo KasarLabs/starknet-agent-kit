@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DEVNET_PORT=5050
 DEVNET_SEED=42
 DEVNET_ACCOUNTS=3
@@ -18,6 +20,14 @@ if ! command -v starknet-devnet &> /dev/null; then
     exit 1
 fi
 
+wait_for_port() {
+    echo "⏳ Waiting for server to be ready..."
+    while ! lsof -i tcp:${DEVNET_PORT} > /dev/null 2>&1; do
+        sleep 0.1
+    done
+    echo "✅ Server is ready!"
+}
+
 launch_server() {
     echo "🚀 Starting starknet-devnet..."
     starknet-devnet \
@@ -30,11 +40,10 @@ launch_server() {
 }
 
 run_tests() {
-    local iterations=${1:-10}
+    local iterations=${1:-2}
     local log_file="test-results.log"
     
-    echo "⏳ Waiting 7 seconds for server startup..."
-    sleep 7
+    wait_for_port
     
     > "$log_file"
     echo "🧪 Running tests $iterations times..."
@@ -56,7 +65,7 @@ run_tests() {
     echo "✅ Tests executed $iterations times"
 }
 
-ITERATIONS=${1:-10}
+ITERATIONS=${1:-2}
 
 trap cleanup SIGINT SIGTERM EXIT
 

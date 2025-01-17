@@ -1,7 +1,7 @@
 import { getAddress } from 'src/lib/agent/method/account/getAddress';
 
 describe('getAddress', () => {
-  describe('With perfect match', () => {
+  describe('With perfect match inputs', () => {
     it('returns success with account address', async () => {
       // Arrange
       // Act

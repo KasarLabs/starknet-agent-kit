@@ -11,16 +11,12 @@ interface TestAccounts {
 
 interface EnvConfig {
   RPC_URL: string;
-  API_KEY: string;
-  PORT: string;
   accounts: TestAccounts;
 }
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
     RPC_URL: 'http://127.0.0.1:5050',
-    API_KEY: 'test',
-    PORT: '3001',
     accounts: {
       account1: {
         privateKey:
@@ -50,8 +46,6 @@ export const setupTestEnvironment = () => {
   const config = loadTestConfig();
 
   process.env.RPC_URL = config.RPC_URL;
-  process.env.API_KEY = config.API_KEY;
-  process.env.PORT = config.PORT;
 
   process.env.PRIVATE_KEY = config.accounts.account1.privateKey;
   process.env.PUBLIC_ADDRESS = config.accounts.account1.publicAddress;

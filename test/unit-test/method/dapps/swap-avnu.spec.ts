@@ -3,7 +3,7 @@ import { SwapParams } from 'src/lib/utils/types/swap';
 import { setTimeout } from 'timers/promises';
 import * as C from '../../../utils/constant';
 describe('Swap Token with avnu-sdk', () => {
-  describe('With perfect match input', () => {
+  describe('With perfect match inputs', () => {
     it('should swap token 0.1 ETH to STRK', async () => {
       // Arrange
       const params: SwapParams = {

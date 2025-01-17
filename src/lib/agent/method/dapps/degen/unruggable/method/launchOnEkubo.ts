@@ -1,6 +1,7 @@
 import { LaunchOnEkuboParams } from 'src/lib/agent/schema';
-import { FACTORY_ADDRESS, factoryAbi } from '..';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
+import { factoryAbi } from 'src/lib/utils/unruggable/abi';
 import { Contract } from 'starknet';
 
 /**

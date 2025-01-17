@@ -1,8 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schema';
-import { FACTORY_ADDRESS } from '../constant';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { Contract } from 'starknet';
-import { factoryAbi } from '../abi';
+import { factoryAbi } from '../../../../../../utils/unruggable/abi';
+import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
 
 export const isMemecoin = async (params: ContractAddressParams) => {
   try {

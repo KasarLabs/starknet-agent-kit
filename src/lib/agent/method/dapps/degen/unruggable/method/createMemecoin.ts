@@ -1,8 +1,8 @@
 import { CreateMemecoinParams } from 'src/lib/agent/schema';
 import { stark, uint256 } from 'starknet';
-import { DECIMALS, Entrypoint } from '../constant';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-import { decimalsScale, execute } from '..';
+import { Entrypoint, DECIMALS } from 'src/lib/utils/unruggable';
+import { execute, decimalsScale } from 'src/lib/utils/unruggable/helper';
 
 export const createMemecoin = async (
   params: CreateMemecoinParams,

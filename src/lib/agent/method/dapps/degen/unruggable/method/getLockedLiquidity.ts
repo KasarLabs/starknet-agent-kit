@@ -1,7 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schema';
 import { Contract } from 'starknet';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-import { FACTORY_ADDRESS, factoryAbi } from '..';
+import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
+import { factoryAbi } from 'src/lib/utils/unruggable/abi';
 
 type LiquidityType =
   | { type: 'JediERC20'; address: string }

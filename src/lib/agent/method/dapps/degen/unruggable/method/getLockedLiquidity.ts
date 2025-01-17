@@ -15,6 +15,63 @@ interface LockedLiquidityInfo {
   liquidityContractAddress?: string;
 }
 
+/**
+ * Retrieves locked liquidity information for a given token contract.
+ *
+ * This function checks if a token has locked liquidity in any of the supported DEXes
+ * (Jediswap, StarkDeFi, or Ekubo) and returns detailed information about the
+ * liquidity lock.
+ *
+ * @param {ContractAddressParams} params - Object containing the token contract address
+ * @returns {Promise<GetLockedLiquiditySuccessResponse | GetLockedLiquidityErrorResponse>}
+ *          Detailed information about locked liquidity or error response
+ *
+ * @example
+ * ```typescript
+ * // Check locked liquidity for a token
+ * const result = await getLockedLiquidity({
+ *   contractAddress: "0x123abc..."
+ * });
+ *
+ * if (result.status === 'success') {
+ *   if (result.data.hasLockedLiquidity) {
+ *     console.log('Liquidity Contract:', result.data.liquidityContractAddress);
+ *
+ *     // Check liquidity type
+ *     switch (result.data.liquidityType?.type) {
+ *       case 'JediERC20':
+ *         console.log('Jediswap LP Token:', result.data.liquidityType.address);
+ *         break;
+ *       case 'StarkDeFiERC20':
+ *         console.log('StarkDeFi LP Token:', result.data.liquidityType.address);
+ *         break;
+ *       case 'EkuboNFT':
+ *         console.log('Ekubo Position NFT ID:', result.data.liquidityType.tokenId);
+ *         break;
+ *     }
+ *   } else {
+ *     console.log('No locked liquidity found');
+ *   }
+ * } else {
+ *   console.error('Check failed:', result.error);
+ * }
+ * ```
+ *
+ * @throws Will return error response if:
+ * - Invalid contract address format
+ * - Contract doesn't exist at the provided address
+ * - RPC connection fails
+ * - Contract call reverts
+ *
+ * @note
+ * - This is a view function that doesn't modify state
+ * - Different DEXes use different liquidity representations:
+ *   * Jediswap: ERC20 LP tokens
+ *   * StarkDeFi: ERC20 LP tokens
+ *   * Ekubo: NFT position tokens
+ * - Can be used to verify token safety before trading
+ * - Useful for checking if a token's liquidity is locked
+ */
 export const getLockedLiquidity = async (params: ContractAddressParams) => {
   try {
     const contract = new Contract(factoryAbi, FACTORY_ADDRESS, rpcProvider);

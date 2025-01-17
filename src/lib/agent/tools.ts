@@ -41,6 +41,9 @@ import {
   simulateDeployTransactionSchema,
   simulateDeclareTransactionSchema,
   routeSchema,
+  createMemecoinSchema,
+  launchOnEkuboSchema,
+  contractAddressSchema,
 } from './schema';
 import { swapTokens } from './method/dapps/defi/avnu/swapService';
 import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
@@ -65,6 +68,10 @@ import { declareContract } from './method/contract/declareContract';
 import { estimateAccountDeployFee } from './method/account/estimateAccountDeployFee';
 import { signMessage } from './method/account/signMessage';
 import { verifyMessage } from './method/account/verifyMessage';
+import { createMemecoin } from './method/dapps/degen/unruggable/method/createMemecoin';
+import { isMemecoin } from './method/dapps/degen/unruggable/method/isMemecoin';
+import { getLockedLiquidity } from './method/dapps/degen/unruggable/method/getLockedLiquidity';
+import { launchOnEkubo } from './method/dapps/degen/unruggable/method/launchOnEkubo';
 
 // Types
 type StarknetAgentInterface = {
@@ -268,7 +275,6 @@ export const createTools = (agent: StarknetAgentInterface) => [
     description: 'Sign a typed data message',
     schema: signMessageSchema,
   }),
-
   tool(verifyMessage, {
     name: 'verify_message',
     description: 'Verify a signed message',
@@ -293,5 +299,26 @@ export const createTools = (agent: StarknetAgentInterface) => [
     name: 'simulate_declare_transaction',
     description: 'Simulate Deploy transaction without executing it',
     schema: simulateDeclareTransactionSchema,
+  }),
+  tool(withWalletKey(createMemecoin, agent), {
+    name: 'create_memecoin',
+    description: 'Create a new memecoin using the Unruggable Factory',
+    schema: createMemecoinSchema,
+  }),
+  tool(launchOnEkubo, {
+    name: 'launch_on_ekubo',
+    description: 'Launch a memecoin on Ekubo DEX with concentrated liquidity',
+    schema: launchOnEkuboSchema,
+  }),
+  tool(isMemecoin, {
+    name: 'is_memecoin',
+    description:
+      'Check if a given address is a memecoin created by the factory',
+    schema: contractAddressSchema,
+  }),
+  tool(getLockedLiquidity, {
+    name: 'get_locked_liquidity',
+    description: 'Get information about locked liquidity for a given token',
+    schema: contractAddressSchema,
   }),
 ];

@@ -62,7 +62,7 @@ async function bootstrap() {
       credentials: true,
     });
 
-    await app.listen(config.port, '0.0.0.0');
+    await app.listen(3001, '0.0.0.0');
 
     logger.log(`Application is running on: ${await app.getUrl()}`);
     logger.log(`Environment: ${config.nodeEnv}`);

@@ -28,9 +28,8 @@ const systemMessage = new SystemMessage(`
 
 export const prompt = ChatPromptTemplate.fromMessages([
   systemMessage,
-  ['placeholder', '{chat_history}'],
-  ['user', '{input}'],
-  ['placeholder', '{agent_scratchpad}'],
+  ['human', '{input}'],
+  ['assistant', '{agent_scratchpad}'],
 ]);
 
 export const createAgent = (

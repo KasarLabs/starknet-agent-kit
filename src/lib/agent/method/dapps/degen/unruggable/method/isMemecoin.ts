@@ -45,7 +45,9 @@ import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
  * - Returns false for contracts that weren't created by the factory
  * - Can be used to verify token authenticity before trading
  */
-export const isMemecoin = async (params: ContractAddressParams): Promise<string> => {
+export const isMemecoin = async (
+  params: ContractAddressParams
+): Promise<string> => {
   try {
     const contract = new Contract(factoryAbi, FACTORY_ADDRESS, rpcProvider);
     const result = await contract.is_memecoin(params.contractAddress);

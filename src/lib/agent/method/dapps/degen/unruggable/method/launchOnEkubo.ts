@@ -1,7 +1,7 @@
 import { LaunchOnEkuboParams } from 'src/lib/agent/schema';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
-import { factoryAbi } from 'src/lib/utils/unruggable/abi';
+import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
+import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 import { Contract } from 'starknet';
 
 /**
@@ -62,7 +62,7 @@ export const launchOnEkubo = async ({
   ekuboParams,
 }: LaunchOnEkuboParams) => {
   try {
-    const contract = new Contract(factoryAbi, FACTORY_ADDRESS, rpcProvider);
+    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, rpcProvider);
 
     const params = {
       memecoin_address: launchParams.memecoinAddress,

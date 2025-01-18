@@ -1,8 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schema';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { Contract } from 'starknet';
-import { factoryAbi } from '../../../../../../utils/unruggable/abi';
-import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
+import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
+import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 
 /**
  * Checks if a given contract address is a memecoin created by the Unruggable Factory.
@@ -49,7 +49,7 @@ export const isMemecoin = async (
   params: ContractAddressParams
 ): Promise<string> => {
   try {
-    const contract = new Contract(factoryAbi, FACTORY_ADDRESS, rpcProvider);
+    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, rpcProvider);
     const result = await contract.is_memecoin(params.contractAddress);
 
     return JSON.stringify({

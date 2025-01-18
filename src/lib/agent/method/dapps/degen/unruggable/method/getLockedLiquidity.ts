@@ -1,8 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schema';
 import { Contract } from 'starknet';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
-import { FACTORY_ADDRESS } from 'src/lib/utils/unruggable';
-import { factoryAbi } from 'src/lib/utils/unruggable/abi';
+import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
+import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 
 type LiquidityType =
   | { type: 'JediERC20'; address: string }
@@ -74,7 +74,7 @@ interface LockedLiquidityInfo {
  */
 export const getLockedLiquidity = async (params: ContractAddressParams) => {
   try {
-    const contract = new Contract(factoryAbi, FACTORY_ADDRESS, rpcProvider);
+    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, rpcProvider);
 
     const result = await contract.locked_liquidity(params.contractAddress);
     const liquidityInfo: LockedLiquidityInfo = {

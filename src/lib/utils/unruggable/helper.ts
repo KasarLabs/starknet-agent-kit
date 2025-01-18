@@ -1,5 +1,5 @@
 import { Account, CallData, RawArgs } from 'starknet';
-import { FACTORY_ADDRESS } from './constant';
+import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 import { rpcProvider } from 'src/lib/agent/starknetAgent';
 
 /**

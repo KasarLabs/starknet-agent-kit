@@ -1,5 +1,3 @@
-// src/main.ts
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';

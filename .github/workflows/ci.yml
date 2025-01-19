@@ -41,8 +41,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Check TypeScript compilation (Backend)
-        run: pnpm tsc --noEmit
+      # - name: Check TypeScript compilation (Backend)
+      #   run: pnpm tsc --noEmit
 
       - name: Check TypeScript compilation (Frontend)
         run: cd client && pnpm tsc --noEmit

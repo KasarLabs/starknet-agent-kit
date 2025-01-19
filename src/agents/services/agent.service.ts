@@ -85,14 +85,15 @@ export class AgentService implements IAgentService {
     apiKeyValid: boolean;
   }> {
     try {
-      const credentials = agent.getCredentials();
+      const credentials = agent.getAccountCredentials();
+      const model = agent.getModelCredentials();
 
       return {
         isReady: Boolean(
-          credentials.walletPrivateKey && credentials.aiProviderApiKey
+          credentials.accountPrivateKey && model.aiProviderApiKey
         ),
-        walletConnected: Boolean(credentials.walletPrivateKey),
-        apiKeyValid: Boolean(credentials.aiProviderApiKey),
+        walletConnected: Boolean(credentials.accountPrivateKey),
+        apiKeyValid: Boolean(model.aiProviderApiKey),
       };
     } catch (error) {
       this.logger.error('Error checking agent status', error);

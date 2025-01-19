@@ -58,11 +58,13 @@ cd starknet-agent-kit
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 3. Run the setup script:
+
 ```bash
 pnpm run setup
 ```
@@ -87,7 +89,7 @@ const agent = new StarknetAgent({
   aiProviderApiKey: 'your-ai-provider-key',
   aiProvider: 'anthropic', // or 'openai', 'gemini', 'ollama'
   aiModel: 'claude-3-5-sonnet-latest',
-  walletPrivateKey: 'your-wallet-private-key',
+  accountPrivateKey: 'your-wallet-private-key',
   rpcUrl: 'your-rpc-url',
 });
 

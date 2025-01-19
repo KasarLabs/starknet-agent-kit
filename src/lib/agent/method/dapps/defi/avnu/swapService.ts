@@ -5,7 +5,7 @@ import {
   Quote,
   Route,
 } from '@avnu/avnu-sdk';
-import { Account } from 'starknet';
+import { Account, RpcProvider } from 'starknet';
 import { SwapParams, SwapResult } from 'src/lib/utils/types/swap';
 import {
   SLIPPAGE_PERCENTAGE,
@@ -163,10 +163,16 @@ export const createSwapService = (
   }
 
   const agent = new StarknetAgent({
-    walletPrivateKey: process.env.PRIVATE_KEY,
+    accountPrivateKey: process.env.PRIVATE_KEY,
     aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
     aiModel: process.env.AI_MODEL,
-    aiProvider: process.env.AI_PROVIDER,
+    aiProvider: process.env.AI_PROVIDER as
+      | 'openai'
+      | 'anthropic'
+      | 'ollama'
+      | 'gemini',
+    provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
+    accountPublicKey: process.env.PUBLIC_ADDRESS,
   });
 
   return new SwapService(agent, walletAddress, privateKey);

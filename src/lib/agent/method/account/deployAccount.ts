@@ -22,10 +22,16 @@ const provider = new RpcProvider({ nodeUrl: RPC_URL });
 export const DeployOZAccount = async (params: DeployOZAccountParams) => {
   try {
     const agent = new StarknetAgent({
-      walletPrivateKey: process.env.PRIVATE_KEY,
+      accountPrivateKey: process.env.PRIVATE_KEY,
       aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
       aiModel: process.env.AI_MODEL,
-      aiProvider: process.env.AI_PROVIDER,
+      aiProvider: process.env.AI_PROVIDER as
+        | 'openai'
+        | 'anthropic'
+        | 'ollama'
+        | 'gemini',
+      provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
+      accountPublicKey: process.env.PUBLIC_ADDRESS,
     });
 
     const accountDetails: AccountDetails = {
@@ -114,3 +120,8 @@ export const DeployArgentAccount = async (params: DeployArgentParams) => {
     };
   }
 };
+
+const aiProvider = process.env.AI_PROVIDER;
+if (!['openai', 'anthropic', 'ollama', 'gemini'].includes(aiProvider)) {
+  throw new Error('Invalid AI provider');
+}

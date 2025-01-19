@@ -1,3 +1,4 @@
+import { RpcProvider } from 'starknet';
 import { envSchema, type EnvConfig } from './env.validation';
 
 export class ConfigurationService {
@@ -32,8 +33,8 @@ export class ConfigurationService {
   get starknet() {
     return {
       privateKey: this.config.PRIVATE_KEY,
-      publicAddress: this.config.PUBLIC_ADDRESS,
-      rpcUrl: this.config.RPC_URL,
+      publicKey: this.config.PUBLIC_ADDRESS,
+      provider: new RpcProvider({ nodeUrl: this.config.RPC_URL }),
     };
   }
 

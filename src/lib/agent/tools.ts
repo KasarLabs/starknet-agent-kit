@@ -74,8 +74,8 @@ import { getLockedLiquidity } from './method/dapps/degen/unruggable/method/getLo
 import { launchOnEkubo } from './method/dapps/degen/unruggable/method/launchOnEkubo';
 
 // Types
-type StarknetAgentInterface = {
-  getCredentials: () => { walletPrivateKey: string };
+export type StarknetAgentInterface = {
+  getAccountCredentials: () => { accountPrivateKey: string };
 };
 
 /**
@@ -85,7 +85,8 @@ const withWalletKey = <T>(
   fn: (params: T, privateKey: string) => Promise<unknown>,
   agent: StarknetAgentInterface
 ) => {
-  return (params: T) => fn(params, agent.getCredentials().walletPrivateKey);
+  return (params: T) =>
+    fn(params, agent.getAccountCredentials().accountPrivateKey);
 };
 /**
  * Creates and returns balance checking tools with injected agent credentials

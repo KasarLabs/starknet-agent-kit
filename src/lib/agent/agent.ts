@@ -7,6 +7,8 @@ import { AiConfig } from '../utils/types/index.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
+
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
@@ -33,7 +35,7 @@ export const prompt = ChatPromptTemplate.fromMessages([
 ]);
 
 export const createAgent = (
-  starknetAgent: { getCredentials: () => { walletPrivateKey: string } },
+  starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
   const model = () => {

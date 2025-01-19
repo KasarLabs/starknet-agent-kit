@@ -1,6 +1,6 @@
 import { Account, uint256, CallData } from 'starknet';
 import { StarknetAgent } from 'src/lib/agent/starknetAgent';
-import { ERC20_ABI } from 'src/lib/utils/constants/swap';
+import { ERC20_ABI } from 'src/core/abis/tokens/erc20Abi';
 
 export class ApprovalService {
   constructor(private agent: StarknetAgent) {}

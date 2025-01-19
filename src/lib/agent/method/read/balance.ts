@@ -1,5 +1,5 @@
 import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
-import { ERC20_ABI } from 'src/lib/utils/constants/swap';
+import { ERC20_ABI } from 'src/core/abis/tokens/erc20Abi';
 import { Account, Contract, RpcProvider } from 'starknet';
 import {
   GetOwnBalanceParams,

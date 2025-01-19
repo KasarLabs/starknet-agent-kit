@@ -1,5 +1,5 @@
 /**
- * Parameters for retrieving own wallet balance
+ * Parameters for retrieving own account balance
  * @property {string} symbol - The token symbol to check balance for
  */
 export type GetOwnBalanceParams = {
@@ -7,11 +7,11 @@ export type GetOwnBalanceParams = {
 };
 
 /**
- * Parameters for retrieving balance of a specific wallet
- * @property {string} walletAddress - The address of the wallet to check
+ * Parameters for retrieving balance of a specific account
+ * @property {string} accountAddress - The address of the account to check
  * @property {string} assetSymbol - The token symbol to check balance for
  */
 export type GetBalanceParams = {
-  walletAddress: string;
+  accountAddress: string;
   assetSymbol: string;
 };

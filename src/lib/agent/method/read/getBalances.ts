@@ -1,11 +1,11 @@
-import { tokenAddresses } from 'src/lib/utils/constants/constant';
+import { tokenAddresses } from 'src/core/constants/tokens/erc20';
 import { ERC20_ABI } from 'src/core/abis/tokens/erc20Abi';
-import { Account, Contract, RpcProvider } from 'starknet';
+import { Account, Contract } from 'starknet';
 import {
   GetOwnBalanceParams,
   GetBalanceParams,
 } from 'src/lib/utils/types/balance';
-import { StarknetAgentInterface } from '../../tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];

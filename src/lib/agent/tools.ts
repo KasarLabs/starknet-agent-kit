@@ -14,7 +14,7 @@ import {
   simulateDeployTransaction,
   simulateDeclareTransaction,
 } from 'src/lib/agent/method/transaction/simulateTransaction';
-import { getOwnBalance, getBalance } from './method/read/balance';
+import { getOwnBalance, getBalance } from './method/read/getBalances';
 import { getBlockNumber } from './method/rpc/getBlockNumber';
 import { getBlockTransactionCount } from './method/rpc/getBlockTransactionCount';
 import { getStorageAt } from './method/rpc/getStorageAt';

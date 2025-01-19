@@ -230,7 +230,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'test', // Assurez-vous d'avoir cette variable d'environnement
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include', // Ajout de cette ligne

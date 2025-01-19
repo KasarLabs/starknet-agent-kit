@@ -1,10 +1,8 @@
-import { RPC_URL } from 'src/lib/utils/constants/constant';
-import { RpcProvider } from 'starknet';
+import { StarknetAgentInterface } from "src/lib/agent/tools";
 
-const provider = new RpcProvider({ nodeUrl: RPC_URL });
-
-export const getSpecVersion = async () => {
+export const getSpecVersion = async (agent: StarknetAgentInterface) => {
   try {
+    const provider = agent.getProvider();
     const specVersion = await provider.getSpecVersion();
 
     return JSON.stringify({

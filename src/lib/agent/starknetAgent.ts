@@ -5,10 +5,6 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
-import { tool } from '@langchain/core/tools';
-
-export const RPC_URL = process.env.RPC_URL || 'default_rpc_url';
-export const rpcProvider = new RpcProvider({ nodeUrl: RPC_URL });
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;

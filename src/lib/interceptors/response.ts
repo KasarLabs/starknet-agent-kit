@@ -12,38 +12,54 @@ export class AgentResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {
-        let parsedData;
+        const request = context.switchToHttp().getRequest().body?.request || '';
 
-        // If data is a string, try to parse it
-        if (typeof data === 'string') {
-          try {
-            parsedData = JSON.parse(data);
-          } catch (e) {
-            parsedData = { text: data };
+        let responseText: string;
+
+        if (data?.data?.output) {
+          return data.data;
+        }
+
+        try {
+          if (typeof data === 'string') {
+            const lastBraceIndex = data.lastIndexOf('}');
+            if (lastBraceIndex !== -1) {
+              responseText = data.substring(lastBraceIndex + 1).trim();
+            } else {
+              responseText = data;
+            }
+          } else if (data?.data) {
+            responseText = typeof data.data === 'string' 
+              ? data.data 
+              : JSON.stringify(data.data);
+          } else {
+            responseText = JSON.stringify(data);
           }
-        } else {
-          parsedData = data;
-        }
 
-        // If the parsed data already has the expected structure, return it directly
-        if (parsedData?.data?.output) {
-          return parsedData.data;
-        }
+          responseText = responseText.trim();
 
-        // Format the response
-        return {
-          input: context.switchToHttp().getRequest().body?.request || '',
-          output: [
-            {
-              index: 0,
-              type: 'text',
-              text:
-                parsedData?.text ||
-                parsedData?.message ||
-                JSON.stringify(parsedData),
-            },
-          ],
-        };
+          return {
+            input: request,
+            output: [
+              {
+                index: 0,
+                type: 'text',
+                text: responseText
+              }
+            ]
+          };
+        } catch (error) {
+          return {
+            input: request,
+            output: [
+              {
+                index: 0,
+                type: 'text',
+                text: typeof data === 'string' ? data : JSON.stringify(data)
+              }
+            ]
+          };
+        }
       })
     );
   }

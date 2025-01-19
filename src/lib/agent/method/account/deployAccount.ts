@@ -1,4 +1,3 @@
-import { RPC_URL } from 'src/lib/utils/constants/constant';
 import {
   argentx_classhash,
   DEFAULT_GUARDIAN,
@@ -10,21 +9,19 @@ import {
   CallData,
   TransactionFinalityStatus,
 } from 'starknet';
-import { StarknetAgent } from 'src/lib/agent/starknetAgent';
 import { AccountDetails } from 'src/lib/utils/types';
 import {
   DeployOZAccountParams,
   DeployArgentParams,
 } from 'src/lib/utils/types/deployaccount';
-import { StarknetAgentInterface } from '../../tools';
-
-const provider = new RpcProvider({ nodeUrl: RPC_URL });
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 export const DeployOZAccount = async (
   agent: StarknetAgentInterface,
   params: DeployOZAccountParams
 ) => {
   try {
+    const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
     const accountAddress = accountCredentials?.accountPublicKey;
     const accountPrivateKey = accountCredentials?.accountPrivateKey;
@@ -72,6 +69,8 @@ export const DeployArgentAccount = async (
   agent: StarknetAgentInterface,
   params: DeployArgentParams
 ) => {
+  const provider = agent.getProvider();
+
   try {
     const argentXaccountClassHash = argentx_classhash;
 

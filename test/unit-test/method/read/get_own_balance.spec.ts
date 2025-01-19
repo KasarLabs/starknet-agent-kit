@@ -1,4 +1,4 @@
-import { getOwnBalance } from 'src/lib/agent/method/read/balance';
+import { getOwnBalance } from 'src/lib/agent/method/read/getBalances';
 import * as C from '../../../utils/constant';
 
 describe('getOwnBlance', () => {

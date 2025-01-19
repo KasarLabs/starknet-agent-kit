@@ -1,6 +1,6 @@
-import { Account, RpcProvider, uint256 } from 'starknet';
-import { RPC_URL, tokenAddresses } from 'src/lib/utils/constants/constant';
-import { StarknetAgentInterface } from '../../tools';
+import { Account, uint256 } from 'starknet';
+import { tokenAddresses } from 'src/core/constants/tokens/erc20';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 export interface transferParams {
   recipient_address: string;

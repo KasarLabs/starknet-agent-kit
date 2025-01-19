@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt({ breaks: true });
 
 interface AgentResponse {
   text: string;
@@ -155,15 +157,31 @@ const StarknetAgent = () => {
   const formatResponse = (jsonString: string) => {
     try {
       const data = JSON.parse(jsonString);
-      if (data.data?.output?.[0]?.text) {
-        const cleanText = data.data.output[0].text
-          .replace(/\{"input":.*?"output":\[.*?"text":"|"\]\}$/g, '')
-          .replace(/\\n/g, '\n')
-          .replace(/\\"/g, '"');
-        return cleanText;
+      
+      // Extract the text content from the response
+      let extractedText = '';
+      
+      // Handle the result structure from your backend
+      if (data.result?.output?.[0]?.text) {
+        extractedText = data.result.output[0].text;
       }
-      return jsonString;
-    } catch {
+      // Handle direct output structure
+      else if (data.output?.[0]?.text) {
+        extractedText = data.output[0].text;
+      }
+      // Handle direct text
+      else if (typeof data === 'string') {
+        extractedText = data;
+      }
+      
+      // Clean up extra newlines and whitespace
+      extractedText = extractedText.trim();
+      
+      // Convert markdown to HTML
+      return md.render(extractedText);
+      
+    } catch (error) {
+      console.error('Error formatting response:', error);
       return jsonString;
     }
   };

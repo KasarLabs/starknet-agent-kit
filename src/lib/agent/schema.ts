@@ -89,6 +89,22 @@ export const getStorageAtSchema = blockIdAndContractAddressSchema.merge(
   })
 );
 
+export const getClassAtSchema = blockIdAndContractAddressSchema.merge(
+  z.object({
+    key: z
+      .string()
+      .describe('The class for the given contract at the given block'),
+  })
+);
+
+export const getClassHashAtSchema = blockIdAndContractAddressSchema.merge(
+  z.object({
+    key: z
+      .string()
+      .describe('The class hash for the given contract at the given block'),
+  })
+);
+
 export const getTransactionByBlockIdAndIndexSchema = blockIdSchema.merge(
   z.object({
     transactionIndex: z
@@ -370,6 +386,7 @@ export const launchOnEkuboSchema = z.object({
 export type LaunchOnEkuboParams = z.infer<typeof launchOnEkuboSchema>;
 export type CreateMemecoinParams = z.infer<typeof createMemecoinSchema>;
 export type GetStorageParams = z.infer<typeof getStorageAtSchema>;
+export type GetClassAtParams = z.infer<typeof getClassAtSchema>;
 export type BlockIdParams = z.infer<typeof blockIdSchema>;
 export type TransactionHashParams = z.infer<typeof transactionHashSchema>;
 export type BlockIdAndContractAddressParams = z.infer<

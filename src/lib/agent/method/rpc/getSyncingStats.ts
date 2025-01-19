@@ -1,8 +1,10 @@
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { StarknetAgentInterface } from '../../tools';
 
-export const getSyncingStats = async () => {
+export const getSyncingStats = async (agent: StarknetAgentInterface) => {
+  const provider = agent.getProvider();
+
   try {
-    const syncingStats = await rpcProvider.getSyncingStats();
+    const syncingStats = await provider.getSyncingStats();
     return JSON.stringify({
       status: 'success',
       syncingStats,

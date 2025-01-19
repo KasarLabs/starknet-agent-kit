@@ -1,8 +1,10 @@
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { StarknetAgentInterface } from '../../tools';
 
-export const getChainId = async () => {
+export const getChainId = async (agent: StarknetAgentInterface) => {
+  const provider = agent.getProvider();
+
   try {
-    const chainId = await rpcProvider.getChainId();
+    const chainId = await provider.getChainId();
 
     return JSON.stringify({
       status: 'success',

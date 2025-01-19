@@ -1,10 +1,12 @@
 import { BlockIdAndContractAddressParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { BlockNumber } from 'starknet';
+import { StarknetAgentInterface } from '../../tools';
 
 export const getClassHashAt = async (
+  agent: StarknetAgentInterface,
   params: BlockIdAndContractAddressParams
 ) => {
+  const provider = agent.getProvider();
   try {
     let blockIdentifier: BlockNumber | string = params.blockId || 'latest';
 
@@ -16,8 +18,7 @@ export const getClassHashAt = async (
       blockIdentifier = Number(blockIdentifier);
     }
 
-    // Note the order of parameters for getClassHashAt is different from getClassAt!
-    const classHash = await rpcProvider.getClassHashAt(
+    const classHash = await provider.getClassHashAt(
       params.contractAddress,
       blockIdentifier
     );

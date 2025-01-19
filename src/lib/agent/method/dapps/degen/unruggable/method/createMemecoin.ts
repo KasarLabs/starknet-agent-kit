@@ -1,6 +1,5 @@
 import { CreateMemecoinParams } from 'src/lib/agent/schema';
 import { stark, uint256 } from 'starknet';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import {
   execute,
   decimalsScale,
@@ -88,7 +87,7 @@ export const createMemecoin = async (
       provider
     );
 
-    await rpcProvider.waitForTransaction(transaction_hash);
+    await provider.waitForTransaction(transaction_hash);
 
     return JSON.stringify({
       status: 'success',

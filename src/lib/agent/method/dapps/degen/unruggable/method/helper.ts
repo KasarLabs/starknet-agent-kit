@@ -32,17 +32,17 @@ export const execute = async (
   provider: RpcProvider
 ) => {
   const accountCredentials = agent.getAccountCredentials();
-  const accountAddress = accountCredentials?.accountPublicKey;
-  const accountPrivateKey = accountCredentials?.accountPrivateKey;
-  const account = new Account(provider, accountAddress, accountPrivateKey);
+  const account = new Account(
+    provider,
+    accountCredentials.accountPublicKey,
+    accountCredentials.accountPrivateKey
+  );
 
-  const result = await account.execute({
+  return await account.execute({
     contractAddress: FACTORY_ADDRESS,
     entrypoint: method,
     calldata: CallData.compile(calldata),
   });
-
-  return result;
 };
 
 /**

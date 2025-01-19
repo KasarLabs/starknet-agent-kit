@@ -1,10 +1,12 @@
 import { TransactionHashParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { StarknetAgentInterface } from '../../tools';
 
-export const getTransactionByHash = async (params: TransactionHashParams) => {
+export const getTransactionByHash = async (agent: StarknetAgentInterface, params: TransactionHashParams) => {
+  const provider = agent.getProvider();
+
   try {
     const { transactionHash } = params;
-    const transaction = await rpcProvider.getTransactionByHash(transactionHash);
+    const transaction = await provider.getTransactionByHash(transactionHash);
     return JSON.stringify({
       status: 'success',
       transaction,

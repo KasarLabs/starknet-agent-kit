@@ -1,9 +1,9 @@
 import { Account, uint256, CallData } from 'starknet';
-import { StarknetAgent } from 'src/lib/agent/starknetAgent';
 import { ERC20_ABI } from 'src/core/abis/tokens/erc20Abi';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 export class ApprovalService {
-  constructor(private agent: StarknetAgent) {}
+  constructor(private agent: StarknetAgentInterface) {}
 
   private safeStringify(obj: unknown): string {
     return JSON.stringify(
@@ -86,5 +86,16 @@ export class ApprovalService {
         `Failed to approve token: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
+  }
+
+  async approveToken(/* ... */) {
+    const provider = this.agent.getProvider();
+    const credentials = this.agent.getAccountCredentials();
+    const account = new Account(
+      provider,
+      credentials.accountPublicKey,
+      credentials.accountPrivateKey
+    );
+    // ... rest of the method
   }
 }

@@ -48,14 +48,14 @@ export class SwapService {
     return undefined;
   }
 
-  async executeSwapTransaction(params: SwapParams): Promise<SwapResult> {
+  async executeSwapTransaction(params: SwapParams, agent: StarknetAgentInterface): Promise<SwapResult> {
     try {
       await this.initialize();
 
       const account = new Account(
         this.agent.contractInteractor.provider,
         this.walletAddress,
-        this.privateKey
+        this.agent.getAccountCredentials().accountPrivateKey
       );
 
       const { sellToken, buyToken } = this.tokenService.validateTokenPair(
@@ -170,7 +170,7 @@ export const swapTokens = async (
 ) => {
   try {
     const swapService = createSwapService(agent, process.env.PUBLIC_ADDRESS);
-    const result = await swapService.executeSwapTransaction(params);
+    const result = await swapService.executeSwapTransaction(params, agent);
     return JSON.stringify(result);
   } catch (error) {
     console.error('Detailed swap error:', error);

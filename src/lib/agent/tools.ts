@@ -44,6 +44,8 @@ import {
   createMemecoinSchema,
   launchOnEkuboSchema,
   contractAddressSchema,
+  getClassAtSchema,
+  getClassHashAtSchema,
 } from './schema';
 import { swapTokens } from './method/dapps/defi/avnu/swapService';
 import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
@@ -197,7 +199,7 @@ export const registerTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'get_class_at',
     description: "Fetch the class definition of a contract at a specific address in the latest state",
-    schema: blockIdAndContractAddressSchema,
+    schema: getClassAtSchema,
     execute: getClassAt
   });
 
@@ -263,7 +265,7 @@ export const registerTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'get_class_hash',
     description: "Retrieve the unique class hash for a contract at a specific address",
-    schema: blockIdAndContractAddressSchema,
+    schema: getClassHashAtSchema,
     execute: getClassHashAt
   });
 

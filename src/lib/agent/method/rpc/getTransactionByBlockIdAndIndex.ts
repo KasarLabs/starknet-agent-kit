@@ -1,12 +1,15 @@
 import { GetTransactionByBlockIdAndIndexParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { StarknetAgentInterface } from '../../tools';
 
 export const getTransactionByBlockIdAndIndex = async (
+  agent: StarknetAgentInterface,
   params: GetTransactionByBlockIdAndIndexParams
 ) => {
+  const provider = agent.getProvider();
+
   try {
     const { transactionIndex, blockId } = params;
-    const transaction = await rpcProvider.getTransactionByBlockIdAndIndex(
+    const transaction = await provider.getTransactionByBlockIdAndIndex(
       blockId,
       transactionIndex
     );

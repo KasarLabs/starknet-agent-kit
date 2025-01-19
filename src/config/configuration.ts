@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RpcProvider } from 'starknet';
-import { envSchema, type EnvConfig } from './env.validation';  // Add this import
+import { envSchema, type EnvConfig } from './env.validation'; // Add this import
 
 @Injectable()
 export class ConfigurationService {
@@ -18,13 +18,18 @@ export class ConfigurationService {
       RPC_URL: this.configService.get<string>('RPC_URL'),
       AI_PROVIDER: this.configService.get<string>('AI_PROVIDER'),
       AI_MODEL: this.configService.get<string>('AI_MODEL'),
-      AI_PROVIDER_API_KEY: this.configService.get<string>('AI_PROVIDER_API_KEY'),
+      AI_PROVIDER_API_KEY: this.configService.get<string>(
+        'AI_PROVIDER_API_KEY'
+      ),
     };
 
     const result = envSchema.safeParse(envVariables);
 
     if (!result.success) {
-      console.error('❌ Invalid environment variables:', JSON.stringify(result.error.format(), null, 2));
+      console.error(
+        '❌ Invalid environment variables:',
+        JSON.stringify(result.error.format(), null, 2)
+      );
       throw new Error('Invalid environment variables');
     }
 

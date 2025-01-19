@@ -33,7 +33,10 @@ export class RouteFetchService {
     await this.tokenService.initializeTokens();
   }
 
-  async fetchRoute(params: RouteSchemaType, agent: StarknetAgentInterface): Promise<RouteResult> {
+  async fetchRoute(
+    params: RouteSchemaType,
+    agent: StarknetAgentInterface
+  ): Promise<RouteResult> {
     const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
     try {

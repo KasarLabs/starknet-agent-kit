@@ -157,10 +157,10 @@ const StarknetAgent = () => {
   const formatResponse = (jsonString: string) => {
     try {
       const data = JSON.parse(jsonString);
-      
+
       // Extract the text content from the response
       let extractedText = '';
-      
+
       // Handle the result structure from your backend
       if (data.result?.output?.[0]?.text) {
         extractedText = data.result.output[0].text;
@@ -173,13 +173,12 @@ const StarknetAgent = () => {
       else if (typeof data === 'string') {
         extractedText = data;
       }
-      
+
       // Clean up extra newlines and whitespace
       extractedText = extractedText.trim();
-      
+
       // Convert markdown to HTML
       return md.render(extractedText);
-      
     } catch (error) {
       console.error('Error formatting response:', error);
       return jsonString;
@@ -230,7 +229,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY,
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include', // Ajout de cette ligne

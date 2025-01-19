@@ -29,9 +29,10 @@ export class AgentResponseInterceptor implements NestInterceptor {
               responseText = data;
             }
           } else if (data?.data) {
-            responseText = typeof data.data === 'string' 
-              ? data.data 
-              : JSON.stringify(data.data);
+            responseText =
+              typeof data.data === 'string'
+                ? data.data
+                : JSON.stringify(data.data);
           } else {
             responseText = JSON.stringify(data);
           }
@@ -44,9 +45,9 @@ export class AgentResponseInterceptor implements NestInterceptor {
               {
                 index: 0,
                 type: 'text',
-                text: responseText
-              }
-            ]
+                text: responseText,
+              },
+            ],
           };
         } catch (error) {
           return {
@@ -55,9 +56,9 @@ export class AgentResponseInterceptor implements NestInterceptor {
               {
                 index: 0,
                 type: 'text',
-                text: typeof data === 'string' ? data : JSON.stringify(data)
-              }
-            ]
+                text: typeof data === 'string' ? data : JSON.stringify(data),
+              },
+            ],
           };
         }
       })

@@ -33,7 +33,9 @@ export class RouteFetchService {
     await this.tokenService.initializeTokens();
   }
 
-  async fetchRoute(params: RouteSchemaType): Promise<RouteResult> {
+  async fetchRoute(params: RouteSchemaType, agent: StarknetAgentInterface): Promise<RouteResult> {
+    const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
+
     try {
       await this.initialize();
 
@@ -48,7 +50,7 @@ export class RouteFetchService {
         sellTokenAddress: sellToken.address,
         buyTokenAddress: buyToken.address,
         sellAmount: formattedAmount,
-        takerAddress: process.env.PUBLIC_ADDRESS!,
+        takerAddress: accountAddress,
         size: 1,
       };
 
@@ -94,7 +96,7 @@ export const getRoute = async (
     const tokenService = new TokenService();
     await tokenService.initializeTokens();
     const routeService = new RouteFetchService();
-    return routeService.fetchRoute(params);
+    return routeService.fetchRoute(params, agent);
   } catch (error) {
     console.error('Route fetching error:', error);
     return {

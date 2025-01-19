@@ -171,8 +171,10 @@ export const swapTokens = async (
   agent: StarknetAgentInterface,
   params: SwapParams
 ) => {
+  const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
+
   try {
-    const swapService = createSwapService(agent, process.env.PUBLIC_ADDRESS);
+    const swapService = createSwapService(agent, accountAddress);
     const result = await swapService.executeSwapTransaction(params, agent);
     return JSON.stringify(result);
   } catch (error) {

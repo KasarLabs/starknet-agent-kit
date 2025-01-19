@@ -116,8 +116,3 @@ export const DeployArgentAccount = async (
     };
   }
 };
-
-const aiProvider = process.env.AI_PROVIDER;
-if (!['openai', 'anthropic', 'ollama', 'gemini'].includes(aiProvider)) {
-  throw new Error('Invalid AI provider');
-}

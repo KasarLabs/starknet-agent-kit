@@ -1,6 +1,8 @@
-export const getAddress = async () => {
+import { StarknetAgentInterface } from "src/lib/agent/tools";
+
+export const getAddress = async (agent: StarknetAgentInterface) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
+    const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
     if (!accountAddress) {
       throw new Error(

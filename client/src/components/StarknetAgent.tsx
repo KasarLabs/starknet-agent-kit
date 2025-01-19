@@ -195,45 +195,59 @@ const StarknetAgent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
+  
     setIsLoading(true);
     setShowLoadingMessage(false);
-
+  
     const newResponse = {
       text: '',
       timestamp: Date.now(),
       isTyping: true,
     };
-
+  
     setCurrentResponse(newResponse);
-
+  
     try {
       const response = await fetch('/api/agent/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'test',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'test', // Assurez-vous d'avoir cette variable d'environnement
         },
         body: JSON.stringify({ request: input }),
+        credentials: 'include', // Ajout de cette ligne
       });
-
+  
+      // Ajout d'un meilleur logging des erreurs
       if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(errorText);
       }
-
+  
       const data = await response.json();
+      
+      // Validation de la structure de données
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid response format from server');
+      }
+  
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
     } catch (error) {
-      console.error('Error details:', error);
-      const errorMessage =
-        process.env.NODE_ENV === 'development'
-          ? `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
-          : 'Sorry, there was an error processing your request. Please try again.';
-
+      console.error('Request error:', error);
+      
+      const errorMessage = error instanceof Error 
+        ? error.message
+        : 'An unexpected error occurred';
+  
       typeResponse({
         ...newResponse,
-        text: errorMessage,
+        text: `Error: ${errorMessage}\nPlease try again or contact support if the issue persists.`
       });
     } finally {
       setIsLoading(false);

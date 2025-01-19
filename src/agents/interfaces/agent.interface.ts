@@ -1,3 +1,5 @@
+import { RpcProvider } from "starknet";
+
 export interface IAgent {
   /**
    * Executes the user request and returns the result
@@ -28,5 +30,10 @@ export interface IAgent {
    * Returns the agent's AI provider credentials
    * @returns AI provider credentials
    */
-  getModelCredentials(): { aiModel: string; aiProviderApiKey: string };
+  getModelCredentials(): {
+    aiModel: string;
+    aiProviderApiKey: string;
+  };
+
+  getProvider(): RpcProvider;
 }

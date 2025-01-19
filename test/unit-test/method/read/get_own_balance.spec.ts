@@ -10,7 +10,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params, process.env.PRIVATE_KEY);
+      const result = await getOwnBalance(params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -23,7 +23,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params, process.env.PRIVATE_KEY);
+      const result = await getOwnBalance(params);
       const parsed = JSON.parse(result);
 
       // Assert

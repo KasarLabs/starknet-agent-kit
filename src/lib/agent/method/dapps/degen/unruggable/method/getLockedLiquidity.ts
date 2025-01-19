@@ -1,8 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schema';
 import { Contract } from 'starknet';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 type LiquidityType =
   | { type: 'JediERC20'; address: string }
@@ -22,6 +22,7 @@ interface LockedLiquidityInfo {
  * (Jediswap, StarkDeFi, or Ekubo) and returns detailed information about the
  * liquidity lock.
  *
+ * @param {StarknetAgentInterface} agent - Starknet agent interface
  * @param {ContractAddressParams} params - Object containing the token contract address
  * @returns {Promise<GetLockedLiquiditySuccessResponse | GetLockedLiquidityErrorResponse>}
  *          Detailed information about locked liquidity or error response
@@ -72,9 +73,13 @@ interface LockedLiquidityInfo {
  * - Can be used to verify token safety before trading
  * - Useful for checking if a token's liquidity is locked
  */
-export const getLockedLiquidity = async (params: ContractAddressParams) => {
+export const getLockedLiquidity = async (
+  agent: StarknetAgentInterface,
+  params: ContractAddressParams
+) => {
   try {
-    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, rpcProvider);
+    const provider = agent.getProvider();
+    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
 
     const result = await contract.locked_liquidity(params.contractAddress);
     const liquidityInfo: LockedLiquidityInfo = {

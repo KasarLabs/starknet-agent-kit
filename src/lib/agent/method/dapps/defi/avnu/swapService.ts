@@ -13,16 +13,15 @@ import {
 } from 'src/lib/utils/constants/swap';
 import { TokenService } from './tokenService';
 import { ApprovalService } from './approvalService';
-import { StarknetAgent } from 'src/lib/agent/starknetAgent';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 export class SwapService {
   private tokenService: TokenService;
   private approvalService: ApprovalService;
 
   constructor(
-    private agent: StarknetAgent,
-    private walletAddress: string,
-    private privateKey: string
+    private agent: StarknetAgentInterface,
+    private walletAddress: string
   ) {
     this.tokenService = new TokenService();
     this.approvalService = new ApprovalService(agent);
@@ -155,34 +154,34 @@ export class SwapService {
 }
 
 export const createSwapService = (
-  privateKey: string,
+  agent: StarknetAgentInterface,
   walletAddress?: string
 ): SwapService => {
   if (!walletAddress) {
     throw new Error('Wallet address not configured');
   }
 
-  const agent = new StarknetAgent({
-    accountPrivateKey: process.env.PRIVATE_KEY,
-    aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
-    aiModel: process.env.AI_MODEL,
-    aiProvider: process.env.AI_PROVIDER as
-      | 'openai'
-      | 'anthropic'
-      | 'ollama'
-      | 'gemini',
-    provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
-    accountPublicKey: process.env.PUBLIC_ADDRESS,
-  });
-
-  return new SwapService(agent, walletAddress, privateKey);
+  return new SwapService(agent, walletAddress); 
 };
 
 export const swapTokens = async (
-  params: SwapParams,
-  privateKey: string
-): Promise<string> => {
-  const swapService = createSwapService(privateKey, process.env.PUBLIC_ADDRESS);
-  const result = await swapService.executeSwapTransaction(params);
-  return JSON.stringify(result);
+  agent: StarknetAgentInterface,
+  params: SwapParams
+) => {
+  try {
+    const swapService = createSwapService(agent, process.env.PUBLIC_ADDRESS);
+    const result = await swapService.executeSwapTransaction(params);
+    return JSON.stringify(result);
+  } catch (error) {
+    console.error('Detailed swap error:', error);
+    if (error instanceof Error) {
+      console.error('Error type:', error.constructor.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    return JSON.stringify({
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
 };

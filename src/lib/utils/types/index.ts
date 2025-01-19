@@ -1,3 +1,4 @@
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 import { ProviderInterface } from 'starknet';
 
 /**
@@ -9,8 +10,8 @@ import { ProviderInterface } from 'starknet';
  */
 export interface AccountDetails {
   address: string;
-  privateKey: string;
   publicKey: string;
+  privateKey: string;
   deployStatus: boolean;
 }
 

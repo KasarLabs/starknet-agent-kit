@@ -1,6 +1,7 @@
 import { fetchQuotes, QuoteRequest, Quote, Route } from '@avnu/avnu-sdk';
 import { TokenService } from './tokenService';
 import { z } from 'zod';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 export const routeSchema = z.object({
   sellTokenSymbol: z
@@ -86,8 +87,19 @@ export class RouteFetchService {
 }
 
 export const getRoute = async (
+  agent: StarknetAgentInterface,
   params: RouteSchemaType
 ): Promise<RouteResult> => {
-  const routeService = new RouteFetchService();
-  return routeService.fetchRoute(params);
+  try {
+    const tokenService = new TokenService();
+    await tokenService.initializeTokens();
+    const routeService = new RouteFetchService();
+    return routeService.fetchRoute(params);
+  } catch (error) {
+    console.error('Route fetching error:', error);
+    return {
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
 };

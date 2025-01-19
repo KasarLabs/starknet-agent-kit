@@ -1,11 +1,11 @@
 import { GetStorageParams } from 'src/lib/agent/schema';
-import { RPC_URL } from 'src/lib/utils/constants/constant';
-import { RpcProvider } from 'starknet';
+import { StarknetAgentInterface } from '../../tools';
 
-// Initialize provider
-const provider = new RpcProvider({ nodeUrl: RPC_URL });
-
-export const getStorageAt = async (params: GetStorageParams) => {
+export const getStorageAt = async (
+  agent: StarknetAgentInterface,
+  params: GetStorageParams
+) => {
+  const provider = agent.getProvider();
   try {
     const storage = await provider.getStorageAt(
       params.contractAddress,

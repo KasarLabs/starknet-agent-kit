@@ -1,8 +1,9 @@
 import { LaunchOnEkuboParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 import { Contract } from 'starknet';
+import { Account } from 'starknet';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 /**
  * Launches a memecoin on the Ekubo DEX with concentrated liquidity.
@@ -57,14 +58,20 @@ import { Contract } from 'starknet';
  * - Tick spacing affects price granularity and gas costs
  * - Bound parameter sets the concentrated liquidity range
  */
-export const launchOnEkubo = async ({
-  launchParams,
-  ekuboParams,
-}: LaunchOnEkuboParams) => {
+export const launchOnEkubo = async (
+  agent: StarknetAgentInterface,
+  params: LaunchOnEkuboParams
+) => {
   try {
-    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, rpcProvider);
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
 
-    const params = {
+    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
+
+    const launchParams = params.launchParams;
+    const ekuboParams = params.ekuboParams;
+
+    const paramsToSend = {
       memecoin_address: launchParams.memecoinAddress,
       transfer_restriction_delay: launchParams.transferRestrictionDelay,
       max_percentage_buy_launch: launchParams.maxPercentageBuyLaunch,
@@ -83,7 +90,7 @@ export const launchOnEkubo = async ({
       bound: ekuboParams.bound,
     };
 
-    const response = await contract.launch_on_ekubo(params, ekuboPoolParams);
+    const response = await contract.launch_on_ekubo(paramsToSend, ekuboPoolParams);
 
     return JSON.stringify({
       status: 'success',

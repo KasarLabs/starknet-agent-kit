@@ -1,5 +1,5 @@
 interface Account {
-  privateKey: string;
+  agent: StarknetAgentInterface;
   publicAddress: string;
 }
 

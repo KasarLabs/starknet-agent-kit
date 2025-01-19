@@ -1,3 +1,5 @@
+import { StarknetAgentInterface } from "src/lib/agent/tools";
+
 /**
  * Parameters for deploying an OpenZeppelin account
  * @property {string} publicKey - The public key of the account
@@ -5,7 +7,7 @@
  */
 export type DeployOZAccountParams = {
   publicKey: string;
-  privateKey: string;
+  agent: StarknetAgentInterface;
 };
 
 /**

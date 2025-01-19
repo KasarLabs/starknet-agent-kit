@@ -1,8 +1,12 @@
 import { BlockIdAndContractAddressParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { BlockNumber } from 'starknet';
+import { StarknetAgentInterface } from '../../tools';
 
-export const getClass = async (params: BlockIdAndContractAddressParams) => {
+export const getClass = async (
+  agent: StarknetAgentInterface,
+  params: BlockIdAndContractAddressParams
+) => {
+  const provider = agent.getProvider();
   try {
     let blockIdentifier: BlockNumber | string = params.blockId || 'latest';
 
@@ -14,7 +18,7 @@ export const getClass = async (params: BlockIdAndContractAddressParams) => {
       blockIdentifier = Number(blockIdentifier);
     }
 
-    const contractClass = await rpcProvider.getClass(
+    const contractClass = await provider.getClass(
       params.contractAddress,
       blockIdentifier
     );

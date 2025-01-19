@@ -16,37 +16,29 @@ import {
   DeployOZAccountParams,
   DeployArgentParams,
 } from 'src/lib/utils/types/deployaccount';
+import { StarknetAgentInterface } from '../../tools';
 
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
 
-export const DeployOZAccount = async (params: DeployOZAccountParams) => {
+export const DeployOZAccount = async (
+  agent: StarknetAgentInterface,
+  params: DeployOZAccountParams
+) => {
   try {
-    const agent = new StarknetAgent({
-      accountPrivateKey: process.env.PRIVATE_KEY,
-      aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
-      aiModel: process.env.AI_MODEL,
-      aiProvider: process.env.AI_PROVIDER as
-        | 'openai'
-        | 'anthropic'
-        | 'ollama'
-        | 'gemini',
-      provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
-      accountPublicKey: process.env.PUBLIC_ADDRESS,
-    });
-
+    const accountCredentials = agent.getAccountCredentials();
+    const accountAddress = accountCredentials?.accountPublicKey;
+    const accountPrivateKey = accountCredentials?.accountPrivateKey;
     const accountDetails: AccountDetails = {
-      publicKey: params.publicKey,
-      privateKey: params.privateKey,
+      publicKey: accountAddress,
+      privateKey: accountPrivateKey,
       address: '',
       deployStatus: false,
     };
 
-    const { suggestedMaxFee } =
-      await agent.accountManager.estimateAccountDeployFee(accountDetails);
+    const { suggestedMaxFee } = await agent.accountManager.estimateAccountDeployFee(accountDetails);
     console.log('Estimated max deployment fee:', suggestedMaxFee);
 
-    const deployResponse =
-      await agent.accountManager.deployAccount(accountDetails);
+    const deployResponse = await agent.accountManager.deployAccount(accountDetails);
 
     if (!deployResponse.transactionHash) {
       throw new Error('No transaction hash returned from deployment');
@@ -74,7 +66,10 @@ export const DeployOZAccount = async (params: DeployOZAccountParams) => {
   }
 };
 
-export const DeployArgentAccount = async (params: DeployArgentParams) => {
+export const DeployArgentAccount = async (
+  agent: StarknetAgentInterface,
+  params: DeployArgentParams
+) => {
   try {
     const argentXaccountClassHash = argentx_classhash;
 

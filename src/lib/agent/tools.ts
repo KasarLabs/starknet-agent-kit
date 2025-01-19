@@ -72,254 +72,271 @@ import { createMemecoin } from './method/dapps/degen/unruggable/method/createMem
 import { isMemecoin } from './method/dapps/degen/unruggable/method/isMemecoin';
 import { getLockedLiquidity } from './method/dapps/degen/unruggable/method/getLockedLiquidity';
 import { launchOnEkubo } from './method/dapps/degen/unruggable/method/launchOnEkubo';
+import { RpcProvider } from 'starknet';
+import { AccountManager } from 'src/lib/utils/account/AccountManager';
+import { TransactionMonitor } from 'src/lib/utils/monitoring/TransactionMonitor';
+import { ContractInteractor } from 'src/lib/utils/contract/ContractInteractor';
+import { GetBalanceParams, GetOwnBalanceParams } from '../utils/types/balance';
 
-// Types
-export type StarknetAgentInterface = {
-  getAccountCredentials: () => { accountPrivateKey: string };
+export interface StarknetAgentInterface {
+  getAccountCredentials: () => { 
+    accountPublicKey: string;
+    accountPrivateKey: string;
+  };
+  getModelCredentials: () => { 
+    aiModel: string; 
+    aiProviderApiKey: string;
+  };
+  getProvider: () => RpcProvider;
+  accountManager: AccountManager;
+  transactionMonitor: TransactionMonitor;
+  contractInteractor: ContractInteractor;
+}
+
+interface StarknetTool<P = any> {
+  name: string;
+  description: string;
+  schema?: object;
+  execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
+}
+
+// Helper function to inject agent into tool methods
+const withAgent = (fn: Function, agent: StarknetAgentInterface) => {
+  return (...args: any[]) => fn(agent, ...args);
 };
 
-/**
- * Wraps a function to inject the wallet private key from the agent
- */
-const withWalletKey = <T>(
-  fn: (params: T, privateKey: string) => Promise<unknown>,
-  agent: StarknetAgentInterface
-) => {
-  return (params: T) =>
-    fn(params, agent.getAccountCredentials().accountPrivateKey);
-};
-/**
- * Creates and returns balance checking tools with injected agent credentials
- */
-export const createTools = (agent: StarknetAgentInterface) => [
-  tool(withWalletKey(getOwnBalance, agent), {
+export class StarknetToolRegistry {
+  private static tools: StarknetTool[] = [];
+
+  static registerTool<P>(tool: StarknetTool<P>): void {
+    this.tools.push(tool);
+  }
+
+  static createTools(agent: StarknetAgentInterface) {
+    return this.tools.map(({ name, description, schema, execute }) => 
+      tool(
+        async (params: any) => execute(agent, params),
+        { name, description, ...(schema && { schema }) }
+      )
+    );
+  }
+}
+
+export const registerTools = () => {
+  // Register balance tools
+  StarknetToolRegistry.registerTool<GetOwnBalanceParams>({
     name: 'get_own_balance',
     description: 'Get the balance of an asset in your wallet',
     schema: getOwnBalanceSchema,
-  }),
-  tool(getBalance, {
+    execute: getOwnBalance
+  });
+
+  StarknetToolRegistry.registerTool<GetBalanceParams>({
     name: 'get_balance',
     description: 'Get the balance of an asset for a given wallet address',
     schema: getBalanceSchema,
-  }),
-  tool(CreateOZAccount, {
+    execute: getBalance
+  });
+
+  // Register account creation and deployment tools
+  StarknetToolRegistry.registerTool({
     name: 'CreateOZAccount',
     description: 'Create Open Zeppelin account',
-  }),
-  tool(DeployOZAccount, {
+    execute: CreateOZAccount
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'DeployOZ',
     description: 'Deploy a OZ Account',
     schema: DeployOZAccountSchema,
-  }),
-  tool(CreateArgentAccount, {
+    execute: DeployOZAccount
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'CreateArgentAccount',
     description: 'Create Account account',
-  }),
-  tool(DeployArgentAccount, {
+    execute: CreateArgentAccount
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'DeployArgent',
     description: 'Deploy a Argent Account',
     schema: DeployArgentAccountSchema,
-  }),
-  tool(getBlockNumber, {
+    execute: DeployArgentAccount
+  });
+
+  // Register blockchain query tools
+  StarknetToolRegistry.registerTool({
     name: 'get_block_number',
     description: 'Get the current block number from the Starknet network',
-  }),
-  tool(getBlockTransactionCount, {
+    execute: getBlockNumber
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'get_block_transaction_count',
     description: 'Get the number of transactions in a specific block',
     schema: blockIdSchema,
-  }),
-  tool(getStorageAt, {
+    execute: getBlockTransactionCount
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'get_storage_at',
     description: 'Get the storage value at a specific slot for a contract',
     schema: getStorageAtSchema,
-  }),
-  tool(getClass, {
-    name: 'get_class',
-    description:
-      "Retrieve the complete class definition of a contract at a specified address and block. This includes the contract's structure, methods, and other metadata.",
-    schema: blockIdAndContractAddressSchema,
-  }),
-  tool(getClassAt, {
-    name: 'get_class_at',
-    description:
-      "Fetch the class definition of a contract at a specific address in the latest state. This provides details about the contract's layout and capabilities.",
-    schema: blockIdAndContractAddressSchema,
-  }),
-  tool(getClassHashAt, {
-    name: 'get_class_hash',
-    description:
-      "Retrieve the unique class hash for a contract at a specific address. The class hash acts as an identifier for the contract's blueprint.",
-    schema: blockIdAndContractAddressSchema,
-  }),
-  tool(withWalletKey(swapTokens, agent), {
-    name: 'swap_tokens',
-    description:
-      'Swap a specified amount of one token for another token. Always return the transaction hash if successful',
-    schema: swapSchema,
-  }),
-  tool(getRoute, {
-    name: 'get_route',
-    description:
-      'Get a specific route for swapping tokens. This is useful for determining the best path for a token swap.',
-    schema: routeSchema,
-  }),
-  tool(transfer, {
-    name: 'transfer',
-    description:
-      'transfer from the caller only token ERC20 at a specific public address',
-    schema: Transferschema,
-  }),
-  tool(getSpecVersion, {
-    name: 'get_spec_version',
-    description: 'Get the current spec version from the Starknet RPC provider',
-  }),
-  tool(getBlockWithTxHashes, {
-    name: 'get_block_with_tx_hashes',
-    description:
-      'Retrieve the details of a block, including a list of transaction hashes, based on the specified block identifier. This is useful for tracking which transactions are included in a block.',
-    schema: blockIdSchema,
-  }),
-  tool(getBlockWithTxs, {
-    name: 'get_block_with_txs',
-    description:
-      'Retrieve a block’s details along with full transaction data, including the sender, recipient, and other transaction-specific details. This method is ideal when you need comprehensive information on the transactions included in a block.',
-    schema: blockIdSchema,
-  }),
-  tool(getBlockWithReceipts, {
-    name: 'get_block_with_receipts',
-    description:
-      'Fetch the details of a block along with transaction receipts, which include the status and logs of each transaction in the block. Use this when you need to check transaction outcomes and event logs.',
-    schema: blockIdSchema,
-  }),
-  tool(getBlockStateUpdate, {
-    name: 'get_block_state_update',
-    description:
-      'Fetch the state update for a block, using a specified block identifier.',
-    schema: blockIdSchema,
-  }),
-  tool(getTransactionStatus, {
-    name: 'get_transaction_status',
-    description:
-      'Fetch the status of a specific transaction by providing its transaction hash. This includes information such as whether the transaction succeeded or failed.',
-    schema: transactionHashSchema,
-  }),
-  tool(getTransactionByHash, {
-    name: 'get_transaction_by_hash',
-    description:
-      'Retrieve the full details of a specific transaction by providing its transaction hash. This includes data such as the sender, recipient, and the value transferred.',
-    schema: transactionHashSchema,
-  }),
-  tool(getTransactionByBlockIdAndIndex, {
-    name: 'get_transaction_by_block_id_and_index',
-    description:
-      'Retrieve a specific transaction from a block by providing the block identifier and the transaction index within the block.',
-    schema: getTransactionByBlockIdAndIndexSchema,
-  }),
-  tool(getTransactionReceipt, {
-    name: 'get_transaction_receipt',
-    description:
-      'Retrieve the receipt of a specific transaction by providing its transaction hash. This includes transaction status and other important details.',
-    schema: transactionHashSchema,
-  }),
-  tool(getBlockLatestAccepted, {
-    name: 'get_latest_accepted_block',
-    description:
-      "Retrieve the latest accepted block's hash and number from the Starknet network.",
-  }),
-  tool(getChainId, {
-    name: 'get_chain_id',
-    description:
-      'Retrieve the unique identifier (chain ID) of the Starknet network.',
-  }),
-  tool(getSyncingStats, {
-    name: 'get_syncing_status',
-    description:
-      'Retrieve the syncing status of the Starknet node, including the current block, highest block, and starting block if syncing.',
-  }),
-  tool(getNonceForAddress, {
-    name: 'get_nonce_for_address',
-    description:
-      'Retrieve the nonce for a specific contract or account address at a specified block.',
-    schema: blockIdAndContractAddressSchema,
-  }),
-  tool(getTransactionTrace, {
-    name: 'get_transaction_trace',
-    description:
-      'Fetch the execution trace for a specific transaction, including details about function calls and other internal operations.',
-    schema: transactionHashSchema,
-  }),
-  tool(getBlockTransactionsTraces, {
-    name: 'get_block_transactions_traces',
-    description:
-      'Retrieve execution traces for all transactions in a specified block, including detailed insights into their execution.',
-    schema: blockIdSchema,
-  }),
-  tool(getAddress, {
-    name: 'get_address',
-    description:
-      'Returns the public (current) account address from your .env config',
-  }),
-  tool(withWalletKey(declareContract, agent), {
-    name: 'declare_contract',
-    description: 'Declare a new contract on Starknet',
-    schema: declareContractSchema,
-  }),
-  tool(withWalletKey(estimateAccountDeployFee, agent), {
-    name: 'estimateAccountDeployFee',
-    description: 'Estimate the fee required to deploy an account',
-    schema: estimateAccountDeployFeeSchema,
-  }),
+    execute: getStorageAt
+  });
 
-  tool(withWalletKey(signMessage, agent), {
-    name: 'sign_message',
-    description: 'Sign a typed data message',
-    schema: signMessageSchema,
-  }),
-  tool(verifyMessage, {
-    name: 'verify_message',
-    description: 'Verify a signed message',
-    schema: verifyMessageSchema,
-  }),
-  tool(withWalletKey(simulateInvokeTransaction, agent), {
+  // Register contract-related tools
+  StarknetToolRegistry.registerTool({
+    name: 'get_class',
+    description: "Retrieve the complete class definition of a contract at a specified address and block",
+    schema: blockIdAndContractAddressSchema,
+    execute: getClass
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_class_at',
+    description: "Fetch the class definition of a contract at a specific address in the latest state",
+    schema: blockIdAndContractAddressSchema,
+    execute: getClassAt
+  });
+
+  // Register DeFi tools
+  StarknetToolRegistry.registerTool({
+    name: 'swap_tokens',
+    description: 'Swap a specified amount of one token for another token',
+    schema: swapSchema,
+    execute: swapTokens
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_route',
+    description: 'Get a specific route for swapping tokens',
+    schema: routeSchema,
+    execute: getRoute
+  });
+
+  // Register transaction tools
+  StarknetToolRegistry.registerTool({
+    name: 'transfer',
+    description: 'Transfer ERC20 tokens to a specific address',
+    schema: Transferschema,
+    execute: transfer
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'simulate_transaction',
     description: 'Simulate a transaction without executing it',
     schema: simulateInvokeTransactionSchema,
-  }),
-  tool(withWalletKey(simulateDeployAccountTransaction, agent), {
-    name: 'simulate_deploy_account_transaction',
-    description: 'Simulate Deploy Account transaction without executing it',
-    schema: simulateDeployAccountTransactionSchema,
-  }),
-  tool(withWalletKey(simulateDeployTransaction, agent), {
-    name: 'simulate_deploy_transaction',
-    description: 'Simulate Deploy transaction without executing it',
-    schema: simulateDeployTransactionSchema,
-  }),
-  tool(withWalletKey(simulateDeclareTransaction, agent), {
-    name: 'simulate_declare_transaction',
-    description: 'Simulate Deploy transaction without executing it',
-    schema: simulateDeclareTransactionSchema,
-  }),
-  tool(withWalletKey(createMemecoin, agent), {
+    execute: simulateInvokeTransaction
+  });
+
+  // Register memecoin tools
+  StarknetToolRegistry.registerTool({
     name: 'create_memecoin',
     description: 'Create a new memecoin using the Unruggable Factory',
     schema: createMemecoinSchema,
-  }),
-  tool(launchOnEkubo, {
+    execute: createMemecoin
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'launch_on_ekubo',
     description: 'Launch a memecoin on Ekubo DEX with concentrated liquidity',
     schema: launchOnEkuboSchema,
-  }),
-  tool(isMemecoin, {
+    execute: launchOnEkubo
+  });
+
+  // Register utility tools
+  StarknetToolRegistry.registerTool({
+    name: 'get_chain_id',
+    description: 'Retrieve the unique identifier (chain ID) of the Starknet network',
+    execute: getChainId
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_syncing_status',
+    description: 'Retrieve the syncing status of the Starknet node',
+    execute: getSyncingStats
+  });
+
+  // Add remaining tools from createTools2
+  StarknetToolRegistry.registerTool({
+    name: 'get_class_hash',
+    description: "Retrieve the unique class hash for a contract at a specific address",
+    schema: blockIdAndContractAddressSchema,
+    execute: getClassHashAt
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_spec_version',
+    description: 'Get the current spec version from the Starknet RPC provider',
+    execute: getSpecVersion
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_block_with_tx_hashes',
+    description: 'Retrieve the details of a block, including transaction hashes',
+    schema: blockIdSchema,
+    execute: getBlockWithTxHashes
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_block_with_receipts',
+    description: 'Fetch block details with transaction receipts',
+    schema: blockIdSchema,
+    execute: getBlockWithReceipts
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_transaction_status',
+    description: 'Fetch transaction status by hash',
+    schema: transactionHashSchema,
+    execute: getTransactionStatus
+  });
+
+  // Transaction tools
+  StarknetToolRegistry.registerTool({
+    name: 'simulate_deploy_account_transaction',
+    description: 'Simulate Deploy Account transaction',
+    schema: simulateDeployAccountTransactionSchema,
+    execute: simulateDeployAccountTransaction
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'simulate_deploy_transaction',
+    description: 'Simulate Deploy transaction',
+    schema: simulateDeployTransactionSchema,
+    execute: simulateDeployTransaction
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'simulate_declare_transaction',
+    description: 'Simulate Declare transaction',
+    schema: simulateDeclareTransactionSchema,
+    execute: simulateDeclareTransaction
+  });
+
+  // Utility tools
+  StarknetToolRegistry.registerTool({
     name: 'is_memecoin',
-    description:
-      'Check if a given address is a memecoin created by the factory',
+    description: 'Check if address is a memecoin',
     schema: contractAddressSchema,
-  }),
-  tool(getLockedLiquidity, {
+    execute: isMemecoin
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'get_locked_liquidity',
-    description: 'Get information about locked liquidity for a given token',
+    description: 'Get locked liquidity info for token',
     schema: contractAddressSchema,
-  }),
-];
+    execute: getLockedLiquidity
+  });
+};
+
+// Initialize tools
+registerTools();
+
+export const createTools = (agent: StarknetAgentInterface) => {
+  return StarknetToolRegistry.createTools(agent);
+};
+
+export default StarknetToolRegistry;

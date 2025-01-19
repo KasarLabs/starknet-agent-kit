@@ -1,20 +1,23 @@
-import { Account } from 'starknet';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { Account, provider } from 'starknet';
 import { DeclareContractParams } from 'src/lib/utils/types/contract';
+import { StarknetAgentInterface } from '../../tools';
 
 export const declareContract = async (
   params: DeclareContractParams,
-  privateKey: string
+  agent: StarknetAgentInterface
 ) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const accountAddress = accountCredentials?.accountPublicKey;
+    const accountPrivateKey = accountCredentials?.accountPrivateKey;
     if (!accountAddress) {
       throw new Error('Account address not configured');
     }
 
     const { contract, classHash, compiledClassHash } = params;
 
-    const account = new Account(rpcProvider, accountAddress, privateKey);
+    const account = new Account(provider, accountAddress, accountPrivateKey);
 
     const declareResponse = await account.declare({
       contract,
@@ -22,7 +25,7 @@ export const declareContract = async (
       compiledClassHash,
     });
 
-    await rpcProvider.waitForTransaction(declareResponse.transaction_hash);
+    await provider.waitForTransaction(declareResponse.transaction_hash);
 
     return JSON.stringify({
       status: 'success',

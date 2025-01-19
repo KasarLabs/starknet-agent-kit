@@ -1,4 +1,3 @@
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { Account, TransactionType } from 'starknet';
 import {
   Invocation_Invoke,
@@ -11,18 +10,22 @@ import {
 } from 'src/lib/utils/types/simulatetransaction';
 import { TransactionReponseFormat } from 'src/lib/utils/Output/output_simulatetransaction';
 import { DEFAULT_NONCE } from 'src/lib/utils/constants/contract';
+import { StarknetAgentInterface } from '../../tools';
 
 export const simulateInvokeTransaction = async (
-  params: SimulateInvokeTransactionParams,
-  privateKey: string
+  agent: StarknetAgentInterface,
+  params: SimulateInvokeTransactionParams
 ) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
-    if (!accountAddress) {
-      throw new Error('Account address not configured');
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const accountAddress = accountCredentials?.accountPublicKey;
+    const accountPrivateKey = accountCredentials?.accountPrivateKey;
+    if (!accountAddress || !accountPrivateKey) {
+      throw new Error('Account address or private key not configured');
     }
 
-    const account = new Account(rpcProvider, accountAddress, privateKey);
+    const account = new Account(provider, accountAddress, accountPrivateKey);
 
     const invocations: Invocation_Invoke[] = params.payloads.map((payload) => {
       return {
@@ -52,16 +55,22 @@ export const simulateInvokeTransaction = async (
 };
 
 export const simulateDeployAccountTransaction = async (
-  params: SimulateDeployTransactionAccountParams,
-  privateKey: string
+  agent: StarknetAgentInterface,
+  params: SimulateDeployTransactionAccountParams
 ) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
-    if (!accountAddress) {
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const account = new Account(
+      provider,
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey
+    );
+    const accountAddress = accountCredentials?.accountPublicKey;
+    const accountPrivateKey = accountCredentials?.accountPrivateKey;
+    if (!accountAddress || !accountPrivateKey) {
       throw new Error('Account address not configured');
     }
-
-    const account = new Account(rpcProvider, accountAddress, privateKey);
 
     const invocations: Invocation_Deploy_Account[] = params.payloads.map(
       (payload) => {
@@ -98,16 +107,17 @@ export const simulateDeployAccountTransaction = async (
 };
 
 export const simulateDeployTransaction = async (
-  params: SimulateDeployTransactionParams,
-  privateKey: string
+  agent: StarknetAgentInterface,
+  params: SimulateDeployTransactionParams
 ) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
-    if (!accountAddress) {
-      throw new Error('Account address not configured');
-    }
-
-    const account = new Account(rpcProvider, accountAddress, privateKey);
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const account = new Account(
+      provider,
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey
+    );
 
     const invocations: Invocation_Deploy[] = params.payloads.map((payload) => {
       return {
@@ -138,16 +148,17 @@ export const simulateDeployTransaction = async (
 };
 
 export const simulateDeclareTransaction = async (
-  params: SimulateDeclareTransactionAccountParams,
-  privateKey: string
+  agent: StarknetAgentInterface,
+  params: SimulateDeclareTransactionAccountParams
 ) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
-    if (!accountAddress) {
-      throw new Error('Account address not configured');
-    }
-
-    const account = new Account(rpcProvider, accountAddress, privateKey);
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const account = new Account(
+      provider,
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey
+    );
 
     const invocations = [
       {

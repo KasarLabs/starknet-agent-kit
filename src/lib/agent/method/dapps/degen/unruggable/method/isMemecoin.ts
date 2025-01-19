@@ -1,8 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schema';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { Contract } from 'starknet';
 import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 /**
  * Checks if a given contract address is a memecoin created by the Unruggable Factory.
@@ -10,6 +10,7 @@ import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
  * This function verifies whether a contract at the specified address was deployed
  * through the Unruggable Factory and implements the required memecoin interface.
  *
+ * @param {StarknetAgentInterface} agent - Starknet agent interface
  * @param {ContractAddressParams} params - Object containing the contract address to check
  * @returns {Promise<string>} JSON string containing either success response with boolean result
  *                           or error response with error message
@@ -46,10 +47,12 @@ import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
  * - Can be used to verify token authenticity before trading
  */
 export const isMemecoin = async (
+  agent: StarknetAgentInterface,
   params: ContractAddressParams
 ): Promise<string> => {
   try {
-    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, rpcProvider);
+    const provider = agent.getProvider();
+    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
     const result = await contract.is_memecoin(params.contractAddress);
 
     return JSON.stringify({

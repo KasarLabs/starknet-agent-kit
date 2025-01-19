@@ -5,6 +5,8 @@ import {
   execute,
   decimalsScale,
 } from 'src/lib/agent/method/dapps/degen/unruggable/method/helper';
+import { Account } from 'starknet';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 /**
  * Creates a new memecoin using the Unruggable Factory.
@@ -59,15 +61,21 @@ import {
  * - Name and symbol should follow token naming conventions
  */
 export const createMemecoin = async (
-  params: CreateMemecoinParams,
-  privateKey: string
+  agent: StarknetAgentInterface,
+  params: CreateMemecoinParams
 ) => {
   try {
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const account = new Account(
+      provider,
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey
+    );
     const salt = stark.randomAddress();
     const { transaction_hash } = await execute(
       'create_memecoin',
-      process.env.PUBLIC_ADDRESS,
-      privateKey,
+      agent,
       [
         params.owner,
         params.name,
@@ -76,7 +84,8 @@ export const createMemecoin = async (
           BigInt(params.initialSupply) * BigInt(decimalsScale(18))
         ),
         salt,
-      ]
+      ],
+      provider
     );
 
     await rpcProvider.waitForTransaction(transaction_hash);

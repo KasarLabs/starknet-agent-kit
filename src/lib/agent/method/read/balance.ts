@@ -5,6 +5,8 @@ import {
   GetOwnBalanceParams,
   GetBalanceParams,
 } from 'src/lib/utils/types/balance';
+import { StarknetAgent } from '../../starknetAgent';
+import { StarknetAgentInterface } from '../../tools';
 
 const provider = new RpcProvider({ nodeUrl: RPC_URL });
 
@@ -25,17 +27,18 @@ const formatBalance = (rawBalance: string, symbol: string): string => {
 };
 
 export const getOwnBalance = async (
-  params: GetOwnBalanceParams,
-  privateKey: string
-) => {
+  agent: StarknetAgentInterface,
+  params: GetOwnBalanceParams
+): Promise<string> => {
   try {
-    const walletAddress = process.env.PUBLIC_ADDRESS;
+    const accountCredentials = agent.getAccountCredentials();
+    const accountAddress = accountCredentials?.accountPublicKey;
+    const accountPrivateKey = accountCredentials?.accountPrivateKey;
 
-    if (!walletAddress) {
+    if (!accountAddress) {
       throw new Error('Wallet address not configured');
     }
-
-    const account = new Account(provider, walletAddress, privateKey);
+    const account = new Account(provider, accountAddress, accountPrivateKey);
 
     const tokenAddress = tokenAddresses[params.symbol];
     if (!tokenAddress) {
@@ -62,18 +65,19 @@ export const getOwnBalance = async (
   }
 };
 
-export const getBalance = async (params: GetBalanceParams) => {
+export const getBalance = async (
+  agent: StarknetAgentInterface, 
+  params: GetBalanceParams
+): Promise<string> => {
   try {
-    console.log(RPC_URL, provider);
-    console.log(params);
     const tokenAddress = tokenAddresses[params.assetSymbol];
     if (!tokenAddress) {
       throw new Error(`Token ${params.assetSymbol} not supported`);
     }
 
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
-    const balance = await tokenContract.balanceOf(params.walletAddress);
-    console.log('it work');
+    const balance = await tokenContract.balanceOf(params);
+
     const formattedBalance = formatBalance(
       balance.balance.toString(),
       params.assetSymbol

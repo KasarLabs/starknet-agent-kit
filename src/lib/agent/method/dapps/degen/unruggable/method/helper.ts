@@ -1,6 +1,7 @@
-import { Account, CallData, RawArgs } from 'starknet';
+import { Account, CallData, RawArgs, Uint256 } from 'starknet';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
+import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { RpcProvider } from 'starknet';
 
 /**
  * Execute a contract function transaction.
@@ -17,23 +18,28 @@ import { rpcProvider } from 'src/lib/agent/starknetAgent';
  * // Now you have access to the actual return value
  * ```
  *
- * @param entrypoint - The name of the contract function to call
- * @param accountAddress - The caller's account address
+ * @param method - The name of the contract function to call
+ * @param publicKey - The caller's account address
  * @param privateKey - The caller's private key
- * @param data - The function arguments
+ * @param calldata - The function arguments
+ * @param provider - The RPC provider
  * @returns Transaction hash only
- */ export const execute = async (
-  entrypoint: string,
-  accountAddress: string,
-  privateKey: string,
-  data: RawArgs
+ */
+export const execute = async (
+  method: string,
+  agent: StarknetAgentInterface,
+  calldata: (string | Uint256)[],
+  provider: RpcProvider
 ) => {
-  const account = new Account(rpcProvider, accountAddress, privateKey);
+  const accountCredentials = agent.getAccountCredentials();
+  const accountAddress = accountCredentials?.accountPublicKey;
+  const accountPrivateKey = accountCredentials?.accountPrivateKey;
+  const account = new Account(provider, accountAddress, accountPrivateKey);
 
   const result = await account.execute({
     contractAddress: FACTORY_ADDRESS,
-    entrypoint,
-    calldata: CallData.compile(data),
+    entrypoint: method,
+    calldata: CallData.compile(calldata),
   });
 
   return result;

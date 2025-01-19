@@ -2,20 +2,21 @@ import { IAgent } from '../../agents/interfaces/agent.interface';
 import type { AgentExecutor } from 'langchain/agents';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { RPC_URL } from '../utils/constants/constant';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
+import { tool } from '@langchain/core/tools';
 
+export const RPC_URL = process.env.RPC_URL || 'default_rpc_url';
 export const rpcProvider = new RpcProvider({ nodeUrl: RPC_URL });
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
-  accountPrivateKey: string;
   aiModel: string;
   aiProvider: 'openai' | 'anthropic' | 'ollama' | 'gemini';
   provider: RpcProvider;
   accountPublicKey: string;
+  accountPrivateKey: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -24,7 +25,7 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly AgentExecutor: AgentExecutor;
+  private readonly agentExecutor: AgentExecutor;
 
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
@@ -38,25 +39,26 @@ export class StarknetAgent implements IAgent {
     this.accountPublicKey = config.accountPublicKey;
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
-    this.AgentExecutor = createAgent(this, {
+
+    // Initialize managers
+    this.accountManager = new AccountManager(this.provider);
+    this.transactionMonitor = new TransactionMonitor(this.provider);
+    this.contractInteractor = new ContractInteractor(this.provider);
+
+    // Create agent executor with tools
+    this.agentExecutor = createAgent(this, {
       aiModel: this.aiModel,
       apiKey: this.aiProviderApiKey,
       aiProvider: config.aiProvider,
     });
-
-    this.accountManager = new AccountManager(rpcProvider);
-    this.transactionMonitor = new TransactionMonitor(rpcProvider);
-    this.contractInteractor = new ContractInteractor(rpcProvider);
   }
 
   private validateConfig(config: StarknetAgentConfig) {
     if (!config.accountPrivateKey) {
-      throw new Error(
-        'Starknet wallet private key is required https://www.argent.xyz/argent-x'
-      );
+      throw new Error('Starknet wallet private key is required https://www.argent.xyz/argent-x');
     }
     if (config.aiModel !== 'ollama' && !config.aiProviderApiKey) {
-      throw new Error('Ai Provider API key is required');
+      throw new Error('AI Provider API key is required');
     }
   }
 
@@ -79,23 +81,10 @@ export class StarknetAgent implements IAgent {
   }
 
   async validateRequest(request: string): Promise<boolean> {
-    if (!request || typeof request !== 'string') {
-      return false;
-    }
-
-    try {
-      // TODO: add validation logic here
-      // For now, returning true as a basic implementation
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return Boolean(request && typeof request === 'string');
   }
 
   async execute(input: string): Promise<unknown> {
-    const response = await this.AgentExecutor.invoke({
-      input,
-    });
-    return response;
+    return this.agentExecutor.invoke({ input });
   }
 }

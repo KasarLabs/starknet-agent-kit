@@ -1,19 +1,22 @@
-import { rpcProvider } from 'src/lib/agent/starknetAgent';
 import { Account, DeployAccountContractPayload } from 'starknet';
 
 import { EstimateAccountDeployFeeParams } from 'src/lib/utils/types/estimate';
+import { StarknetAgentInterface } from '../../tools';
 
 export const estimateAccountDeployFee = async (
   params: EstimateAccountDeployFeeParams,
-  privateKey: string
+  agent: StarknetAgentInterface
 ) => {
   try {
-    const accountAddress = process.env.PUBLIC_ADDRESS;
+    const provider = agent.getProvider();
+    const accountCredentials = agent.getAccountCredentials();
+    const accountAddress = accountCredentials?.accountPublicKey;
+    const accountPrivateKey = accountCredentials?.accountPrivateKey;
     if (!accountAddress) {
       throw new Error('Account address not configured');
     }
 
-    const account = new Account(rpcProvider, accountAddress, privateKey);
+    const account = new Account(provider, accountAddress, accountPrivateKey);
 
     const invocations: DeployAccountContractPayload[] = params.payloads.map(
       (payload) => {

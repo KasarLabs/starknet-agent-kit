@@ -232,7 +232,7 @@ const StarknetAgent = () => {
           'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
         },
         body: JSON.stringify({ request: input }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       // Ajout d'un meilleur logging des erreurs

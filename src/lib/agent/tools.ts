@@ -81,12 +81,12 @@ import { ContractInteractor } from 'src/lib/utils/contract/ContractInteractor';
 import { GetBalanceParams, GetOwnBalanceParams } from '../utils/types/balance';
 
 export interface StarknetAgentInterface {
-  getAccountCredentials: () => { 
+  getAccountCredentials: () => {
     accountPublicKey: string;
     accountPrivateKey: string;
   };
-  getModelCredentials: () => { 
-    aiModel: string; 
+  getModelCredentials: () => {
+    aiModel: string;
     aiProviderApiKey: string;
   };
   getProvider: () => RpcProvider;
@@ -115,11 +115,12 @@ export class StarknetToolRegistry {
   }
 
   static createTools(agent: StarknetAgentInterface) {
-    return this.tools.map(({ name, description, schema, execute }) => 
-      tool(
-        async (params: any) => execute(agent, params),
-        { name, description, ...(schema && { schema }) }
-      )
+    return this.tools.map(({ name, description, schema, execute }) =>
+      tool(async (params: any) => execute(agent, params), {
+        name,
+        description,
+        ...(schema && { schema }),
+      })
     );
   }
 }
@@ -130,77 +131,79 @@ export const registerTools = () => {
     name: 'get_own_balance',
     description: 'Get the balance of an asset in your wallet',
     schema: getOwnBalanceSchema,
-    execute: getOwnBalance
+    execute: getOwnBalance,
   });
 
   StarknetToolRegistry.registerTool<GetBalanceParams>({
     name: 'get_balance',
     description: 'Get the balance of an asset for a given wallet address',
     schema: getBalanceSchema,
-    execute: getBalance
+    execute: getBalance,
   });
 
   // Register account creation and deployment tools
   StarknetToolRegistry.registerTool({
     name: 'CreateOZAccount',
     description: 'Create Open Zeppelin account',
-    execute: CreateOZAccount
+    execute: CreateOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'DeployOZ',
     description: 'Deploy a OZ Account',
     schema: DeployOZAccountSchema,
-    execute: DeployOZAccount
+    execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'CreateArgentAccount',
     description: 'Create Account account',
-    execute: CreateArgentAccount
+    execute: CreateArgentAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'DeployArgent',
     description: 'Deploy a Argent Account',
     schema: DeployArgentAccountSchema,
-    execute: DeployArgentAccount
+    execute: DeployArgentAccount,
   });
 
   // Register blockchain query tools
   StarknetToolRegistry.registerTool({
     name: 'get_block_number',
     description: 'Get the current block number from the Starknet network',
-    execute: getBlockNumber
+    execute: getBlockNumber,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_block_transaction_count',
     description: 'Get the number of transactions in a specific block',
     schema: blockIdSchema,
-    execute: getBlockTransactionCount
+    execute: getBlockTransactionCount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_storage_at',
     description: 'Get the storage value at a specific slot for a contract',
     schema: getStorageAtSchema,
-    execute: getStorageAt
+    execute: getStorageAt,
   });
 
   // Register contract-related tools
   StarknetToolRegistry.registerTool({
     name: 'get_class',
-    description: "Retrieve the complete class definition of a contract at a specified address and block",
+    description:
+      'Retrieve the complete class definition of a contract at a specified address and block',
     schema: blockIdAndContractAddressSchema,
-    execute: getClass
+    execute: getClass,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_class_at',
-    description: "Fetch the class definition of a contract at a specific address in the latest state",
+    description:
+      'Fetch the class definition of a contract at a specific address in the latest state',
     schema: getClassAtSchema,
-    execute: getClassAt
+    execute: getClassAt,
   });
 
   // Register DeFi tools
@@ -208,14 +211,14 @@ export const registerTools = () => {
     name: 'swap_tokens',
     description: 'Swap a specified amount of one token for another token',
     schema: swapSchema,
-    execute: swapTokens
+    execute: swapTokens,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_route',
     description: 'Get a specific route for swapping tokens',
     schema: routeSchema,
-    execute: getRoute
+    execute: getRoute,
   });
 
   // Register transaction tools
@@ -223,14 +226,14 @@ export const registerTools = () => {
     name: 'transfer',
     description: 'Transfer ERC20 tokens to a specific address',
     schema: Transferschema,
-    execute: transfer
+    execute: transfer,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'simulate_transaction',
     description: 'Simulate a transaction without executing it',
     schema: simulateInvokeTransactionSchema,
-    execute: simulateInvokeTransaction
+    execute: simulateInvokeTransaction,
   });
 
   // Register memecoin tools
@@ -238,62 +241,65 @@ export const registerTools = () => {
     name: 'create_memecoin',
     description: 'Create a new memecoin using the Unruggable Factory',
     schema: createMemecoinSchema,
-    execute: createMemecoin
+    execute: createMemecoin,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'launch_on_ekubo',
     description: 'Launch a memecoin on Ekubo DEX with concentrated liquidity',
     schema: launchOnEkuboSchema,
-    execute: launchOnEkubo
+    execute: launchOnEkubo,
   });
 
   // Register utility tools
   StarknetToolRegistry.registerTool({
     name: 'get_chain_id',
-    description: 'Retrieve the unique identifier (chain ID) of the Starknet network',
-    execute: getChainId
+    description:
+      'Retrieve the unique identifier (chain ID) of the Starknet network',
+    execute: getChainId,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_syncing_status',
     description: 'Retrieve the syncing status of the Starknet node',
-    execute: getSyncingStats
+    execute: getSyncingStats,
   });
 
   // Add remaining tools from createTools2
   StarknetToolRegistry.registerTool({
     name: 'get_class_hash',
-    description: "Retrieve the unique class hash for a contract at a specific address",
+    description:
+      'Retrieve the unique class hash for a contract at a specific address',
     schema: getClassHashAtSchema,
-    execute: getClassHashAt
+    execute: getClassHashAt,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_spec_version',
     description: 'Get the current spec version from the Starknet RPC provider',
-    execute: getSpecVersion
+    execute: getSpecVersion,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_block_with_tx_hashes',
-    description: 'Retrieve the details of a block, including transaction hashes',
+    description:
+      'Retrieve the details of a block, including transaction hashes',
     schema: blockIdSchema,
-    execute: getBlockWithTxHashes
+    execute: getBlockWithTxHashes,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_block_with_receipts',
     description: 'Fetch block details with transaction receipts',
     schema: blockIdSchema,
-    execute: getBlockWithReceipts
+    execute: getBlockWithReceipts,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_transaction_status',
     description: 'Fetch transaction status by hash',
     schema: transactionHashSchema,
-    execute: getTransactionStatus
+    execute: getTransactionStatus,
   });
 
   // Transaction tools
@@ -301,21 +307,21 @@ export const registerTools = () => {
     name: 'simulate_deploy_account_transaction',
     description: 'Simulate Deploy Account transaction',
     schema: simulateDeployAccountTransactionSchema,
-    execute: simulateDeployAccountTransaction
+    execute: simulateDeployAccountTransaction,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'simulate_deploy_transaction',
     description: 'Simulate Deploy transaction',
     schema: simulateDeployTransactionSchema,
-    execute: simulateDeployTransaction
+    execute: simulateDeployTransaction,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'simulate_declare_transaction',
     description: 'Simulate Declare transaction',
     schema: simulateDeclareTransactionSchema,
-    execute: simulateDeclareTransaction
+    execute: simulateDeclareTransaction,
   });
 
   // Utility tools
@@ -323,14 +329,14 @@ export const registerTools = () => {
     name: 'is_memecoin',
     description: 'Check if address is a memecoin',
     schema: contractAddressSchema,
-    execute: isMemecoin
+    execute: isMemecoin,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'get_locked_liquidity',
     description: 'Get locked liquidity info for token',
     schema: contractAddressSchema,
-    execute: getLockedLiquidity
+    execute: getLockedLiquidity,
   });
 };
 

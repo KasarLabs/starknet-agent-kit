@@ -1,4 +1,4 @@
-import { RpcProvider } from "starknet";
+import { RpcProvider } from 'starknet';
 
 export interface IAgent {
   /**

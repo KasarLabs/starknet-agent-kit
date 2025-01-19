@@ -89,9 +89,7 @@ export class AgentService implements IAgentService {
       const model = agent.getModelCredentials();
 
       return {
-        isReady: Boolean(
-          credentials && model.aiProviderApiKey
-        ),
+        isReady: Boolean(credentials && model.aiProviderApiKey),
         walletConnected: Boolean(credentials.accountPrivateKey),
         apiKeyValid: Boolean(model.aiProviderApiKey),
       };

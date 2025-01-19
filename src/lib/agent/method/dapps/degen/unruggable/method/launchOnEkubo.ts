@@ -90,7 +90,10 @@ export const launchOnEkubo = async (
       bound: ekuboParams.bound,
     };
 
-    const response = await contract.launch_on_ekubo(paramsToSend, ekuboPoolParams);
+    const response = await contract.launch_on_ekubo(
+      paramsToSend,
+      ekuboPoolParams
+    );
 
     return JSON.stringify({
       status: 'success',

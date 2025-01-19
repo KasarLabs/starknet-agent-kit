@@ -10,7 +10,7 @@ export const getTransactionStatus = async (
     const status = await provider.getTransactionStatus(params.transactionHash);
     return JSON.stringify({
       status: 'success',
-      transactionStatus: status
+      transactionStatus: status,
     });
   } catch (error) {
     return JSON.stringify({

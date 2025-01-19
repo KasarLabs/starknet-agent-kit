@@ -1,5 +1,5 @@
-import { BlockIdAndContractAddressParams } from "../../schema";
-import { StarknetAgentInterface } from "../../tools";
+import { BlockIdAndContractAddressParams } from '../../schema';
+import { StarknetAgentInterface } from '../../tools';
 
 export const getClassHashAt = async (
   agent: StarknetAgentInterface,
@@ -13,7 +13,7 @@ export const getClassHashAt = async (
     );
     return JSON.stringify({
       status: 'success',
-      classHash
+      classHash,
     });
   } catch (error) {
     return JSON.stringify({
@@ -21,4 +21,4 @@ export const getClassHashAt = async (
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
-}; 
+};

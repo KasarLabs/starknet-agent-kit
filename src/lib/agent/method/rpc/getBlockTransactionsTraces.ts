@@ -1,7 +1,10 @@
 import { BlockIdParams } from 'src/lib/agent/schema';
 import { StarknetAgentInterface } from '../../tools';
 
-export const getBlockTransactionsTraces = async (agent: StarknetAgentInterface, params: BlockIdParams) => {
+export const getBlockTransactionsTraces = async (
+  agent: StarknetAgentInterface,
+  params: BlockIdParams
+) => {
   const provider = agent.getProvider();
 
   try {

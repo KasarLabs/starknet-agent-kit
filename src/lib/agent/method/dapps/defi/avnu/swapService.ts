@@ -48,7 +48,10 @@ export class SwapService {
     return undefined;
   }
 
-  async executeSwapTransaction(params: SwapParams, agent: StarknetAgentInterface): Promise<SwapResult> {
+  async executeSwapTransaction(
+    params: SwapParams,
+    agent: StarknetAgentInterface
+  ): Promise<SwapResult> {
     try {
       await this.initialize();
 
@@ -161,7 +164,7 @@ export const createSwapService = (
     throw new Error('Wallet address not configured');
   }
 
-  return new SwapService(agent, walletAddress); 
+  return new SwapService(agent, walletAddress);
 };
 
 export const swapTokens = async (

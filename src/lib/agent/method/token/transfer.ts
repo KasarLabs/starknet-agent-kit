@@ -50,9 +50,9 @@ export const transfer = async (
   try {
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
-    
+
     const account = new Account(
-      provider, 
+      provider,
       credentials.accountPublicKey,
       credentials.accountPrivateKey
     );

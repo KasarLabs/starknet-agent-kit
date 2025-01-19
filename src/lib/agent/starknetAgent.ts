@@ -55,7 +55,9 @@ export class StarknetAgent implements IAgent {
 
   private validateConfig(config: StarknetAgentConfig) {
     if (!config.accountPrivateKey) {
-      throw new Error('Starknet wallet private key is required https://www.argent.xyz/argent-x');
+      throw new Error(
+        'Starknet wallet private key is required https://www.argent.xyz/argent-x'
+      );
     }
     if (config.aiModel !== 'ollama' && !config.aiProviderApiKey) {
       throw new Error('AI Provider API key is required');

@@ -1,8 +1,6 @@
-import { StarknetAgentInterface } from "../../tools";
+import { StarknetAgentInterface } from '../../tools';
 
-export const getBlockNumber = async (
-  agent: StarknetAgentInterface,
-) => {
+export const getBlockNumber = async (agent: StarknetAgentInterface) => {
   const provider = agent.getProvider();
 
   try {

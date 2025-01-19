@@ -35,10 +35,12 @@ export const DeployOZAccount = async (
       deployStatus: false,
     };
 
-    const { suggestedMaxFee } = await agent.accountManager.estimateAccountDeployFee(accountDetails);
+    const { suggestedMaxFee } =
+      await agent.accountManager.estimateAccountDeployFee(accountDetails);
     console.log('Estimated max deployment fee:', suggestedMaxFee);
 
-    const deployResponse = await agent.accountManager.deployAccount(accountDetails);
+    const deployResponse =
+      await agent.accountManager.deployAccount(accountDetails);
 
     if (!deployResponse.transactionHash) {
       throw new Error('No transaction hash returned from deployment');

@@ -1,7 +1,10 @@
 import { TransactionHashParams } from 'src/lib/agent/schema';
 import { StarknetAgentInterface } from '../../tools';
 
-export const getTransactionByHash = async (agent: StarknetAgentInterface, params: TransactionHashParams) => {
+export const getTransactionByHash = async (
+  agent: StarknetAgentInterface,
+  params: TransactionHashParams
+) => {
   const provider = agent.getProvider();
 
   try {

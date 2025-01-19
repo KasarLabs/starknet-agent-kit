@@ -66,7 +66,7 @@ export const getOwnBalance = async (
 };
 
 export const getBalance = async (
-  agent: StarknetAgentInterface, 
+  agent: StarknetAgentInterface,
   params: GetBalanceParams
 ): Promise<string> => {
   try {

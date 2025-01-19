@@ -1,5 +1,4 @@
 import { ec, stark, hash, CallData } from 'starknet';
-import { StarknetAgent } from 'src/lib/agent/starknetAgent';
 import {
   argentx_classhash,
   DEFAULT_GUARDIAN,

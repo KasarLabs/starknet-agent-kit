@@ -57,19 +57,16 @@ export const transfer = async (
       credentials.accountPrivateKey
     );
 
-    // Token validation and setup
     const tokenAddress = tokenAddresses[params.symbol];
     if (!tokenAddress) {
       throw new Error(`Token ${params.symbol} not supported`);
     }
 
-    // Amount formatting
     const decimals =
       DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
 
-    // Execute transfer
     const result = await account.execute({
       contractAddress: tokenAddress,
       entrypoint: 'transfer',
@@ -85,7 +82,6 @@ export const transfer = async (
       result.transaction_hash
     );
 
-    // Wait for transaction confirmation
     await provider.waitForTransaction(result.transaction_hash);
 
     const transferResult: TransferResult = {

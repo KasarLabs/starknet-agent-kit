@@ -1,6 +1,9 @@
+import { StarknetAgentInterface } from "src/lib/agent/tools";
+
 interface Account {
-  agent: StarknetAgentInterface;
+  agent?: StarknetAgentInterface;
   publicAddress: string;
+  privateKey:string
 }
 
 interface TestAccounts {
@@ -16,7 +19,7 @@ interface EnvConfig {
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
-    RPC_URL: 'http://127.0.0.1:5050',
+    RPC_URL: 'localhost:5050',
     accounts: {
       account1: {
         privateKey:

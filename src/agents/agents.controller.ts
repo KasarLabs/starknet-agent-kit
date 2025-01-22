@@ -33,10 +33,14 @@ export class AgentsController implements OnModuleInit {
     });
   }
 
-  @Post('request')
-  async handleUserRequest(@Body() userRequest: AgentRequestDTO) {
-    return await this.agentService.handleUserRequest(this.agent, userRequest);
+  @Post('call_data')
+  async handleUserCalldataRequest(@Body() userRequest : any) {
+    return "Hello";
   }
+  // @Post('request')
+  // async handleUserRequest(@Body() userRequest: AgentRequestDTO) {
+  //   return await this.agentService.handleUserRequest(this.agent, userRequest);
+  // }
 
   @Get('status')
   async getAgentStatus() {

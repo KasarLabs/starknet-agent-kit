@@ -9,10 +9,18 @@ import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
+
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
   Response formats ⚡:
+
+  if you choose a call_data function the return : 
+  {
+    status:
+    ... all the key:value
+  }
+  in JSON format
 
   Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash}
   
@@ -79,6 +87,7 @@ export const createAgent = (
         throw new Error(`Unsupported AI provider: ${aiConfig.aiProvider}`);
     }
   };
+
 
   const modelSelected = model();
   const tools = createTools(starknetAgent);

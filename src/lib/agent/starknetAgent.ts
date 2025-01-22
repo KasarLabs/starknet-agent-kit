@@ -5,6 +5,7 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
+import { readSync } from 'fs';
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
@@ -83,6 +84,32 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute(input: string): Promise<unknown> {
-    return this.agentExecutor.invoke({ input });
+    const aiMessage = await this.agentExecutor.invoke({ input });
+    
+    if (input.toLowerCase().includes('call_data')) {
+      try {
+        if (Array.isArray(aiMessage.output)) {
+          for (const item of aiMessage.output) {
+            if (item.type === 'text' && item.text) {
+              console.log("Text trouvé:", item.text);
+              
+              const startIndex = item.text.indexOf('{');
+              const endIndex = item.text.lastIndexOf('}') + 1;
+              
+              if (startIndex !== -1 && endIndex !== -1) {
+                const jsonStr = item.text.substring(startIndex, endIndex);
+                console.log("JSON extrait:", jsonStr);
+                return JSON.parse(jsonStr);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return aiMessage.output;
+      }
+    }
+    
+    return aiMessage;
   }
 }

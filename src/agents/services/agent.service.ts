@@ -79,6 +79,10 @@ export class AgentService implements IAgentService {
     }
   }
 
+  async handleUserCalldataRequest(agent : IAgent, userRequest: AgentRequestDTO): Promise<string> {
+    return "caca";
+  }
+
   async getAgentStatus(agent: IAgent): Promise<{
     isReady: boolean;
     walletConnected: boolean;

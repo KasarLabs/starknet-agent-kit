@@ -1,6 +1,7 @@
 import { Account, uint256 } from 'starknet';
 import { tokenAddresses } from 'src/core/constants/tokens/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { error } from 'console';
 
 export interface transferParams {
   recipient_address: string;
@@ -102,6 +103,53 @@ export const transfer = async (
       step: 'transfer execution',
     };
 
-    return JSON.stringify(transferResult);
+    const result = JSON.stringify(transferResult);
+    return result;
+  }
+};
+
+
+export const transfer_call_data = async (
+  agent: StarknetAgentInterface,
+  params: transferParams
+): Promise<any> => {
+  try {
+    const tokenAddress = tokenAddresses[params.symbol];
+    if (!tokenAddress) {
+      return {
+        status: 'error',
+        error: {
+          code: 'TOKEN_NOT_SUPPORTED',
+          message: `Token ${params.symbol} not supported`
+        }
+      };
+    }
+
+    const decimals = DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const formattedAmount = formatTokenAmount(params.amount, decimals);
+    const amountUint256 = uint256.bnToUint256(formattedAmount);
+
+    return JSON.stringify({
+      status: 'success',
+      data: {
+        contractAddress: tokenAddress,
+        entrypoint: 'transfer',
+        calldata: [
+          params.recipient_address,
+          amountUint256.low,
+          amountUint256.high,
+        ]
+      }
+      });
+  } catch (error) {
+    console.error("Transfer call data failure:", error);
+    
+    return {
+      status: 'error',
+      error: {
+        code: 'TRANSFER_CALL_DATA_ERROR',
+        message: error.message || 'Failed to generate transfer call data'
+      }
+    };
   }
 };

@@ -225,7 +225,7 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
-      const response = await fetch('/api/agent/request', {
+      const response = await fetch('/api/agent/call_data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -235,7 +235,6 @@ const StarknetAgent = () => {
         credentials: 'include',
       });
 
-      // Ajout d'un meilleur logging des erreurs
       if (!response.ok) {
         const errorText = await response.text();
         console.error('API Error:', {
@@ -247,14 +246,17 @@ const StarknetAgent = () => {
       }
 
       const data = await response.json();
+      console.log("Raw response:", data);  // Log des données brutes
 
-      // Validation de la structure de données
       if (!data || typeof data !== 'object') {
         throw new Error('Invalid response format from server');
       }
 
-      const formattedText = formatResponse(JSON.stringify(data));
-      typeResponse({ ...newResponse, text: formattedText });
+      // Afficher directement les données JSON formatées
+      const jsonString = JSON.stringify(data, null, 2);
+      console.log(jsonString)
+      typeResponse({ ...newResponse, text: jsonString });
+
     } catch (error) {
       console.error('Request error:', error);
 

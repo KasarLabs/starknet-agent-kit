@@ -7,7 +7,7 @@ import {
   DeployArgentAccount,
   DeployOZAccount,
 } from 'src/lib/agent/method/account/deployAccount';
-import { transfer } from './method/token/transfer';
+import { transfer, transfer_call_data } from './method/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
@@ -28,6 +28,7 @@ import {
   swapSchema,
   DeployOZAccountSchema,
   Transferschema,
+  transfer_call_data_schema,
   blockIdSchema,
   getTransactionByBlockIdAndIndexSchema,
   transactionHashSchema,
@@ -99,6 +100,7 @@ interface StarknetTool<P = any> {
   name: string;
   description: string;
   schema?: object;
+  responseFormat?: string,
   execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
 }
 
@@ -228,6 +230,15 @@ export const registerTools = () => {
     schema: Transferschema,
     execute: transfer,
   });
+
+  StarknetToolRegistry.registerTool({
+    name: 'transfer_call_data',
+    description: 'return transfer call data schema',
+    schema: transfer_call_data_schema,
+    execute: transfer_call_data,
+  });
+
+
 
   StarknetToolRegistry.registerTool({
     name: 'simulate_transaction',

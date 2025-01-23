@@ -40,7 +40,7 @@ export class AgentService implements IAgentService {
         throw new AgentValidationError('Invalid request format or parameters');
       }
 
-      const result = await agent.execute(userRequest.request);
+      const result = await agent.execute(userRequest.request, false);
 
       this.logger.debug({
         message: 'Agent request processed successfully',
@@ -79,8 +79,22 @@ export class AgentService implements IAgentService {
     }
   }
 
-  async handleUserCalldataRequest(agent : IAgent, userRequest: AgentRequestDTO): Promise<string> {
-    return "caca";
+  async handleUserCalldataRequest(agent : IAgent, userRequest: AgentRequestDTO): Promise<any> {
+    try {
+      const status = await this.getAgentStatus(agent);
+      if (!status.isReady) {
+        throw new AgentCredentialsError('Agent is not properly configured');
+      }
+
+      if (!(await agent.validateRequest(userRequest.request))) {
+        throw new AgentValidationError('Invalid request format or parameters');
+      }
+      const result = await agent.execute(userRequest.request, true);
+      console.log("Result API");
+      return result;
+    }catch (error:any) {
+      return "Error";
+    }
   }
 
   async getAgentStatus(agent: IAgent): Promise<{

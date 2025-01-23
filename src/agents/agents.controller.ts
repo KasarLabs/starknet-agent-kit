@@ -10,10 +10,8 @@ import { AgentRequestDTO } from './dto/agents';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
-import { AgentResponseInterceptor } from 'src/lib/interceptors/response';
 
 @Controller('agent')
-@UseInterceptors(AgentResponseInterceptor)
 export class AgentsController implements OnModuleInit {
   private agent: StarknetAgent;
 
@@ -33,14 +31,15 @@ export class AgentsController implements OnModuleInit {
     });
   }
 
-  @Post('call_data')
+  @Post ('call_data')
   async handleUserCalldataRequest(@Body() userRequest : any) {
-    return "Hello";
+    return await this.agentService.handleUserCalldataRequest(this.agent, userRequest);
   }
-  // @Post('request')
-  // async handleUserRequest(@Body() userRequest: AgentRequestDTO) {
-  //   return await this.agentService.handleUserRequest(this.agent, userRequest);
-  // }
+  
+  @Post('request')
+  async handleUserRequest(@Body() userRequest: AgentRequestDTO) {
+    return await this.agentService.handleUserRequest(this.agent, userRequest);
+  }
 
   @Get('status')
   async getAgentStatus() {

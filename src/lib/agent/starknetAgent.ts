@@ -83,10 +83,11 @@ export class StarknetAgent implements IAgent {
     return Boolean(request && typeof request === 'string');
   }
 
-  async execute(input: string): Promise<unknown> {
+  async execute(input: string, call_data_function : boolean): Promise<unknown> {
     const aiMessage = await this.agentExecutor.invoke({ input });
     
-    if (input.toLowerCase().includes('call_data')) {
+    console.log(call_data_function)
+    if (call_data_function == true) {
       try {
         if (Array.isArray(aiMessage.output)) {
           for (const item of aiMessage.output) {

@@ -8,12 +8,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
+import UploadFile, { removeFile } from './ui/uploadFile';
+
 const md = new MarkdownIt({ breaks: true });
 
 interface AgentResponse {
   text: string;
   timestamp: number;
   isTyping: boolean;
+}
+
+export interface FileInfo {
+  name: string;
+  size: number;
+  type: string;
 }
 
 const StarknetAgent = () => {
@@ -23,6 +31,8 @@ const StarknetAgent = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
 
   // When in loading state for >5s, we show "Processing..."
   useEffect(() => {
@@ -225,46 +235,59 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
-      const response = await fetch('/api/agent/request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
-        },
-        body: JSON.stringify({ request: input }),
-        credentials: 'include',
-      });
-
-      // Ajout d'un meilleur logging des erreurs
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', {
-          status: response.status,
-          statusText: response.statusText,
-          body: errorText,
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        console.log(formData.get('file'));
+        const resp = await fetch('/api/agent/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          },
+          body: selectedFile,
         });
-        throw new Error(errorText);
       }
+      //   const response = await fetch('/api/agent/request', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+      //     },
+      //     body: JSON.stringify({ request: input }),
+      //     credentials: 'include',
+      //   });
 
-      const data = await response.json();
+      //   // Ajout d'un meilleur logging des erreurs
+      //   if (!response.ok) {
+      //     const errorText = await response.text();
+      //     console.error('API Error:', {
+      //       status: response.status,
+      //       statusText: response.statusText,
+      //       body: errorText,
+      //     });
+      //     throw new Error(errorText);
+      //   }
 
-      // Validation de la structure de données
-      if (!data || typeof data !== 'object') {
-        throw new Error('Invalid response format from server');
-      }
+      //   const data = await response.json();
 
-      const formattedText = formatResponse(JSON.stringify(data));
-      typeResponse({ ...newResponse, text: formattedText });
-    } catch (error) {
-      console.error('Request error:', error);
+      //   // Validation de la structure de données
+      //   if (!data || typeof data !== 'object') {
+      //     throw new Error('Invalid response format from server');
+      //   }
 
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unexpected error occurred';
+      //   const formattedText = formatResponse(JSON.stringify(data));
+      //   typeResponse({ ...newResponse, text: formattedText });
+      // } catch (error) {
+      //   console.error('Request error:', error);
 
-      typeResponse({
-        ...newResponse,
-        text: `Error: ${errorMessage}\nPlease try again or contact support if the issue persists.`,
-      });
+      //   const errorMessage =
+      //     error instanceof Error ? error.message : 'An unexpected error occurred';
+
+      //   typeResponse({
+      //     ...newResponse,
+      //     text: `Error: ${errorMessage}\nPlease try again or contact support if the issue persists.`,
+      //   });
     } finally {
       setIsLoading(false);
       setInput('');
@@ -312,6 +335,12 @@ const StarknetAgent = () => {
                 )}
               </Button>
             </form>
+
+            <UploadFile
+              fileInfo={fileInfo}
+              setFileInfo={setFileInfo}
+              setSelectedFile={setSelectedFile}
+            />
 
             {currentResponse && (
               <Alert className="bg-neutral-800 border-neutral-700">

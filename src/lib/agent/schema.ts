@@ -7,14 +7,11 @@ export const Transferschema = z.object({
   symbol: z.string().describe('The symbol of the erc20 token'),
 });
 
-
 export const transfer_call_data_schema = z.object({
   recipient_address: z.string().describe('The recipient public address'),
   amount: z.string().describe('The amount of erc20 token that will be send'),
   symbol: z.string().describe('The symbol of the erc20 token'),
 });
-
-
 
 export const blockIdSchema = z.object({
   blockId: z.union([

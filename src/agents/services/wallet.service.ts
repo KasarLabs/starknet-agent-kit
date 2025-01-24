@@ -12,78 +12,20 @@ import {
 } from '../interfaces/agent-service.interface';
 import { IAgent } from '../interfaces/agent.interface';
 import { AgentRequestDTO } from '../dto/agents';
+import { IWalletService } from '../interfaces/wallet-service.inferface';
 
 @Injectable()
-export class AgentService implements IAgentService {
-  private readonly logger = new Logger(AgentService.name);
+export class WalletService implements IWalletService {
+  private readonly logger = new Logger(WalletService.name);
 
   constructor(private readonly config: ConfigurationService) {}
-
-  async handleUserRequest(
-    agent: IAgent,
-    userRequest: AgentRequestDTO
-  ): Promise<AgentExecutionResponse> {
-    this.logger.debug({
-      message: 'Processing agent request',
-      request: userRequest.request,
-    });
-
-    try {
-      // Check agent status before processing
-      const status = await this.getAgentStatus(agent);
-      if (!status.isReady) {
-        throw new AgentCredentialsError('Agent is not properly configured');
-      }
-
-      // Validate request
-      if (!(await agent.validateRequest(userRequest.request))) {
-        throw new AgentValidationError('Invalid request format or parameters');
-      }
-
-      const result = await agent.execute(userRequest.request, false);
-
-      this.logger.debug({
-        message: 'Agent request processed successfully',
-        result,
-      });
-
-      return {
-        status: 'success',
-        data: result,
-      };
-    } catch (error: any) {
-      this.logger.error('Error processing agent request', {
-        error: {
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
-        },
-        request: userRequest.request,
-      });
-
-      if (error instanceof AgentValidationError) {
-        throw error;
-      }
-
-      if (error.message?.includes('transaction')) {
-        throw new StarknetTransactionError('Failed to execute transaction', {
-          originalError: error.message,
-          cause: error,
-        });
-      }
-
-      throw new AgentExecutionError('Failed to process agent request', {
-        originalError: error.message,
-        cause: error,
-      });
-    }
-  }
 
   async handleUserCalldataRequest(
     agent: IAgent,
     userRequest: AgentRequestDTO
   ): Promise<any> {
     try {
+      console.log('On y est ! ');
       const status = await this.getAgentStatus(agent);
       if (!status.isReady) {
         throw new AgentCredentialsError('Agent is not properly configured');

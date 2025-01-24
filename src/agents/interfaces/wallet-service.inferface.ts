@@ -21,8 +21,8 @@ export interface AgentExecutionCallDataResponse {
   };
 }
 
-export interface IAgentService {
-  handleUserRequest(
+export interface IWalletService {
+  handleUserCalldataRequest(
     agent: IAgent,
     userRequest: AgentRequestDTO
   ): Promise<AgentExecutionResponse>;

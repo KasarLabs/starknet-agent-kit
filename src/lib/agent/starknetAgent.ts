@@ -6,7 +6,7 @@ import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
 import { readSync } from 'fs';
-
+import { ToolsChoice } from './agent';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -14,6 +14,7 @@ export interface StarknetAgentConfig {
   provider: RpcProvider;
   accountPublicKey: string;
   accountPrivateKey: string;
+  tools_choice: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -27,6 +28,7 @@ export class StarknetAgent implements IAgent {
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
+  public readonly tools_choice: ToolsChoice;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -36,6 +38,7 @@ export class StarknetAgent implements IAgent {
     this.accountPublicKey = config.accountPublicKey;
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
+    this.tools_choice = config.tools_choice;
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -75,6 +78,12 @@ export class StarknetAgent implements IAgent {
     };
   }
 
+  getToolsChoice() {
+    return {
+      tools_choice: this.tools_choice,
+    };
+  }
+
   getProvider(): RpcProvider {
     return this.provider;
   }
@@ -83,34 +92,31 @@ export class StarknetAgent implements IAgent {
     return Boolean(request && typeof request === 'string');
   }
 
-  async execute(input: string, call_data_function : boolean): Promise<unknown> {
+  async execute(input: string, call_data_function: boolean): Promise<unknown> {
     const aiMessage = await this.agentExecutor.invoke({ input });
-    
-    console.log(call_data_function)
+
+    console.log(call_data_function);
     if (call_data_function == true) {
       try {
         if (Array.isArray(aiMessage.output)) {
           for (const item of aiMessage.output) {
             if (item.type === 'text' && item.text) {
-              console.log("Text trouvé:", item.text);
-              
               const startIndex = item.text.indexOf('{');
               const endIndex = item.text.lastIndexOf('}') + 1;
-              
               if (startIndex !== -1 && endIndex !== -1) {
                 const jsonStr = item.text.substring(startIndex, endIndex);
-                console.log("JSON extrait:", jsonStr);
+                console.log('JSON extrait:', jsonStr);
                 return JSON.parse(jsonStr);
               }
             }
           }
         }
       } catch (error) {
-        console.error("Parsing error:", error);
+        console.error('Parsing error:', error);
         return aiMessage.output;
       }
     }
-    
+
     return aiMessage;
   }
 }

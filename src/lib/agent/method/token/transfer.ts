@@ -108,9 +108,7 @@ export const transfer = async (
   }
 };
 
-
 export const transfer_call_data = async (
-  agent: StarknetAgentInterface,
   params: transferParams
 ): Promise<any> => {
   try {
@@ -120,12 +118,13 @@ export const transfer_call_data = async (
         status: 'error',
         error: {
           code: 'TOKEN_NOT_SUPPORTED',
-          message: `Token ${params.symbol} not supported`
-        }
+          message: `Token ${params.symbol} not supported`,
+        },
       };
     }
 
-    const decimals = DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const decimals =
+      DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
 
@@ -138,18 +137,18 @@ export const transfer_call_data = async (
           params.recipient_address,
           amountUint256.low,
           amountUint256.high,
-        ]
-      }
-      });
+        ],
+      },
+    });
   } catch (error) {
-    console.error("Transfer call data failure:", error);
-    
+    console.error('Transfer call data failure:', error);
+
     return {
       status: 'error',
       error: {
         code: 'TRANSFER_CALL_DATA_ERROR',
-        message: error.message || 'Failed to generate transfer call data'
-      }
+        message: error.message || 'Failed to generate transfer call data',
+      },
     };
   }
 };

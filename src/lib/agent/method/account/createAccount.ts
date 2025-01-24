@@ -1,4 +1,4 @@
-import { ec, stark, hash, CallData } from 'starknet';
+import { ec, stark, hash, CallData, Account } from 'starknet';
 import {
   argentx_classhash,
   DEFAULT_GUARDIAN,

@@ -90,6 +90,9 @@ export interface StarknetAgentInterface {
     aiModel: string;
     aiProviderApiKey: string;
   };
+  getToolsChoice: () => {
+    tools_choice: string;
+  };
   getProvider: () => RpcProvider;
   accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
@@ -100,7 +103,7 @@ interface StarknetTool<P = any> {
   name: string;
   description: string;
   schema?: object;
-  responseFormat?: string,
+  responseFormat?: string;
   execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
 }
 
@@ -231,14 +234,12 @@ export const registerTools = () => {
     execute: transfer,
   });
 
-  StarknetToolRegistry.registerTool({
-    name: 'transfer_call_data',
-    description: 'return transfer call data schema',
-    schema: transfer_call_data_schema,
-    execute: transfer_call_data,
-  });
-
-
+  // StarknetToolRegistry.registerTool({
+  //   name: 'transfer_call_data',
+  //   description: 'return transfer call data schema',
+  //   schema: transfer_call_data_schema,
+  //   execute: transfer_call_data,
+  // });
 
   StarknetToolRegistry.registerTool({
     name: 'simulate_transaction',

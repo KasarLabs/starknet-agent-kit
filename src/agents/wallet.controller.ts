@@ -10,13 +10,14 @@ import { AgentRequestDTO } from './dto/agents';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
+import { WalletService } from './services/wallet.service';
 
-@Controller('agent')
-export class AgentsController implements OnModuleInit {
+@Controller('wallet')
+export class WalletController implements OnModuleInit {
   private agent: StarknetAgent;
 
   constructor(
-    private readonly agentService: AgentService,
+    private readonly walletService: WalletService,
     private readonly config: ConfigurationService
   ) {}
 
@@ -28,25 +29,15 @@ export class AgentsController implements OnModuleInit {
       aiModel: this.config.ai.model,
       aiProvider: this.config.ai.provider,
       aiProviderApiKey: this.config.ai.apiKey,
-      tools_choice: 'standard',
+      tools_choice: 'call_data',
     });
   }
 
   @Post('call_data')
   async handleUserCalldataRequest(@Body() userRequest: any) {
-    return await this.agentService.handleUserCalldataRequest(
+    return await this.walletService.handleUserCalldataRequest(
       this.agent,
       userRequest
     );
-  }
-
-  @Post('request')
-  async handleUserRequest(@Body() userRequest: AgentRequestDTO) {
-    return await this.agentService.handleUserRequest(this.agent, userRequest);
-  }
-
-  @Get('status')
-  async getAgentStatus() {
-    return await this.agentService.getAgentStatus(this.agent);
   }
 }

@@ -7,7 +7,7 @@ export interface IAgent {
    * @returns Promise resolving to the execution result
    * @throws AgentExecutionError if execution fails
    */
-  execute(input: string, call_data_function : boolean): Promise<unknown>;
+  execute(input: string, call_data_function: boolean): Promise<unknown>;
 
   /**
    * Validates the user request before execution

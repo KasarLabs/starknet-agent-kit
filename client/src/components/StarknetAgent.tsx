@@ -13,7 +13,7 @@ import MarkdownIt from 'markdown-it';
 import { wallet } from 'starknet';
 const md = new MarkdownIt({ breaks: true });
 
-type TransferCallData = {
+type InvokeTransaciton = {
   contractAddress: string;
   entrypoint: string;
   calldata: string[];
@@ -38,10 +38,22 @@ const StarknetAgent = () => {
     }
   };
 
+  const handleInvokeTransaction = (response : any) => {
+    if (!response)
+        return ;
+    const tx : InvokeTransaciton = {
+      contractAddress : response.data.contractAddress,
+      entrypoint: response.data.entrypoint,
+      calldata: [...response.data.calldata]
+    }
+    console.log("return tx");
+    return tx;
+  }
+
   const handleSubmitPrompt = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/agent/call_data', {
+      const response = await fetch('/api/wallet/call_data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,28 +68,17 @@ const StarknetAgent = () => {
       }
 
       const result = await response.json();
-      console.log(result.data.contractAddress);
-      // const transaction : TransferCallData = {
-      //   contractAddress : result.data.contractAddress,
-      //   entrypoint : result.data.entrypoint,
-      //   calldata : result.data.calldata,
-      // }
       if(!Wallet) {
         throw new Error("Wallet null");
       }
+
       console.log("Wallet address",Wallet.address);
-      console.log(result.data.entrypoint);
-      console.log(result.data.calldata[0]);
-      const test = await Wallet.execute({
-        contractAddress: result.data.contractAddress,
-        entrypoint: result.data.entrypoint,
-        calldata: [
-          result.data.calldata[0],
-          result.data.calldata[1],
-          result.data.calldata[2],
-        ],
-      });
-  }catch(error) {
+      const tx = handleInvokeTransaction(result);
+      if (!tx)
+          throw new Error("TX NOT SET")
+      const transaction_hash = await Wallet.execute(tx as InvokeTransaciton);
+      
+  }catch (error) {
     console.log("Error : ", error);
   }
 };

@@ -8,7 +8,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools';
-
+import { RegistercalldataTools } from './tools/call_data.tools';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -35,6 +35,8 @@ const systemMessage = new SystemMessage(`
     - Use bullet points for clarity
     - No lengthy apologies or explanations
   `);
+
+export type ToolsChoice = string;
 
 export const prompt = ChatPromptTemplate.fromMessages([
   systemMessage,
@@ -88,9 +90,13 @@ export const createAgent = (
     }
   };
 
-
   const modelSelected = model();
-  const tools = createTools(starknetAgent);
+  let tools;
+  if (starknetAgent.getToolsChoice().tools_choice == 'call_data') {
+    tools = RegistercalldataTools();
+  } else {
+    tools = createTools(starknetAgent);
+  }
 
   const agent = createToolCallingAgent({
     llm: modelSelected,

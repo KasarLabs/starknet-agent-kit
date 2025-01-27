@@ -10,7 +10,7 @@ import {
 } from 'src/lib/utils/types/simulatetransaction';
 import { TransactionReponseFormat } from 'src/lib/utils/Output/output_simulatetransaction';
 import { DEFAULT_NONCE } from 'src/lib/utils/constants/contract';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const simulateInvokeTransaction = async (
   agent: StarknetAgentInterface,

@@ -5,7 +5,7 @@ import {
   decimalsScale,
 } from 'src/lib/agent/method/dapps/degen/unruggable/method/helper';
 import { Account } from 'starknet';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 /**
  * Creates a new memecoin using the Unruggable Factory.

@@ -7,19 +7,19 @@ import {
   DeployArgentAccount,
   DeployOZAccount,
 } from 'src/lib/agent/method/account/deployAccount';
-import { transfer, transfer_call_data } from './method/token/transfer';
+import { transfer, transfer_call_data } from '../method/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
   simulateDeployTransaction,
   simulateDeclareTransaction,
 } from 'src/lib/agent/method/transaction/simulateTransaction';
-import { getOwnBalance, getBalance } from './method/read/getBalances';
-import { getBlockNumber } from './method/rpc/getBlockNumber';
-import { getBlockTransactionCount } from './method/rpc/getBlockTransactionCount';
-import { getStorageAt } from './method/rpc/getStorageAt';
-import { getClassAt } from './method/rpc/getClassAt';
-import { getClassHashAt } from './method/rpc/getClassHash';
+import { getOwnBalance, getBalance } from '../method/read/getBalances';
+import { getBlockNumber } from '../method/rpc/getBlockNumber';
+import { getBlockTransactionCount } from '../method/rpc/getBlockTransactionCount';
+import { getStorageAt } from '../method/rpc/getStorageAt';
+import { getClassAt } from '../method/rpc/getClassAt';
+import { getClassHashAt } from '../method/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
@@ -47,39 +47,39 @@ import {
   contractAddressSchema,
   getClassAtSchema,
   getClassHashAtSchema,
-} from './schema';
-import { swapTokens } from './method/dapps/defi/avnu/swapService';
-import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
-import { getSpecVersion } from './method/rpc/getSpecVersion';
-import { getBlockWithTxHashes } from './method/rpc/getBlockWithTxHashes';
-import { getBlockWithTxs } from './method/rpc/getBlockWithTxs';
-import { getBlockWithReceipts } from './method/rpc/getBlockWithReceipts';
-import { getBlockStateUpdate } from './method/rpc/getBlockStateUpdate';
-import { getTransactionStatus } from './method/rpc/getTransactionStatus';
-import { getTransactionByHash } from './method/rpc/getTransactionByHash';
-import { getTransactionByBlockIdAndIndex } from './method/rpc/getTransactionByBlockIdAndIndex';
-import { getTransactionReceipt } from './method/rpc/getTransactionReceipt';
-import { getClass } from './method/rpc/getClass';
-import { getBlockLatestAccepted } from './method/rpc/getBlockLatestAccepted';
-import { getChainId } from './method/rpc/getChainId';
-import { getSyncingStats } from './method/rpc/getSyncingStats';
-import { getNonceForAddress } from './method/rpc/getNonceForAddress';
-import { getTransactionTrace } from './method/rpc/getTransactionTrace';
-import { getBlockTransactionsTraces } from './method/rpc/getBlockTransactionsTraces';
-import { getAddress } from './method/account/getAddress';
-import { declareContract } from './method/contract/declareContract';
-import { estimateAccountDeployFee } from './method/account/estimateAccountDeployFee';
-import { signMessage } from './method/account/signMessage';
-import { verifyMessage } from './method/account/verifyMessage';
-import { createMemecoin } from './method/dapps/degen/unruggable/method/createMemecoin';
-import { isMemecoin } from './method/dapps/degen/unruggable/method/isMemecoin';
-import { getLockedLiquidity } from './method/dapps/degen/unruggable/method/getLockedLiquidity';
-import { launchOnEkubo } from './method/dapps/degen/unruggable/method/launchOnEkubo';
+} from '../schema';
+import { swapTokens } from '../method/dapps/defi/avnu/swapService';
+import { getRoute } from '../method/dapps/defi/avnu/fetchRouteService';
+import { getSpecVersion } from '../method/rpc/getSpecVersion';
+import { getBlockWithTxHashes } from '../method/rpc/getBlockWithTxHashes';
+import { getBlockWithTxs } from '../method/rpc/getBlockWithTxs';
+import { getBlockWithReceipts } from '../method/rpc/getBlockWithReceipts';
+import { getBlockStateUpdate } from '../method/rpc/getBlockStateUpdate';
+import { getTransactionStatus } from '../method/rpc/getTransactionStatus';
+import { getTransactionByHash } from '../method/rpc/getTransactionByHash';
+import { getTransactionByBlockIdAndIndex } from '../method/rpc/getTransactionByBlockIdAndIndex';
+import { getTransactionReceipt } from '../method/rpc/getTransactionReceipt';
+import { getClass } from '../method/rpc/getClass';
+import { getBlockLatestAccepted } from '../method/rpc/getBlockLatestAccepted';
+import { getChainId } from '../method/rpc/getChainId';
+import { getSyncingStats } from '../method/rpc/getSyncingStats';
+import { getNonceForAddress } from '../method/rpc/getNonceForAddress';
+import { getTransactionTrace } from '../method/rpc/getTransactionTrace';
+import { getBlockTransactionsTraces } from '../method/rpc/getBlockTransactionsTraces';
+import { getAddress } from '../method/account/getAddress';
+import { declareContract } from '../method/contract/declareContract';
+import { estimateAccountDeployFee } from '../method/account/estimateAccountDeployFee';
+import { signMessage } from '../method/account/signMessage';
+import { verifyMessage } from '../method/account/verifyMessage';
+import { createMemecoin } from '../method/dapps/degen/unruggable/method/createMemecoin';
+import { isMemecoin } from '../method/dapps/degen/unruggable/method/isMemecoin';
+import { getLockedLiquidity } from '../method/dapps/degen/unruggable/method/getLockedLiquidity';
+import { launchOnEkubo } from '../method/dapps/degen/unruggable/method/launchOnEkubo';
 import { RpcProvider } from 'starknet';
 import { AccountManager } from 'src/lib/utils/account/AccountManager';
 import { TransactionMonitor } from 'src/lib/utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/utils/contract/ContractInteractor';
-import { GetBalanceParams, GetOwnBalanceParams } from '../utils/types/balance';
+import { GetBalanceParams, GetOwnBalanceParams } from '../../utils/types/balance';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {

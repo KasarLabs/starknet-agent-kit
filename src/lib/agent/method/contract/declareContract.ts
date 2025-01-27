@@ -1,6 +1,6 @@
 import { Account, provider } from 'starknet';
 import { DeclareContractParams } from 'src/lib/utils/types/contract';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const declareContract = async (
   params: DeclareContractParams,

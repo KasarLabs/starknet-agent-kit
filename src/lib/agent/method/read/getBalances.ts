@@ -5,7 +5,7 @@ import {
   GetOwnBalanceParams,
   GetBalanceParams,
 } from 'src/lib/utils/types/balance';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { response } from 'express';
 
 const getTokenDecimals = (symbol: string): number => {

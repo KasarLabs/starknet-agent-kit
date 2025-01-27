@@ -1,4 +1,4 @@
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getBlockLatestAccepted = async (agent: StarknetAgentInterface) => {
   const provider = agent.getProvider();

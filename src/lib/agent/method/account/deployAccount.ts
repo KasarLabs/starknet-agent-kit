@@ -18,7 +18,7 @@ import {
   DeployOZAccountParams,
   DeployArgentParams,
 } from 'src/lib/utils/types/deployaccount';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { CreateArgentAccount } from './createAccount';
 import { create } from 'domain';
 import { estimateAccountDeployFee } from './estimateAccountDeployFee';

@@ -1,4 +1,4 @@
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getAddress = async (agent: StarknetAgentInterface) => {
   try {

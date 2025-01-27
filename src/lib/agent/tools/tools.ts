@@ -79,7 +79,10 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from 'src/lib/utils/account/AccountManager';
 import { TransactionMonitor } from 'src/lib/utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/utils/contract/ContractInteractor';
-import { GetBalanceParams, GetOwnBalanceParams } from '../../utils/types/balance';
+import {
+  GetBalanceParams,
+  GetOwnBalanceParams,
+} from '../../utils/types/balance';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {

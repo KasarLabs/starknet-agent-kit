@@ -28,7 +28,7 @@ export type InvocationInvokePayload = {
  * @property {InvocationInvokePayload} payload - Invoke transaction payload
  */
 export type Invocation_Invoke = {
-  type: TransactionType.INVOKE;
+  type: typeof TransactionType.INVOKE;
   payload: InvocationInvokePayload;
 };
 
@@ -62,7 +62,7 @@ export type Invocation_Deploy_Account_Payload = {
  * @property {Invocation_Deploy_Account_Payload} payload - Deploy account payload
  */
 export type Invocation_Deploy_Account = {
-  type: TransactionType.DEPLOY_ACCOUNT;
+  type: typeof TransactionType.DEPLOY_ACCOUNT;
   payload: Invocation_Deploy_Account_Payload;
 };
 
@@ -96,7 +96,7 @@ export type Invocation_Deploy_Payload = {
  * @property {Invocation_Deploy_Payload} payload - Deploy payload
  */
 export type Invocation_Deploy = {
-  type: TransactionType.DEPLOY;
+  type: typeof TransactionType.DEPLOY;
   payload: Invocation_Deploy_Payload;
 };
 
@@ -111,7 +111,7 @@ export type SimulateDeployTransactionParams = {
 };
 
 export type Invocation_Declare = {
-  type: TransactionType.DECLARE;
+  type: typeof TransactionType.DECLARE;
   payload: DeclareContractPayload;
 };
 

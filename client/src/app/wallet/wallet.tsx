@@ -6,9 +6,10 @@ interface StarknetWallet {
   disconnect: () => void;
 }
 
-export const connectWallet = async (): Promise<WalletAccount|undefined> => {
+export const connectWallet = async (): Promise<WalletAccount | undefined> => {
   try {
-    const RPC_URL = "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky";
+    const RPC_URL =
+      'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky';
     if (RPC_URL == null) {
       throw new Error(
         'The Rpc account is not setup in the front-end .env file '
@@ -29,7 +30,7 @@ export const connectWallet = async (): Promise<WalletAccount|undefined> => {
     );
     return myWalletAccount;
   } catch (error) {
-    console.log("Error :", error);
-    return 
+    console.log('Error :', error);
+    return;
   }
 };

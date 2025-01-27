@@ -2,14 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '../../config/configuration';
 import {
   AgentCredentialsError,
-  AgentExecutionError,
   AgentValidationError,
-  StarknetTransactionError,
 } from '../../common/errors';
-import {
-  IAgentService,
-  AgentExecutionResponse,
-} from '../interfaces/agent-service.interface';
 import { IAgent } from '../interfaces/agent.interface';
 import { AgentRequestDTO } from '../dto/agents';
 import { IWalletService } from '../interfaces/wallet-service.inferface';
@@ -36,7 +30,7 @@ export class WalletService implements IWalletService {
       const result = await agent.execute(userRequest.request, true);
       return result;
     } catch (error: any) {
-      return 'Error';
+      return error;
     }
   }
 

@@ -79,26 +79,6 @@ export class AgentService implements IAgentService {
     }
   }
 
-  async handleUserCalldataRequest(
-    agent: IAgent,
-    userRequest: AgentRequestDTO
-  ): Promise<any> {
-    try {
-      const status = await this.getAgentStatus(agent);
-      if (!status.isReady) {
-        throw new AgentCredentialsError('Agent is not properly configured');
-      }
-
-      if (!(await agent.validateRequest(userRequest.request))) {
-        throw new AgentValidationError('Invalid request format or parameters');
-      }
-      const result = await agent.execute(userRequest.request, true);
-      return result;
-    } catch (error: any) {
-      return 'Error';
-    }
-  }
-
   async getAgentStatus(agent: IAgent): Promise<{
     isReady: boolean;
     walletConnected: boolean;

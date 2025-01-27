@@ -7,9 +7,7 @@ import {
 export const CreateOZAccount = async () => {
   try {
     const privateKey = stark.randomAddress();
-    console.log('Random private Key :' + privateKey);
     const starkKeyPub = ec.starkCurve.getStarkKey(privateKey);
-    console.log('publicKey=', starkKeyPub);
 
     const OZaccountClassHash =
       '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
@@ -22,7 +20,6 @@ export const CreateOZAccount = async () => {
       OZaccountConstructorCallData,
       0
     );
-    console.log('Precalculated account address=', OZcontractAddress);
     return JSON.stringify({
       status: 'success',
       wallet: 'Open Zeppelin',

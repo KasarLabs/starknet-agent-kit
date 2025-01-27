@@ -7,6 +7,7 @@ import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
 import { readSync } from 'fs';
 import { ToolsChoice } from './agent';
+import { throwError } from 'rxjs';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -94,29 +95,39 @@ export class StarknetAgent implements IAgent {
 
   async execute(input: string, call_data_function: boolean): Promise<unknown> {
     const aiMessage = await this.agentExecutor.invoke({ input });
-
-    console.log(call_data_function);
     if (call_data_function == true) {
       try {
         if (Array.isArray(aiMessage.output)) {
           for (const item of aiMessage.output) {
             if (item.type === 'text' && item.text) {
               const startIndex = item.text.indexOf('{');
-              const endIndex = item.text.lastIndexOf('}') + 1;
+              let collad;
+              let i;
+              for (i = startIndex + 1; i < item.text.length; i++) {
+                if (item.text[i] === '{') {
+                  collad = true;
+                }
+                if (item.text[i] === '}' && collad === true) {
+                  collad = false;
+                } else if (item.text[i] === '}' && collad === false) {
+                  break;
+                }
+              }
+              const endIndex = i + 1;
               if (startIndex !== -1 && endIndex !== -1) {
                 const jsonStr = item.text.substring(startIndex, endIndex);
-                console.log('JSON extrait:', jsonStr);
                 return JSON.parse(jsonStr);
               }
             }
           }
+        } else {
+          throw new Error('Output is not an array');
         }
       } catch (error) {
         console.error('Parsing error:', error);
         return aiMessage.output;
       }
     }
-
     return aiMessage;
   }
 }

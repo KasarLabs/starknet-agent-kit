@@ -10,7 +10,6 @@ export const connectWallet = async (): Promise<WalletAccount|undefined> => {
   try {
     const RPC_URL = "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky";
     if (RPC_URL == null) {
-      console.log(RPC_URL)
       throw new Error(
         'The Rpc account is not setup in the front-end .env file '
       );

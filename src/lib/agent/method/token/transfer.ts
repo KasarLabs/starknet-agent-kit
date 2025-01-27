@@ -108,41 +108,52 @@ export const transfer = async (
   }
 };
 
+export type TransferPlayloadSchema = {
+  params: {
+    symbol: string;
+    recipient_address: string;
+    amount: string;
+  }[];
+};
+
 export const transfer_call_data = async (
-  params: transferParams
+  input: TransferPlayloadSchema
 ): Promise<any> => {
   try {
-    const tokenAddress = tokenAddresses[params.symbol];
-    if (!tokenAddress) {
-      return {
-        status: 'error',
-        error: {
-          code: 'TOKEN_NOT_SUPPORTED',
-          message: `Token ${params.symbol} not supported`,
-        },
-      };
-    }
+    const results = await Promise.all(
+      input.params.map(async (param) => {
+        const tokenAddress = tokenAddresses[param.symbol];
+        if (!tokenAddress) {
+          return {
+            status: 'error',
+            error: {
+              code: 'TOKEN_NOT_SUPPORTED',
+              message: `Token ${param.symbol} not supported`,
+            },
+          };
+        }
 
-    const decimals =
-      DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
-
-    return JSON.stringify({
-      status: 'success',
-      data: {
-        contractAddress: tokenAddress,
-        entrypoint: 'transfer',
-        calldata: [
-          params.recipient_address,
-          amountUint256.low,
-          amountUint256.high,
-        ],
-      },
-    });
+        const decimals =
+          DECIMALS[param.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+        const formattedAmount = formatTokenAmount(param.amount, decimals);
+        const amountUint256 = uint256.bnToUint256(formattedAmount);
+        return {
+          status: 'success',
+          transactions: {
+            contractAddress: tokenAddress,
+            entrypoint: 'transfer',
+            calldata: [
+              param.recipient_address,
+              amountUint256.low,
+              amountUint256.high,
+            ],
+          },
+        };
+      })
+    );
+    return JSON.stringify(results);
   } catch (error) {
     console.error('Transfer call data failure:', error);
-
     return {
       status: 'error',
       error: {

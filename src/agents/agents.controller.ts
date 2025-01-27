@@ -10,8 +10,10 @@ import { AgentRequestDTO } from './dto/agents';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
+import { AgentResponseInterceptor } from 'src/lib/interceptors/response';
 
 @Controller('agent')
+@UseInterceptors(AgentResponseInterceptor)
 export class AgentsController implements OnModuleInit {
   private agent: StarknetAgent;
 
@@ -30,14 +32,6 @@ export class AgentsController implements OnModuleInit {
       aiProviderApiKey: this.config.ai.apiKey,
       tools_choice: 'standard',
     });
-  }
-
-  @Post('call_data')
-  async handleUserCalldataRequest(@Body() userRequest: any) {
-    return await this.agentService.handleUserCalldataRequest(
-      this.agent,
-      userRequest
-    );
   }
 
   @Post('request')

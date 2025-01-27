@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Head,
+  Header,
   OnModuleInit,
   Post,
   UseInterceptors,

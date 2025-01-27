@@ -147,17 +147,3 @@ export const getBalance = async (
     });
   }
 };
-
-export const get_balance_call_data = async (params: GetBalanceParams) => {
-  try {
-    if (!params?.assetSymbol || !params?.accountAddress) {
-      throw new Error('Both assetSymbol and address parameters are required');
-    }
-    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
-    const tokenAddress = validateTokenAddress(params.assetSymbol);
-    const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
-    return tokenContract;
-  } catch (error) {
-    return 'failure';
-  }
-};

@@ -194,7 +194,6 @@ export const create_deploy_argent_account = async () => {
         unique: true,
       },
     };
-    console.log(deployAccountPayload);
     return {
       deployAccountPayload,
     };

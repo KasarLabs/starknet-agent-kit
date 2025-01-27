@@ -25,7 +25,6 @@ export class WalletService implements IWalletService {
     userRequest: AgentRequestDTO
   ): Promise<any> {
     try {
-      console.log('On y est ! ');
       const status = await this.getAgentStatus(agent);
       if (!status.isReady) {
         throw new AgentCredentialsError('Agent is not properly configured');
@@ -35,7 +34,6 @@ export class WalletService implements IWalletService {
         throw new AgentValidationError('Invalid request format or parameters');
       }
       const result = await agent.execute(userRequest.request, true);
-      console.log('Result API');
       return result;
     } catch (error: any) {
       return 'Error';

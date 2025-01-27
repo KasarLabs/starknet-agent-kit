@@ -93,7 +93,6 @@ export class AgentService implements IAgentService {
         throw new AgentValidationError('Invalid request format or parameters');
       }
       const result = await agent.execute(userRequest.request, true);
-      console.log('Result API');
       return result;
     } catch (error: any) {
       return 'Error';

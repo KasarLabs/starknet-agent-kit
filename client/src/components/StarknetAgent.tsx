@@ -10,6 +10,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
 import { WalletAccount } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
+import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
+
 const md = new MarkdownIt({ breaks: true });
 
 interface AgentResponse {
@@ -33,7 +35,7 @@ const StarknetAgent = () => {
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [Wallet, setWallet] = useState<WalletAccount | null>(null);
-  const [isWalletSubmit, setIsWalletSubmit] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   // When in loading state for >5s, we show "Processing..."
   useEffect(() => {
@@ -64,6 +66,10 @@ const StarknetAgent = () => {
     } catch (error) {
       console.log('Error', error);
     }
+  };
+
+  const handleClick = () => {
+    setIsActive(!isActive);
   };
 
   const handleInvokeTransactions = (
@@ -256,7 +262,8 @@ const StarknetAgent = () => {
 
   const handleSubmitButton = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isWalletSubmit) {
+    console.log(isActive);
+    if (isActive === true) {
       handleSubmitWallet(e);
     } else {
       handleSubmit(e);
@@ -302,13 +309,16 @@ const StarknetAgent = () => {
       const tx = handleInvokeTransactions(result);
       if (!tx) throw new Error('TX NOT SET');
       const transaction_hash = await Wallet.execute(tx);
-      typeResponse({ ...newResponse, text: JSON.stringify(JSON.stringify(transaction_hash))});
+      typeResponse({
+        ...newResponse,
+        text: JSON.stringify(JSON.stringify(transaction_hash)),
+      });
     } catch (error) {
       console.log('Error : ', error);
     } finally {
-    setIsLoading(false);
-    setInput('');
-  }
+      setIsLoading(false);
+      setInput('');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -399,27 +409,45 @@ const StarknetAgent = () => {
         ) : (
           <Card className="w-full bg-neutral-900 border-neutral-800 shadow-xl">
             <CardContent className="p-3 md:p-6 space-y-4 md:space-y-6">
-              <div className="inline-flex items-center gap-2 bg-neutral-900 rounded-lg p-1 w-fit">
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setIsWalletSubmit(false)}
-                  className={`text-xs px-3 py-1 rounded transition-all ${
-                    !isWalletSubmit
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-transparent text-neutral-400 hover:text-neutral-200'
-                  }`}
+                  onClick={handleClick}
+                  className={`
+          relative flex items-center w-16 h-8 rounded-full 
+          transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+          ${
+            isActive
+              ? 'bg-blue-500 focus:ring-blue-500'
+              : 'bg-gray-200 focus:ring-gray-500'
+          }
+        `}
+                  aria-pressed={isActive}
+                  title={
+                    isActive
+                      ? 'Désactiver la signature'
+                      : 'Activer la signature'
+                  }
                 >
-                  Default
+                  <span
+                    className={`
+            absolute flex items-center justify-center
+            w-6 h-6 rounded-full bg-white shadow-md
+            transition-transform duration-300 ease-in-out
+            ${isActive ? 'translate-x-9' : 'translate-x-1'}
+          `}
+                  >
+                    {isActive ? (
+                      <AiFillSignature className="w-4 h-4 text-blue-500" />
+                    ) : (
+                      <AiOutlineSignature className="w-4 h-4 text-gray-400" />
+                    )}
+                  </span>
                 </button>
-                <button
-                  onClick={() => setIsWalletSubmit(true)}
-                  className={`text-xs px-3 py-1 rounded transition-all ${
-                    isWalletSubmit
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-transparent text-neutral-400 hover:text-neutral-200'
-                  }`}
+                <span
+                  className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500'}`}
                 >
-                  Wallet
-                </button>
+                  {isActive ? 'Signature activée' : 'Signature désactivée'}
+                </span>
               </div>
 
               <form onSubmit={handleSubmitButton} className="relative">

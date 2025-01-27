@@ -7,6 +7,7 @@ import {
   SimulateDeployTransactionParams,
   Invocation_Deploy,
   SimulateDeclareTransactionAccountParams,
+  Invocation_Declare,
 } from 'src/lib/utils/types/simulatetransaction';
 import { TransactionReponseFormat } from 'src/lib/utils/Output/output_simulatetransaction';
 import { DEFAULT_NONCE } from 'src/lib/utils/constants/contract';
@@ -160,9 +161,9 @@ export const simulateDeclareTransaction = async (
       accountCredentials.accountPrivateKey
     );
 
-    const invocations = [
+    const invocations: Invocation_Declare[] = [
       {
-        type: TransactionType.DECLARE as const,
+        type: TransactionType.DECLARE,
         payload: {
           contract: params.contract,
           classHash: params.classHash,

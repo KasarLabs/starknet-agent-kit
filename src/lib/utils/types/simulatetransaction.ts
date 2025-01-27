@@ -7,6 +7,7 @@ import {
   DeployAccountContractPayload,
   UniversalDeployerContractPayload,
   Call,
+  DeclareContractPayload,
 } from 'starknet';
 
 /**
@@ -107,6 +108,11 @@ export type Invocation_Deploy = {
 export type SimulateDeployTransactionParams = {
   accountAddress: string;
   payloads: UniversalDeployerContractPayload[];
+};
+
+export type Invocation_Declare = {
+  type: TransactionType.DECLARE;
+  payload: DeclareContractPayload;
 };
 
 /**

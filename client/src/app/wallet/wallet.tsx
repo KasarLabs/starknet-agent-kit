@@ -1,15 +1,9 @@
 import { connect } from '@starknet-io/get-starknet'; // v4.0.3 min
-import { WalletAccount, wallet, RpcProvider, RPC } from 'starknet'; // v6.18.0 min
-
-interface StarknetWallet {
-  connectWallet: () => Promise<string>;
-  disconnect: () => void;
-}
+import { WalletAccount, RpcProvider } from 'starknet'; // v6.18.0 min
 
 export const connectWallet = async (): Promise<WalletAccount | undefined> => {
   try {
-    const RPC_URL =
-      'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky';
+    const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
     if (RPC_URL == null) {
       throw new Error(
         'The Rpc account is not setup in the front-end .env file '

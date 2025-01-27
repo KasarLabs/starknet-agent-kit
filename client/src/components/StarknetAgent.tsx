@@ -20,11 +20,26 @@ interface AgentResponse {
   isTyping: boolean;
 }
 
-type InvokeTransaciton = {
+type InvokeTransaction = {
   contractAddress: string;
   entrypoint: string;
   calldata: string[];
 };
+
+interface WalletApiResponse {
+  status: 'success' | 'failure';
+  transactions:
+    | {
+        contractAddress: string;
+        entrypoint: string;
+        calldata: string[];
+      }
+    | {
+        contractAddress: string;
+        entrypoint: string;
+        calldata: string[];
+      }[];
+}
 
 const StarknetAgent = () => {
   const [input, setInput] = useState('');
@@ -73,11 +88,11 @@ const StarknetAgent = () => {
   };
 
   const handleInvokeTransactions = (
-    response: any
-  ): InvokeTransaciton[] | InvokeTransaciton => {
+    response: WalletApiResponse
+  ): InvokeTransaction | InvokeTransaction[] => {
     if (!response || !response.transactions) return [];
 
-    if (response.transactions.contractAddress) {
+    if ('contractAddress' in response.transactions) {
       return {
         contractAddress: response.transactions.contractAddress,
         entrypoint: response.transactions.entrypoint,
@@ -85,13 +100,12 @@ const StarknetAgent = () => {
       };
     }
 
-    return response.transactions.map((tx: any) => ({
+    return response.transactions.map((tx) => ({
       contractAddress: tx.contractAddress,
       entrypoint: tx.entrypoint,
       calldata: [...tx.calldata],
     }));
   };
-
   /**
    * Shorten a full StarkNet/Ethereum transaction hash (0x + 64 hex chars)
    * e.g. "0x0123abcd...ffff" => "0x01...fff"
@@ -299,7 +313,7 @@ const StarknetAgent = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as WalletApiResponse;
       if (!Wallet) {
         throw new Error('Wallet null');
       }

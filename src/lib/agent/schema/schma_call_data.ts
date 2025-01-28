@@ -20,3 +20,8 @@ export const DeployArgentAccountCallDataSchema = z.object({
     .string()
     .describe('The private key to deploy the Argent Account'),
 });
+
+export const getBalanceSignatureSchema = z.object({
+  accountAddress: z.string().describe('the account address'),
+  assetSymbol: z.string().describe('token Symbol'),
+});

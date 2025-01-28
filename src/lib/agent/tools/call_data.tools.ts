@@ -1,6 +1,10 @@
 import { tool } from '@langchain/core/tools';
-import { transfer_call_data_schema } from '../schema/schma_call_data';
+import {
+  getBalanceSignatureSchema,
+  transfer_call_data_schema,
+} from '../schema/schma_call_data';
 import { transfer_call_data } from '../method/token/transfer';
+import { getBalanceSignature } from '../method/read/getBalances';
 
 interface CalldataTool<P = any> {
   name: string;
@@ -34,6 +38,12 @@ export const RegistercalldataTools = () => [
     description: 'return transfer json transaction',
     schema: transfer_call_data_schema,
     execute: transfer_call_data,
+  }),
+  StarknetCalldataToolRegistry.RegistercalldataTools({
+    name: 'getbalance',
+    description: 'return the amoumt of token at a account address',
+    schema: getBalanceSignatureSchema,
+    execute: getBalanceSignature,
   }),
 ];
 

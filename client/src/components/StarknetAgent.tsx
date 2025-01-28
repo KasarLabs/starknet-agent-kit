@@ -285,16 +285,20 @@ const StarknetAgent = () => {
             'The Invoke transaction is in the wrong format. Check the API Response'
           );
         }
+        const transaction_hash = await Wallet.execute(tx);
+        typeResponse({
+          ...newResponse,
+          text: JSON.stringify(JSON.stringify(transaction_hash)),
+        });
+      } else if (result.transaction_type === 'READ') {
+        typeResponse({
+          ...newResponse,
+          text: JSON.stringify(JSON.stringify(result)),
+        });
       }
       if (!tx) {
         throw new Error('The transactions has to be an INVOKE transaction');
       }
-
-      const transaction_hash = await Wallet.execute(tx);
-      typeResponse({
-        ...newResponse,
-        text: JSON.stringify(JSON.stringify(transaction_hash)),
-      });
     } catch (error) {
       console.log('Error : ', error);
     } finally {

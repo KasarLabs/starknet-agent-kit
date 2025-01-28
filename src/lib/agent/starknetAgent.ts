@@ -12,7 +12,7 @@ export interface StarknetAgentConfig {
   provider: RpcProvider;
   accountPublicKey: string;
   accountPrivateKey: string;
-  agent_mode: string;
+  signature: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -26,7 +26,7 @@ export class StarknetAgent implements IAgent {
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
-  public readonly agent_mode: string;
+  public readonly signature: string;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -36,7 +36,7 @@ export class StarknetAgent implements IAgent {
     this.accountPublicKey = config.accountPublicKey;
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
-    this.agent_mode = config.agent_mode;
+    this.signature = config.signature;
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -76,9 +76,9 @@ export class StarknetAgent implements IAgent {
     };
   }
 
-  getAgentMode() {
+  getSignature() {
     return {
-      agent_mode: this.agent_mode,
+      signature: this.signature,
     };
   }
 

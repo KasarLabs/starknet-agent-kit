@@ -260,7 +260,7 @@ const StarknetAgent = () => {
 
     setCurrentResponse(newResponse);
     try {
-      const response = await fetch('/api/wallet/call_data', {
+      const response = await fetch('/api/wallet/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -365,7 +365,7 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
-      const response = await fetch('/api/agent/request', {
+      const response = await fetch('/api/key/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

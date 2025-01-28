@@ -22,7 +22,7 @@ export const handleDeployTransactions = async (
 
     await new Promise((resolve) => setTimeout(resolve, 20000)); // Need to improve this
 
-    const deploy_tx = await fetch('/api/wallet/call_data', {
+    const deploy_tx = await fetch('/api/wallet/request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

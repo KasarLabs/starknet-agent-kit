@@ -13,10 +13,9 @@ export class AgentResponseInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const url = request.url;
 
-    if (url === '/api/wallet/call_data') {
+    if (url === '/api/wallet/request') {
       return next.handle();
     }
-    console.log('REQUEST URL : ', request.url);
     return next.handle().pipe(
       map((data) => {
         const request = context.switchToHttp().getRequest().body?.request || '';

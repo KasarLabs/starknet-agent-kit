@@ -73,8 +73,8 @@ export interface StarknetAgentInterface {
     aiModel: string;
     aiProviderApiKey: string;
   };
-  getAgentMode: () => {
-    agent_mode: string;
+  getSignature: () => {
+    signature: string;
   };
   getProvider: () => RpcProvider;
   accountManager: AccountManager;

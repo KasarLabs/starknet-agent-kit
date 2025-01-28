@@ -21,11 +21,11 @@ export class WalletController implements OnModuleInit {
       aiModel: this.config.ai.model,
       aiProvider: this.config.ai.provider,
       aiProviderApiKey: this.config.ai.apiKey,
-      agent_mode: 'call_data',
+      signature: 'wallet',
     });
   }
 
-  @Post('call_data')
+  @Post('request')
   async handleUserCalldataRequest(@Body() userRequest: AgentRequestDTO) {
     return await this.walletService.handleUserCalldataRequest(
       this.agent,

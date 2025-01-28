@@ -6,13 +6,13 @@ export const Transferschema = z.object({
   symbol: z.string().describe('The symbol of the erc20 token'),
 });
 
-export const transfer_call_data_schema = z.object({
+export const transferSignatureschema = z.object({
   payloads: z
     .array(Transferschema)
     .describe('Array of payloads for a tranfer transaction'),
 });
 
-export const DeployArgentAccountCallDataSchema = z.object({
+export const DeployArgentAccountSignatureSchema = z.object({
   publicKeyAX: z
     .string()
     .describe('The public key to deploy the Argent Account'),

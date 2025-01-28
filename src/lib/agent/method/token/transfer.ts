@@ -114,7 +114,7 @@ export type TransferPlayloadSchema = {
   amount: string;
 };
 
-export const transfer_call_data = async (input: {
+export const transfer_signature = async (input: {
   payloads: TransferPlayloadSchema[];
 }): Promise<any> => {
   try {

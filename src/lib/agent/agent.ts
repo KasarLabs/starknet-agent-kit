@@ -8,7 +8,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { createCalldataTools } from './tools/call_data.tools';
+import { createSignatureTools } from './tools/signature_tools';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -39,8 +39,7 @@ export const createAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
-  const isCalldataMode =
-    starknetAgent.getAgentMode().agent_mode === 'call_data';
+  const isSignature = starknetAgent.getSignature().signature === 'wallet';
   const model = () => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
@@ -84,8 +83,8 @@ export const createAgent = (
   };
 
   const modelSelected = model();
-  const tools = isCalldataMode
-    ? createCalldataTools()
+  const tools = isSignature
+    ? createSignatureTools()
     : createTools(starknetAgent);
 
   const agent = createToolCallingAgent({
@@ -97,7 +96,7 @@ export const createAgent = (
   const executorConfig = {
     agent,
     tools,
-    ...(isCalldataMode && {
+    ...(isSignature && {
       returnIntermediateSteps: true,
       maxIterations: 1,
     }),

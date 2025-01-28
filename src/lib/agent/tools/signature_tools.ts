@@ -1,29 +1,29 @@
 import { tool } from '@langchain/core/tools';
 import {
   getBalanceSignatureSchema,
-  transfer_call_data_schema,
-} from '../schema/schma_call_data';
-import { transfer_call_data } from '../method/token/transfer';
+  transferSignatureschema,
+} from '../schema/signature_schema';
+import { transfer_signature } from '../method/token/transfer';
 import { getBalanceSignature } from '../method/read/getBalances';
 import { CreateArgentAccountSignature } from '../method/account/createAccount';
 import { DeployArgentAccountSchema } from '../schema/schema';
 import { DeployArgentAccountSignature } from '../method/account/deployAccount';
 
-interface CalldataTool<P = any> {
+interface SignatureTool<P = any> {
   name: string;
   description: string;
   schema?: object;
   execute: (params: P) => Promise<unknown>;
 }
 
-export class StarknetCalldataToolRegistry {
-  private static tools: CalldataTool[] = [];
+export class StarknetSignatureToolRegistry {
+  private static tools: SignatureTool[] = [];
 
-  static RegistercalldataTools<P>(tool: CalldataTool<P>): void {
+  static RegisterSignatureTools<P>(tool: SignatureTool<P>): void {
     this.tools.push(tool);
   }
 
-  static createCalldataTools() {
+  static createSignatureTools() {
     return this.tools.map(({ name, description, schema, execute }) => {
       const toolInstance = tool(async (params: any) => execute(params), {
         name,
@@ -35,26 +35,26 @@ export class StarknetCalldataToolRegistry {
   }
 }
 
-export const RegistercalldataTools = () => [
-  StarknetCalldataToolRegistry.RegistercalldataTools({
+export const RegisterSignatureTools = () => [
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'transfer',
     description: 'return transfer json transaction',
-    schema: transfer_call_data_schema,
-    execute: transfer_call_data,
+    schema: transferSignatureschema,
+    execute: transfer_signature,
   }),
-  StarknetCalldataToolRegistry.RegistercalldataTools({
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'getbalance',
     description: 'return the amoumt of token at a account address',
     schema: getBalanceSignatureSchema,
     execute: getBalanceSignature,
   }),
-  StarknetCalldataToolRegistry.RegistercalldataTools({
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'create_argent_account',
     description:
       'create argent account return the privateKey/publicKey/contractAddress',
     execute: CreateArgentAccountSignature,
   }),
-  StarknetCalldataToolRegistry.RegistercalldataTools({
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'deploy_argent_account',
     description: 'deploy argent account return the deploy transaction address',
     schema: DeployArgentAccountSchema,
@@ -62,10 +62,10 @@ export const RegistercalldataTools = () => [
   }),
 ];
 
-RegistercalldataTools();
+RegisterSignatureTools();
 
-export const createCalldataTools = () => {
-  return StarknetCalldataToolRegistry.createCalldataTools();
+export const createSignatureTools = () => {
+  return StarknetSignatureToolRegistry.createSignatureTools();
 };
 
-export default StarknetCalldataToolRegistry;
+export default StarknetSignatureToolRegistry;

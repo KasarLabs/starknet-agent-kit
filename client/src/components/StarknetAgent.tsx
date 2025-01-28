@@ -280,7 +280,7 @@ const StarknetAgent = () => {
       const result = await response.json();
 
       let tx;
-      if (result.transaction_type === 'INVOKE' && result.status === 'success') {
+      if (result.transaction_type === 'INVOKE') {
         tx = handleInvokeTransactions(result as TransactionResponse);
         if (!tx) {
           throw new Error(
@@ -328,7 +328,7 @@ const StarknetAgent = () => {
           text: await deploy_account_response,
         });
       }
-      if (!tx) {
+      if (!tx && result.transaction_type != 'READ') {
         throw new Error(
           'The transactions has to be an INVOKE or DeployAccount transaction'
         );

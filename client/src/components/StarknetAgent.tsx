@@ -225,7 +225,7 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
-      console.log(process.env.NEXT_PUBLIC_API_KEY || 'test')
+      console.log(process.env.NEXT_PUBLIC_API_KEY || '')
       const response = await fetch('/api/agent/request', {
         method: 'POST',
         headers: {

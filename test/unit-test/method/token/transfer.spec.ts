@@ -1,5 +1,6 @@
 import { transfer } from 'src/lib/agent/method/token/transfer';
 import * as C from '../../../utils/constant';
+import { agent2, invalidAgent } from 'test/utils/helpers';
 
 describe('Transfer token', () => {
   describe('With perfect match inputs', () => {
@@ -12,7 +13,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent2, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -34,7 +35,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(invalidAgent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -51,7 +52,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent2, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -68,7 +69,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent2, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -87,7 +88,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent2, params);
       const parsed = JSON.parse(result);
       console.log(parsed);
       // Assert

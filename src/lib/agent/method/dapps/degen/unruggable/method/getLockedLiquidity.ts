@@ -109,15 +109,15 @@ export const getLockedLiquidity = async (
       }
     }
 
-    return {
+    return JSON.stringify({
       status: 'success',
       data: liquidityInfo,
-    };
+    });
   } catch (error) {
-    console.error('Error getting locked liquidity:', error);
-    return {
+    //console.error('Error getting locked liquidity:', error);
+    return JSON.stringify({
       status: 'failed',
       error: error.message,
-    };
+    });
   }
 };

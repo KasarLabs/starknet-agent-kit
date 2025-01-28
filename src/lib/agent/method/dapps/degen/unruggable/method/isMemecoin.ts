@@ -60,7 +60,7 @@ export const isMemecoin = async (
       isMemecoin: result,
     });
   } catch (error) {
-    console.error('Error checking memecoin status:', error);
+    //console.error('Error checking memecoin status:', error);
     return JSON.stringify({
       status: 'failed',
       error: error.message,

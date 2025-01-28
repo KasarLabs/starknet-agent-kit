@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AgentResponseInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       map((data) => {
         const request = context.switchToHttp().getRequest().body?.request || '';
@@ -49,6 +49,7 @@ export class AgentResponseInterceptor implements NestInterceptor {
               },
             ],
           };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           return {
             input: request,

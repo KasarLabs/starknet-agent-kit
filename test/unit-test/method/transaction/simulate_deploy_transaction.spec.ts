@@ -1,5 +1,6 @@
 import { simulateDeployTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import { agent1, invalidAgent } from 'test/utils/helpers';
 describe('Simulate Deploy Transaction ', () => {
   describe('With perfect match inputs', () => {
     it('should simulate deploy transaction with valid payload[classHash]', async () => {
@@ -15,8 +16,8 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act
       const result = await simulateDeployTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -41,8 +42,8 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act
       const result = await simulateDeployTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -68,8 +69,8 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act
       const result = await simulateDeployTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -96,8 +97,8 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act
       const result = await simulateDeployTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -140,8 +141,8 @@ describe('Simulate Deploy Transaction ', () => {
       // Act & Assert
       for (const params of paramsArray) {
         const result = await simulateDeployTransaction(
-          params,
-          process.env.PRIVATE_KEY
+          agent1,
+          params
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -165,7 +166,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(params, '0xinvalid');
+      const result = await simulateDeployTransaction(invalidAgent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -190,8 +191,8 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act
       const result = await simulateDeployTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -231,13 +232,13 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act
       const result = await simulateDeployTransaction(
+        agent1,
         paramsArray[0],
-        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeployTransaction(
+        agent1,
         paramsArray[1],
-        process.env.PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

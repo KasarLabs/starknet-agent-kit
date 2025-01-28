@@ -1,5 +1,6 @@
 import { estimateAccountDeployFee } from 'src/lib/agent/method/account/estimateAccountDeployFee';
 import * as C from '../../../utils/constant';
+import { agent1 } from 'test/utils/helpers';
 
 describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
@@ -22,7 +23,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        agent1
       );
       const parsed = JSON.parse(result);
 
@@ -67,7 +68,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        agent1
       );
       const parsed = JSON.parse(result);
 
@@ -91,7 +92,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        agent1
       );
       const parsed = JSON.parse(result);
 

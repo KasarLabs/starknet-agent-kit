@@ -1,5 +1,5 @@
 import { getOwnBalance } from 'src/lib/agent/method/read/getBalances';
-import * as C from '../../../utils/constant';
+import { invalidAgent, agent1 } from 'test/utils/helpers';
 
 describe('getOwnBlance', () => {
   describe('With perfect match inputs', () => {
@@ -10,7 +10,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params);
+      const result = await getOwnBalance(agent1, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -23,7 +23,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params);
+      const result = await getOwnBalance(agent1, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -38,7 +38,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params, C.invalid_private_key);
+      const result = await getOwnBalance(invalidAgent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -51,7 +51,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params, process.env.PRIVATE_KEY);
+      const result = await getOwnBalance(agent1, params);
       const parsed = JSON.parse(result);
 
       // Assert

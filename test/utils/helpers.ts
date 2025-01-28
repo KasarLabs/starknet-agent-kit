@@ -1,4 +1,7 @@
+import { StarknetAgent } from "src/lib/agent/starknetAgent";
 import { StarknetAgentInterface } from "src/lib/agent/tools";
+import { RpcProvider } from "starknet";
+import { invalid_private_key } from "./constant";
 
 interface Account {
   agent?: StarknetAgentInterface;
@@ -45,17 +48,85 @@ export const loadTestConfig = (): EnvConfig => {
   return config;
 };
 
+export let globalAgent: StarknetAgent;
+export let agent1: StarknetAgent;
+export let agent2: StarknetAgent;
+export let agent3: StarknetAgent;
+export let invalidAgent: StarknetAgent;
+
+export const initializeGlobalAgent = () => {
+  if (!globalAgent) {
+    globalAgent = new StarknetAgent({
+      provider: defaultConfig.starknet.provider,
+      accountPrivateKey: defaultConfig.starknet.privateKey,
+      accountPublicKey: defaultConfig.starknet.publicKey,
+      aiModel: defaultConfig.ai.model,
+      aiProvider: defaultConfig.ai.provider as 'anthropic' | 'openai' | 'ollama' | 'gemini',
+      aiProviderApiKey: defaultConfig.ai.apiKey,
+    });
+  }
+  return globalAgent;
+};
+
+//setup default config
+export const defaultConfig = {
+  starknet: {
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky"
+    }),
+    privateKey: "",
+    publicKey: "",
+  },
+  ai: {
+    model: "",
+    provider: '',
+    apiKey: "",
+  },
+};
+
+export const createCustomAgent = (config: {
+  provider?: RpcProvider;
+  privateKey?: string;
+  publicKey?: string;
+  aiModel?: string;
+  aiProvider?: 'anthropic' | 'openai' | 'ollama' | 'gemini';
+  apiKey?: string;
+} = {}) => {
+  return new StarknetAgent({
+    provider: config.provider || defaultConfig.starknet.provider,
+    accountPrivateKey: config.privateKey || defaultConfig.starknet.privateKey,
+    accountPublicKey: config.publicKey || defaultConfig.starknet.publicKey,
+    aiModel: config.aiModel || defaultConfig.ai.model,
+    aiProvider: (config.aiProvider || defaultConfig.ai.provider) as 'anthropic',
+    aiProviderApiKey: config.apiKey || defaultConfig.ai.apiKey,
+  });
+};
+
 export const setupTestEnvironment = () => {
   const config = loadTestConfig();
+  
+  globalAgent = createCustomAgent({})
+  
+  agent1 = createCustomAgent({
+    provider: new RpcProvider({nodeUrl:config.RPC_URL}),
+    privateKey:config.accounts.account1.privateKey,
+    publicKey: config.accounts.account1.privateKey
+  });
+  
+  agent2 = createCustomAgent({
+    provider: new RpcProvider({nodeUrl:config.RPC_URL}),
+    privateKey:config.accounts.account2.privateKey,
+    publicKey: config.accounts.account2.privateKey
+  });
+  
+  agent3 = createCustomAgent({
+    provider: new RpcProvider({nodeUrl:config.RPC_URL}),
+    privateKey:config.accounts.account3.privateKey,
+    publicKey: config.accounts.account3.privateKey
+  });
 
-  process.env.RPC_URL = config.RPC_URL;
+  invalidAgent = createCustomAgent({
+    privateKey: invalid_private_key
+  })
 
-  process.env.PRIVATE_KEY = config.accounts.account1.privateKey;
-  process.env.PUBLIC_ADDRESS = config.accounts.account1.publicAddress;
-
-  process.env.PRIVATE_KEY_2 = config.accounts.account2.privateKey;
-  process.env.PUBLIC_ADDRESS_2 = config.accounts.account2.publicAddress;
-
-  process.env.PRIVATE_KEY_3 = config.accounts.account3.privateKey;
-  process.env.PUBLIC_ADDRESS_3 = config.accounts.account3.publicAddress;
 };

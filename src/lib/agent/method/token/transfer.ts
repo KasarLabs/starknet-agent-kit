@@ -3,7 +3,7 @@ import { tokenAddresses } from 'src/core/constants/tokens/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { error } from 'console';
 
-export interface transferpayloads {
+export interface transferPayloads {
   recipient_address: string;
   amount: string;
   symbol: string;
@@ -46,7 +46,7 @@ const formatTokenAmount = (amount: string, decimals: number): string => {
  */
 export const transfer = async (
   agent: StarknetAgentInterface,
-  payloads: transferpayloads
+  payloads: transferPayloads
 ): Promise<string> => {
   try {
     const credentials = agent.getAccountCredentials();
@@ -121,7 +121,7 @@ export const transfer_call_data = async (input: {
     const payloads = input.payloads;
 
     if (!Array.isArray(payloads)) {
-      throw new Error('Payloads doit être un tableau');
+      throw new Error('Payloads is not an Array');
     }
 
     const results = await Promise.all(
@@ -136,10 +136,10 @@ export const transfer_call_data = async (input: {
             },
           };
         }
-
+        console.log(payload.amount);
         const decimals =
           DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-        const formattedAmount = formatTokenAmount(payload.amount, decimals);
+        const formattedAmount = formatTokenAmount('1', decimals);
         const amountUint256 = uint256.bnToUint256(formattedAmount);
         return {
           status: 'success',
@@ -155,7 +155,7 @@ export const transfer_call_data = async (input: {
         };
       })
     );
-    console.log('Résultats:', results);
+    console.log('Results :', results);
     return JSON.stringify({ transaction_type: 'INVOKE', results });
   } catch (error) {
     console.error('Transfer call data failure:', error);

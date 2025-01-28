@@ -406,8 +406,8 @@ const StarknetAgent = () => {
                   aria-pressed={isActive}
                   title={
                     isActive
-                      ? 'Désactiver la signature'
-                      : 'Activer la signature'
+                      ? 'Desactivate the signature'
+                      : 'Activate the signature'
                   }
                 >
                   <span
@@ -428,7 +428,7 @@ const StarknetAgent = () => {
                 <span
                   className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500'}`}
                 >
-                  {isActive ? 'Signature activée' : 'Signature désactivée'}
+                  {isActive ? 'Signature activate' : 'Signature desactivate'}
                 </span>
               </div>
 

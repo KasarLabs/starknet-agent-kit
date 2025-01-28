@@ -1,4 +1,4 @@
-import { BlockIdAndContractAddressParams } from 'src/lib/agent/schema';
+import { BlockIdAndContractAddressParams } from 'src/lib/agent/schema/schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { BlockNumber } from 'starknet';
 

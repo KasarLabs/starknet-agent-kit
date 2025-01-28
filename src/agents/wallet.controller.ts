@@ -1,16 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Head,
-  Header,
-  OnModuleInit,
-  Post,
-  UseInterceptors,
-} from '@nestjs/common';
-import { AgentRequestDTO } from './dto/agents';
+import { Body, Controller, OnModuleInit, Post } from '@nestjs/common';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
-import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
 import { WalletService } from './services/wallet.service';
 
@@ -31,7 +20,7 @@ export class WalletController implements OnModuleInit {
       aiModel: this.config.ai.model,
       aiProvider: this.config.ai.provider,
       aiProviderApiKey: this.config.ai.apiKey,
-      tools_choice: 'call_data',
+      agent_mode: 'call_data',
     });
   }
 

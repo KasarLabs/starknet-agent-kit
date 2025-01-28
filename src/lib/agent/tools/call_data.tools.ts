@@ -1,16 +1,46 @@
 import { tool } from '@langchain/core/tools';
-import { transfer_call_data_schema } from '../schema';
+import { transfer_call_data_schema } from '../schema/schma_call_data';
 import { transfer_call_data } from '../method/token/transfer';
-import { create_deploy_argent_account } from '../method/account/deployAccount';
+
+interface CalldataTool<P = any> {
+  name: string;
+  description: string;
+  schema?: object;
+  execute: (params: P) => Promise<unknown>;
+}
+
+export class StarknetCalldataToolRegistry {
+  private static tools: CalldataTool[] = [];
+
+  static RegistercalldataTools<P>(tool: CalldataTool<P>): void {
+    this.tools.push(tool);
+  }
+
+  static createCalldataTools() {
+    return this.tools.map(({ name, description, schema, execute }) => {
+      const toolInstance = tool(async (params: any) => execute(params), {
+        name,
+        description,
+        ...(schema && { schema }),
+      });
+      return toolInstance;
+    });
+  }
+}
 
 export const RegistercalldataTools = () => [
-  tool(transfer_call_data, {
-    name: 'transfer_call_data',
-    description: 'return transfer call data schema',
+  StarknetCalldataToolRegistry.RegistercalldataTools({
+    name: 'transfer',
+    description: 'return transfer json transaction',
     schema: transfer_call_data_schema,
-  }),
-  tool(create_deploy_argent_account, {
-    name: 'create_deploy_argent_account',
-    description: 'return create_deploy_argent_account call data schema',
+    execute: transfer_call_data,
   }),
 ];
+
+RegistercalldataTools();
+
+export const createCalldataTools = () => {
+  return StarknetCalldataToolRegistry.createCalldataTools();
+};
+
+export default StarknetCalldataToolRegistry;

@@ -11,35 +11,13 @@ import MarkdownIt from 'markdown-it';
 import { WalletAccount } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
 import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
+import {
+  AgentResponse,
+  TransactionResponse,
+} from '@/interfaces/starknetagents';
+import { handleInvokeTransactions } from '@/transactions/InvokeTransactions';
 
 const md = new MarkdownIt({ breaks: true });
-
-interface AgentResponse {
-  text: string;
-  timestamp: number;
-  isTyping: boolean;
-}
-
-type InvokeTransaction = {
-  contractAddress: string;
-  entrypoint: string;
-  calldata: string[];
-};
-
-interface WalletApiResponse {
-  status: 'success' | 'failure';
-  transactions:
-    | {
-        contractAddress: string;
-        entrypoint: string;
-        calldata: string[];
-      }
-    | {
-        contractAddress: string;
-        entrypoint: string;
-        calldata: string[];
-      }[];
-}
 
 const StarknetAgent = () => {
   const [input, setInput] = useState('');
@@ -87,25 +65,16 @@ const StarknetAgent = () => {
     setIsActive(!isActive);
   };
 
-  const handleInvokeTransactions = (
-    response: WalletApiResponse
-  ): InvokeTransaction | InvokeTransaction[] => {
-    if (!response || !response.transactions) return [];
-
-    if ('contractAddress' in response.transactions) {
-      return {
-        contractAddress: response.transactions.contractAddress,
-        entrypoint: response.transactions.entrypoint,
-        calldata: [...response.transactions.calldata],
-      };
+  const handleSubmitButton = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(isActive);
+    if (isActive === true) {
+      handleSubmitWallet(e);
+    } else {
+      handleSubmit(e);
     }
-
-    return response.transactions.map((tx) => ({
-      contractAddress: tx.contractAddress,
-      entrypoint: tx.entrypoint,
-      calldata: [...tx.calldata],
-    }));
   };
+
   /**
    * Shorten a full StarkNet/Ethereum transaction hash (0x + 64 hex chars)
    * e.g. "0x0123abcd...ffff" => "0x01...fff"
@@ -274,16 +243,6 @@ const StarknetAgent = () => {
     }, 10);
   };
 
-  const handleSubmitButton = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(isActive);
-    if (isActive === true) {
-      handleSubmitWallet(e);
-    } else {
-      handleSubmit(e);
-    }
-  };
-
   const handleSubmitWallet = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -303,7 +262,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'test',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include',
@@ -312,16 +271,25 @@ const StarknetAgent = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      const result = (await response.json()) as WalletApiResponse;
       if (!Wallet) {
-        throw new Error('Wallet null');
+        throw new Error('Wallet not initialized. Please connect your wallet.');
       }
 
-      console.log('Wallet address', Wallet.address);
+      const result = await response.json();
 
-      const tx = handleInvokeTransactions(result);
-      if (!tx) throw new Error('TX NOT SET');
+      let tx;
+      if (result.transaction_type === 'INVOKE') {
+        tx = handleInvokeTransactions(result as TransactionResponse);
+        if (!tx) {
+          throw new Error(
+            'The Invoke transaction is in the wrong format. Check the API Response'
+          );
+        }
+      }
+      if (!tx) {
+        throw new Error('The transactions has to be an INVOKE transaction');
+      }
+
       const transaction_hash = await Wallet.execute(tx);
       typeResponse({
         ...newResponse,

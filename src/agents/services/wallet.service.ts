@@ -27,7 +27,7 @@ export class WalletService implements IWalletService {
       if (!(await agent.validateRequest(userRequest.request))) {
         throw new AgentValidationError('Invalid request format or parameters');
       }
-      const result = await agent.execute(userRequest.request, true);
+      const result = await agent.execute_call_data(userRequest.request);
       return result;
     } catch (error: any) {
       return error;

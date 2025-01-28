@@ -7,7 +7,7 @@ import {
   DeployArgentAccount,
   DeployOZAccount,
 } from 'src/lib/agent/method/account/deployAccount';
-import { transfer, transfer_call_data } from '../method/token/transfer';
+import { transfer } from '../method/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
@@ -27,16 +27,9 @@ import {
   getStorageAtSchema,
   swapSchema,
   DeployOZAccountSchema,
-  Transferschema,
-  transfer_call_data_schema,
   blockIdSchema,
-  getTransactionByBlockIdAndIndexSchema,
   transactionHashSchema,
   blockIdAndContractAddressSchema,
-  declareContractSchema,
-  estimateAccountDeployFeeSchema,
-  signMessageSchema,
-  verifyMessageSchema,
   simulateInvokeTransactionSchema,
   simulateDeployAccountTransactionSchema,
   simulateDeployTransactionSchema,
@@ -47,30 +40,17 @@ import {
   contractAddressSchema,
   getClassAtSchema,
   getClassHashAtSchema,
-} from '../schema';
+  Transferschema,
+} from '../schema/schema';
 import { swapTokens } from '../method/dapps/defi/avnu/swapService';
 import { getRoute } from '../method/dapps/defi/avnu/fetchRouteService';
 import { getSpecVersion } from '../method/rpc/getSpecVersion';
 import { getBlockWithTxHashes } from '../method/rpc/getBlockWithTxHashes';
-import { getBlockWithTxs } from '../method/rpc/getBlockWithTxs';
 import { getBlockWithReceipts } from '../method/rpc/getBlockWithReceipts';
-import { getBlockStateUpdate } from '../method/rpc/getBlockStateUpdate';
 import { getTransactionStatus } from '../method/rpc/getTransactionStatus';
-import { getTransactionByHash } from '../method/rpc/getTransactionByHash';
-import { getTransactionByBlockIdAndIndex } from '../method/rpc/getTransactionByBlockIdAndIndex';
-import { getTransactionReceipt } from '../method/rpc/getTransactionReceipt';
 import { getClass } from '../method/rpc/getClass';
-import { getBlockLatestAccepted } from '../method/rpc/getBlockLatestAccepted';
 import { getChainId } from '../method/rpc/getChainId';
 import { getSyncingStats } from '../method/rpc/getSyncingStats';
-import { getNonceForAddress } from '../method/rpc/getNonceForAddress';
-import { getTransactionTrace } from '../method/rpc/getTransactionTrace';
-import { getBlockTransactionsTraces } from '../method/rpc/getBlockTransactionsTraces';
-import { getAddress } from '../method/account/getAddress';
-import { declareContract } from '../method/contract/declareContract';
-import { estimateAccountDeployFee } from '../method/account/estimateAccountDeployFee';
-import { signMessage } from '../method/account/signMessage';
-import { verifyMessage } from '../method/account/verifyMessage';
 import { createMemecoin } from '../method/dapps/degen/unruggable/method/createMemecoin';
 import { isMemecoin } from '../method/dapps/degen/unruggable/method/isMemecoin';
 import { getLockedLiquidity } from '../method/dapps/degen/unruggable/method/getLockedLiquidity';
@@ -93,8 +73,8 @@ export interface StarknetAgentInterface {
     aiModel: string;
     aiProviderApiKey: string;
   };
-  getToolsChoice: () => {
-    tools_choice: string;
+  getAgentMode: () => {
+    agent_mode: string;
   };
   getProvider: () => RpcProvider;
   accountManager: AccountManager;
@@ -237,13 +217,7 @@ export const registerTools = () => {
     execute: transfer,
   });
 
-  // StarknetToolRegistry.registerTool({
-  //   name: 'transfer_call_data',
-  //   description: 'return transfer call data schema',
-  //   schema: transfer_call_data_schema,
-  //   execute: transfer_call_data,
-  // });
-
+  // Simulate transactions
   StarknetToolRegistry.registerTool({
     name: 'simulate_transaction',
     description: 'Simulate a transaction without executing it',

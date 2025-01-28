@@ -3,7 +3,7 @@ import { tokenAddresses } from 'src/core/constants/tokens/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { error } from 'console';
 
-export interface transferParams {
+export interface transferpayloads {
   recipient_address: string;
   amount: string;
   symbol: string;
@@ -28,8 +28,8 @@ const DECIMALS = {
 
 /**
  * Formats amount to the correct decimal places for the token
- * @param amount The amount as a string (e.g., "0.0001")
- * @param decimals Number of decimal places
+ * @payload amount The amount as a string (e.g., "0.0001")
+ * @payload decimals Number of decimal places
  * @returns Formatted amount as a string
  */
 const formatTokenAmount = (amount: string, decimals: number): string => {
@@ -40,13 +40,13 @@ const formatTokenAmount = (amount: string, decimals: number): string => {
 
 /**
  * Transfers ERC20 tokens on Starknet
- * @param agent The agent performing the transfer
- * @param params transfer parameters including recipient, amount, and token symbol
+ * @payload agent The agent performing the transfer
+ * @payload payloads transfer payloadeters including recipient, amount, and token symbol
  * @returns Result of the transfer operation
  */
 export const transfer = async (
   agent: StarknetAgentInterface,
-  params: transferParams
+  payloads: transferpayloads
 ): Promise<string> => {
   try {
     const credentials = agent.getAccountCredentials();
@@ -58,21 +58,21 @@ export const transfer = async (
       credentials.accountPrivateKey
     );
 
-    const tokenAddress = tokenAddresses[params.symbol];
+    const tokenAddress = tokenAddresses[payloads.symbol];
     if (!tokenAddress) {
-      throw new Error(`Token ${params.symbol} not supported`);
+      throw new Error(`Token ${payloads.symbol} not supported`);
     }
 
     const decimals =
-      DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
+      DECIMALS[payloads.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const formattedAmount = formatTokenAmount(payloads.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
 
     const result = await account.execute({
       contractAddress: tokenAddress,
       entrypoint: 'transfer',
       calldata: [
-        params.recipient_address,
+        payloads.recipient_address,
         amountUint256.low,
         amountUint256.high,
       ],
@@ -87,9 +87,9 @@ export const transfer = async (
 
     const transferResult: TransferResult = {
       status: 'success',
-      amount: params.amount,
-      symbol: params.symbol,
-      recipients_address: params.recipient_address,
+      amount: payloads.amount,
+      symbol: payloads.symbol,
+      recipients_address: payloads.recipient_address,
       transaction_hash: result.transaction_hash,
     };
 
@@ -109,33 +109,37 @@ export const transfer = async (
 };
 
 export type TransferPlayloadSchema = {
-  params: {
-    symbol: string;
-    recipient_address: string;
-    amount: string;
-  }[];
+  symbol: string;
+  recipient_address: string;
+  amount: string;
 };
 
-export const transfer_call_data = async (
-  input: TransferPlayloadSchema
-): Promise<any> => {
+export const transfer_call_data = async (input: {
+  payloads: TransferPlayloadSchema[];
+}): Promise<any> => {
   try {
+    const payloads = input.payloads;
+
+    if (!Array.isArray(payloads)) {
+      throw new Error('Payloads doit être un tableau');
+    }
+
     const results = await Promise.all(
-      input.params.map(async (param) => {
-        const tokenAddress = tokenAddresses[param.symbol];
+      payloads.map(async (payload) => {
+        const tokenAddress = tokenAddresses[payload.symbol];
         if (!tokenAddress) {
           return {
             status: 'error',
             error: {
               code: 'TOKEN_NOT_SUPPORTED',
-              message: `Token ${param.symbol} not supported`,
+              message: `Token ${payload.symbol} not supported`,
             },
           };
         }
 
         const decimals =
-          DECIMALS[param.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-        const formattedAmount = formatTokenAmount(param.amount, decimals);
+          DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+        const formattedAmount = formatTokenAmount(payload.amount, decimals);
         const amountUint256 = uint256.bnToUint256(formattedAmount);
         return {
           status: 'success',
@@ -143,7 +147,7 @@ export const transfer_call_data = async (
             contractAddress: tokenAddress,
             entrypoint: 'transfer',
             calldata: [
-              param.recipient_address,
+              payload.recipient_address,
               amountUint256.low,
               amountUint256.high,
             ],
@@ -151,7 +155,8 @@ export const transfer_call_data = async (
         };
       })
     );
-    return JSON.stringify(results);
+    console.log('Résultats:', results);
+    return JSON.stringify({ transaction_type: 'INVOKE', results });
   } catch (error) {
     console.error('Transfer call data failure:', error);
     return {

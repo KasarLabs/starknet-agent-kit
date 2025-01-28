@@ -1,4 +1,4 @@
-import { ContractAddressParams } from 'src/lib/agent/schema';
+import { ContractAddressParams } from 'src/lib/agent/schema/schema';
 import { Contract } from 'starknet';
 import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';

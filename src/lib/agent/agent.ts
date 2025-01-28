@@ -8,16 +8,12 @@ import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { RegistercalldataTools } from './tools/call_data.tools';
+import { createCalldataTools } from './tools/call_data.tools';
 
 const systemMessage = new SystemMessage(`
   You are an AI agent on Starknet network capable of executing all kinds of transactions and interacting with the Starknet blockchain.
   
-  You are able to execute transactions on behalf of the user.
-  When you execute any call_data tools/functiont return the response in a JSON format + dont add text: 
-  {
-    key : value with the same name
-  }
+  You are able to execute transactions on behalf of the user. 
 
   When you execute a swap function successfully always mention the explorer link https://starkscan.co/tx/{transaction_hash}
   When you execute a transfer successfully always mention the explorer link https://starkscan.co/tx/{transaction_hash}
@@ -30,8 +26,6 @@ const systemMessage = new SystemMessage(`
   Please beautify any of your responses by adding returns to make it more readable.
 `);
 
-export type ToolsChoice = string;
-
 export const prompt = ChatPromptTemplate.fromMessages([
   systemMessage,
   ['human', '{input}'],
@@ -42,6 +36,8 @@ export const createAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
+  const isCalldataMode =
+    starknetAgent.getAgentMode().agent_mode === 'call_data';
   const model = () => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
@@ -85,10 +81,9 @@ export const createAgent = (
   };
 
   const modelSelected = model();
-  const tools =
-    starknetAgent.getToolsChoice().tools_choice === 'call_data'
-      ? RegistercalldataTools()
-      : createTools(starknetAgent);
+  const tools = isCalldataMode
+    ? createCalldataTools()
+    : createTools(starknetAgent);
 
   const agent = createToolCallingAgent({
     llm: modelSelected,
@@ -96,8 +91,14 @@ export const createAgent = (
     prompt,
   });
 
-  return new AgentExecutor({
+  const executorConfig = {
     agent,
     tools,
-  });
+    ...(isCalldataMode && {
+      returnIntermediateSteps: true,
+      maxIterations: 1,
+    }),
+  };
+
+  return new AgentExecutor(executorConfig);
 };

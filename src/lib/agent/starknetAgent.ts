@@ -5,9 +5,6 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
-import { readSync } from 'fs';
-import { ToolsChoice } from './agent';
-import { throwError } from 'rxjs';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -15,7 +12,7 @@ export interface StarknetAgentConfig {
   provider: RpcProvider;
   accountPublicKey: string;
   accountPrivateKey: string;
-  tools_choice: string;
+  agent_mode: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -29,7 +26,7 @@ export class StarknetAgent implements IAgent {
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
-  public readonly tools_choice: ToolsChoice;
+  public readonly agent_mode: string;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -39,7 +36,7 @@ export class StarknetAgent implements IAgent {
     this.accountPublicKey = config.accountPublicKey;
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
-    this.tools_choice = config.tools_choice;
+    this.agent_mode = config.agent_mode;
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -79,9 +76,9 @@ export class StarknetAgent implements IAgent {
     };
   }
 
-  getToolsChoice() {
+  getAgentMode() {
     return {
-      tools_choice: this.tools_choice,
+      agent_mode: this.agent_mode,
     };
   }
 
@@ -93,41 +90,17 @@ export class StarknetAgent implements IAgent {
     return Boolean(request && typeof request === 'string');
   }
 
-  async execute(input: string, call_data_function: boolean): Promise<unknown> {
+  async execute(input: string): Promise<unknown> {
     const aiMessage = await this.agentExecutor.invoke({ input });
-    if (call_data_function == true) {
-      try {
-        if (Array.isArray(aiMessage.output)) {
-          for (const item of aiMessage.output) {
-            if (item.type === 'text' && item.text) {
-              const startIndex = item.text.indexOf('{');
-              let collad;
-              let i;
-              for (i = startIndex + 1; i < item.text.length; i++) {
-                if (item.text[i] === '{') {
-                  collad = true;
-                }
-                if (item.text[i] === '}' && collad === true) {
-                  collad = false;
-                } else if (item.text[i] === '}' && collad === false) {
-                  break;
-                }
-              }
-              const endIndex = i + 1;
-              if (startIndex !== -1 && endIndex !== -1) {
-                const jsonStr = item.text.substring(startIndex, endIndex);
-                return JSON.parse(jsonStr);
-              }
-            }
-          }
-        } else {
-          throw new Error('Output is not an array');
-        }
-      } catch (error) {
-        console.error('Parsing error:', error);
-        return aiMessage.output;
-      }
-    }
     return aiMessage;
+  }
+
+  async execute_call_data(input: string): Promise<unknown> {
+    const aiMessage = await this.agentExecutor.invoke({ input });
+    const result =
+      aiMessage.intermediateSteps[aiMessage.intermediateSteps.length - 1]
+        .observation;
+    console.log(result);
+    return JSON.parse(result);
   }
 }

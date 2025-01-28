@@ -1,4 +1,4 @@
-import { CreateMemecoinParams } from 'src/lib/agent/schema';
+import { CreateMemecoinParams } from 'src/lib/agent/schema/schema';
 import { stark, uint256 } from 'starknet';
 import {
   execute,

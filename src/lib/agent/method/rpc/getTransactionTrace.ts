@@ -1,4 +1,4 @@
-import { TransactionHashParams } from 'src/lib/agent/schema';
+import { TransactionHashParams } from 'src/lib/agent/schema/schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getTransactionTrace = async (

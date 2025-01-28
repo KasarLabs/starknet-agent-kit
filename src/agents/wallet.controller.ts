@@ -2,6 +2,7 @@ import { Body, Controller, OnModuleInit, Post } from '@nestjs/common';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { ConfigurationService } from '../config/configuration';
 import { WalletService } from './services/wallet.service';
+import { AgentRequestDTO } from './dto/agents';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -25,7 +26,7 @@ export class WalletController implements OnModuleInit {
   }
 
   @Post('call_data')
-  async handleUserCalldataRequest(@Body() userRequest: any) {
+  async handleUserCalldataRequest(@Body() userRequest: AgentRequestDTO) {
     return await this.walletService.handleUserCalldataRequest(
       this.agent,
       userRequest

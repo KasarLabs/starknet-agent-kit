@@ -5,6 +5,9 @@ import {
 } from '../schema/schma_call_data';
 import { transfer_call_data } from '../method/token/transfer';
 import { getBalanceSignature } from '../method/read/getBalances';
+import { CreateArgentAccountSignature } from '../method/account/createAccount';
+import { DeployArgentAccountSchema } from '../schema/schema';
+import { DeployArgentAccountSignature } from '../method/account/deployAccount';
 
 interface CalldataTool<P = any> {
   name: string;
@@ -44,6 +47,18 @@ export const RegistercalldataTools = () => [
     description: 'return the amoumt of token at a account address',
     schema: getBalanceSignatureSchema,
     execute: getBalanceSignature,
+  }),
+  StarknetCalldataToolRegistry.RegistercalldataTools({
+    name: 'create_argent_account',
+    description:
+      'create argent account return the privateKey/publicKey/contractAddress',
+    execute: CreateArgentAccountSignature,
+  }),
+  StarknetCalldataToolRegistry.RegistercalldataTools({
+    name: 'deploy_argent_account',
+    description: 'deploy argent account return the deploy transaction address',
+    schema: DeployArgentAccountSchema,
+    execute: DeployArgentAccountSignature,
   }),
 ];
 

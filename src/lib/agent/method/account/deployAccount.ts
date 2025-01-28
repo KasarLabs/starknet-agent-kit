@@ -1,9 +1,15 @@
 import {
   argentx_classhash,
-  DEFAULT_GUARDIAN,
+  oz_classhash,
 } from 'src/lib/utils/constants/contract';
-import { Account, hash, CallData, TransactionFinalityStatus } from 'starknet';
-import { AccountDetails } from 'src/lib/utils/types';
+import {
+  Account,
+  CallData,
+  CairoOption,
+  CairoOptionVariant,
+  CairoCustomEnum,
+  RpcProvider,
+} from 'starknet';
 import {
   DeployOZAccountParams,
   DeployArgentParams,
@@ -16,40 +22,30 @@ export const DeployOZAccount = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    const accountCredentials = agent.getAccountCredentials();
-    const accountAddress = accountCredentials?.accountPublicKey;
-    const accountPrivateKey = accountCredentials?.accountPrivateKey;
-    const accountDetails: AccountDetails = {
-      publicKey: accountAddress,
-      privateKey: accountPrivateKey,
-      address: '',
-      deployStatus: false,
-    };
-
-    const { suggestedMaxFee } =
-      await agent.accountManager.estimateAccountDeployFee(accountDetails);
-    console.log('Estimated max deployment fee:', suggestedMaxFee);
-
-    const deployResponse =
-      await agent.accountManager.deployAccount(accountDetails);
-
-    if (!deployResponse.transactionHash) {
-      throw new Error('No transaction hash returned from deployment');
-    }
-
-    const receipt = await provider.waitForTransaction(
-      deployResponse.transactionHash,
-      {
-        retryInterval: 5000,
-        successStates: [TransactionFinalityStatus.ACCEPTED_ON_L1],
-      }
+    const OZaccountConstructorCallData = CallData.compile({
+      publicKey: params.publicKey,
+    });
+    const OZaccount = new Account(
+      provider,
+      params.precalculate_address,
+      params.privateKey
     );
 
+    const transaction = await OZaccount.deployAccount({
+      classHash: oz_classhash,
+      constructorCalldata: OZaccountConstructorCallData,
+      addressSalt: params.publicKey,
+    });
+    console.log(
+      '✅ Open Zeppelin wallet deployed at:',
+      transaction.contract_address,
+      ' : ',
+      transaction.transaction_hash
+    );
     return {
       status: 'success',
       wallet: 'Open Zeppelin',
-      transaction_hash: deployResponse.transactionHash,
-      receipt: receipt,
+      transaction_hash: transaction.transaction_hash,
     };
   } catch (error) {
     return {
@@ -63,50 +59,99 @@ export const DeployArgentAccount = async (
   agent: StarknetAgentInterface,
   params: DeployArgentParams
 ) => {
-  const provider = agent.getProvider();
-
   try {
-    const argentXaccountClassHash = argentx_classhash;
-
-    const constructorCalldata = CallData.compile({
-      owner: params.publicKeyAX,
-      guardian: DEFAULT_GUARDIAN,
-    });
-
-    const contractAddress = hash.calculateContractAddressFromHash(
+    const provider = agent.getProvider();
+    const accountAX = new Account(
+      provider,
       params.publicKeyAX,
-      argentXaccountClassHash,
-      constructorCalldata,
-      0
+      params.privateKeyAX
     );
+    const axSigner = new CairoCustomEnum({
+      Starknet: { pubkey: params.publicKeyAX },
+    });
+    const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
 
-    const account = new Account(provider, contractAddress, params.privateKeyAX);
-
+    const AXConstructorCallData = CallData.compile({
+      owner: axSigner,
+      guardian: axGuardian,
+    });
     const deployAccountPayload = {
-      classHash: argentXaccountClassHash,
-      constructorCalldata: constructorCalldata,
-      contractAddress: contractAddress,
+      classHash: argentx_classhash,
+      constructorCalldata: AXConstructorCallData,
+      contractAddress: params.precalculate_address,
       addressSalt: params.publicKeyAX,
     };
 
-    const { transaction_hash, contract_address } =
-      await account.deployAccount(deployAccountPayload);
-
-    await provider.waitForTransaction(transaction_hash, {
-      retryInterval: 5000,
-      successStates: [TransactionFinalityStatus.ACCEPTED_ON_L1],
-    });
+    const AXcontractFinalAddress =
+      await accountAX.deployAccount(deployAccountPayload);
+    console.log('✅ ArgentX wallet deployed at:', AXcontractFinalAddress);
 
     return {
       status: 'success',
       wallet: 'Argent X',
-      transaction_hash,
-      contract_address,
+      contract_address: AXcontractFinalAddress.contract_address,
+      transaction_hash: AXcontractFinalAddress.transaction_hash,
     };
   } catch (error) {
+    console.log(error);
     return {
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
     };
+  }
+};
+
+export const DeployArgentAccountSignature = async (
+  params: DeployArgentParams
+) => {
+  try {
+    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const accountAX = new Account(
+      provider,
+      params.publicKeyAX,
+      params.privateKeyAX
+    );
+    const axSigner = new CairoCustomEnum({
+      Starknet: { pubkey: params.publicKeyAX },
+    });
+    const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
+
+    const AXConstructorCallData = CallData.compile({
+      owner: axSigner,
+      guardian: axGuardian,
+    });
+    const deployAccountPayload = {
+      classHash: argentx_classhash,
+      constructorCalldata: AXConstructorCallData,
+      contractAddress: params.precalculate_address,
+      addressSalt: params.publicKeyAX,
+    };
+
+    const suggestedMaxFee = await accountAX.estimateAccountDeployFee({
+      classHash: argentx_classhash,
+      constructorCalldata: AXConstructorCallData,
+      contractAddress: params.precalculate_address,
+    });
+    const AXcontractFinalAddress = await accountAX.deployAccount(
+      deployAccountPayload,
+      { maxFee: suggestedMaxFee.suggestedMaxFee.toString() }
+    );
+    console.log(
+      '✅ ArgentXSignature wallet deployed at:',
+      AXcontractFinalAddress
+    );
+
+    return JSON.stringify({
+      status: 'success',
+      wallet: 'Argent X',
+      contract_address: AXcontractFinalAddress.contract_address,
+      transaction_hash: AXcontractFinalAddress.transaction_hash,
+    });
+  } catch (error) {
+    console.log(error);
+    return JSON.stringify({
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 };

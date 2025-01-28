@@ -7,7 +7,8 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
  */
 export type DeployOZAccountParams = {
   publicKey: string;
-  agent: StarknetAgentInterface;
+  privateKey: string;
+  precalculate_address: string;
 };
 
 /**
@@ -18,4 +19,5 @@ export type DeployOZAccountParams = {
 export type DeployArgentParams = {
   publicKeyAX: string;
   privateKeyAX: string;
+  precalculate_address: string;
 };

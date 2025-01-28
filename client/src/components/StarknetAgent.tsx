@@ -16,7 +16,9 @@ import {
   TransactionResponse,
 } from '@/interfaces/starknetagents';
 import { handleInvokeTransactions } from '@/transactions/InvokeTransactions';
-
+import { ACCOUNT } from '@/interfaces/accout';
+import { InvokeTransaction } from '@/types/starknetagents';
+import { handleDeployTransactions } from '@/transactions/DeployAccountTransactions';
 const md = new MarkdownIt({ breaks: true });
 
 const StarknetAgent = () => {
@@ -278,7 +280,7 @@ const StarknetAgent = () => {
       const result = await response.json();
 
       let tx;
-      if (result.transaction_type === 'INVOKE') {
+      if (result.transaction_type === 'INVOKE' && result.status === 'success') {
         tx = handleInvokeTransactions(result as TransactionResponse);
         if (!tx) {
           throw new Error(
@@ -295,12 +297,52 @@ const StarknetAgent = () => {
           ...newResponse,
           text: JSON.stringify(JSON.stringify(result)),
         });
+      } else if (
+        result.transaction_type === 'CREATE_ACCOUNT' &&
+        result.status === 'success'
+      ) {
+        const account_details = result as ACCOUNT;
+        if (!account_details) {
+          throw new Error('Account not set');
+        }
+        const tx: InvokeTransaction = {
+          contractAddress:
+            '0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+          entrypoint: 'transfer',
+          calldata: [
+            account_details.contractaddress,
+            account_details.deploy_fee,
+            '0x0',
+          ],
+        };
+        const deploy_account_response = handleDeployTransactions(
+          Wallet,
+          tx,
+          account_details.public_key,
+          account_details.private_key,
+          account_details.contractaddress
+        );
+
+        typeResponse({
+          ...newResponse,
+          text: await deploy_account_response,
+        });
       }
       if (!tx) {
-        throw new Error('The transactions has to be an INVOKE transaction');
+        throw new Error(
+          'The transactions has to be an INVOKE or DeployAccount transaction'
+        );
       }
     } catch (error) {
-      console.log('Error : ', error);
+      console.error('Request error:', error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
+
+      typeResponse({
+        ...newResponse,
+        text: `Error: ${errorMessage}\nPlease try again or contact support if the issue persists.`,
+      });
     } finally {
       setIsLoading(false);
       setInput('');
@@ -333,7 +375,6 @@ const StarknetAgent = () => {
         credentials: 'include',
       });
 
-      // Ajout d'un meilleur logging des erreurs
       if (!response.ok) {
         const errorText = await response.text();
         console.error('API Error:', {
@@ -345,7 +386,6 @@ const StarknetAgent = () => {
       }
 
       const data = await response.json();
-      // Validation de la structure de données
       if (!data || typeof data !== 'object') {
         throw new Error('Invalid response format from server');
       }

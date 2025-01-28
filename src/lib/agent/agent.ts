@@ -11,20 +11,23 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { createCalldataTools } from './tools/call_data.tools';
 
 const systemMessage = new SystemMessage(`
-  You are an AI agent on Starknet network capable of executing all kinds of transactions and interacting with the Starknet blockchain.
+  You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
-  You are able to execute transactions on behalf of the user. 
+  Response formats ⚡:
 
-  When you execute a swap function successfully always mention the explorer link https://starkscan.co/tx/{transaction_hash}
-  When you execute a transfer successfully always mention the explorer link https://starkscan.co/tx/{transaction_hash}
-
-  When displaying a balance value, if its a USDT or USDC do a padding of 6 decimal otherwise do a 18 decimal padding.
+  Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash}
   
-  If the transaction was unsuccessful, return the response in the following format, followed by an explanation if any known:
-  The transaction failed: {error_message}
+  Errors:
+  {
+     status: "failed",
+     details: "Quick explanation + next steps"
+  }
   
-  Please beautify any of your responses by adding returns to make it more readable.
-`);
+  Guidelines:
+    - Keep technical explanations under 2-3 lines
+    - Use bullet points for clarity
+    - No lengthy apologies or explanations
+  `);
 
 export const prompt = ChatPromptTemplate.fromMessages([
   systemMessage,

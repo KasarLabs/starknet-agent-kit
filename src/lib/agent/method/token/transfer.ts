@@ -136,10 +136,9 @@ export const transfer_call_data = async (input: {
             },
           };
         }
-        console.log(payload.amount);
         const decimals =
           DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-        const formattedAmount = formatTokenAmount('1', decimals);
+        const formattedAmount = formatTokenAmount(payload.amount, decimals);
         const amountUint256 = uint256.bnToUint256(formattedAmount);
         return {
           status: 'success',

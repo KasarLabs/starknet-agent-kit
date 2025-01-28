@@ -49,7 +49,7 @@ export class AgentResponseInterceptor implements NestInterceptor {
               },
             ],
           };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           return {
             input: request,

@@ -97,10 +97,30 @@ export class StarknetAgent implements IAgent {
 
   async execute_call_data(input: string): Promise<unknown> {
     const aiMessage = await this.agentExecutor.invoke({ input });
-    const result =
-      aiMessage.intermediateSteps[aiMessage.intermediateSteps.length - 1]
-        .observation;
-    console.log(result);
-    return JSON.parse(result);
+    if (!aiMessage?.intermediateSteps?.length) {
+      return {
+        status: 'failure',
+        error: 'No intermediate steps found in AI response',
+      };
+    }
+
+    const lastStep =
+      aiMessage.intermediateSteps[aiMessage.intermediateSteps.length - 1];
+    if (!lastStep.observation) {
+      return {
+        status: 'failure',
+        error: 'No observation found in last step',
+      };
+    }
+    const result = lastStep.observation;
+    try {
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (parseError) {
+      return {
+        status: 'failure',
+        error: `Failed to parse observation: ${parseError.message}`,
+      };
+    }
   }
 }

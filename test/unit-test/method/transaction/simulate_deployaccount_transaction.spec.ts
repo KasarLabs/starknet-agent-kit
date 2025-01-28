@@ -1,5 +1,6 @@
 import { simulateDeployAccountTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import { agent1, invalidAgent } from 'test/utils/helpers';
 
 describe('Simulate Deploy_Account Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -21,8 +22,8 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
 
       const result = await simulateDeployAccountTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -49,8 +50,8 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       // Act
       const result = await simulateDeployAccountTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -75,8 +76,8 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       // Act
       const result = await simulateDeployAccountTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -118,8 +119,8 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act & Assert
       for (const params of paramsArray) {
         const result = await simulateDeployAccountTransaction(
-          params,
-          process.env.PRIVATE_KEY
+          agent1,
+          params
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -145,8 +146,8 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
 
       const result = await simulateDeployAccountTransaction(
+        invalidAgent,
         params,
-        C.invalid_private_key
       );
       const parsed = JSON.parse(result);
 
@@ -188,13 +189,13 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       // Act
       const result = await simulateDeployAccountTransaction(
+        agent1,
         paramsArray[0],
-        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeployAccountTransaction(
+        agent1,
         paramsArray[1],
-        process.env.PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

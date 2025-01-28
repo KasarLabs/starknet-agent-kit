@@ -2,7 +2,6 @@ import { LaunchOnEkuboParams } from 'src/lib/agent/schema';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 import { Contract } from 'starknet';
-import { Account } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 /**
@@ -64,7 +63,6 @@ export const launchOnEkubo = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    const accountCredentials = agent.getAccountCredentials();
 
     const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
 
@@ -100,7 +98,7 @@ export const launchOnEkubo = async (
       response,
     });
   } catch (error) {
-    console.error('Error launching on Ekubo:', error);
+    //console.error('Error launching on Ekubo:', error);
     return JSON.stringify({
       status: 'failed',
       error: error.message,

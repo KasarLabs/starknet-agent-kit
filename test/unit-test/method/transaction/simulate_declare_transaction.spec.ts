@@ -1,5 +1,6 @@
 import { simulateDeclareTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import { agent1, invalidAgent } from 'test/utils/helpers';
 
 describe('Simulate Declare Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -49,8 +50,8 @@ describe('Simulate Declare Transaction ', () => {
 
       // Act
       const result = await simulateDeclareTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -106,8 +107,8 @@ describe('Simulate Declare Transaction ', () => {
 
       // Act
       const result = await simulateDeclareTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -163,8 +164,8 @@ describe('Simulate Declare Transaction ', () => {
 
       // Act
       const result = await simulateDeclareTransaction(
-        params,
-        process.env.PRIVATE_KEY
+        agent1,
+        params
       );
       const parsed = JSON.parse(result);
 
@@ -263,9 +264,9 @@ describe('Simulate Declare Transaction ', () => {
       // Act & Assert
       for (const params of paramsArray) {
         const result = await simulateDeclareTransaction(
-          params,
-          process.env.PRIVATE_KEY
-        );
+          agent1,
+          params
+          );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
       }
@@ -305,7 +306,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(params, '0xinvalid');
+      const result = await simulateDeclareTransaction(invalidAgent, params);
       const parsed = JSON.parse(result);
       // Assert
 
@@ -364,13 +365,13 @@ describe('Simulate Declare Transaction ', () => {
       ];
       // Act
       const result = await simulateDeclareTransaction(
+        agent1,
         paramsArray[0],
-        process.env.PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeclareTransaction(
+        agent1,
         paramsArray[1],
-        process.env.PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

@@ -1,4 +1,4 @@
-import { Account, CallData, RawArgs, Uint256 } from 'starknet';
+import { Account, CallData, Uint256 } from 'starknet';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 import { StarknetAgentInterface } from 'src/lib/agent/tools';
 import { RpcProvider } from 'starknet';

@@ -1,5 +1,6 @@
 import { simulateInvokeTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import { agent2, invalidAgent } from 'test/utils/helpers';
 describe('Simulate Invoke Transaction', () => {
   describe('With perfect match inputs', () => {
     it('should simulate invoke transaction with valid payload', async () => {
@@ -16,8 +17,8 @@ describe('Simulate Invoke Transaction', () => {
       };
       // Act
       const result = await simulateInvokeTransaction(
+        agent2,
         params,
-        process.env.PRIVATE_KEY_2 as string
       );
 
       // Assert
@@ -63,8 +64,8 @@ describe('Simulate Invoke Transaction', () => {
       // Act & Assert
       for (const params of paramsArray) {
         const result = await simulateInvokeTransaction(
+          agent2,
           params,
-          process.env.PRIVATE_KEY_2 as string
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -85,8 +86,8 @@ describe('Simulate Invoke Transaction', () => {
 
       // Act
       const result = await simulateInvokeTransaction(
+        agent2,
         params,
-        process.env.PRIVATE_KEY_2 as string
       );
       const parsed = JSON.parse(result);
 
@@ -108,7 +109,7 @@ describe('Simulate Invoke Transaction', () => {
       };
 
       // Act
-      const result = await simulateInvokeTransaction(params, '0xinvalid');
+      const result = await simulateInvokeTransaction(invalidAgent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -133,8 +134,8 @@ describe('Simulate Invoke Transaction', () => {
 
       // Act
       const result = await simulateInvokeTransaction(
+        agent2,
         params,
-        process.env.PRIVATE_KEY_2 as string
       );
       const parsed = JSON.parse(result);
 

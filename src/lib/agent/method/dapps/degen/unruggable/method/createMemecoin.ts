@@ -4,7 +4,6 @@ import {
   execute,
   decimalsScale,
 } from 'src/lib/agent/method/dapps/degen/unruggable/method/helper';
-import { Account } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools';
 
 /**
@@ -65,12 +64,6 @@ export const createMemecoin = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    const accountCredentials = agent.getAccountCredentials();
-    const account = new Account(
-      provider,
-      accountCredentials.accountPublicKey,
-      accountCredentials.accountPrivateKey
-    );
     const salt = stark.randomAddress();
     const { transaction_hash } = await execute(
       'create_memecoin',
@@ -94,10 +87,10 @@ export const createMemecoin = async (
       transactionHash: transaction_hash,
     });
   } catch (error) {
-    console.error('Error creating memecoin:', error);
-    return {
+    //console.error('Error creating memecoin:', error);
+    return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    });
   }
 };

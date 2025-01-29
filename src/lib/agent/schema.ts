@@ -1,6 +1,14 @@
 import { z } from 'zod';
 
 // Schema definitions
+export const GetProofServiceSchema = z.object({
+  filename: z.string().describe('The name of the file you wish to generate the proof')
+});
+
+export const VerifyProofServiceSchema = z.object({
+  filename: z.string().describe('The name of the file you wish to verify the proof')
+})
+
 export const Transferschema = z.object({
   recipient_address: z.string().describe('The recipient public address'),
   amount: z.string().describe('The amount of erc20 token that will be send'),

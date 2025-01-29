@@ -46,6 +46,8 @@ import {
   contractAddressSchema,
   getClassAtSchema,
   getClassHashAtSchema,
+  VerifyProofServiceSchema,
+  GetProofServiceSchema,
 } from './schema';
 import { swapTokens } from './method/dapps/defi/avnu/swapService';
 import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
@@ -79,6 +81,9 @@ import { AccountManager } from 'src/lib/utils/account/AccountManager';
 import { TransactionMonitor } from 'src/lib/utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/utils/contract/ContractInteractor';
 import { GetBalanceParams, GetOwnBalanceParams } from '../utils/types/balance';
+import { AtlanticParam } from '../utils/types/atlantic';
+import { verifyProofService } from './method/infra/atlantic/verifyProofService';
+import { getProofService } from './method/infra/atlantic/getProofService';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -127,6 +132,20 @@ export class StarknetToolRegistry {
 
 export const registerTools = () => {
   // Register balance tools
+  StarknetToolRegistry.registerTool<AtlanticParam>({
+    name: 'verify_proof_service',
+    description: 'Verify a proofs on starknet',
+    schema: VerifyProofServiceSchema,
+    execute: verifyProofService,
+  });
+
+  StarknetToolRegistry.registerTool<AtlanticParam>({
+    name: 'get_proof_service',
+    description: 'Generate proof',
+    schema: GetProofServiceSchema,
+    execute: getProofService,
+  });
+
   StarknetToolRegistry.registerTool<GetOwnBalanceParams>({
     name: 'get_own_balance',
     description: 'Get the balance of an asset in your wallet',

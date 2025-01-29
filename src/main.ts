@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { GlobalExceptionFilter } from './common/filters/exception.filter';
 import ErrorLoggingInterceptor from './common/interceptors/error-logging.interceptor';
 import { ConfigurationService } from './config/configuration';
+import fastifyMultipart from '@fastify/multipart';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -17,8 +18,17 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create<NestFastifyApplication>(
       AppModule,
-      new FastifyAdapter()
+      new FastifyAdapter({
+        bodyLimit: 10 * 1024 * 1024, // 10MB
+      })
     );
+
+    await app.register(fastifyMultipart, {
+      limits: {
+        fileSize: 10 * 1024 * 1024, // 10MB
+        files: 1
+      },
+    });
 
     const config = app.get(ConfigurationService);
 

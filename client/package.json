@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-slot": "^1.1.1",
     "@starknet-io/get-starknet": "^4.0.5",
     "class-variance-authority": "^0.7.1",

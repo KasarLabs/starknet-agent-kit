@@ -32,4 +32,9 @@ export class WalletController implements OnModuleInit {
       userRequest
     );
   }
+
+  @Post('output')
+  async HandleOutputIAParsing(@Body() userRequest: AgentRequestDTO) {
+    return await this.walletService.HandleOutputIAParsing(userRequest);
+  }
 }

@@ -19,6 +19,17 @@ import { handleInvokeTransactions } from '@/transactions/InvokeTransactions';
 import { ACCOUNT } from '@/interfaces/accout';
 import { InvokeTransaction } from '@/types/starknetagents';
 import { handleDeployTransactions } from '@/transactions/DeployAccountTransactions';
+import { CreateOutputRequest } from '@/output/output';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 const md = new MarkdownIt({ breaks: true });
 
 const StarknetAgent = () => {
@@ -31,6 +42,7 @@ const StarknetAgent = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [Wallet, setWallet] = useState<WalletAccount | null>(null);
   const [isActive, setIsActive] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<string>('normal');
 
   // When in loading state for >5s, we show "Processing..."
   useEffect(() => {
@@ -133,7 +145,7 @@ const StarknetAgent = () => {
         parts.push(
           <a
             key={start}
-            href={`https://starkscan.co/tx/${found}`}
+            href={`https://starkscan.co/contract/${found}`}
             target="_blank"
             rel="noreferrer"
             className="text-blue-500 underline"
@@ -224,8 +236,17 @@ const StarknetAgent = () => {
   /**
    * Simulate typing in the UI.
    */
-  const typeResponse = (response: AgentResponse) => {
-    const text = response.text;
+  const getResponseText = async (text: string): Promise<string> => {
+    if (selectedStyle === 'only-value') {
+      return text;
+    }
+    const output_text = await CreateOutputRequest(text);
+    return output_text;
+  };
+
+  const typeResponse = async (response: AgentResponse) => {
+    console.log(response);
+    const text = await getResponseText(response.text);
     let currentIndex = 0;
 
     const typingInterval = setInterval(() => {
@@ -290,7 +311,7 @@ const StarknetAgent = () => {
         const transaction_hash = await Wallet.execute(tx);
         typeResponse({
           ...newResponse,
-          text: JSON.stringify(JSON.stringify(transaction_hash)),
+          text: JSON.stringify(JSON.stringify({ tx, transaction_hash })),
         });
       } else if (result.transaction_type === 'READ') {
         typeResponse({
@@ -436,47 +457,60 @@ const StarknetAgent = () => {
         ) : (
           <Card className="w-full bg-neutral-900 border-neutral-800 shadow-xl">
             <CardContent className="p-3 md:p-6 space-y-4 md:space-y-6">
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleClick}
-                  className={`
-          relative flex items-center w-16 h-8 rounded-full 
-          transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
-          ${
-            isActive
-              ? 'bg-blue-500 focus:ring-blue-500'
-              : 'bg-gray-200 focus:ring-gray-500'
-          }
-        `}
-                  aria-pressed={isActive}
-                  title={
-                    isActive
-                      ? 'Desactivate the signature'
-                      : 'Activate the signature'
-                  }
-                >
-                  <span
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleClick}
                     className={`
-            absolute flex items-center justify-center
-            w-6 h-6 rounded-full bg-white shadow-md
-            transition-transform duration-300 ease-in-out
-            ${isActive ? 'translate-x-9' : 'translate-x-1'}
-          `}
+                    relative flex items-center w-16 h-8 rounded-full 
+                    transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+                    ${
+                      isActive
+                        ? 'bg-blue-500 focus:ring-blue-500'
+                        : 'bg-gray-200 focus:ring-gray-500'
+                    }
+                  `}
+                    aria-pressed={isActive}
+                    title={
+                      isActive
+                        ? 'Desactivate the signature'
+                        : 'Activate the signature'
+                    }
                   >
-                    {isActive ? (
-                      <AiFillSignature className="w-4 h-4 text-blue-500" />
-                    ) : (
-                      <AiOutlineSignature className="w-4 h-4 text-gray-400" />
-                    )}
+                    <span
+                      className={`
+                      absolute flex items-center justify-center
+                      w-6 h-6 rounded-full bg-white shadow-md
+                      transition-transform duration-300 ease-in-out
+                      ${isActive ? 'translate-x-9' : 'translate-x-1'}
+                    `}
+                    >
+                      {isActive ? (
+                        <AiFillSignature className="w-4 h-4 text-blue-500" />
+                      ) : (
+                        <AiOutlineSignature className="w-4 h-4 text-gray-400" />
+                      )}
+                    </span>
+                  </button>
+                  <span
+                    className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500'}`}
+                  >
+                    {isActive ? 'Signature activate' : 'Signature desactivate'}
                   </span>
-                </button>
-                <span
-                  className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500'}`}
-                >
-                  {isActive ? 'Signature activate' : 'Signature desactivate'}
-                </span>
-              </div>
+                </div>
 
+                <Select value={selectedStyle} onValueChange={setSelectedStyle}>
+                  <SelectTrigger className="w-[180px] text-white">
+                    <SelectValue placeholder="Choose Style" />
+                  </SelectTrigger>
+                  <SelectContent className="text-white bg-black">
+                    <SelectGroup>
+                      <SelectItem value="normal">Normal</SelectItem>
+                      <SelectItem value="only-value">Only-Value</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
               <form onSubmit={handleSubmitButton} className="relative">
                 <Input
                   type="text"

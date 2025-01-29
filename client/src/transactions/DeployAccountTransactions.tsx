@@ -4,6 +4,7 @@ import { WalletAccount } from 'starknet';
 export const handleDeployTransactions = async (
   Wallet: WalletAccount,
   Tx: InvokeTransaction,
+  wallet_type : string,
   public_key: string,
   private_key: string,
   contractaddress: string
@@ -12,7 +13,7 @@ export const handleDeployTransactions = async (
     if (!public_key || !private_key || !contractaddress) {
       throw new Error('Invalid Credidentials');
     }
-    const deploy_input = `Deploy Argent Account ${public_key} ${private_key} ${contractaddress}`;
+    const deploy_input = `Deploy ${wallet_type} Account ${public_key} ${private_key} ${contractaddress}`;
     const fund_account_tx = await Wallet.execute(Tx);
     if (!fund_account_tx) {
       throw new Error(
@@ -35,7 +36,7 @@ export const handleDeployTransactions = async (
     const response: string =
       tx_result.status === 'failure'
         ? tx_result.status
-        : `Your accout has been succesfully deploy at ${tx_result.contract_address} transaction_hash : ${tx_result.transaction_hash}, Creditentials : ${private_key}`;
+        : `✅ Your ${wallet_type} account has been succesfully deploy at ${tx_result.contract_address} transaction_hash : ${tx_result.transaction_hash}, Creditentials : ${private_key}`;
     console.log(response);
     return response;
   } catch (error) {

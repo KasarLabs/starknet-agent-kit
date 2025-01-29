@@ -318,6 +318,7 @@ const StarknetAgent = () => {
         const deploy_account_response = handleDeployTransactions(
           Wallet,
           tx,
+          result.wallet,
           account_details.public_key,
           account_details.private_key,
           account_details.contractaddress

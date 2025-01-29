@@ -44,7 +44,7 @@ export const DeployOZAccount = async (
     );
     return {
       status: 'success',
-      wallet: 'Open Zeppelin',
+      wallet: 'OpenZeppelin',
       transaction_hash: transaction.transaction_hash,
     };
   } catch (error) {
@@ -88,7 +88,7 @@ export const DeployArgentAccount = async (
 
     return {
       status: 'success',
-      wallet: 'Argent X',
+      wallet: 'ArgentX',
       contract_address: AXcontractFinalAddress.contract_address,
       transaction_hash: AXcontractFinalAddress.transaction_hash,
     };
@@ -143,7 +143,7 @@ export const DeployArgentAccountSignature = async (
 
     return JSON.stringify({
       status: 'success',
-      wallet: 'Argent X',
+      wallet: 'ArgentX',
       contract_address: AXcontractFinalAddress.contract_address,
       transaction_hash: AXcontractFinalAddress.transaction_hash,
     });
@@ -153,5 +153,44 @@ export const DeployArgentAccountSignature = async (
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
     });
+  }
+};
+
+export const DeployOZAccountSignature = async (
+  params: DeployOZAccountParams
+) => {
+  try {
+    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const OZaccountConstructorCallData = CallData.compile({
+      publicKey: params.publicKey,
+    });
+    const OZaccount = new Account(
+      provider,
+      params.precalculate_address,
+      params.privateKey
+    );
+
+    const transaction = await OZaccount.deployAccount({
+      classHash: oz_classhash,
+      constructorCalldata: OZaccountConstructorCallData,
+      addressSalt: params.publicKey,
+    });
+    console.log(
+      '✅ Open Zeppelin wallet deployed at:',
+      transaction.contract_address,
+      ' : ',
+      transaction.transaction_hash
+    );
+    return JSON.stringify({
+      status: 'success',
+      wallet: 'OpenZeppelin',
+      transaction_hash: transaction.transaction_hash,
+      contract_address : transaction.contract_address
+    });
+  } catch (error) {
+    return {
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 };

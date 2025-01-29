@@ -5,9 +5,9 @@ import {
 } from '../schema/signature_schema';
 import { transfer_signature } from '../method/token/transfer';
 import { getBalanceSignature } from '../method/read/getBalances';
-import { CreateArgentAccountSignature } from '../method/account/createAccount';
-import { DeployArgentAccountSchema } from '../schema/schema';
-import { DeployArgentAccountSignature } from '../method/account/deployAccount';
+import { CreateArgentAccountSignature, CreateOZAccountSignature } from '../method/account/createAccount';
+import { DeployArgentAccountSchema, DeployOZAccountSchema } from '../schema/schema';
+import { DeployArgentAccountSignature, DeployOZAccountSignature } from '../method/account/deployAccount';
 
 interface SignatureTool<P = any> {
   name: string;
@@ -55,10 +55,22 @@ export const RegisterSignatureTools = () => [
     execute: CreateArgentAccountSignature,
   }),
   StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'create_open_zeppelin_account',
+    description:
+      'create open_zeppelin/OZ account return the privateKey/publicKey/contractAddress',
+    execute: CreateOZAccountSignature,
+  }),
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'deploy_argent_account',
     description: 'deploy argent account return the deploy transaction address',
     schema: DeployArgentAccountSchema,
     execute: DeployArgentAccountSignature,
+  }),
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'deploy_open_zeppelin_account',
+    description: 'deploy open_zeppelin account return the deploy transaction address',
+    schema: DeployOZAccountSchema,
+    execute: DeployOZAccountSignature,
   }),
 ];
 

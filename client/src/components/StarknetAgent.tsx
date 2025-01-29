@@ -242,52 +242,51 @@ const StarknetAgent = () => {
         const resp = await fetch('/api/agent/upload', {
           method: 'POST',
           headers: {
-            'Content-Type': 'multipart/form-data',
             'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
           },
-          body: selectedFile,
+          body: formData,
         });
       }
-      //   const response = await fetch('/api/agent/request', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
-      //     },
-      //     body: JSON.stringify({ request: input }),
-      //     credentials: 'include',
-      //   });
+      const response = await fetch('/api/agent/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        body: JSON.stringify({ request: input }),
+        credentials: 'include',
+      });
 
-      //   // Ajout d'un meilleur logging des erreurs
-      //   if (!response.ok) {
-      //     const errorText = await response.text();
-      //     console.error('API Error:', {
-      //       status: response.status,
-      //       statusText: response.statusText,
-      //       body: errorText,
-      //     });
-      //     throw new Error(errorText);
-      //   }
+      // Ajout d'un meilleur logging des erreurs
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText,
+        });
+        throw new Error(errorText);
+      }
 
-      //   const data = await response.json();
+      const data = await response.json();
 
-      //   // Validation de la structure de données
-      //   if (!data || typeof data !== 'object') {
-      //     throw new Error('Invalid response format from server');
-      //   }
+      // Validation de la structure de données
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid response format from server');
+      }
 
-      //   const formattedText = formatResponse(JSON.stringify(data));
-      //   typeResponse({ ...newResponse, text: formattedText });
-      // } catch (error) {
-      //   console.error('Request error:', error);
+      const formattedText = formatResponse(JSON.stringify(data));
+      typeResponse({ ...newResponse, text: formattedText });
+    } catch (error) {
+      console.error('Request error:', error);
 
-      //   const errorMessage =
-      //     error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
 
-      //   typeResponse({
-      //     ...newResponse,
-      //     text: `Error: ${errorMessage}\nPlease try again or contact support if the issue persists.`,
-      //   });
+      typeResponse({
+        ...newResponse,
+        text: `Error: ${errorMessage}\nPlease try again or contact support if the issue persists.`,
+      });
     } finally {
       setIsLoading(false);
       setInput('');

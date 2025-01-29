@@ -185,7 +185,7 @@ export const DeployOZAccountSignature = async (
       status: 'success',
       wallet: 'OpenZeppelin',
       transaction_hash: transaction.transaction_hash,
-      contract_address : transaction.contract_address
+      contract_address: transaction.contract_address,
     });
   } catch (error) {
     return {

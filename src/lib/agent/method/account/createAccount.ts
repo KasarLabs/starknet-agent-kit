@@ -134,7 +134,6 @@ export const CreateArgentAccountSignature = async () => {
   }
 };
 
-
 export const CreateOZAccountSignature = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
@@ -167,9 +166,9 @@ export const CreateOZAccountSignature = async () => {
       transaction_type: 'CREATE_ACCOUNT',
       wallet: 'OpenZeppelin',
       public_key: starkKeyPub,
-      private_key: privateKey, 
+      private_key: privateKey,
       contractaddress: OZcontractAddress,
-      deploy_fee : maxFee.toString(),
+      deploy_fee: maxFee.toString(),
     });
   } catch (error) {
     return JSON.stringify({

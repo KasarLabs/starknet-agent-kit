@@ -4,7 +4,7 @@ import { WalletAccount } from 'starknet';
 export const handleDeployTransactions = async (
   Wallet: WalletAccount,
   Tx: InvokeTransaction,
-  wallet_type : string,
+  wallet_type: string,
   public_key: string,
   private_key: string,
   contractaddress: string

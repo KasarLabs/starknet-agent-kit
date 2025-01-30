@@ -13,7 +13,7 @@ import {
 } from 'src/lib/utils/constants/swap';
 import { TokenService } from './tokenService';
 import { ApprovalService } from './approvalService';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export class SwapService {
   private tokenService: TokenService;

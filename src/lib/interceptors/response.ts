@@ -10,12 +10,17 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class AgentResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const request = context.switchToHttp().getRequest();
+    const url = request.url;
+
+    if (url === '/api/wallet/request') {
+      return next.handle();
+    }
     return next.handle().pipe(
       map((data) => {
         const request = context.switchToHttp().getRequest().body?.request || '';
 
         let responseText: string;
-
         if (data?.data?.output) {
           return data.data;
         }

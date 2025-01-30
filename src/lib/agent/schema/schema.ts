@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 // Schema definitions
+
 export const Transferschema = z.object({
   recipient_address: z.string().describe('The recipient public address'),
   amount: z.string().describe('The amount of erc20 token that will be send'),
@@ -28,9 +29,24 @@ export const transactionHashSchema = z.object({
     .describe('The hash of the requested transaction.'),
 });
 
+export const DeployArgentAccountSchema = z.object({
+  publicKeyAX: z
+    .string()
+    .describe('The public key to deploy the Argent Account'),
+  privateKeyAX: z
+    .string()
+    .describe('The private key to deploy the Argent Account'),
+  precalculate_address: z
+    .string()
+    .describe('The precalculate hash to deploy Argent account'),
+});
+
 export const DeployOZAccountSchema = z.object({
   publicKey: z.string().describe('The public key to deploy the OZ Account'),
   privateKey: z.string().describe('The private key to deploy the OZ Account'),
+  precalculate_address: z
+    .string()
+    .describe('The precalculate hash to deploy OZ account'),
 });
 
 export const getOwnBalanceSchema = z.object({
@@ -46,15 +62,6 @@ export const getBalanceSchema = z.object({
   assetSymbol: z
     .string()
     .describe('The asset symbol to get the balance of. eg. USDC, ETH'),
-});
-
-export const DeployArgentAccountSchema = z.object({
-  publicKeyAX: z
-    .string()
-    .describe('The public key to deploy the Argent Account'),
-  privateKeyAX: z
-    .string()
-    .describe('The private key to deploy the Argent Account'),
 });
 
 export const blockIdAndContractAddressSchema = blockIdSchema

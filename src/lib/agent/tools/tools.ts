@@ -7,19 +7,19 @@ import {
   DeployArgentAccount,
   DeployOZAccount,
 } from 'src/lib/agent/method/account/deployAccount';
-import { transfer } from './method/token/transfer';
+import { transfer } from '../method/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
   simulateDeployTransaction,
   simulateDeclareTransaction,
 } from 'src/lib/agent/method/transaction/simulateTransaction';
-import { getOwnBalance, getBalance } from './method/read/getBalances';
-import { getBlockNumber } from './method/rpc/getBlockNumber';
-import { getBlockTransactionCount } from './method/rpc/getBlockTransactionCount';
-import { getStorageAt } from './method/rpc/getStorageAt';
-import { getClassAt } from './method/rpc/getClassAt';
-import { getClassHashAt } from './method/rpc/getClassHash';
+import { getOwnBalance, getBalance } from '../method/read/getBalances';
+import { getBlockNumber } from '../method/rpc/getBlockNumber';
+import { getBlockTransactionCount } from '../method/rpc/getBlockTransactionCount';
+import { getStorageAt } from '../method/rpc/getStorageAt';
+import { getClassAt } from '../method/rpc/getClassAt';
+import { getClassHashAt } from '../method/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
@@ -27,15 +27,9 @@ import {
   getStorageAtSchema,
   swapSchema,
   DeployOZAccountSchema,
-  Transferschema,
   blockIdSchema,
-  getTransactionByBlockIdAndIndexSchema,
   transactionHashSchema,
   blockIdAndContractAddressSchema,
-  declareContractSchema,
-  estimateAccountDeployFeeSchema,
-  signMessageSchema,
-  verifyMessageSchema,
   simulateInvokeTransactionSchema,
   simulateDeployAccountTransactionSchema,
   simulateDeployTransactionSchema,
@@ -46,39 +40,29 @@ import {
   contractAddressSchema,
   getClassAtSchema,
   getClassHashAtSchema,
-} from './schema';
-import { swapTokens } from './method/dapps/defi/avnu/swapService';
-import { getRoute } from './method/dapps/defi/avnu/fetchRouteService';
-import { getSpecVersion } from './method/rpc/getSpecVersion';
-import { getBlockWithTxHashes } from './method/rpc/getBlockWithTxHashes';
-import { getBlockWithTxs } from './method/rpc/getBlockWithTxs';
-import { getBlockWithReceipts } from './method/rpc/getBlockWithReceipts';
-import { getBlockStateUpdate } from './method/rpc/getBlockStateUpdate';
-import { getTransactionStatus } from './method/rpc/getTransactionStatus';
-import { getTransactionByHash } from './method/rpc/getTransactionByHash';
-import { getTransactionByBlockIdAndIndex } from './method/rpc/getTransactionByBlockIdAndIndex';
-import { getTransactionReceipt } from './method/rpc/getTransactionReceipt';
-import { getClass } from './method/rpc/getClass';
-import { getBlockLatestAccepted } from './method/rpc/getBlockLatestAccepted';
-import { getChainId } from './method/rpc/getChainId';
-import { getSyncingStats } from './method/rpc/getSyncingStats';
-import { getNonceForAddress } from './method/rpc/getNonceForAddress';
-import { getTransactionTrace } from './method/rpc/getTransactionTrace';
-import { getBlockTransactionsTraces } from './method/rpc/getBlockTransactionsTraces';
-import { getAddress } from './method/account/getAddress';
-import { declareContract } from './method/contract/declareContract';
-import { estimateAccountDeployFee } from './method/account/estimateAccountDeployFee';
-import { signMessage } from './method/account/signMessage';
-import { verifyMessage } from './method/account/verifyMessage';
-import { createMemecoin } from './method/dapps/degen/unruggable/method/createMemecoin';
-import { isMemecoin } from './method/dapps/degen/unruggable/method/isMemecoin';
-import { getLockedLiquidity } from './method/dapps/degen/unruggable/method/getLockedLiquidity';
-import { launchOnEkubo } from './method/dapps/degen/unruggable/method/launchOnEkubo';
+  Transferschema,
+} from '../schema/schema';
+import { swapTokens } from '../method/dapps/defi/avnu/swapService';
+import { getRoute } from '../method/dapps/defi/avnu/fetchRouteService';
+import { getSpecVersion } from '../method/rpc/getSpecVersion';
+import { getBlockWithTxHashes } from '../method/rpc/getBlockWithTxHashes';
+import { getBlockWithReceipts } from '../method/rpc/getBlockWithReceipts';
+import { getTransactionStatus } from '../method/rpc/getTransactionStatus';
+import { getClass } from '../method/rpc/getClass';
+import { getChainId } from '../method/rpc/getChainId';
+import { getSyncingStats } from '../method/rpc/getSyncingStats';
+import { createMemecoin } from '../method/dapps/degen/unruggable/method/createMemecoin';
+import { isMemecoin } from '../method/dapps/degen/unruggable/method/isMemecoin';
+import { getLockedLiquidity } from '../method/dapps/degen/unruggable/method/getLockedLiquidity';
+import { launchOnEkubo } from '../method/dapps/degen/unruggable/method/launchOnEkubo';
 import { RpcProvider } from 'starknet';
 import { AccountManager } from 'src/lib/utils/account/AccountManager';
 import { TransactionMonitor } from 'src/lib/utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/utils/contract/ContractInteractor';
-import { GetBalanceParams, GetOwnBalanceParams } from '../utils/types/balance';
+import {
+  GetBalanceParams,
+  GetOwnBalanceParams,
+} from '../../utils/types/balance';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -88,6 +72,9 @@ export interface StarknetAgentInterface {
   getModelCredentials: () => {
     aiModel: string;
     aiProviderApiKey: string;
+  };
+  getSignature: () => {
+    signature: string;
   };
   getProvider: () => RpcProvider;
   accountManager: AccountManager;
@@ -99,6 +86,7 @@ interface StarknetTool<P = any> {
   name: string;
   description: string;
   schema?: object;
+  responseFormat?: string;
   execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
 }
 
@@ -229,6 +217,7 @@ export const registerTools = () => {
     execute: transfer,
   });
 
+  // Simulate transactions
   StarknetToolRegistry.registerTool({
     name: 'simulate_transaction',
     description: 'Simulate a transaction without executing it',

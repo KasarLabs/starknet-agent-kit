@@ -1,7 +1,7 @@
 import { fetchQuotes, QuoteRequest, Quote, Route } from '@avnu/avnu-sdk';
 import { TokenService } from './tokenService';
 import { z } from 'zod';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const routeSchema = z.object({
   sellTokenSymbol: z

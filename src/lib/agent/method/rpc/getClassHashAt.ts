@@ -1,5 +1,5 @@
-import { BlockIdAndContractAddressParams } from '../../schema';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { BlockIdAndContractAddressParams } from '../../schema/schema';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getClassHashAt = async (
   agent: StarknetAgentInterface,

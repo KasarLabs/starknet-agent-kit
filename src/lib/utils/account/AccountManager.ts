@@ -1,5 +1,6 @@
-import { Account, CallData, stark, hash, ec } from 'starknet';
+import { Account, CallData, stark, hash, ec, RpcProvider } from 'starknet';
 import { AccountDetails, BaseUtilityClass, TransactionResult } from '../types';
+import { getDefaultProvider } from 'ethers';
 
 export class AccountManager implements BaseUtilityClass {
   constructor(public provider: any) {}

@@ -1,5 +1,5 @@
-import { BlockIdParams } from 'src/lib/agent/schema';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { BlockIdParams } from 'src/lib/agent/schema/schema';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getBlockTransactionsTraces = async (
   agent: StarknetAgentInterface,

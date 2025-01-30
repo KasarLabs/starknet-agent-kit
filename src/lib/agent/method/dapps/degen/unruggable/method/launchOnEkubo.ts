@@ -1,9 +1,9 @@
-import { LaunchOnEkuboParams } from 'src/lib/agent/schema';
+import { LaunchOnEkuboParams } from 'src/lib/agent/schema/schema';
 import { FACTORY_ADDRESS } from 'src/core/constants/dapps/degen/unruggable';
 import { FACTORY_ABI } from 'src/core/abis/dapps/degen/unruggableFactory';
 import { Contract } from 'starknet';
 import { Account } from 'starknet';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 /**
  * Launches a memecoin on the Ekubo DEX with concentrated liquidity.

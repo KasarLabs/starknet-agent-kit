@@ -1,0 +1,21 @@
+.main {
+    flex: 1;
+    padding-bottom: 15vh;
+    position: relative;
+  }
+  
+  .main .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 22px;
+    padding: 20px;
+    color: antiquewhite;
+    width: 100%;
+  }
+  
+  .main .nav img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }

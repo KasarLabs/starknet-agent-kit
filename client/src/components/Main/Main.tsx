@@ -1,25 +1,23 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { assets } from '@/src/app/assets/assets';
+import './main.css';
+import React, { useState, useEffect, use, useRef } from 'react';
 import { Send, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Input } from '@/src/components/ui/input';
+import { Button } from '@/src/components/ui/button';
 import MarkdownIt from 'markdown-it';
 import { WalletAccount } from 'starknet';
-import { connectWallet } from '@/app/wallet/wallet';
-import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
+import { connectWallet } from '@/src/app/wallet/wallet';
 import {
   AgentResponse,
   TransactionResponse,
-} from '@/interfaces/starknetagents';
-import { handleInvokeTransactions } from '@/transactions/InvokeTransactions';
-import { ACCOUNT } from '@/interfaces/accout';
-import { InvokeTransaction } from '@/types/starknetagents';
-import { handleDeployTransactions } from '@/transactions/DeployAccountTransactions';
-import { CreateOutputRequest } from '@/output/output';
+} from '@/src/interfaces/starknetagents';
+import { handleInvokeTransactions } from '@/src/transactions/InvokeTransactions';
+import { ACCOUNT } from '@/src/interfaces/accout';
+import { InvokeTransaction } from '@/src/types/starknetagents';
+import { handleDeployTransactions } from '@/src/transactions/DeployAccountTransactions';
+import { CreateOutputRequest } from '@/src/output/output';
 import {
   Select,
   SelectContent,
@@ -27,21 +25,40 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+  SelectLabel,
+} from '@/src/components/ui/select';
+import { disconnect } from '@starknet-io/get-starknet';
 
-const md = new MarkdownIt({ breaks: true });
+interface saveConversation {
+  input: string;
+  output: string;
+}
 
-const StarknetAgent = () => {
+interface Message {
+  id: string;
+  type: string;
+  text: string;
+  timestamp: string;
+}
+
+const Main = () => {
   const [input, setInput] = useState('');
   const [currentResponse, setCurrentResponse] = useState<AgentResponse | null>(
     null
   );
+
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const [isResponse, setResponse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [Wallet, setWallet] = useState<WalletAccount | null>(null);
-  const [isActive, setIsActive] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState<string>('normal');
+  const [selectedMode, setSelectedMode] = useState<string>('wallet');
+  const [selectedStyle, setSelectedStyle] = useState<string>('standard');
+  const messagesEndRed = useRef<null | HTMLDivElement>(null);
+
+  const md = new MarkdownIt({ breaks: true });
 
   // When in loading state for >5s, we show "Processing..."
   useEffect(() => {
@@ -60,6 +77,19 @@ const StarknetAgent = () => {
     };
   }, [isLoading]);
 
+  useEffect(() => {
+    messagesEndRed.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const styles = {
+    gradientText: {
+      background: '-webkit-linear-gradient(16deg, #4b90ff, #ff5546)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text',
+    },
+  };
+
   const handleConnect = async () => {
     try {
       const address = await connectWallet();
@@ -67,6 +97,7 @@ const StarknetAgent = () => {
         throw new Error('wallet connect fail');
       }
       setIsConnected(true);
+      setSelectedMode('wallet');
       setWallet(address);
       console.log('Connected');
     } catch (error) {
@@ -74,14 +105,46 @@ const StarknetAgent = () => {
     }
   };
 
-  const handleClick = () => {
-    setIsActive(!isActive);
+  const handleDisconnect = async () => {
+    try {
+      const handle = await disconnect();
+      setIsConnected(false);
+      setSelectedMode('key');
+      setWallet(null);
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  const handleCardClick = (text: string) => (e: React.FormEvent) => {
+    e.preventDefault();
+
+    console.log();
+    const event = {
+      target: {
+        value: text,
+      },
+    };
+
+    setInput(event.target.value);
+    console.log(input);
+    handleSubmitButton(e);
   };
 
   const handleSubmitButton = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(isActive);
-    if (isActive === true) {
+
+    console.log(input);
+    const InputMessage = {
+      id: (Date.now() + 1).toString(),
+      type: 'input',
+      text: input,
+      timestamp: new Date(Date.now() - 1000 * 60 * 3).toString(),
+    };
+
+    setMessages((prev) => [...prev, InputMessage]);
+    setResponse(true);
+    if (selectedMode === 'wallet') {
       handleSubmitWallet(e);
     } else {
       handleSubmit(e);
@@ -236,7 +299,7 @@ const StarknetAgent = () => {
    * Simulate typing in the UI.
    */
   const getResponseText = async (text: string): Promise<string> => {
-    if (selectedStyle === 'only-value') {
+    if (selectedStyle === 'call-data') {
       return text;
     }
     const output_text = await CreateOutputRequest(text);
@@ -246,6 +309,13 @@ const StarknetAgent = () => {
   const typeResponse = async (response: AgentResponse) => {
     console.log(response);
     const text = await getResponseText(response.text);
+    const OutputMessage = {
+      id: (Date.now() + 1).toString(),
+      type: 'output',
+      text: text,
+      timestamp: new Date(Date.now() - 1000 * 60 * 3).toString(),
+    };
+    setMessages((prev) => [...prev, OutputMessage]);
     let currentIndex = 0;
 
     const typingInterval = setInterval(() => {
@@ -428,96 +498,90 @@ const StarknetAgent = () => {
       setInput('');
     }
   };
-
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-lg -mt-32 flex flex-col gap-4 md:gap-8">
-        <div className="flex items-center gap-3 md:gap-4 px-2 md:px-0">
-          <div className="relative w-8 h-8 md:w-10 md:h-10">
-            <Image
-              src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png"
-              alt="Starknet Logo"
-              fill
-              className="rounded-full object-cover"
-            />
-          </div>
-          <h1 className="text-lg md:text-2xl font-semibold text-white">
-            Starknet Agent
-          </h1>
-        </div>
+    <div className="main">
+      <div className="nav">
+        <p>StarknetAgent</p>
+        <Image src={assets.kasar} alt="Kasar logo" />
+      </div>
 
+      <div className="main-container">
+        {!isResponse ? (
+          <>
+            <div className="greet">
+              <p>
+                <span>Hello, Etienne.</span>
+              </p>
+              <p>What can i do for you today ?</p>
+            </div>
+            <div className="cards">
+              <div
+                className="card"
+                onClick={handleCardClick(
+                  'Can you transfer all my ETH to 0x07f096F9DD04b247B6d10eCEa4c50d30a1FEB5B6695b74d4E9D17e4Aa9cE44EC'
+                )}
+              >
+                <p>Can you transfer 1 STRK to Nathan wallet</p>
+                <Image src={assets.compass} alt="Transfer ETH icon" />
+              </div>
+              <div className="card">
+                <p>Swap 0.5 my ETH to USDT</p>
+                <Image src={assets.bulb} alt="Swap icon" />
+              </div>
+              <div className="card">
+                <p>Can you tell me my balances</p>
+                <Image src={assets.message} alt="Balance check icon" />
+              </div>
+              <div className="card">
+                <p>When starket-agent-kit will be announce</p>
+                <Image src={assets.code} alt="Code icon" />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="result">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`message-wrapper ${message.type === 'input' ? 'message-input' : 'message-output'}`}
+              >
+                {message.type === 'output' && (
+                  <div className="message-output-logo">
+                    <Image src={assets.kasar} alt="logo" />
+                  </div>
+                )}
+                <div
+                  className={`message ${message.type === 'output' ? 'message-output-bubble' : 'message-input-bubble'}`}
+                >
+                  <p className="message-text">{message.text}</p>
+                  <p className="message-timestamp">
+                    {new Date(message.timestamp).toLocaleTimeString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+
+            <div ref={messagesEndRed}></div>
+          </div>
+        )}
         {!isConnected ? (
-          <button
-            onClick={handleConnect}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
+          <button onClick={handleConnect} className="connect-wallet-button">
             ConnectWallet
           </button>
         ) : (
-          <Card className="w-full bg-neutral-900 border-neutral-800 shadow-xl">
-            <CardContent className="p-3 md:p-6 space-y-4 md:space-y-6">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleClick}
-                    className={`
-                    relative flex items-center w-16 h-8 rounded-full 
-                    transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
-                    ${
-                      isActive
-                        ? 'bg-blue-500 focus:ring-blue-500'
-                        : 'bg-gray-200 focus:ring-gray-500'
-                    }
-                  `}
-                    aria-pressed={isActive}
-                    title={
-                      isActive
-                        ? 'Desactivate the signature'
-                        : 'Activate the signature'
-                    }
-                  >
-                    <span
-                      className={`
-                      absolute flex items-center justify-center
-                      w-6 h-6 rounded-full bg-white shadow-md
-                      transition-transform duration-300 ease-in-out
-                      ${isActive ? 'translate-x-9' : 'translate-x-1'}
-                    `}
-                    >
-                      {isActive ? (
-                        <AiFillSignature className="w-4 h-4 text-blue-500" />
-                      ) : (
-                        <AiOutlineSignature className="w-4 h-4 text-gray-400" />
-                      )}
-                    </span>
-                  </button>
-                  <span
-                    className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500'}`}
-                  >
-                    {isActive ? 'Signature activate' : 'Signature desactivate'}
-                  </span>
-                </div>
-
-                <Select value={selectedStyle} onValueChange={setSelectedStyle}>
-                  <SelectTrigger className="w-[180px] text-white">
-                    <SelectValue placeholder="Choose Style" />
-                  </SelectTrigger>
-                  <SelectContent className="text-white bg-black">
-                    <SelectGroup>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="only-value">Only-Value</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+          <button onClick={handleDisconnect} className="connect-wallet-button">
+            Disconnect
+          </button>
+        )}
+        <div className="main-bottom">
+          <div className="search-box">
+            <div className="input-wrapper">
               <form onSubmit={handleSubmitButton} className="relative">
                 <Input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  className="w-full bg-neutral-800 border-neutral-700 text-neutral-100 pr-12 focus:ring-2 focus:ring-blue-500 text-sm md:text-base py-2 md:py-3"
                   placeholder="Type your request..."
-                  disabled={isLoading}
                 />
                 <Button
                   type="submit"
@@ -532,25 +596,55 @@ const StarknetAgent = () => {
                   )}
                 </Button>
               </form>
+              <div className="send">
+                <Image src={assets.send} alt="Send message" />
+              </div>
+            </div>
 
-              {currentResponse && (
-                <Alert className="bg-neutral-800 border-neutral-700">
-                  <AlertDescription className="text-xs md:text-sm text-neutral-200 font-mono whitespace-pre-wrap break-words leading-relaxed">
-                    {showLoadingMessage
-                      ? 'Processing...'
-                      : parseAndDisplayWithShortLinks(currentResponse.text)}
-                    {(currentResponse.isTyping || isLoading) && (
-                      <span className="animate-pulse ml-1">▋</span>
+            <div className="search-box-options">
+              <Select value={selectedMode} onValueChange={setSelectedMode}>
+                <SelectTrigger className="select-trigger">
+                  <SelectValue placeholder="Settings" />
+                </SelectTrigger>
+                <SelectContent className="select-content">
+                  <SelectGroup>
+                    <SelectLabel>Choose Kasar Mode</SelectLabel>
+                    {/* Kasar 3.5 Key toujours visible */}
+                    <SelectItem className="select-item" value="key">
+                      Kasar 3.5 Key
+                    </SelectItem>
+                    {/* Autres options visibles uniquement si connecté */}
+                    {isConnected && (
+                      <SelectItem className="select-item" value="wallet">
+                        Kasar 3.5 Wallet
+                      </SelectItem>
                     )}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-        )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedStyle} onValueChange={setSelectedStyle}>
+                <SelectTrigger className="select-trigger">
+                  <SelectValue placeholder="Signature" />
+                </SelectTrigger>
+                <SelectContent className="select-content">
+                  <SelectGroup>
+                    <SelectLabel>Select Style</SelectLabel>
+                    <SelectItem className="select-item" value="standard">
+                      Standard
+                    </SelectItem>
+                    <SelectItem className="select-item" value="call-data">
+                      Calldata
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default StarknetAgent;
+export default Main;

@@ -15,6 +15,7 @@ export const connectWallet = async (): Promise<WalletAccount | undefined> => {
       modalMode: 'alwaysAsk',
       modalTheme: 'dark',
     });
+
     if (selectedWallet == null) {
       throw new Error('Error with your selected wallet ');
     }

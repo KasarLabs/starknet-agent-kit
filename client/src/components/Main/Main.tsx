@@ -54,7 +54,7 @@ const Main = () => {
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [Wallet, setWallet] = useState<WalletAccount | null>(null);
-  const [selectedMode, setSelectedMode] = useState<string>('wallet');
+  const [selectedMode, setSelectedMode] = useState<string>('key');
   const [selectedStyle, setSelectedStyle] = useState<string>('standard');
   const messagesEndRed = useRef<null | HTMLDivElement>(null);
 
@@ -609,11 +609,9 @@ const Main = () => {
                 <SelectContent className="select-content">
                   <SelectGroup>
                     <SelectLabel>Choose Kasar Mode</SelectLabel>
-                    {/* Kasar 3.5 Key toujours visible */}
                     <SelectItem className="select-item" value="key">
                       Kasar 3.5 Key
                     </SelectItem>
-                    {/* Autres options visibles uniquement si connecté */}
                     {isConnected && (
                       <SelectItem className="select-item" value="wallet">
                         Kasar 3.5 Wallet
@@ -633,9 +631,11 @@ const Main = () => {
                     <SelectItem className="select-item" value="standard">
                       Standard
                     </SelectItem>
-                    <SelectItem className="select-item" value="call-data">
-                      Calldata
-                    </SelectItem>
+                    {selectedMode === 'wallet' && isConnected && (
+                      <SelectItem className="select-item" value="wallet">
+                        Kasar 3.5 Wallet
+                      </SelectItem>
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>

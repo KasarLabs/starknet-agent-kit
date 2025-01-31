@@ -3,7 +3,7 @@ import { stark, uint256 } from 'starknet';
 import {
   execute,
   decimalsScale,
-} from 'src/lib/agent/method/dapps/degen/unruggable/method/helper';
+} from 'src/lib/agent/method/dapps/degen/unruggable/helper';
 import { Account } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 

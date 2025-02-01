@@ -358,8 +358,7 @@ export const createAllowedTools = (
   agent: StarknetAgentInterface,
   allowed_tools: string[]
 ) => {
-  return StarknetToolRegistry.createAllowedTools(agent,allowed_tools);
+  return StarknetToolRegistry.createAllowedTools(agent, allowed_tools);
 };
 
 export default StarknetToolRegistry;
-

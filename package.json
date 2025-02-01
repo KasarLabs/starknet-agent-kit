@@ -30,6 +30,7 @@
     "clean": "rimraf dist node_modules client/node_modules client/.next client/dist",
     "build:backend": "rimraf dist && nest build",
     "clean:js": "rimraf \"src/**/*.js\"",
+    "local": "ts-node -r tsconfig-paths/register src/local.ts",
     "build:test": "pnpm clean:js && tsc -p tsconfig.build.json src/local.ts --outDir ./dist",
     "build:local": "tsc src/local.ts --outDir ./dist",
     "start:local": "pnpm build:local && node dist/local.js",

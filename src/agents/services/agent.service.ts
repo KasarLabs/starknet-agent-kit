@@ -40,7 +40,7 @@ export class AgentService implements IAgentService {
         throw new AgentValidationError('Invalid request format or parameters');
       }
 
-      const result = await agent.execute_autonomous("Hello World");
+      const result = await agent.execute_autonomous();
 
       this.logger.debug({
         message: 'Agent request processed successfully',

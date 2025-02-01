@@ -89,7 +89,7 @@ export const createAgent = (
     const modelSelected = model();
     const tools = isSignature
       ? createSignatureTools()
-      : createAllowedTools(starknetAgent,json_config.allowed_tools);
+      : createAllowedTools(starknetAgent, json_config.allowed_tools);
     const agent = createToolCallingAgent({
       llm: modelSelected,
       tools,
@@ -130,4 +130,3 @@ export const createAgent = (
 
   return new AgentExecutor(executorConfig);
 };
-

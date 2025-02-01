@@ -17,7 +17,7 @@ export interface IAgent {
    */
   execute_call_data(input: string): Promise<unknown>;
 
-  execute_autonomous(input : string):Promise<unknown>;
+  execute_autonomous():Promise<unknown>;
 
   /**
    * Validates the user request before execution

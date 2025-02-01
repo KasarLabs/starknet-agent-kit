@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.json",
+  "include": ["src/**/*", "src/local.ts"],
   "exclude": [
     "node_modules",
     "client",

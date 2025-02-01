@@ -17,7 +17,10 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "src/*": ["src/*"]
+    }
   },
-  "exclude": ["client", "client/**/*"]
+  "exclude": ["client", "client/**/*", "node_modules"]
 }

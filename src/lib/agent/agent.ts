@@ -2,13 +2,14 @@ import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { createToolCallingAgent, AgentExecutor } from 'langchain/agents';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { SystemMessage } from '@langchain/core/messages';
-import { createTools } from './tools/tools';
+import { createTools, createAllowedTools } from './tools/tools';
 import { AiConfig } from '../utils/types/index.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { createSignatureTools } from './tools/signature_tools';
+import { load_json_config } from './jsoncConfig';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -82,6 +83,31 @@ export const createAgent = (
     }
   };
 
+  const json_config = load_json_config();
+  if (json_config) {
+    console.log('json_model_load is succesfull');
+    const modelSelected = model();
+    const tools = isSignature
+      ? createSignatureTools()
+      : createAllowedTools(starknetAgent,json_config.allowed_tools);
+    const agent = createToolCallingAgent({
+      llm: modelSelected,
+      tools,
+      prompt: json_config.prompt,
+    });
+
+    const executorConfig = {
+      agent,
+      tools,
+      ...(isSignature && {
+        returnIntermediateSteps: true,
+        maxIterations: 1,
+      }),
+    };
+
+    return new AgentExecutor(executorConfig);
+  }
+  console.log('Error : failed to parse json file !');
   const modelSelected = model();
   const tools = isSignature
     ? createSignatureTools()
@@ -104,3 +130,4 @@ export const createAgent = (
 
   return new AgentExecutor(executorConfig);
 };
+

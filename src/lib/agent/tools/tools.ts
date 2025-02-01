@@ -111,6 +111,24 @@ export class StarknetToolRegistry {
       })
     );
   }
+
+  static createAllowedTools(
+    agent: StarknetAgentInterface,
+    allowed_tools: string[]
+  ) {
+    const filteredTools = this.tools.filter((tool) =>
+      allowed_tools.includes(tool.name)
+    );
+    console.log(filteredTools);
+    let tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
+    return tools.map(({ name, description, schema, execute }) =>
+      tool(async (params: any) => execute(agent, params), {
+        name,
+        description,
+        ...(schema && { schema }),
+      })
+    );
+  }
 }
 
 export const registerTools = () => {
@@ -328,12 +346,20 @@ export const registerTools = () => {
     execute: getLockedLiquidity,
   });
 };
+registerTools();
 
 // Initialize tools
-registerTools();
 
 export const createTools = (agent: StarknetAgentInterface) => {
   return StarknetToolRegistry.createTools(agent);
 };
 
+export const createAllowedTools = (
+  agent: StarknetAgentInterface,
+  allowed_tools: string[]
+) => {
+  return StarknetToolRegistry.createAllowedTools(agent,allowed_tools);
+};
+
 export default StarknetToolRegistry;
+

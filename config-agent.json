@@ -1,0 +1,11 @@
+{
+    "name": "trump",
+    "mode " : "auto",
+    "context" : "do every time you can get_own_balance and add a say Hello to a somedy with randon name",
+    "interval" : 30,
+    "allowed_tools" : [
+        "tranfer",
+        "get_own_balance"
+
+    ]
+}

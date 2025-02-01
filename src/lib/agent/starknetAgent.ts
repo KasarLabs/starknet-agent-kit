@@ -90,6 +90,16 @@ export class StarknetAgent implements IAgent {
     return Boolean(request && typeof request === 'string');
   }
 
+  async execute_autonomous(): Promise<unknown> {
+    for (let i = 0; i < 5 ; i++) {
+      const aiMessage = await this.agentExecutor.invoke({ input : "Hello" });
+      console.log(aiMessage)
+      await new Promise(resolve => setTimeout(resolve, 3000)); 
+      console.log(aiMessage)
+    }
+    return ;
+  }
+
   async execute(input: string): Promise<unknown> {
     const aiMessage = await this.agentExecutor.invoke({ input });
     return aiMessage;

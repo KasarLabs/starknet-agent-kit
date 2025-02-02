@@ -103,7 +103,6 @@ export interface DepositParams {
 
 export interface WithdrawParams {
   withdrawTokenSymbol: string;
-  withdrawAmount: string;
 }
 
 export interface BigDecimal {
@@ -123,7 +122,6 @@ export interface DepositResult {
 
 export interface WithdrawResult {
   status: 'success' | 'failure';
-  amount?: string;
   symbol?: string;
   recipients_address?: string;
   transaction_hash?: string;

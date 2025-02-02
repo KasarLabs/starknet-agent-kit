@@ -66,6 +66,7 @@ import {
   GetOwnBalanceParams,
 } from '../../utils/types/balance';
 import { depositEarnPosition } from '../method/dapps/defi/vesu/depositService';
+import { withdrawEarnPosition } from '../method/dapps/defi/vesu/withdrawService';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -338,12 +339,12 @@ export const registerTools = () => {
     execute: depositEarnPosition,
   });
 
-  // StarknetToolRegistry.registerTool({
-  //   name: 'withdraw',
-  //   description: 'Withdraw asset from Earn position on Vesu',
-  //   schema: withdrawEarnSchema,
-  //   execute: withdrawEarnPosition,
-  // });
+  StarknetToolRegistry.registerTool({
+    name: 'withdraw',
+    description: 'Withdraw total amount asset from Earn position on Vesu',
+    schema: withdrawEarnSchema,
+    execute: withdrawEarnPosition,
+  });
 };
 
 // Initialize tools

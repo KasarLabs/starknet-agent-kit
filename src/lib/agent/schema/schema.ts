@@ -137,7 +137,6 @@ export const withdrawEarnSchema = z.object({
   withdrawTokenSymbol: z
     .string()
     .describe("Symbol of the token to withdraw (e.g., 'ETH', 'USDC')"),
-  withdrawAmount: z.string().describe('Amount of tokens to withdraw'),
 });
 
 // For declare contract

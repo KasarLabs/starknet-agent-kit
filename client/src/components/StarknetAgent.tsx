@@ -246,6 +246,15 @@ const StarknetAgent = () => {
           },
           body: formData,
         });
+        if (!resp.ok) {
+          const errorText = await resp.text();
+          console.error('API Error:', {
+            status: resp.status,
+            statusText: resp.statusText,
+            body: errorText,
+          });
+          throw new Error(errorText);
+        }
       }
       const response = await fetch('/api/agent/request', {
         method: 'POST',
@@ -277,6 +286,26 @@ const StarknetAgent = () => {
 
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
+      if (selectedFile) {
+        console.log(selectedFile.name);
+        const del = await fetch('api/agent/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          },
+          body: JSON.stringify({ filename: selectedFile.name }),
+          credentials: 'include',
+        });
+        if (!del.ok) {
+          const errorText = await response.text();
+          console.error('API error:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText,
+          });
+        }
+      }
     } catch (error) {
       console.error('Request error:', error);
 

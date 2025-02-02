@@ -1,4 +1,4 @@
-import { BigDecimal } from './interface';
+import { BigDecimal } from '../interfaces/interface';
 
 export const GENESIS_POOLID =
   '2198503327643286920898110335698706244522220458610657370981979460625005526824';

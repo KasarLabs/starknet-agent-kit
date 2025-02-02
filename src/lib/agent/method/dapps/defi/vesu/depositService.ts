@@ -1,10 +1,9 @@
-import { Account, Call, RpcProvider } from 'starknet';
+import { Account, Call } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { z } from 'zod';
 import { parseUnits } from 'ethers';
 import {
   Address,
-  addressSchema,
   DepositParams,
   DepositResult,
   IBaseToken,
@@ -12,22 +11,18 @@ import {
   IPoolAsset,
   ITokenValue,
   poolParser,
-} from './utils/interface';
+} from '../../../vesu/interfaces/interface';
 import {
   DEFAULT_DECIMALS,
   GENESIS_POOLID,
-  SINGLETON_ADDRESS,
   VESU_API_URL,
-  ZERO,
-} from './utils/constants';
-import { Hex, toBN, toU256 } from './utils/num';
+} from '../../../vesu/constants/index';
+import { Hex, toBN, toU256 } from '../../../vesu/utils/num';
 import {
   getErc20Contract,
   getExtensionContract,
-  getSingletonContract,
   getVTokenContract,
 } from './contracts';
-import { processTransactionCalls } from './utils/processTransactions';
 
 export class DepositEarnService {
   constructor(
@@ -145,11 +140,7 @@ export class DepositEarnService {
       if (!collateralPoolAsset) {
         throw new Error('Collateral asset not found in pool');
       }
-      console.log('params.depositAmount===', params.depositAmount);
-      console.log(
-        'collateralPoolAsset.decimals===',
-        collateralPoolAsset.decimals
-      );
+      console.log('params.depositAmount:', params.depositAmount);
       const collateralAmount = parseUnits(
         params.depositAmount,
         // 0
@@ -161,12 +152,6 @@ export class DepositEarnService {
       );
 
       const vTokenApproveCall = await this.approveVTokenCalls(
-        collateralPoolAsset.address,
-        collateralPoolAsset.vToken.address,
-        collateralAmount
-      );
-      console.log(
-        'params:',
         collateralPoolAsset.address,
         collateralPoolAsset.vToken.address,
         collateralAmount
@@ -243,7 +228,6 @@ export const depositEarnPosition = async (
   params: DepositParams
 ) => {
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
-  console.log('hello', accountAddress);
   try {
     const depositEarnService = createDepositEarnService(agent, accountAddress);
     const result = await depositEarnService.depositEarnTransaction(

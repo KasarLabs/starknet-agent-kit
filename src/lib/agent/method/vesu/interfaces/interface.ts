@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Hex, hexSchemaBase } from './num';
+import { Hex, hexSchemaBase } from '../utils/num';
 import { validateChecksumAddress } from 'starknet';
 
 export type Address = `0x${string}`;

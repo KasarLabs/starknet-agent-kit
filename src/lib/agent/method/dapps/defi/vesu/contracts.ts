@@ -1,9 +1,9 @@
 import { Contract, RpcProvider } from 'starknet';
-import { Address } from './utils/interface';
-import { vTokenAbi } from 'src/core/abis/dapps/vesu/vTokenAbi';
-import { singletonAbi } from 'src/core/abis/dapps/vesu/singletonAbi';
-import { extensionAbi } from 'src/core/abis/dapps/vesu/extensionAbi';
-import { erc20Abi } from 'src/core/abis/dapps/vesu/erc20Abi';
+import { Address } from '../../../vesu/interfaces/interface';
+import { vTokenAbi } from 'src/lib/agent/method/vesu/abi/vTokenAbi';
+import { singletonAbi } from 'src/lib/agent/method/vesu/abi/singletonAbi';
+import { extensionAbi } from 'src/lib/agent/method/vesu/abi/extensionAbi';
+import { erc20Abi } from 'src/lib/agent/method/vesu/abi/erc20Abi';
 
 export const getErc20Contract = (address: Address) => {
   const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });

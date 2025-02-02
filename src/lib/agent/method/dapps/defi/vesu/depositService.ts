@@ -177,15 +177,16 @@ export class DepositEarnService {
       if (!collateralPoolAsset) {
         throw new Error('Collateral asset not found in pool');
       }
-      const collateralAmount = parseUnits(
-        params.depositAmount,
+      console.log('params.depositAmount===', params.depositAmount);
+      console.log(
+        'collateralPoolAsset.decimals===',
         collateralPoolAsset.decimals
       );
-
-      // const collateralAmount = toFixedDecimals(
-      //   params.depositAmount,
-      //   collateralPoolAsset.decimals
-      // );
+      const collateralAmount = parseUnits(
+        params.depositAmount,
+        0
+        // collateralPoolAsset.decimals
+      );
 
       const vtokenContract = getVTokenContract(
         collateralPoolAsset.vToken.address
@@ -196,7 +197,13 @@ export class DepositEarnService {
         collateralPoolAsset.vToken.address,
         collateralAmount
       );
-      console.log('vTokenApproveCall', vTokenApproveCall);
+      console.log(
+        'params:',
+        collateralPoolAsset.address,
+        collateralPoolAsset.vToken.address,
+        collateralAmount
+      );
+      // console.log('vTokenApproveCall', vTokenApproveCall);
 
       const depositVTokenCall =
         await vtokenContract.populateTransaction.deposit(
@@ -229,36 +236,45 @@ export class DepositEarnService {
       //   params: { calls },
       // });
 
-      const approval = await wallet.execute({
-        contractAddress: vTokenApproveCall.contractAddress,
-        entrypoint: vTokenApproveCall.entrypoint,
-        calldata: vTokenApproveCall.calldata,
-      });
-      console.log('approval', approval);
+      // const approval = await wallet.execute({
+      //   contractAddress: vTokenApproveCall.contractAddress,
+      //   entrypoint: vTokenApproveCall.entrypoint,
+      //   calldata: vTokenApproveCall.calldata,
+      // });
+      // console.log('approval', approval);
 
       // const deposit = await wallet.execute({
       //   contractAddress: depositVTokenCall.contractAddress,
       //   entrypoint: depositVTokenCall.entrypoint,
       //   calldata: depositVTokenCall.calldata,
       // });
+      const tx = await account.execute([
+        {
+          contractAddress: vTokenApproveCall.contractAddress,
+          entrypoint: vTokenApproveCall.entrypoint,
+          calldata: vTokenApproveCall.calldata,
+        },
+        {
+          contractAddress: depositVTokenCall.contractAddress,
+          entrypoint: depositVTokenCall.entrypoint,
+          calldata: depositVTokenCall.calldata,
+        },
+      ]);
 
-      console.log(
-        'approval initiated. Transaction hash:',
-        approval.transaction_hash
-      );
+      console.log('approval initiated. Transaction hash:', tx.transaction_hash);
       // console.log(
       //   'deposit initiated. Transaction hash:',
       //   deposit.transaction_hash
       // );
-      await provider.waitForTransaction(approval.transaction_hash);
-      // await provider.waitForTransaction(deposit.transaction_hash);
+      // await provider.waitForTransaction(approval.transaction_hash);
+      await provider.waitForTransaction(tx.transaction_hash);
 
       const transferResult: DepositResult = {
         status: 'success',
         amount: params.depositAmount,
         symbol: params.depositTokenSymbol,
         recipients_address: account.address,
-        transaction_hash: approval.transaction_hash,
+        transaction_hash: tx.transaction_hash,
       };
 
       return transferResult;

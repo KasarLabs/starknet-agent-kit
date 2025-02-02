@@ -1,46 +1,20 @@
-import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ChatAnthropic } from '@langchain/anthropic';
-import { SystemMessage } from '@langchain/core/messages';
-import { createTools } from './tools/tools';
+import { createAllowedTools } from './tools/tools';
 import { AiConfig } from '../utils/types/index.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { createSignatureTools } from './tools/signature_tools';
+import { load_json_config } from './jsoncConfig';
+import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 
-const systemMessage = new SystemMessage(`
-  You are a helpful Starknet AI assistant. Keep responses brief and focused.
-  
-  Response formats ⚡:
-
-  Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash}
-  
-  Errors:
-  {
-     status: "failed",
-     details: "Quick explanation + next steps"
-  }
-  
-  Guidelines:
-    - Keep technical explanations under 2-3 lines
-    - Use bullet points for clarity
-    - No lengthy apologies or explanations
-  `);
-
-export const prompt = ChatPromptTemplate.fromMessages([
-  systemMessage,
-  ['human', '{input}'],
-  ['assistant', '{agent_scratchpad}'],
-]);
-
-export const createAgent = (
+export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
-  const isSignature = starknetAgent.getSignature().signature === 'wallet';
-  const model = () => {
+  // Model factory function
+  const createModel = () => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
         if (!aiConfig.apiKey) {
@@ -60,7 +34,7 @@ export const createAgent = (
         }
         return new ChatOpenAI({
           modelName: aiConfig.aiModel,
-          apiKey: aiConfig.apiKey,
+          openAIApiKey: aiConfig.apiKey,
         });
       case 'gemini':
         if (!aiConfig.apiKey) {
@@ -82,16 +56,36 @@ export const createAgent = (
     }
   };
 
-  const modelSelected = model();
-  const tools = isSignature
-    ? createSignatureTools()
-    : createTools(starknetAgent);
+  const isSignature = starknetAgent.getSignature().signature === 'wallet';
+  const model = createModel();
 
-  const agent = createReactAgent({
-    llm: modelSelected,
-    tools,
-    messageModifier: systemMessage,
-  });
+  try {
+    const json_config = load_json_config();
 
-  return agent;
+    if (json_config) {
+      console.log('JSON config loaded successfully');
+      const tools = createAllowedTools(
+        starknetAgent,
+        json_config.allowed_tools
+      );
+
+      console.log('Using default configuration');
+      const memory = new MemorySaver();
+
+      const agentConfig = {
+        configurable: { thread_id: '43473246237' },
+      };
+
+      const agent = createReactAgent({
+        llm: model,
+        tools,
+        checkpointSaver: memory,
+        messageModifier: json_config.prompt,
+      });
+
+      return { agent, agentConfig };
+    }
+  } catch (error) {
+    console.error('Failed to load or parse JSON config:', error);
+  }
 };

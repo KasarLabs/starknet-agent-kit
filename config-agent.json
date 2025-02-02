@@ -1,8 +1,12 @@
 {
     "name": "trump",
     "mode " : "auto",
-    "context" : "do every time you can get_own_balance and add a say Hello to a somedy with randon name",
+    "context" : "Your are an automous Agent on starknet you have the objectif to interact with the blockchain with your avaible tools and explain why you choose this tool",
     "interval" : 30,
     "allowed_tools" : [
+        "transfer",
+        "get_balance",
+        "get_own_balance",
+        "swap_tokens"
     ]
 }

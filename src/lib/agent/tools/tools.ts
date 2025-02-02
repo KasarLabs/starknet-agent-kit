@@ -42,6 +42,7 @@ import {
   getClassHashAtSchema,
   Transferschema,
   depositEarnSchema,
+  withdrawEarnSchema,
 } from '../schema/schema';
 import { swapTokens } from '../method/dapps/defi/avnu/swapService';
 import { getRoute } from '../method/dapps/defi/avnu/fetchRouteService';
@@ -338,10 +339,10 @@ export const registerTools = () => {
   });
 
   // StarknetToolRegistry.registerTool({
-  //   name: 'depositEarnTransaction',
-  //   description: 'Deposit asset into Earn position on Vesu',
-  //   schema: depositEarnSchema,
-  //   execute: depositEarnPosition,
+  //   name: 'withdraw',
+  //   description: 'Withdraw asset from Earn position on Vesu',
+  //   schema: withdrawEarnSchema,
+  //   execute: withdrawEarnPosition,
   // });
 };
 

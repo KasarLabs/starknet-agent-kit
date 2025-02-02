@@ -41,6 +41,7 @@ import {
   getClassAtSchema,
   getClassHashAtSchema,
   Transferschema,
+  depositEarnSchema,
 } from '../schema/schema';
 import { swapTokens } from '../method/dapps/defi/avnu/swapService';
 import { getRoute } from '../method/dapps/defi/avnu/fetchRouteService';
@@ -63,6 +64,7 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../../utils/types/balance';
+import { depositEarnPosition } from '../method/dapps/defi/vesu/depositService';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -327,6 +329,20 @@ export const registerTools = () => {
     schema: contractAddressSchema,
     execute: getLockedLiquidity,
   });
+
+  StarknetToolRegistry.registerTool({
+    name: 'deposit',
+    description: 'Deposit asset into Earn position on Vesu',
+    schema: depositEarnSchema,
+    execute: depositEarnPosition,
+  });
+
+  // StarknetToolRegistry.registerTool({
+  //   name: 'depositEarnTransaction',
+  //   description: 'Deposit asset into Earn position on Vesu',
+  //   schema: depositEarnSchema,
+  //   execute: depositEarnPosition,
+  // });
 };
 
 // Initialize tools

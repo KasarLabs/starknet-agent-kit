@@ -124,6 +124,15 @@ export const getTransactionByBlockIdAndIndexSchema = blockIdSchema.merge(
 
 // In schema.ts
 
+//Vesu integration
+
+export const depositEarnSchema = z.object({
+  depositTokenSymbol: z
+    .string()
+    .describe("Symbol of the token to deposit (e.g., 'ETH', 'USDC')"),
+  depositAmount: z.string().describe('Amount of tokens to deposit'),
+});
+
 // For declare contract
 export const declareContractSchema = z.object({
   contract: z.any().describe('The compiled contract to be declared'),

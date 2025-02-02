@@ -101,12 +101,27 @@ export interface DepositParams {
   depositAmount: string;
 }
 
+export interface WithdrawParams {
+  withdrawTokenSymbol: string;
+  withdrawAmount: string;
+}
+
 export interface BigDecimal {
   value: bigint;
   decimals: number;
 }
 
 export interface DepositResult {
+  status: 'success' | 'failure';
+  amount?: string;
+  symbol?: string;
+  recipients_address?: string;
+  transaction_hash?: string;
+  error?: string;
+  step?: string;
+}
+
+export interface WithdrawResult {
   status: 'success' | 'failure';
   amount?: string;
   symbol?: string;

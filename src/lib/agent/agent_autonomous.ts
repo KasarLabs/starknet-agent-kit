@@ -70,7 +70,7 @@ export const createAutonomousAgent = (
       );
       const allowedToolsKits = createAllowedToollkits(
         json_config.external_toolkits,
-        json_config.allowed_external_tool
+        json_config.allowed_external_tools
       );
 
       const tools = [...allowedTools, ...allowedToolsKits];

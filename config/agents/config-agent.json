@@ -5,5 +5,5 @@
   "chat_id" : "Example-Starknet-Agent-kit",
   "allowed_internal_tools": ["get_balance", "get_own_balance", "swap_tokens"],
   "external_toolkits" : ["discord","twitter"],
-  "allowed_external_tool" : ["discord-send-messages"]
+  "allowed_external_tools" : ["discord-send-messages"]
 }

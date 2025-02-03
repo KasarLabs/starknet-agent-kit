@@ -1,4 +1,4 @@
-import { getBalance } from 'src/lib/agent/method/core/token/getBalances';
+import { getBalance } from 'src/lib/agent/plugins/core/token/getBalances';
 import { Contract } from 'starknet';
 import { string } from 'zod';
 import { ERC20_ABI } from 'src/lib/utils/constants/swap';

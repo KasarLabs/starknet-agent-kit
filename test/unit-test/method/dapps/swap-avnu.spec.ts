@@ -1,4 +1,4 @@
-import { swapTokens } from 'src/lib/agent/method/dapps/defi/avnu/swapService';
+import { swapTokens } from 'src/lib/agent/plugins/dapps/defi/avnu/swapService';
 import { SwapParams } from 'src/lib/utils/types/swap';
 import { setTimeout } from 'timers/promises';
 import * as C from '../../../utils/constant';

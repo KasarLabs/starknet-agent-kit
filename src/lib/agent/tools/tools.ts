@@ -2,24 +2,24 @@ import { tool } from '@langchain/core/tools';
 import {
   CreateOZAccount,
   CreateArgentAccount,
-} from '../method/core/account/createAccount';
+} from '../plugins/core/account/createAccount';
 import {
   DeployArgentAccount,
   DeployOZAccount,
-} from '../method/core/account/deployAccount';
-import { transfer } from '../method/core/token/transfer';
+} from '../plugins/core/account/deployAccount';
+import { transfer } from '../plugins/core/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
   simulateDeployTransaction,
   simulateDeclareTransaction,
-} from '../method/core/transaction/simulateTransaction';
-import { getOwnBalance, getBalance } from '../method/core/token/getBalances';
-import { getBlockNumber } from '../method/core/rpc/getBlockNumber';
-import { getBlockTransactionCount } from '../method/core/rpc/getBlockTransactionCount';
-import { getStorageAt } from '../method/core/rpc/getStorageAt';
-import { getClassAt } from '../method/core/rpc/getClassAt';
-import { getClassHashAt } from '../method/core/rpc/getClassHash';
+} from '../plugins/core/transaction/simulateTransaction';
+import { getOwnBalance, getBalance } from '../plugins/core/token/getBalances';
+import { getBlockNumber } from '../plugins/core/rpc/getBlockNumber';
+import { getBlockTransactionCount } from '../plugins/core/rpc/getBlockTransactionCount';
+import { getStorageAt } from '../plugins/core/rpc/getStorageAt';
+import { getClassAt } from '../plugins/core/rpc/getClassAt';
+import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
@@ -41,29 +41,28 @@ import {
   getClassAtSchema,
   getClassHashAtSchema,
   Transferschema,
-} from '../schema/schema';
-import { swapTokens } from '../method/avnu/swapService';
-import { getRoute } from '../method/avnu/fetchRouteService';
-import { getSpecVersion } from '../method/core/rpc/getSpecVersion';
-import { getBlockWithTxHashes } from '../method/core/rpc/getBlockWithTxHashes';
-import { getBlockWithReceipts } from '../method/core/rpc/getBlockWithReceipts';
-import { getTransactionStatus } from '../method/core/rpc/getTransactionStatus';
-import { getClass } from '../method/core/rpc/getClass';
-import { getChainId } from '../method/core/rpc/getChainId';
-import { getSyncingStats } from '../method/core/rpc/getSyncingStats';
-import { isMemecoin } from '../method/unruggable/isMemecoin';
-import { getLockedLiquidity } from '../method/unruggable/getLockedLiquidity';
-import { launchOnEkubo } from '../method/unruggable/launchOnEkubo';
+} from '../schemas/schema';
+import { swapTokens } from '../plugins/avnu/actions/swap';
+import { getRoute } from '../plugins/avnu/actions/fetchRoute';
+import { getSpecVersion } from '../plugins/core/rpc/getSpecVersion';
+import { getBlockWithTxHashes } from '../plugins/core/rpc/getBlockWithTxHashes';
+import { getBlockWithReceipts } from '../plugins/core/rpc/getBlockWithReceipts';
+import { getTransactionStatus } from '../plugins/core/rpc/getTransactionStatus';
+import { getClass } from '../plugins/core/rpc/getClass';
+import { getChainId } from '../plugins/core/rpc/getChainId';
+import { getSyncingStats } from '../plugins/core/rpc/getSyncingStats';
+import { isMemecoin } from '../plugins/unruggable/actions/isMemecoin';
+import { getLockedLiquidity } from '../plugins/unruggable/actions/getLockedLiquidity';
+import { launchOnEkubo } from '../plugins/unruggable/actions/launchOnEkubo';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from '../method/core/account/utils/AccountManager';
-import { TransactionMonitor } from '../method/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from '../method/core/contract/utils/ContractInteractor';
-
-import { createMemecoin } from '../method/unruggable/createMemecoin';
+import { AccountManager } from '../plugins/core/account/utils/AccountManager';
+import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
+import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
 import {
   GetBalanceParams,
   GetOwnBalanceParams,
-} from '../method/core/token/types/balance';
+} from '../plugins/core/token/types/balance';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {

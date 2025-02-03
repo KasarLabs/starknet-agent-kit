@@ -1,4 +1,4 @@
-import { simulateInvokeTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
+import { simulateInvokeTransaction } from 'src/lib/agent/plugins/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
 describe('Simulate Invoke Transaction', () => {
   describe('With perfect match inputs', () => {

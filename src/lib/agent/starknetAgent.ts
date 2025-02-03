@@ -1,10 +1,10 @@
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from './method/core/account/utils/AccountManager';
-import { TransactionMonitor } from './method/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from './method/core/contract/utils/ContractInteractor';
-import { createAutonomousAgent } from './agent_autonomous';
+import { AccountManager } from './plugins/core/account/utils/AccountManager';
+import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
+import { createAutonomousAgent } from './autonomousAgents';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;

@@ -4,7 +4,6 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
-import { CompiledStateGraph } from '@langchain/langgraph';
 import { createAutonomousAgent } from './agent_autonomous';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
@@ -23,7 +22,7 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly agentExecutor: any;
+  private readonly agentReactExecutor: any;
 
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
@@ -50,14 +49,14 @@ export class StarknetAgent implements IAgent {
     // Create agent executor with tools
     console.log('Agent Mode : ', this.agentmode);
     if (this.agentmode === 'auto') {
-      this.agentExecutor = createAutonomousAgent(this, {
+      this.agentReactExecutor = createAutonomousAgent(this, {
         aiModel: this.aiModel,
         apiKey: this.aiProviderApiKey,
         aiProvider: config.aiProvider,
       });
     }
     if (this.agentmode === 'agent') {
-      this.agentExecutor = createAgent(this, {
+      this.agentReactExecutor = createAgent(this, {
         aiModel: this.aiModel,
         apiKey: this.aiProviderApiKey,
         aiProvider: config.aiProvider,
@@ -111,16 +110,17 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute_autonomous(): Promise<unknown> {
-    for (let i = 0; i < 5; i++) {
-      const aiMessage = await this.agentExecutor.agent.invoke(
+    while (-1) {
+      const aiMessage = await this.agentReactExecutor.agent.invoke(
         {
           messages: 'Choose what to do',
         },
-        this.agentExecutor.agentConfig
+        this.agentReactExecutor.agentConfig
       );
       console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      console.log(i);
+      await new Promise((resolve) =>
+        setTimeout(resolve, this.agentReactExecutor.json_config.interval)
+      );
     }
     return;
   }
@@ -131,7 +131,7 @@ export class StarknetAgent implements IAgent {
         `Can't use execute call data with agent_mod : ${this.agentmode}`
       );
     }
-    const aiMessage = await this.agentExecutor.invoke({ messages: input });
+    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
     return aiMessage.messages[aiMessage.messages.length - 1].content;
   }
 
@@ -141,7 +141,7 @@ export class StarknetAgent implements IAgent {
         `Can't use execute call data with agent_mod : ${this.agentmode}`
       );
     }
-    const aiMessage = await this.agentExecutor.invoke({ messages: input });
+    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
     try {
       const parsedResult = JSON.parse(
         aiMessage.messages[aiMessage.messages.length - 2].content

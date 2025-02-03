@@ -28,13 +28,6 @@ const systemMessage = new SystemMessage(`
     - Use bullet points for clarity
     - No lengthy apologies or explanations
   `);
-
-export const prompt = ChatPromptTemplate.fromMessages([
-  systemMessage,
-  ['human', '{input}'],
-  ['assistant', '{agent_scratchpad}'],
-]);
-
 export const createAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig

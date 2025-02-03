@@ -8,12 +8,13 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { load_json_config } from './jsoncConfig';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { DiscordSendMessagesTool } from '@langchain/community/tools/discord';
+import { JsonConfig } from './jsoncConfig';
 
 export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
-  // Model factory function
   const createModel = () => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
@@ -56,7 +57,6 @@ export const createAutonomousAgent = (
     }
   };
 
-  const isSignature = starknetAgent.getSignature().signature === 'wallet';
   const model = createModel();
 
   try {
@@ -69,21 +69,26 @@ export const createAutonomousAgent = (
         json_config.allowed_tools
       );
 
-      console.log('Using default configuration');
+      const allowedTools = createAllowedTools(
+        starknetAgent,
+        json_config.allowed_tools
+      );
+      const tools_kits = [new DiscordSendMessagesTool(), ...allowedTools];
+
       const memory = new MemorySaver();
 
       const agentConfig = {
-        configurable: { thread_id: '43473246237' },
+        configurable: { thread_id: json_config.chat_id },
       };
 
       const agent = createReactAgent({
         llm: model,
-        tools,
+        tools: tools_kits,
         checkpointSaver: memory,
         messageModifier: json_config.prompt,
       });
 
-      return { agent, agentConfig };
+      return { agent, agentConfig, json_config };
     }
   } catch (error) {
     console.error('Failed to load or parse JSON config:', error);

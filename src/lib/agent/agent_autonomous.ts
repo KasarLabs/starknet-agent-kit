@@ -66,11 +66,11 @@ export const createAutonomousAgent = (
 
       const allowedTools = createAllowedTools(
         starknetAgent,
-        json_config.allowed_tools
+        json_config.allowed_internal_tools
       );
       const allowedToolsKits = createAllowedToollkits(
         json_config.external_toolkits,
-        json_config.external_tool
+        json_config.allowed_external_tool
       );
 
       const tools = [...allowedTools, ...allowedToolsKits];

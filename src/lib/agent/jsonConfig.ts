@@ -5,10 +5,10 @@ export interface JsonConfig {
   context: string;
   interval: number;
   chat_id: string;
-  allowed_tools: string[];
+  allowed_internal_tools: string[];
   prompt: SystemMessage;
   external_toolkits: string[];
-  external_tool: string[];
+  allowed_external_tool: string[];
 }
 
 function validateConfig(config: JsonConfig): void {
@@ -17,7 +17,7 @@ function validateConfig(config: JsonConfig): void {
     'context',
     'interval',
     'chat_id',
-    'allowed_tools',
+    'allowed_internal_tools',
     'prompt',
   ] as const;
 
@@ -28,10 +28,10 @@ function validateConfig(config: JsonConfig): void {
   }
 
   if (
-    !Array.isArray(config.allowed_tools) ||
-    config.allowed_tools.length === 0
+    !Array.isArray(config.allowed_internal_tools) ||
+    config.allowed_internal_tools.length === 0
   ) {
-    throw new Error('allowed_tools must be a non-empty array');
+    throw new Error('allowed_internal_tools must be a non-empty array');
   }
 }
 

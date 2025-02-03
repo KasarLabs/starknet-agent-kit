@@ -59,7 +59,10 @@ import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
-import { GetBalanceParams, GetOwnBalanceParams } from '../plugins/core/token/types/balance';
+import {
+  GetBalanceParams,
+  GetOwnBalanceParams,
+} from '../plugins/core/token/types/balance';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {

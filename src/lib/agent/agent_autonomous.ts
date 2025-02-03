@@ -1,6 +1,6 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { createAllowedTools } from './tools/tools';
-import { AiConfig } from '../utils/types/index.js';
+import { AiConfig } from './method/core/account/types/accounts.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';

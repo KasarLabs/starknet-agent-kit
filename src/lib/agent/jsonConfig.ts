@@ -8,7 +8,7 @@ export interface JsonConfig {
   allowed_internal_tools: string[];
   prompt: SystemMessage;
   external_toolkits: string[];
-  allowed_external_tool: string[];
+  allowed_external_tools: string[];
 }
 
 function validateConfig(config: JsonConfig): void {

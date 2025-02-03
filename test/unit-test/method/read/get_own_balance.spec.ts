@@ -1,4 +1,4 @@
-import { getOwnBalance } from 'src/lib/agent/method/read/getBalances';
+import { getOwnBalance } from 'src/lib/agent/method/core/token/getBalances';
 import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();

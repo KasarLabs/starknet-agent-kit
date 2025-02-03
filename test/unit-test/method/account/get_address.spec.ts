@@ -1,4 +1,4 @@
-import { getAddress } from 'src/lib/agent/method/account/getAddress';
+import { getAddress } from 'src/lib/agent/method/core/account/getAddress';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();

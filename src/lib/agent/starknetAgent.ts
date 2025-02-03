@@ -1,10 +1,10 @@
 import { IAgent } from '../../agents/interfaces/agent.interface';
-import type { AgentExecutor } from 'langchain/agents';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from '../utils/account/AccountManager';
-import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
-import { ContractInteractor } from '../utils/contract/ContractInteractor';
+import { AccountManager } from './method/core/account/utils/AccountManager';
+import { TransactionMonitor } from './method/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from './method/core/contract/utils/ContractInteractor';
+import { createAutonomousAgent } from './agent_autonomous';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -13,6 +13,7 @@ export interface StarknetAgentConfig {
   accountPublicKey: string;
   accountPrivateKey: string;
   signature: string;
+  agentMode: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -21,12 +22,13 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly agentExecutor: AgentExecutor;
+  private readonly agentReactExecutor: any;
 
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
+  public readonly agentMode: string;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -37,6 +39,7 @@ export class StarknetAgent implements IAgent {
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
     this.signature = config.signature;
+    this.agentMode = config.agentMode;
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -44,11 +47,21 @@ export class StarknetAgent implements IAgent {
     this.contractInteractor = new ContractInteractor(this.provider);
 
     // Create agent executor with tools
-    this.agentExecutor = createAgent(this, {
-      aiModel: this.aiModel,
-      apiKey: this.aiProviderApiKey,
-      aiProvider: config.aiProvider,
-    });
+    console.log('Agent Mode : ', this.agentMode);
+    if (this.agentMode === 'auto') {
+      this.agentReactExecutor = createAutonomousAgent(this, {
+        aiModel: this.aiModel,
+        apiKey: this.aiProviderApiKey,
+        aiProvider: config.aiProvider,
+      });
+    }
+    if (this.agentMode === 'agent') {
+      this.agentReactExecutor = createAgent(this, {
+        aiModel: this.aiModel,
+        apiKey: this.aiProviderApiKey,
+        aiProvider: config.aiProvider,
+      });
+    }
   }
 
   private validateConfig(config: StarknetAgentConfig) {
@@ -82,6 +95,12 @@ export class StarknetAgent implements IAgent {
     };
   }
 
+  getAgent() {
+    return {
+      agentMode: this.agentMode,
+    };
+  }
+
   getProvider(): RpcProvider {
     return this.provider;
   }
@@ -90,31 +109,43 @@ export class StarknetAgent implements IAgent {
     return Boolean(request && typeof request === 'string');
   }
 
+  async execute_autonomous(): Promise<unknown> {
+    while (-1) {
+      const aiMessage = await this.agentReactExecutor.agent.invoke(
+        {
+          messages: 'Choose what to do',
+        },
+        this.agentReactExecutor.agentConfig
+      );
+      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
+      await new Promise((resolve) =>
+        setTimeout(resolve, this.agentReactExecutor.json_config.interval)
+      );
+    }
+    return;
+  }
+
   async execute(input: string): Promise<unknown> {
-    const aiMessage = await this.agentExecutor.invoke({ input });
-    return aiMessage;
+    if (this.agentMode != 'agent') {
+      throw new Error(
+        `Can't use execute call data with agent_mod : ${this.agentMode}`
+      );
+    }
+    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
+    return aiMessage.messages[aiMessage.messages.length - 1].content;
   }
 
   async execute_call_data(input: string): Promise<unknown> {
-    const aiMessage = await this.agentExecutor.invoke({ input });
-    if (!aiMessage?.intermediateSteps?.length) {
-      return {
-        status: 'failure',
-        error: 'No intermediate steps found in AI response',
-      };
+    if (this.agentMode != 'agent') {
+      throw new Error(
+        `Can't use execute call data with agent_mod : ${this.agentMode}`
+      );
     }
-
-    const lastStep =
-      aiMessage.intermediateSteps[aiMessage.intermediateSteps.length - 1];
-    if (!lastStep.observation) {
-      return {
-        status: 'failure',
-        error: 'No observation found in last step',
-      };
-    }
-    const result = lastStep.observation;
+    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
     try {
-      const parsedResult = JSON.parse(result);
+      const parsedResult = JSON.parse(
+        aiMessage.messages[aiMessage.messages.length - 2].content
+      );
       return parsedResult;
     } catch (parseError) {
       return {

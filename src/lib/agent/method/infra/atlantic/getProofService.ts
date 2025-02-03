@@ -1,25 +1,8 @@
 import { ATLANTIC_URL } from 'src/core/constants/infra/atlantic';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { AtlanticParam } from 'src/lib/utils/types/atlantic';
+import { AtlanticParam, AtlanticRes } from './types/Atlantic';
 import { promises as fs } from 'fs';
-
-interface AtlanticRes {
-    atlanticQueryId: string;
-}
-
-/**
- * Validates if the given buffer contains a valid ZIP file signature.
- * 
- * @param buffer - The Buffer object to be validated as a ZIP file.
- * @returns A Promise that resolves to true if the buffer starts with a valid ZIP signature, false otherwise.
- */
-const validateZip = async (buffer: Buffer) => {
-    const zipSignature = [0x50, 0x4B, 0x03, 0x04];
-    if (buffer.length < zipSignature.length) {
-        return false;
-    }
-    return zipSignature.every((byte, index) => buffer[index] === byte);
-}
+import { validateZip } from './utils/validateZip';
 
 /**
  * Handles proof generation by sending a ZIP file to the Atlantic API.

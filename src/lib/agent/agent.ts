@@ -1,14 +1,14 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { createToolCallingAgent, AgentExecutor } from 'langchain/agents';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { SystemMessage } from '@langchain/core/messages';
 import { createTools } from './tools/tools';
-import { AiConfig } from '../utils/types/index.js';
+import { AiConfig } from './method/core/account/types/accounts.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { createSignatureTools } from './tools/signature_tools';
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -28,13 +28,6 @@ const systemMessage = new SystemMessage(`
     - Use bullet points for clarity
     - No lengthy apologies or explanations
   `);
-
-export const prompt = ChatPromptTemplate.fromMessages([
-  systemMessage,
-  ['human', '{input}'],
-  ['assistant', '{agent_scratchpad}'],
-]);
-
 export const createAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
@@ -87,20 +80,11 @@ export const createAgent = (
     ? createSignatureTools()
     : createTools(starknetAgent);
 
-  const agent = createToolCallingAgent({
+  const agent = createReactAgent({
     llm: modelSelected,
     tools,
-    prompt,
+    messageModifier: systemMessage,
   });
 
-  const executorConfig = {
-    agent,
-    tools,
-    ...(isSignature && {
-      returnIntermediateSteps: true,
-      maxIterations: 1,
-    }),
-  };
-
-  return new AgentExecutor(executorConfig);
+  return agent;
 };

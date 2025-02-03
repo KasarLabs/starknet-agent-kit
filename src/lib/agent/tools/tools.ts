@@ -41,6 +41,7 @@ import {
   getClassAtSchema,
   getClassHashAtSchema,
   Transferschema,
+  createXpostSchema,
 } from '../schema/schema';
 import { swapTokens } from '../method/avnu/swapService';
 import { getRoute } from '../method/avnu/fetchRouteService';
@@ -64,6 +65,7 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../method/core/token/types/balance';
+import { createXpost } from '../method/X/X';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -340,6 +342,12 @@ export const registerTools = () => {
     schema: contractAddressSchema,
     execute: getLockedLiquidity,
   });
+  StarknetToolRegistry.registerTool({
+    name : 'create_x_post',
+    description : 'Post a input in to a X post',
+    schema : createXpostSchema,
+    execute : createXpost,
+  })
 };
 registerTools();
 

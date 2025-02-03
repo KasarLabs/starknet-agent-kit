@@ -389,6 +389,10 @@ export const launchOnEkuboSchema = z.object({
   ekuboParams: ekuboPoolParametersSchema,
 });
 
+export const createXpostSchema = z.object({
+  post: z.string().describe('This is the string you want to post on X'),
+});
+
 // Types for function parameters that match the schemas
 export type LaunchOnEkuboParams = z.infer<typeof launchOnEkuboSchema>;
 export type CreateMemecoinParams = z.infer<typeof createMemecoinSchema>;

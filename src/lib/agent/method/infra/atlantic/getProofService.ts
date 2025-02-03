@@ -47,7 +47,7 @@ export const getProofService = async (agent: StarknetAgentInterface, param: Atla
         }
     
         const formData = new FormData();
-        console.log(new Blob([buffer]))
+
         formData.append('pieFile', new Blob([buffer], {type: 'application/zip'}), filename);
         formData.append('layout', 'recursive');
         formData.append('prover', 'starkware_sharp');

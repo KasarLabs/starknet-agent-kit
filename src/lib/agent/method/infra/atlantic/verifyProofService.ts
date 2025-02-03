@@ -46,14 +46,14 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
     try {
         buffer = await fs.readFile(`./uploads/${filename}`, 'utf8');
         if (!validateJson(buffer)) {
-            throw new ValidationError("The isn't an json type.");
+            throw new ValidationError("The file isn't an json type.");
         }
     } catch(error) {
         throw new Error(error.message);
     }
 
     const formData = new FormData();
-    formData.append('proofFile', new Blob([JSON.stringify(buffer)], {type: 'application/json'}), 'proof.json');
+    formData.append('proofFile', new Blob([JSON.stringify(buffer)], {type: 'application/json'}), filename);
     formData.append('mockFactHash', 'false');
     formData.append('stoneVersion', 'stone6');
     formData.append('memoryVerification', 'cairo1');
@@ -71,11 +71,13 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
         const data: AtlanticRes = await res.json()
         url = `https://staging.dashboard.herodotus.dev/explorer/atlantic/${data.atlanticQueryId}`;
     }
+
     return JSON.stringify({
       status: 'success',
       url: url
     });
   } catch (error) {
+
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',

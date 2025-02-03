@@ -235,6 +235,7 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
+      // If file is detected we send it to the server
       if (selectedFile) {
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -286,6 +287,8 @@ const StarknetAgent = () => {
 
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
+
+      // If client uploads file we tell to the server to delete the file.
       if (selectedFile) {
         console.log(selectedFile.name);
         const del = await fetch('api/agent/delete', {
@@ -297,6 +300,7 @@ const StarknetAgent = () => {
           body: JSON.stringify({ filename: selectedFile.name }),
           credentials: 'include',
         });
+
         if (!del.ok) {
           const errorText = await response.text();
           console.error('API error:', {

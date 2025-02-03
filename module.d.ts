@@ -7,5 +7,6 @@ declare namespace NodeJS {
     AI_PROVIDER: string;
     RPC_URL: string;
     API_KEY: string;
+    ATLANTIC_API_KEY: string;
   }
 }

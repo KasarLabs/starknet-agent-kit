@@ -134,14 +134,14 @@ export const registerTools = () => {
   // Register balance tools
   StarknetToolRegistry.registerTool<AtlanticParam>({
     name: 'verify_proof_service',
-    description: 'Verify a proofs on starknet',
+    description: 'Query atlantic api to verify a proof from JSON file on starknet and return the query id',
     schema: VerifyProofServiceSchema,
     execute: verifyProofService,
   });
 
   StarknetToolRegistry.registerTool<AtlanticParam>({
     name: 'get_proof_service',
-    description: 'Generate proof',
+    description: 'Query atlantic api to generate a proof from \'.zip\' file on starknet and return the query id',
     schema: GetProofServiceSchema,
     execute: getProofService,
   });

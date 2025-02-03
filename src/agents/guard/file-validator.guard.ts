@@ -1,11 +1,12 @@
 import { Injectable, BadRequestException, ForbiddenException, ExecutionContext, CanActivate } from '@nestjs/common';
 import { MultipartFile } from '@fastify/multipart';
 import { FastifyRequest } from 'fastify';
-import { promises as fs } from 'fs';
+import { createReadStream, createWriteStream, promises as fs } from 'fs';
 import stream = require('stream');
 import * as util from 'util';
 import { join } from 'path';
 import { createHash } from 'crypto';
+import { PassThrough } from 'stream';
 
 interface FileSignature {
   mime: string;
@@ -51,20 +52,18 @@ export class FileTypeGuard implements CanActivate {
       for await (const part of parts) {
         if (part.type === 'file') {
           const file = part as MultipartFile;
-          
-          if (this.allowedMimeTypes.includes('application/json')) {
-            const isValid = await this.validateJson(file);
-            if (!isValid) {
-              throw new ForbiddenException('Fichier JSON invalide');
-            }
-          } else {
-            const isValid = await this.validateFile(file);
-            if (!isValid) {
-              throw new ForbiddenException('Type de fichier non autorisé');
+          const uploadedFile = await this.saveFile(file);
+          const buffer = await fs.readFile(uploadedFile.path);
+
+          const isFile = await this.validateFile(buffer);
+          if (!isFile) {
+            const isJson = await this.validateJson(buffer);
+            if (!isJson) {
+              fs.unlink(uploadedFile.path);
+              throw new ForbiddenException('Unauthorized file type');
             }
           }
 
-          const uploadedFile = await this.saveFile(file);
           uploadedFiles.push(uploadedFile);
         }
       }
@@ -83,13 +82,25 @@ export class FileTypeGuard implements CanActivate {
   }
 
   private async saveFile(file: MultipartFile): Promise<UploadedFile> {
-    const buffer = await file.toBuffer();
     // const hash = this.generateFileHash(buffer);
     // const ext = this.getFileExtension(file.filename);
+    const buffer = await file.toBuffer();
     const filename = file.filename;
     const filepath = join(this.uploadDir, filename);
+    const pipeline = util.promisify(stream.pipeline);
 
     await fs.writeFile(filepath, buffer);
+    
+    // const writeStream = createWriteStream(`./uploads/${file.filename}`);
+    // await pipeline(file.file, writeStream);
+
+    // Vérification optionnelle de l'intégrité
+    const originalSize = buffer.length;
+    const writtenSize = (await fs.stat(filepath)).size;
+    
+    if (originalSize !== writtenSize) {
+      throw new Error(`File integrity check failed: original size ${originalSize} != written size ${writtenSize}`);
+    }
 
     return {
       originalName: file.filename,
@@ -131,8 +142,7 @@ export class FileTypeGuard implements CanActivate {
     }
   }
 
-  private async validateFile(file: MultipartFile): Promise<boolean> {
-    const buffer = await this.readFileHeader(file, 8);
+  private async validateFile(buffer: Buffer): Promise<boolean> {
     const fileType = this.detectFileType(buffer);
     
     if (!fileType) {
@@ -142,9 +152,8 @@ export class FileTypeGuard implements CanActivate {
     return this.allowedMimeTypes.length === 0 || this.allowedMimeTypes.includes(fileType);
   }
 
-  private async validateJson(file: MultipartFile): Promise<boolean> {
+  private async validateJson(buffer: Buffer): Promise<boolean> {
     try {
-      const buffer = await file.toBuffer();
       const content = buffer.toString('utf8').trim();
       
       if (!content.startsWith('{') && !content.startsWith('[')) {
@@ -159,28 +168,24 @@ export class FileTypeGuard implements CanActivate {
   }
 
   private async readFileHeader(file: MultipartFile, byteLength: number): Promise<Buffer> {
+    const passThrough = new PassThrough();
+    file.file.pipe(passThrough);
+  
     return new Promise((resolve, reject) => {
-      const chunks: Buffer[] = [];
+      const headerChunks: Buffer[] = [];
       let bytesRead = 0;
-      
-      const stream = file.file;
-      
-      stream.on('data', (chunk: Buffer) => {
+
+      passThrough.on('data', (chunk: Buffer) => {
         if (bytesRead < byteLength) {
           const remainingBytes = byteLength - bytesRead;
-          const slicedChunk = chunk.subarray(0, remainingBytes);
-          chunks.push(slicedChunk);
+          const slicedChunk = chunk.subarray(0, Math.min(chunk.length, remainingBytes));
+          headerChunks.push(slicedChunk);
           bytesRead += slicedChunk.length;
-          
-          if (bytesRead >= byteLength) {
-            stream.pause();
-            resolve(Buffer.concat(chunks));
-          }
         }
       });
 
-      stream.on('error', reject);
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
+      passThrough.on('error', reject);
+      passThrough.on('end', () => resolve(Buffer.concat(headerChunks, byteLength)));
     });
   }
 

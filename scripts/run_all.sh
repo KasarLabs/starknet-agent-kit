@@ -50,7 +50,7 @@ run_tests() {
     
     for i in $(seq 1 "$iterations"); do
         echo "🔄 Run $i - $(date '+%H:%M:%S')" >> "$log_file"
-        npx jest >> "$log_file" 2>&1
+        npx jest --verbose --runInBand --testTimeout=30000 --config=jest.config.js 2>&1 | tee -a "$log_file"
         echo "" >> "$log_file"
     done
     

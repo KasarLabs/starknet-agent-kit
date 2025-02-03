@@ -1,5 +1,8 @@
 import { simulateDeployAccountTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
 
 describe('Simulate Deploy_Account Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -20,10 +23,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       // Act
 
-      const result = await simulateDeployAccountTransaction(
-        params,
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeployAccountTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -48,10 +48,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployAccountTransaction(
-        params,
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeployAccountTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -74,10 +71,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployAccountTransaction(
-        params,
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeployAccountTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -117,10 +111,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       // Act & Assert
       for (const params of paramsArray) {
-        const result = await simulateDeployAccountTransaction(
-          params,
-          process.env.PRIVATE_KEY
-        );
+        const result = await simulateDeployAccountTransaction(agent, params);
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
       }
@@ -142,12 +133,10 @@ describe('Simulate Deploy_Account Transaction ', () => {
         ],
       };
 
+      const invalidAgent = createMockInvalidStarknetAgent();
       // Act
 
-      const result = await simulateDeployAccountTransaction(
-        params,
-        C.invalid_private_key
-      );
+      const result = await simulateDeployAccountTransaction(invalidAgent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -187,15 +176,9 @@ describe('Simulate Deploy_Account Transaction ', () => {
       ];
 
       // Act
-      const result = await simulateDeployAccountTransaction(
-        paramsArray[0],
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeployAccountTransaction(agent, paramsArray[0]);
       const parsed = JSON.parse(result);
-      const result2 = await simulateDeployAccountTransaction(
-        paramsArray[1],
-        process.env.PRIVATE_KEY
-      );
+      const result2 = await simulateDeployAccountTransaction( agent, paramsArray[1]);
       const parsed2 = JSON.parse(result2);
 
       // Assert

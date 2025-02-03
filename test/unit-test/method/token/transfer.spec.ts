@@ -1,5 +1,8 @@
 import { transfer } from 'src/lib/agent/method/token/transfer';
 import * as C from '../../../utils/constant';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
 
 describe('Transfer token', () => {
   describe('With perfect match inputs', () => {
@@ -12,7 +15,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -34,7 +37,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -51,7 +54,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -68,7 +71,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -87,7 +90,7 @@ describe('Transfer token', () => {
       };
 
       // Act
-      const result = await transfer(params);
+      const result = await transfer(agent, params);
       const parsed = JSON.parse(result);
       console.log(parsed);
       // Assert

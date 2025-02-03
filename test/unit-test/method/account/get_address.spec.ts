@@ -1,4 +1,7 @@
 import { getAddress } from 'src/lib/agent/method/account/getAddress';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
 
 describe('getAddress', () => {
   describe('With perfect match inputs', () => {
@@ -6,7 +9,7 @@ describe('getAddress', () => {
       // Arrange
       // Act
 
-      const result = await getAddress();
+      const result = await getAddress(agent);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('success');
@@ -21,7 +24,7 @@ describe('getAddress', () => {
 
       // Act
 
-      const result = await getAddress();
+      const result = await getAddress(agent);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');

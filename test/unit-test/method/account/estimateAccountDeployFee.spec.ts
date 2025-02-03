@@ -1,10 +1,14 @@
 import { estimateAccountDeployFee } from 'src/lib/agent/method/account/estimateAccountDeployFee';
 import * as C from '../../../utils/constant';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
 
 describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
     it('should estimate fees successfully with valid payload', async () => {
       // Arrange
+      
       const params = {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
@@ -22,7 +26,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        agent
       );
       const parsed = JSON.parse(result);
 
@@ -67,7 +71,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        agent
       );
       const parsed = JSON.parse(result);
 
@@ -91,7 +95,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        agent
       );
       const parsed = JSON.parse(result);
 

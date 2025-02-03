@@ -2,6 +2,10 @@ import { swapTokens } from 'src/lib/agent/method/dapps/defi/avnu/swapService';
 import { SwapParams } from 'src/lib/utils/types/swap';
 import { setTimeout } from 'timers/promises';
 import * as C from '../../../utils/constant';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
+
 describe('Swap Token with avnu-sdk', () => {
   describe('With perfect match inputs', () => {
     it('should swap token 0.1 ETH to STRK', async () => {
@@ -14,7 +18,7 @@ describe('Swap Token with avnu-sdk', () => {
       // Act
       await setTimeout(500);
 
-      const result = await swapTokens(params, process.env.PRIVATE_KEY);
+      const result = await swapTokens(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -34,7 +38,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: 12,
       };
       // Act
-      const result = await swapTokens(params, process.env.PRIVATE_KEY);
+      const result = await swapTokens(agent, params);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed).toMatchObject({
@@ -54,10 +58,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: -12,
       };
       // Act
-      const result = await swapTokens(
-        params,
-        process.env.PRIVATE_KEY_TEST as string
-      );
+      const result = await swapTokens(agent, params);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');
@@ -70,10 +71,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: 15,
       };
       // Act
-      const result = await swapTokens(
-        params,
-        process.env.PRIVATE_KEY_TEST as string
-      );
+      const result = await swapTokens(agent, params);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');
@@ -89,10 +87,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: 15,
       };
       // Act
-      const result = await swapTokens(
-        params,
-        process.env.PRIVATE_KEY_TEST as string
-      );
+      const result = await swapTokens(agent, params);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');
@@ -108,7 +103,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: 300,
       };
       // Act
-      const result = await swapTokens(params, C.invalid_private_key);
+      const result = await swapTokens(agent, params);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');

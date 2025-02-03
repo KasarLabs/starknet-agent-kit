@@ -1,5 +1,8 @@
 import { simulateDeclareTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
 
 describe('Simulate Declare Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -48,10 +51,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -105,10 +105,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -162,10 +159,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -262,10 +256,7 @@ describe('Simulate Declare Transaction ', () => {
 
       // Act & Assert
       for (const params of paramsArray) {
-        const result = await simulateDeclareTransaction(
-          params,
-          process.env.PRIVATE_KEY
-        );
+        const result = await simulateDeclareTransaction(agent, params);
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
       }
@@ -304,8 +295,10 @@ describe('Simulate Declare Transaction ', () => {
         },
       };
 
+      const invalidAgent = createMockInvalidStarknetAgent();
+
       // Act
-      const result = await simulateDeclareTransaction(params, '0xinvalid');
+      const result = await simulateDeclareTransaction(invalidAgent, params);
       const parsed = JSON.parse(result);
       // Assert
 
@@ -314,6 +307,7 @@ describe('Simulate Declare Transaction ', () => {
 
     it('should fail reason : invalid contract values among valid ones', async () => {
       // Arrange
+
       const paramsArray = [
         {
           accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
@@ -363,15 +357,9 @@ describe('Simulate Declare Transaction ', () => {
         },
       ];
       // Act
-      const result = await simulateDeclareTransaction(
-        paramsArray[0],
-        process.env.PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, paramsArray[0]);
       const parsed = JSON.parse(result);
-      const result2 = await simulateDeclareTransaction(
-        paramsArray[1],
-        process.env.PRIVATE_KEY
-      );
+      const result2 = await simulateDeclareTransaction( agent, paramsArray[1]);
       const parsed2 = JSON.parse(result2);
 
       // Assert

@@ -1,13 +1,22 @@
-# Starknet Agent Kit
-
 <div align="center">
 <img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50" alt="Starknet Agent Kit Logo">
 
-[![NPM Version](https://img.shields.io/npm/v/starknet-agent-kit.svg)](https://www.npmjs.com/package/starknet-agent-kit)
-[![License](https://img.shields.io/npm/l/starknet-agent-kit.svg)](https://github.com/kasarlabs/starknet-agent-kit/blob/main/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/kasarlabs/starknet-agent-kit.svg)](https://github.com/kasarlabs/starknet-agent-kit/stargazers)
-[![Node Version](https://img.shields.io/node/v/starknet-agent-kit.svg)](https://nodejs.org)
+**starknet-agent-kit (alpha)**
 
+<p>
+<a href="https://www.npmjs.com/package/starknet-agent-kit">
+<img src="https://img.shields.io/npm/v/starknet-agent-kit.svg" alt="NPM Version" />
+</a>
+<a href="https://github.com/kasarlabs/starknet-agent-kit/blob/main/LICENSE">
+<img src="https://img.shields.io/npm/l/starknet-agent-kit.svg" alt="License" />
+</a>
+<a href="https://github.com/kasarlabs/starknet-agent-kit/stargazers">
+<img src="https://img.shields.io/github/stars/kasarlabs/starknet-agent-kit.svg" alt="GitHub Stars" />
+</a>
+<a href="https://nodejs.org">
+<img src="https://img.shields.io/node/v/starknet-agent-kit.svg" alt="Node Version" />
+</a>
+</p>
 </div>
 
 A toolkit for creating AI agents that can interact with the Starknet blockchain. Available as both an NPM package and a ready-to-use NestJS server with a web interface. Supports multiple AI providers including Anthropic, OpenAI, Google Gemini, and Ollama.
@@ -92,23 +101,16 @@ const agent = new StarknetAgent({
 const response = await agent.execute("What's my ETH balance?");
 ```
 
-## Features
+## Actions
 
-- Account management (balance checks, transfers)
-- DeFi operations (Avnu swaps)
-- Contract interactions
-- Blockchain queries (RPC methods)
-- AI model integration
-- Web server with REST API
-- Autonomous agent capabilities
+To learn more about actions you can read [this doc section](https://docs.kasar.io/agent-actions).
+A comprehensive interface in the Kit will provide an easy-to-navigate catalog of all available plugins and their actions, making discovery and usage simpler.
 
-## Security Warning ⚠️
-
-This kit is in alpha. Use at your own risk. The contributors are not responsible for any loss or damage arising from its use. Never share private keys or sensitive data with AI models.
+To add actions to your agent you can easily follow the step-by-steps guide [here](https://docs.kasar.io/add-agent-actions)
 
 ## Contributing
 
-Contributions welcome! Please submit a Pull Request.
+Contributions are welcome! Feel free to submit a Pull Request.
 
 ## License
 

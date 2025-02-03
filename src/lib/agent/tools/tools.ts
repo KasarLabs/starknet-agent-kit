@@ -65,8 +65,8 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../../utils/types/balance';
-import { depositEarnPosition } from '../method/dapps/defi/vesu/depositService';
-import { withdrawEarnPosition } from '../method/dapps/defi/vesu/withdrawService';
+import { depositEarnPosition } from '../method/vesu/actions/depositService';
+import { withdrawEarnPosition } from '../method/vesu/actions/withdrawService';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {

@@ -1,30 +1,35 @@
-import { Account, Call } from 'starknet';
+import { Account, Call, RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { z } from 'zod';
 import { parseUnits } from 'ethers';
 import {
   Address,
-  DepositParams,
+  addressSchema,
+  WithdrawParams,
   DepositResult,
   IBaseToken,
   IPool,
   IPoolAsset,
   ITokenValue,
   poolParser,
-} from '../../../vesu/interfaces/interface';
+  WithdrawResult,
+} from '../interfaces/interface';
 import {
   DEFAULT_DECIMALS,
   GENESIS_POOLID,
+  SINGLETON_ADDRESS,
   VESU_API_URL,
-} from '../../../vesu/constants/index';
-import { Hex, toBN, toU256 } from '../../../vesu/utils/num';
+  ZERO,
+} from '../constants/index';
+import { Hex, toBN, toU256 } from '../utils/num';
 import {
   getErc20Contract,
   getExtensionContract,
+  getSingletonContract,
   getVTokenContract,
 } from './contracts';
 
-export class DepositEarnService {
+export class WithdrawEarnService {
   constructor(
     private agent: StarknetAgentInterface,
     private walletAddress: string
@@ -104,6 +109,24 @@ export class DepositEarnService {
 
     return { ...pool, assets };
   }
+
+  async getTokenBalance(
+    baseToken: IBaseToken,
+    walletAddress: Hex
+  ): Promise<bigint> {
+    const tokenContract = getErc20Contract(baseToken.address);
+
+    return await tokenContract
+      .balanceOf(walletAddress)
+      .then(toBN)
+      .catch((err: unknown) => {
+        console.error(
+          new Error(`Failed to get balance of ${baseToken.address}`)
+        );
+        return 0n;
+      });
+  }
+
   async approveVTokenCalls(
     assetAddress: Address,
     vTokenAddress: Address,
@@ -119,10 +142,10 @@ export class DepositEarnService {
     return approveCall;
   }
 
-  async depositEarnTransaction(
-    params: DepositParams,
+  async withdrawEarnTransaction(
+    params: WithdrawParams,
     agent: StarknetAgentInterface
-  ): Promise<DepositResult> {
+  ): Promise<WithdrawResult> {
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,
@@ -134,16 +157,14 @@ export class DepositEarnService {
       const collateralPoolAsset = pool.assets.find(
         (a) =>
           a.symbol.toLocaleUpperCase() ===
-          params.depositTokenSymbol.toLocaleUpperCase()
+          params.withdrawTokenSymbol.toLocaleUpperCase()
       );
 
       if (!collateralPoolAsset) {
         throw new Error('Collateral asset not found in pool');
       }
-      console.log('params.depositAmount:', params.depositAmount);
-      const collateralAmount = parseUnits(
-        params.depositAmount,
-        // 0
+      console.log(
+        'collateralPoolAsset.decimals===',
         collateralPoolAsset.decimals
       );
 
@@ -151,17 +172,10 @@ export class DepositEarnService {
         collateralPoolAsset.vToken.address
       );
 
-      const vTokenApproveCall = await this.approveVTokenCalls(
-        collateralPoolAsset.address,
-        collateralPoolAsset.vToken.address,
-        collateralAmount
+      const vTokenShares = await this.getTokenBalance(
+        collateralPoolAsset.vToken,
+        account.address as Hex
       );
-
-      const depositVTokenCall =
-        await vtokenContract.populateTransaction.deposit(
-          toU256(collateralAmount),
-          account.address
-        );
 
       const credentials = agent.getAccountCredentials();
       const provider = agent.getProvider();
@@ -172,26 +186,26 @@ export class DepositEarnService {
         credentials.accountPrivateKey
       );
 
-      const tx = await account.execute([
+      const redeemVTokenCall = await vtokenContract.populateTransaction.redeem(
+        toU256(vTokenShares),
+        account.address,
+        account.address
+      );
+
+      const tx = await wallet.execute([
         {
-          contractAddress: vTokenApproveCall.contractAddress,
-          entrypoint: vTokenApproveCall.entrypoint,
-          calldata: vTokenApproveCall.calldata,
-        },
-        {
-          contractAddress: depositVTokenCall.contractAddress,
-          entrypoint: depositVTokenCall.entrypoint,
-          calldata: depositVTokenCall.calldata,
+          contractAddress: redeemVTokenCall.contractAddress,
+          entrypoint: redeemVTokenCall.entrypoint,
+          calldata: redeemVTokenCall.calldata,
         },
       ]);
 
       console.log('approval initiated. Transaction hash:', tx.transaction_hash);
       await provider.waitForTransaction(tx.transaction_hash);
 
-      const transferResult: DepositResult = {
+      const transferResult: WithdrawResult = {
         status: 'success',
-        amount: params.depositAmount,
-        symbol: params.depositTokenSymbol,
+        symbol: params.withdrawTokenSymbol,
         recipients_address: account.address,
         transaction_hash: tx.transaction_hash,
       };
@@ -212,31 +226,29 @@ export class DepositEarnService {
   }
 }
 
-export const createDepositEarnService = (
+export const withdrawService = (
   agent: StarknetAgentInterface,
   walletAddress?: string
-): DepositEarnService => {
+): WithdrawEarnService => {
   if (!walletAddress) {
     throw new Error('Wallet address not configured');
   }
 
-  return new DepositEarnService(agent, walletAddress);
+  return new WithdrawEarnService(agent, walletAddress);
 };
 
-export const depositEarnPosition = async (
+export const withdrawEarnPosition = async (
   agent: StarknetAgentInterface,
-  params: DepositParams
+  params: WithdrawParams
 ) => {
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
+  console.log('hello withdraw', accountAddress);
   try {
-    const depositEarnService = createDepositEarnService(agent, accountAddress);
-    const result = await depositEarnService.depositEarnTransaction(
-      params,
-      agent
-    );
+    const withdrawEarn = withdrawService(agent, accountAddress);
+    const result = await withdrawEarn.withdrawEarnTransaction(params, agent);
     return JSON.stringify(result);
   } catch (error) {
-    console.error('Detailed deposit error:', error);
+    console.error('Detailed withdraw error:', error);
     if (error instanceof Error) {
       console.error('Error type:', error.constructor.name);
       console.error('Error message:', error.message);

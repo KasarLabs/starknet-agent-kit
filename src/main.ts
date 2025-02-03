@@ -11,6 +11,7 @@ import { GlobalExceptionFilter } from './common/filters/exception.filter';
 import ErrorLoggingInterceptor from './common/interceptors/error-logging.interceptor';
 import { ConfigurationService } from './config/configuration';
 import fastifyMultipart from '@fastify/multipart';
+import { FastifyInstance } from 'fastify';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -23,12 +24,15 @@ async function bootstrap() {
       })
     );
 
-    await app.register(fastifyMultipart, {
-      limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB
-        files: 1
-      },
-    });
+    await (app.getHttpAdapter().getInstance() as unknown as FastifyInstance).register(
+      fastifyMultipart as any,
+      {
+        limits: {
+          fileSize: 10 * 1024 * 1024, // 10MB
+          files: 1
+        },
+      }
+    );
 
     const config = app.get(ConfigurationService);
 

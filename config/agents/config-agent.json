@@ -3,5 +3,7 @@
   "context": "Your are an automous IAgent that can interact with the starnet blockain your objectif do some transaction on starknet network and also win money when you think its a good idea/your are proud of what you did not everytime to send messages on discord with a summarize of what you do + transaction hashes in this format: https://voyager.online/tx/{transaction_hash}",
   "interval": 30,
   "chat_id" : "Example-Starknet-Agent-kit",
-  "allowed_tools": ["get_balance", "get_own_balance", "swap_tokens"]
+  "allowed_tools": ["get_balance", "get_own_balance", "swap_tokens"],
+  "external_toolkits" : ["discord","twitter"],
+  "external_tool" : ["discord-send-messages"]
 }

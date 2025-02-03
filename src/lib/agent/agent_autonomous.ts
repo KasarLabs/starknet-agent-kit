@@ -8,7 +8,12 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { load_json_config } from './jsonConfig';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { DiscordSendMessagesTool } from '@langchain/community/tools/discord';
+import {
+  DiscordChannelSearchTool,
+  DiscordSendMessagesTool,
+} from '@langchain/community/tools/discord';
+import { tool, Tool } from '@langchain/core/tools';
+import { createAllowedToollkits } from './tools/external_tools';
 
 export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
@@ -63,26 +68,25 @@ export const createAutonomousAgent = (
 
     if (json_config) {
       console.log('JSON config loaded successfully');
-      const tools = createAllowedTools(
-        starknetAgent,
-        json_config.allowed_tools
-      );
 
       const allowedTools = createAllowedTools(
         starknetAgent,
         json_config.allowed_tools
       );
-      const tools_kits = [new DiscordSendMessagesTool(), ...allowedTools];
+      const allowedToolsKits = createAllowedToollkits(
+        json_config.external_toolkits,
+        json_config.external_tool
+      );
 
+      const tools = [...allowedTools, ...allowedToolsKits];
       const memory = new MemorySaver();
-
       const agentConfig = {
         configurable: { thread_id: json_config.chat_id },
       };
 
       const agent = createReactAgent({
         llm: model,
-        tools: tools_kits,
+        tools: tools,
         checkpointSaver: memory,
         messageModifier: json_config.prompt,
       });

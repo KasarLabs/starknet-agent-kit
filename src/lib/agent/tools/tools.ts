@@ -90,11 +90,6 @@ interface StarknetTool<P = any> {
   execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
 }
 
-// Helper function to inject agent into tool methods
-const withAgent = (fn: Function, agent: StarknetAgentInterface) => {
-  return (...args: any[]) => fn(agent, ...args);
-};
-
 export class StarknetToolRegistry {
   private static tools: StarknetTool[] = [];
 
@@ -119,7 +114,6 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    console.log(filteredTools);
     let tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
     return tools.map(({ name, description, schema, execute }) =>
       tool(async (params: any) => execute(agent, params), {

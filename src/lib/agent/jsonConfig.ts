@@ -7,6 +7,8 @@ export interface JsonConfig {
   chat_id: string;
   allowed_tools: string[];
   prompt: SystemMessage;
+  external_toolkits: string[];
+  external_tool: string[];
 }
 
 function validateConfig(config: JsonConfig): void {

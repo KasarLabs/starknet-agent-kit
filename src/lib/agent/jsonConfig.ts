@@ -35,7 +35,8 @@ function validateConfig(config: JsonConfig): void {
 
 const checkParseJson = (): JsonConfig | undefined => {
   try {
-    const json = require('../../../config-agent.json') as JsonConfig;
+    const json =
+      require('../../../config/agents/config-agent.json') as JsonConfig;
     if (!json) {
       throw new Error('wrong json value');
     }

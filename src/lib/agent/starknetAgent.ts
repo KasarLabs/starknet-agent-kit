@@ -13,7 +13,7 @@ export interface StarknetAgentConfig {
   accountPublicKey: string;
   accountPrivateKey: string;
   signature: string;
-  agentmode: string;
+  agentMode: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -28,7 +28,7 @@ export class StarknetAgent implements IAgent {
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
-  public readonly agentmode: string;
+  public readonly agentMode: string;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -39,7 +39,7 @@ export class StarknetAgent implements IAgent {
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
     this.signature = config.signature;
-    this.agentmode = config.agentmode;
+    this.agentMode = config.agentMode;
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -47,15 +47,15 @@ export class StarknetAgent implements IAgent {
     this.contractInteractor = new ContractInteractor(this.provider);
 
     // Create agent executor with tools
-    console.log('Agent Mode : ', this.agentmode);
-    if (this.agentmode === 'auto') {
+    console.log('Agent Mode : ', this.agentMode);
+    if (this.agentMode === 'auto') {
       this.agentReactExecutor = createAutonomousAgent(this, {
         aiModel: this.aiModel,
         apiKey: this.aiProviderApiKey,
         aiProvider: config.aiProvider,
       });
     }
-    if (this.agentmode === 'agent') {
+    if (this.agentMode === 'agent') {
       this.agentReactExecutor = createAgent(this, {
         aiModel: this.aiModel,
         apiKey: this.aiProviderApiKey,
@@ -97,7 +97,7 @@ export class StarknetAgent implements IAgent {
 
   getAgent() {
     return {
-      agentmode: this.agentmode,
+      agentMode: this.agentMode,
     };
   }
 
@@ -126,9 +126,9 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute(input: string): Promise<unknown> {
-    if (this.agentmode != 'agent') {
+    if (this.agentMode != 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentmode}`
+        `Can't use execute call data with agent_mod : ${this.agentMode}`
       );
     }
     const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
@@ -136,9 +136,9 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute_call_data(input: string): Promise<unknown> {
-    if (this.agentmode != 'agent') {
+    if (this.agentMode != 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentmode}`
+        `Can't use execute call data with agent_mod : ${this.agentMode}`
       );
     }
     const aiMessage = await this.agentReactExecutor.invoke({ messages: input });

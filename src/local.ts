@@ -28,11 +28,11 @@ const LocalRun = async () => {
       message: 'Choose your Agent mode:',
       choices: [
         {
-          name: chalk.green('Local Agent Kit'),
+          name: chalk.green('Chat'),
           value: 'agent',
         },
         {
-          name: chalk.blue('Autonomous Agent'),
+          name: chalk.blue('Auto'),
           value: 'auto',
         },
       ],
@@ -46,10 +46,10 @@ const LocalRun = async () => {
 
     if (mode === 'agent') {
       while (true) {
-        const { input } = await inquirer.prompt([
+        const { user } = await inquirer.prompt([
           {
             type: 'input',
-            name: 'input',
+            name: 'user',
             message: chalk.green('Agent: How can I help you? :'),
             validate: (value: string) => {
               if (!value.trim()) {
@@ -71,9 +71,9 @@ const LocalRun = async () => {
             aiProvider: 'anthropic',
             aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
             signature: 'key',
-            agentmode: 'agent',
+            agentMode: 'agent',
           });
-          const airesponse = await agent.execute(input);
+          const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Request completed!' });
           console.log(chalk.cyan('\nResponse:'));
           console.log(chalk.white(airesponse));
@@ -102,7 +102,7 @@ const LocalRun = async () => {
         aiProvider: 'anthropic',
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
         signature: 'key',
-        agentmode: 'auto',
+        agentMode: 'auto',
       });
       const autoSpinner = createSpinner('Running autonomous mode...').start();
       try {

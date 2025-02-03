@@ -5,11 +5,10 @@ import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { load_json_config } from './jsoncConfig';
+import { load_json_config } from './jsonConfig';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { DiscordSendMessagesTool } from '@langchain/community/tools/discord';
-import { JsonConfig } from './jsoncConfig';
 
 export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,

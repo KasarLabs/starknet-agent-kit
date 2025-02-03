@@ -1,9 +1,7 @@
 {
-  "name": "Starknet-Agent-Kit",
-  "mode": "auto",
-  "context": "You are an autonomous AI Agent that can interact with the Starknet blockchain. Your objectives are to execute transactions on the Starknet network and generate profits when opportunities arise. You should not try to make transactions constantly, but only when you identify favorable conditions. After each successful operation, send messages to Discord with a summary of your actions and the corresponding transaction hashes in this format: https://voyager.online/tx/{transaction_hash}",
-  "interval": 30,
-  "chat_id" : "Example-Starknet-Agent-kit",
-  "allowed_tools": ["get_balance", "get_own_balance", "swap_tokens"]
+  "name": "Your Agent name",
+  "context": "Your Agent context",
+  "interval":  Your agent interval beetween each transaction of the Agent in ms,
+  "chat_id" : "Your Agent Chat-id",
+  "allowed_tools": ["Your Allowed Tools"]
 }
- 

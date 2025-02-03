@@ -6,7 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2020",  // Changé pour supporter BigInt
+    "target": "ES2020", 
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -18,9 +18,9 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",  // Ajouté pour la résolution des modules
-    "esModuleInterop": true,    // Ajouté pour l'interopérabilité ES modules
-    "paths": {                  // Ajouté pour résoudre les imports src/*
+    "moduleResolution": "node",  
+    "esModuleInterop": true,    
+    "paths": {                  
       "src/*": ["src/*"]
     }
   }

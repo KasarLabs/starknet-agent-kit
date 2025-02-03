@@ -23,6 +23,116 @@ A toolkit for creating AI agents that can interact with the Starknet blockchain,
 
 > ⚠️ **Warning**: This kit is currently under development. Use it at your own risk! Please be aware that sharing sensitive information such as private keys, personal data, or confidential details with AI models or tools carries inherent security risks. The contributors of this repository are **not responsible** for any loss, damage, or issues arising from its use.
 
+## Prerequisites
+
+Before starting, you'll need:
+
+- A Starknet wallet (get one from [Argent X](https://www.argent.xyz/argent-x))
+- An AI provider API key (supports Anthropic, OpenAI, Google Gemini, or Ollama)
+- Node.js and pnpm installed
+
+## Quick Start
+
+1. Clone and install:
+```bash
+git clone https://github.com/kasarlabs/starknet-agent-kit.git
+cd starknet-agent-kit
+pnpm install
+```
+
+2. Create a `.env` file:
+```env
+# Required Configuration
+PRIVATE_KEY="your_wallet_private_key"
+PUBLIC_ADDRESS="your_wallet_address"
+RPC_URL="your_rpc_endpoint"
+AI_PROVIDER_API_KEY="your_ai_api_key"
+AI_PROVIDER="anthropic"  # or "openai", "gemini", "ollama"
+AI_MODEL="claude-3-5-sonnet-latest"  # or your chosen model
+API_KEY="your_api_key_for_endpoints"
+```
+
+## Running the Agent
+
+Launch the agent using:
+
+```bash
+pnpm run local
+```
+
+You'll be presented with two modes to choose from:
+
+### 1. Chat Mode
+
+Interactive mode where you can have a conversation with the agent. Example commands:
+- "What's my ETH balance?"
+- "Transfer 0.1 ETH to 0x123..."
+- "Create a new Argent account"
+- "Get the latest block number"
+
+### 2. Autonomous Mode
+
+Requires a config file at `config/agents/config-agent.json`:
+
+```json
+{
+  "name": "MyAgent",
+  "context": "You are a Starknet monitoring agent...",
+  "interval": 60000,
+  "chat_id": "your_discord_channel_id",
+  "allowed_tools": [
+    "get_balance",
+    "get_block_number"
+    // Add other required tools
+  ],
+  "prompt": "Monitor ETH balance and alert if it drops below 1 ETH..."
+}
+```
+
+The agent will run continuously according to your configuration, executing tasks and sending notifications through Discord.
+
+## Available Tools
+
+The agent supports various operations including:
+- Account management (balance checks, transfers)
+- DeFi operations (Avnu swaps)
+- Contract interactions
+- Blockchain queries (RPC read methods)
+
+## Web Integration
+
+To integrate the agent in your web application:
+
+```typescript
+import { StarknetAgent } from 'starknet-agent-kit';
+
+// Initialize agent
+const agent = new StarknetAgent({
+  provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
+  accountPrivateKey: process.env.PRIVATE_KEY,
+  accountPublicKey: process.env.PUBLIC_ADDRESS,
+  aiModel: process.env.AI_MODEL,
+  aiProvider: process.env.AI_PROVIDER,
+  aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
+  signature: 'key',  // Use 'key' for backend execution or 'wallet' for frontend
+  agentMode: 'agent'  // Use 'agent' for chat or 'auto' for autonomous
+});
+
+// Execute commands
+const response = await agent.execute("What's my ETH balance?");
+```
+
+## Development
+
+```bash
+# Run tests
+pnpm test
+```
+
+## Security Note
+
+Never share private keys or sensitive data through the agent interface. The agent should only have access to wallets specifically created for automation purposes.
+
 ## Features
 
 - Retrieve account information (Balance, public key, etc.)

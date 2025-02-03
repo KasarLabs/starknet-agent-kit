@@ -1,6 +1,6 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { createAllowedTools } from './tools/tools';
-import { AiConfig } from '../utils/types/index.js';
+import { AiConfig } from './method/core/account/types/accounts';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
@@ -8,11 +8,6 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { load_json_config } from './jsonConfig';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import {
-  DiscordChannelSearchTool,
-  DiscordSendMessagesTool,
-} from '@langchain/community/tools/discord';
-import { tool, Tool } from '@langchain/core/tools';
 import { createAllowedToollkits } from './tools/external_tools';
 
 export const createAutonomousAgent = (

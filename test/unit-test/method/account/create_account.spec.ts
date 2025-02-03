@@ -1,7 +1,7 @@
 import {
   CreateOZAccount,
   CreateArgentAccount,
-} from 'src/lib/agent/method/account/createAccount';
+} from 'src/lib/agent/method/core/account/createAccount';
 
 describe('Account -> CreateOZAccount', () => {
   describe('With perfect match inputs', () => {});

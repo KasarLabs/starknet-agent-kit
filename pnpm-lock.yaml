@@ -26,6 +26,9 @@ importers:
       '@langchain/google-genai':
         specifier: ^0.1.6
         version: 0.1.8(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))(zod@3.24.1)
+      '@langchain/langgraph':
+        specifier: ^0.2.44
+        version: 0.2.44(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))
       '@langchain/ollama':
         specifier: ^0.1.4
         version: 0.1.5(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))
@@ -1339,6 +1342,21 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': '>=0.3.17 <0.4.0'
+
+  '@langchain/langgraph-checkpoint@0.0.15':
+    resolution: {integrity: sha512-AiJkvsYHqNbCh1Tx823qs2lf2qRqeB4EAMejirOk8gkpPszAGYua5c3niKYkcKR2tU8Snhrmj7Gm9HKZSFOXyw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.2.31 <0.4.0'
+
+  '@langchain/langgraph-sdk@0.0.36':
+    resolution: {integrity: sha512-KkAZM0uXBaMcD/dpGTBppOhbvNX6gz+Y1zFAC898OblegFkSvICrkd0oRQ5Ro/GWK/NAoDymnMUDXeZDdUkSuw==}
+
+  '@langchain/langgraph@0.2.44':
+    resolution: {integrity: sha512-CR9LB7sytdx0Ink56qVUPorDo5gW5m7iOU2ypu1OYA4l5aIrT4xGvHCwrGH9RE80pb/d0FglVUkEgEfuvSDbmw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.2.36 <0.3.0 || >=0.3.9 < 0.4.0'
 
   '@langchain/ollama@0.1.5':
     resolution: {integrity: sha512-S2tF94uIJtXavekKg10LvTV+jIelOIrubaCnje8BopfiNOVcnzsSulUL4JH0wvdxMZq0vbE4/i9RwC2q9ivOmA==}
@@ -5418,6 +5436,10 @@ packages:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
     hasBin: true
 
+  uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -6577,6 +6599,26 @@ snapshots:
       zod-to-json-schema: 3.24.1(zod@3.24.1)
     transitivePeerDependencies:
       - zod
+
+  '@langchain/langgraph-checkpoint@0.0.15(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))':
+    dependencies:
+      '@langchain/core': 0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1))
+      uuid: 10.0.0
+
+  '@langchain/langgraph-sdk@0.0.36':
+    dependencies:
+      '@types/json-schema': 7.0.15
+      p-queue: 6.6.2
+      p-retry: 4.6.2
+      uuid: 9.0.1
+
+  '@langchain/langgraph@0.2.44(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))':
+    dependencies:
+      '@langchain/core': 0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1))
+      '@langchain/langgraph-checkpoint': 0.0.15(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))
+      '@langchain/langgraph-sdk': 0.0.36
+      uuid: 10.0.0
+      zod: 3.24.1
 
   '@langchain/ollama@0.1.5(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0)(zod@3.24.1)))':
     dependencies:
@@ -11429,6 +11471,8 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@10.0.0: {}
+
+  uuid@9.0.1: {}
 
   v8-compile-cache-lib@3.0.1: {}
 

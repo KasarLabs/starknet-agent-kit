@@ -1,4 +1,4 @@
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { AtlanticParam } from 'src/lib/utils/types/atlantic';
 import { ATLANTIC_URL } from 'src/core/constants/infra/atlantic';
 import { promises as fs } from 'fs';
@@ -8,19 +8,32 @@ interface AtlanticRes {
     atlanticQueryId: string;
 }
 
+/**
+ * Validates if the given string content is a valid JSON.
+ * 
+ * @param content - The string to be validated as JSON.
+ * @returns A Promise that resolves to true if the content is valid JSON, false otherwise.
+ */
 async function validateJson(content: string): Promise<boolean> {
-    try {
-      if (!content.startsWith('{') && !content.startsWith('[')) {
-        return false;
-      }
-      
-      JSON.parse(content);
-      return true;
-    } catch {
+  try {
+    if (!content.startsWith('{') && !content.startsWith('[')) {
       return false;
     }
+    
+    JSON.parse(content);
+    return true;
+  } catch {
+    return false;
   }
+}
 
+/**
+ * Verifies a proof using the Atlantic service.
+ * 
+ * @param agent - The Starknet agent interface.
+ * @param param - The Atlantic parameters, including the filename.
+ * @returns A Promise that resolves to a JSON string containing the status and URL or error message.
+ */
 export const verifyProofService = async (agent: StarknetAgentInterface, param: AtlanticParam) => {
   try {
     const filename = param.filename;
@@ -58,7 +71,6 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
         const data: AtlanticRes = await res.json()
         url = `https://staging.dashboard.herodotus.dev/explorer/atlantic/${data.atlanticQueryId}`;
     }
-    console.log(url);
     return JSON.stringify({
       status: 'success',
       url: url

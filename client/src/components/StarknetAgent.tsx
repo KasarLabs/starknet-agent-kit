@@ -400,7 +400,7 @@ const StarknetAgent = () => {
         const formData = new FormData();
         formData.append('file', selectedFile);
         console.log(formData.get('file'));
-        const resp = await fetch('/api/agent/upload', {
+        const resp = await fetch('/api/key/upload', {
           method: 'POST',
           headers: {
             'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
@@ -448,7 +448,7 @@ const StarknetAgent = () => {
       // If client uploads file we tell to the server to delete the file.
       if (selectedFile) {
         console.log(selectedFile.name);
-        const del = await fetch('api/agent/delete', {
+        const del = await fetch('api/key/delete', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

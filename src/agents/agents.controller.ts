@@ -7,7 +7,6 @@ import { Body, Controller, Get, OnModuleInit, Param, Post, Req, UploadedFile, Us
 import { FastifyRequest } from 'fastify';
 import { FileTypeGuard } from './guard/file-validator.guard';
 import { promises as fs } from 'fs';
-import { ForbiddenError } from 'src/common/errors';
 
 interface filename {
   filename: string;

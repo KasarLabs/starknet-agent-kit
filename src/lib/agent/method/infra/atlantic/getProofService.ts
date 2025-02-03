@@ -1,5 +1,5 @@
 import { ATLANTIC_URL } from 'src/core/constants/infra/atlantic';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { AtlanticParam } from 'src/lib/utils/types/atlantic';
 import { promises as fs } from 'fs';
 
@@ -7,6 +7,12 @@ interface AtlanticRes {
     atlanticQueryId: string;
 }
 
+/**
+ * Validates if the given buffer contains a valid ZIP file signature.
+ * 
+ * @param buffer - The Buffer object to be validated as a ZIP file.
+ * @returns A Promise that resolves to true if the buffer starts with a valid ZIP signature, false otherwise.
+ */
 const validateZip = async (buffer: Buffer) => {
     const zipSignature = [0x50, 0x4B, 0x03, 0x04];
     if (buffer.length < zipSignature.length) {
@@ -15,6 +21,13 @@ const validateZip = async (buffer: Buffer) => {
     return zipSignature.every((byte, index) => buffer[index] === byte);
 }
 
+/**
+ * Handles proof generation by sending a ZIP file to the Atlantic API.
+ * 
+ * @param agent - The Starknet agent interface.
+ * @param param - The Atlantic parameters, including the filename.
+ * @returns A Promise that resolves to a JSON string containing the status and URL or an error message.
+ */
 export const getProofService = async (agent: StarknetAgentInterface, param: AtlanticParam) => {
     try {
         const filename = param.filename;
@@ -54,7 +67,7 @@ export const getProofService = async (agent: StarknetAgentInterface, param: Atla
         }
       return JSON.stringify({
         status: 'success',
-        response: `Your has been seending to the verifier you check the status her: ${url}`
+        url: url
       });
     } catch (error) {
       return JSON.stringify({

@@ -29,13 +29,11 @@ export class AgentService implements IAgentService {
     });
 
     try {
-      // Check agent status before processing
       const status = await this.getAgentStatus(agent);
       if (!status.isReady) {
         throw new AgentCredentialsError('Agent is not properly configured');
       }
 
-      // Validate request
       if (!(await agent.validateRequest(userRequest.request))) {
         throw new AgentValidationError('Invalid request format or parameters');
       }

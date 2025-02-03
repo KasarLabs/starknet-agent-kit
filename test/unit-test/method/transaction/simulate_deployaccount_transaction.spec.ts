@@ -1,4 +1,4 @@
-import { simulateDeployAccountTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
+import { simulateDeployAccountTransaction } from 'src/lib/agent/plugins/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
 
 describe('Simulate Deploy_Account Transaction ', () => {

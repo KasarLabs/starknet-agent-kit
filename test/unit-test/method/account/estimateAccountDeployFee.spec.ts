@@ -1,4 +1,4 @@
-import { estimateAccountDeployFee } from 'src/lib/agent/method/account/estimateAccountDeployFee';
+import { estimateAccountDeployFee } from 'src/lib/agent/plugins/core/account/estimateAccountDeployFee';
 import * as C from '../../../utils/constant';
 
 describe('Estimate Account Deploy Fee', () => {

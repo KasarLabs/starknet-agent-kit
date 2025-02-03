@@ -2,12 +2,13 @@ import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { createToolCallingAgent, AgentExecutor } from 'langchain/agents';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { SystemMessage } from '@langchain/core/messages';
-import { createTools } from './tools';
+import { createTools } from './tools/tools';
 import { AiConfig } from '../utils/types/index.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { createSignatureTools } from './tools/signature_tools';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -38,6 +39,7 @@ export const createAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
+  const isSignature = starknetAgent.getSignature().signature === 'wallet';
   const model = () => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
@@ -81,7 +83,9 @@ export const createAgent = (
   };
 
   const modelSelected = model();
-  const tools = createTools(starknetAgent);
+  const tools = isSignature
+    ? createSignatureTools()
+    : createTools(starknetAgent);
 
   const agent = createToolCallingAgent({
     llm: modelSelected,
@@ -89,8 +93,14 @@ export const createAgent = (
     prompt,
   });
 
-  return new AgentExecutor({
+  const executorConfig = {
     agent,
     tools,
-  });
+    ...(isSignature && {
+      returnIntermediateSteps: true,
+      maxIterations: 1,
+    }),
+  };
+
+  return new AgentExecutor(executorConfig);
 };

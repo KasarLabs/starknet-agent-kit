@@ -13,7 +13,7 @@ interface filename {
   filename: string;
 }
 
-@Controller('agent')
+@Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
 export class AgentsController implements OnModuleInit {
   private agent: StarknetAgent;
@@ -31,6 +31,7 @@ export class AgentsController implements OnModuleInit {
       aiModel: this.config.ai.model,
       aiProvider: this.config.ai.provider,
       aiProviderApiKey: this.config.ai.apiKey,
+      signature: 'key',
     });
   }
 

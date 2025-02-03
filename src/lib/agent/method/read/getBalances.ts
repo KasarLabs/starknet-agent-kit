@@ -1,11 +1,12 @@
 import { tokenAddresses } from 'src/core/constants/tokens/erc20';
 import { ERC20_ABI } from 'src/core/abis/tokens/erc20Abi';
-import { Account, Contract } from 'starknet';
+import { Account, Contract, RpcProvider, transaction } from 'starknet';
 import {
   GetOwnBalanceParams,
   GetBalanceParams,
 } from 'src/lib/utils/types/balance';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { response } from 'express';
 
 const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
@@ -135,6 +136,43 @@ export const getBalance = async (
 
     return JSON.stringify({
       status: 'success',
+      balance: formattedBalance,
+    });
+  } catch (error) {
+    console.error('Error in getBalance:', error);
+    return JSON.stringify({
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.stack : undefined,
+    });
+  }
+};
+
+export const getBalanceSignature = async (
+  params: GetBalanceParams
+): Promise<string> => {
+  try {
+    if (!params?.assetSymbol || !params?.accountAddress) {
+      throw new Error('Both assetSymbol and address parameters are required');
+    }
+
+    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+
+    const tokenAddress = validateTokenAddress(params.assetSymbol);
+    const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
+
+    const balanceResponse = await tokenContract.balanceOf(
+      params.accountAddress
+    );
+
+    if (!balanceResponse || typeof balanceResponse !== 'bigint') {
+      throw new Error('Invalid balance response format from contract');
+    }
+
+    const formattedBalance = formatBalance(balanceResponse, params.assetSymbol);
+    return JSON.stringify({
+      status: 'success',
+      transaction_type: 'READ',
       balance: formattedBalance,
     });
   } catch (error) {

@@ -1,5 +1,5 @@
-import { GetStorageParams } from 'src/lib/agent/schema';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { GetStorageParams } from 'src/lib/agent/schema/schema';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getStorageAt = async (
   agent: StarknetAgentInterface,

@@ -10,6 +10,14 @@ export interface IAgent {
   execute(input: string): Promise<unknown>;
 
   /**
+   * Executes the user request and returns the result
+   * @param input The user's request string
+   * @returns Promise resolving to the execution result
+   * @throws AgentExecutionError if execution fails
+   */
+  execute_call_data(input: string): Promise<unknown>;
+
+  /**
    * Validates the user request before execution
    * @param request The user's request string
    * @returns Promise<boolean> indicating if request is valid

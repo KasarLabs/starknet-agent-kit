@@ -1,11 +1,11 @@
-import { CreateMemecoinParams } from 'src/lib/agent/schema';
+import { CreateMemecoinParams } from 'src/lib/agent/schema/schema';
 import { stark, uint256 } from 'starknet';
 import {
   execute,
   decimalsScale,
-} from 'src/lib/agent/method/dapps/degen/unruggable/method/helper';
+} from 'src/lib/agent/method/dapps/degen/unruggable/helper';
 import { Account } from 'starknet';
-import { StarknetAgentInterface } from 'src/lib/agent/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 /**
  * Creates a new memecoin using the Unruggable Factory.

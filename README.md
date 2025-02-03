@@ -82,6 +82,18 @@ You will need:
 
 ### As an NPM Package
 
+You can initialize the StarknetAgent in two different ways:
+
+1. Key-Based Initialization
+   This approach allows the use of an account integrated into the .env file.
+   It provides access to all the tools and outputs formatted by the chosen AI provider, as all transactions are executed on the backend.
+
+2. Wallet-Based Initialization
+   This approach eliminates the need to store account credentials in the .env file.
+   However, the number of tools available is limited. The outputs are formatted in JSON and are intended to be executed on a client, for instance, using .execute from Account or WalletAccount in starknet.js
+
+#### 1. Key Initialization
+
 ```typescript
 import { StarknetAgent } from 'starknet-agent-kit';
 
@@ -91,6 +103,7 @@ const agent = new StarknetAgent({
   aiModel: 'claude-3-5-sonnet-latest',
   accountPrivateKey: 'your-wallet-private-key',
   rpcUrl: 'your-rpc-url',
+  signature: 'key',
 });
 
 // Execute commands in natural language
@@ -98,6 +111,79 @@ await agent.execute('transfer 0.1 ETH to 0x123...');
 await agent.execute('What is my ETH balance?');
 await agent.execute('Swap 5 USDC for ETH');
 ```
+
+#### 2. Wallet Initialization
+
+```typescript
+import { StarknetAgent } from 'starknet-agent-kit';
+
+const agent = new StarknetAgent({
+  aiProviderApiKey: 'your-ai-provider-key',
+  aiProvider: 'anthropic', // or 'openai', 'gemini', 'ollama'
+  aiModel: 'claude-3-5-sonnet-latest',
+  accountPrivateKey: 'your-wallet-private-key',
+  rpcUrl: 'your-rpc-url',
+  signature: 'wallet',
+});
+
+// Execute commands in natural language
+await agent.execute_signature('transfer 0.1 ETH to 0x123...');
+await agent.execute_signature('What is my ETH balance?');
+await agent.execute_signature('Create and deploy Argent account');
+```
+
+#### 1. Using Key Initialization in a Client
+
+```typescript
+  const input = "Transfer 0.13 ETH to 0.123..."
+
+  const response = await fetch('/api/key/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        body: JSON.stringify({ request: input }),
+        credentials: 'include',
+  })
+  /* The response contain the 'output' created by the your AI
+    ex : 'output' : your transfer of 0,123 ETH to 0x123.. is successfull you can check the tx at
+        https://voyager...
+```
+
+#### 2. Using Wallet Initialization in a Client
+
+- You will need an WalletAccount class Implementation with get-starknet.js : https://starknetjs.com/docs/next/guides/walletAccount.
+- You can also use Account class from starknet.js : https://starknetjs.com/docs/next/guides/create_account
+
+For this example i am using Account. You can check our repository for a WalletAccount class integration
+
+```typescript
+const provider = new RPCprovider({ nodeUrl: 'Your RPC_URL' });
+const account = new Account(provider, 'your_public_key', 'your_private_key');
+
+const response = await fetch('/api/wallet/request', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+  },
+  body: JSON.stringify({ request: 'transfer 0.0001 ETH to 0x123' }),
+  credentials: 'include',
+});
+
+const result = response.json();
+const transaction_object = result.getTransaction(); // You need to parse the json to get the transaction object
+
+const transaction_hash = await account.exectute(transaction_object);
+```
+
+### Mode Configuration
+
+| Mode   | Description                                                                                                          |
+| ------ | -------------------------------------------------------------------------------------------------------------------- |
+| Key    | Uses environment variables from .env file to configure account credentials and tool settings.                        |
+| Wallet | Return a JSON response that needs to be executed on the front-end using WalletAccount or Account from 'starknet.js'. |
 
 ### Using Individual Tools
 

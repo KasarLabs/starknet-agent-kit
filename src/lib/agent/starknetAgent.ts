@@ -5,7 +5,6 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from '../utils/account/AccountManager';
 import { TransactionMonitor } from '../utils/monitoring/TransactionMonitor';
 import { ContractInteractor } from '../utils/contract/ContractInteractor';
-
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -13,6 +12,7 @@ export interface StarknetAgentConfig {
   provider: RpcProvider;
   accountPublicKey: string;
   accountPrivateKey: string;
+  signature: string;
 }
 
 export class StarknetAgent implements IAgent {
@@ -26,6 +26,7 @@ export class StarknetAgent implements IAgent {
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
+  public readonly signature: string;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -35,6 +36,7 @@ export class StarknetAgent implements IAgent {
     this.accountPublicKey = config.accountPublicKey;
     this.aiModel = config.aiModel;
     this.aiProviderApiKey = config.aiProviderApiKey;
+    this.signature = config.signature;
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -74,6 +76,12 @@ export class StarknetAgent implements IAgent {
     };
   }
 
+  getSignature() {
+    return {
+      signature: this.signature,
+    };
+  }
+
   getProvider(): RpcProvider {
     return this.provider;
   }
@@ -83,6 +91,36 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute(input: string): Promise<unknown> {
-    return this.agentExecutor.invoke({ input });
+    const aiMessage = await this.agentExecutor.invoke({ input });
+    return aiMessage;
+  }
+
+  async execute_call_data(input: string): Promise<unknown> {
+    const aiMessage = await this.agentExecutor.invoke({ input });
+    if (!aiMessage?.intermediateSteps?.length) {
+      return {
+        status: 'failure',
+        error: 'No intermediate steps found in AI response',
+      };
+    }
+
+    const lastStep =
+      aiMessage.intermediateSteps[aiMessage.intermediateSteps.length - 1];
+    if (!lastStep.observation) {
+      return {
+        status: 'failure',
+        error: 'No observation found in last step',
+      };
+    }
+    const result = lastStep.observation;
+    try {
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (parseError) {
+      return {
+        status: 'failure',
+        error: `Failed to parse observation: ${parseError.message}`,
+      };
+    }
   }
 }

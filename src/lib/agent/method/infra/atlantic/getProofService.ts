@@ -36,6 +36,10 @@ export const getProofService = async (agent: StarknetAgentInterface, param: Atla
         formData.append('prover', 'starkware_sharp');
     
         const apiKey = process.env.ATLANTIC_API_KEY;
+        if (!apiKey) {
+          throw new Error("https://staging.dashboard.herodotus.dev/explorer/atlantic/");
+        }
+
         const res = await fetch(`${ATLANTIC_URL}/v1/proof-generation?apiKey=${apiKey}`, {
             method: 'POST',
             headers: {
@@ -46,6 +50,9 @@ export const getProofService = async (agent: StarknetAgentInterface, param: Atla
         let url;
         if (res.status){
             const data: AtlanticRes = await res.json()
+            if (typeof data.atlanticQueryId === "undefined"){
+              throw new Error("Received an undefined response from the external API.");
+            }
             url = `https://staging.dashboard.herodotus.dev/explorer/atlantic/${data.atlanticQueryId}`;
         }
       return JSON.stringify({

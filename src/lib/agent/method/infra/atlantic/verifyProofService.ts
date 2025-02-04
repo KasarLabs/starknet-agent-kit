@@ -1,6 +1,6 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { AtlanticParam, AtlanticRes } from './types/Atlantic';
-import { ATLANTIC_URL } from 'src/core/constants/infra/atlantic';
+import { ATLANTIC_URL, DASHBOARD_URL } from './constants/atlantic';
 import { promises as fs } from 'fs';
 import { ValidationError, NotFoundError } from 'src/common/errors/application.errors';
 import { validateJson } from './utils/validateJson'
@@ -38,6 +38,10 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
     formData.append('memoryVerification', 'cairo1');
 
     const apiKey = process.env.ATLANTIC_API_KEY;
+    if (!apiKey) {
+      throw new Error("https://staging.dashboard.herodotus.dev/explorer/atlantic/");
+    }
+
     const res = await fetch(`${ATLANTIC_URL}/v1/l2/atlantic-query/proof-verification?apiKey=${apiKey}`, {
         method: 'POST',
         headers: {
@@ -48,7 +52,10 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
     let url;
     if (res.status){
         const data: AtlanticRes = await res.json()
-        url = `https://staging.dashboard.herodotus.dev/explorer/atlantic/${data.atlanticQueryId}`;
+        if (typeof data.atlanticQueryId === "undefined"){
+          throw new Error("Received an undefined response from the external API.");
+        }
+        url = `${DASHBOARD_URL}${data.atlanticQueryId}`;
     }
 
     return JSON.stringify({

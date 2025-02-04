@@ -42,6 +42,7 @@ import {
   getClassHashAtSchema,
   Transferschema,
   createXpostSchema,
+  CoinGeckoCheckTokenPriceSchema,
 } from '../schema/schema';
 import { swapTokens } from '../method/avnu/swapService';
 import { getRoute } from '../method/avnu/fetchRouteService';
@@ -67,6 +68,12 @@ import {
 } from '../method/core/token/types/balance';
 import { createXpost } from '../method/X/X';
 import { Limit } from '../limit';
+import {
+  CoinGeckoCheckApiListSupportedTokens,
+  CoinGeckoCheckApiServerStatus,
+  CoinGeckoCheckTokenPrice,
+  CoinGeckoTrendingSearchList,
+} from '../method/coingecko/coingecko';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -349,6 +356,31 @@ export const registerTools = () => {
     description: 'Post a input in to a X post',
     schema: createXpostSchema,
     execute: createXpost,
+  });
+  StarknetToolRegistry.registerTool({
+    name: 'coingecko_check_api_server_status',
+    description: 'Check coingecko api server status',
+    execute: CoinGeckoCheckApiServerStatus,
+  });
+  StarknetToolRegistry.registerTool({
+    name: 'coin_gecko_check_api_list_supported_tokens',
+    description: 'Check coingecko support token list',
+    execute: CoinGeckoCheckApiListSupportedTokens,
+  });
+  StarknetToolRegistry.registerTool({
+    name: 'coin_gecko_get_trendin_Search_list',
+    description: `get the The endpoint currently supports:
+Top 15 trending coins (sorted by the most popular user searches)
+Top 7 trending NFTs (sorted by the highest percentage change in floor prices)
+Top 5 trending categories (sorted by the most popular user searches)
+Cache / Update Frequency: every 10 minutes for all the API plans`,
+    execute: CoinGeckoTrendingSearchList,
+  });
+  StarknetToolRegistry.registerTool({
+    name: 'coingecko_check_tokens_price',
+    description: 'check tokens price from coingecko api',
+    schema: CoinGeckoCheckTokenPriceSchema,
+    execute: CoinGeckoCheckTokenPrice,
   });
 };
 registerTools();

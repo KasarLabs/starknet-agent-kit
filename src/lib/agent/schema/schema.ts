@@ -393,6 +393,13 @@ export const createXpostSchema = z.object({
   post: z.string().describe('This is the string you want to post on X'),
 });
 
+const CoinGeckoCheckTokenPayload = z.object({
+  name : z.string().describe('the name of the token')
+})
+export const CoinGeckoCheckTokenPriceSchema = z.object({
+  tokens : z.array(CoinGeckoCheckTokenPayload).describe('Array of tokens name')
+})
+
 // Types for function parameters that match the schemas
 export type LaunchOnEkuboParams = z.infer<typeof launchOnEkuboSchema>;
 export type CreateMemecoinParams = z.infer<typeof createMemecoinSchema>;
@@ -407,3 +414,4 @@ export type GetTransactionByBlockIdAndIndexParams = z.infer<
   typeof getTransactionByBlockIdAndIndexSchema
 >;
 export type ContractAddressParams = z.infer<typeof contractAddressSchema>;
+export type CoinGeckoCheckTokenPriceParams = z.infer<typeof CoinGeckoCheckTokenPriceSchema>

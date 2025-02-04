@@ -47,7 +47,6 @@ export class StarknetAgent implements IAgent {
     this.contractInteractor = new ContractInteractor(this.provider);
 
     // Create agent executor with tools
-    console.log('Agent Mode : ', this.agentMode);
     if (this.agentMode === 'auto') {
       this.agentReactExecutor = createAutonomousAgent(this, {
         aiModel: this.aiModel,

@@ -7,59 +7,111 @@ import { config } from 'dotenv';
 
 config();
 
-const logo = `
+const clearScreen = () => {
+  process.stdout.write('\x1Bc');
+};
+
+const logo = `${chalk.cyan(`
   ____  _             _               _        _                    _     _  ___ _   
  / ___|| |_ __ _ _ __| | ___ __   ___| |_     / \\   __ _  ___ _ __ | |_  | |/ (_) |_ 
  \\___ \\| __/ _\` | '__| |/ / '_ \\ / _ \\ __|   / _ \\ / _\` |/ _ \\ '_ \\| __| | ' /| | __|
   ___) | || (_| | |  |   <| | | |  __/ |_   / ___ \\ (_| |  __/ | | | |_  | . \\| | |_ 
  |____/ \\__\\__,_|_|  |_|\\_\\_| |_|\\___|\\__| /_/   \\_\\__, |\\___|_| |_|\\__| |_|\\_\\_|\\__|
                                                    |___/                             
-`;
+`)}`;
+
+const createBox = (
+  content: unknown,
+  options: { title?: string; isError?: boolean } = {}
+) => {
+  const { title = '', isError = false } = options;
+  const contentStr = String(content);
+  const color = isError ? chalk.red : chalk.cyan;
+  const width = process.stdout.columns > 100 ? 100 : process.stdout.columns - 4;
+  const topBorder = '╭' + '─'.repeat(width - 2) + '╮';
+  const bottomBorder = '╰' + '─'.repeat(width - 2) + '╯';
+
+  let result = '\n';
+  if (title) {
+    result += `${color('┌' + '─'.repeat(title.length + 2) + '┐')}\n`;
+    result += `${color('│')} ${title} ${color('│')}\n`;
+  }
+  result += color(topBorder) + '\n';
+  result +=
+    color('│') +
+    ' ' +
+    contentStr +
+    ' '.repeat(Math.max(0, width - contentStr.length - 3)) +
+    '\n';
+  result += color(bottomBorder) + '\n';
+  return result;
+};
+
+const validateEnvVars = () => {
+  const required = [
+    'RPC_URL',
+    'PRIVATE_KEY',
+    'PUBLIC_ADDRESS',
+    'AI_MODEL',
+    'AI_PROVIDER_API_KEY',
+  ];
+  const missing = required.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(`Missing environment variables:\n${missing.join('\n')}`);
+  }
+};
 
 const LocalRun = async () => {
-  console.log(chalk.magenta(logo));
-  console.log(chalk.yellow('Welcome to Starknet-Agent-Kit!\n'));
+  clearScreen();
+  console.log(logo);
+  console.log(createBox('Welcome to Starknet-Agent-Kit'));
 
   const { mode } = await inquirer.prompt([
     {
       type: 'list',
       name: 'mode',
-      message: 'Choose your Agent mode:',
+      message: 'Select operation mode:',
       choices: [
         {
-          name: chalk.green('Chat'),
+          name: `${chalk.green('>')} Interactive Mode`,
           value: 'agent',
+          short: 'Interactive',
         },
         {
-          name: chalk.blue('Auto'),
+          name: `${chalk.blue('>')} Autonomous Mode`,
           value: 'auto',
+          short: 'Autonomous',
         },
       ],
     },
   ]);
 
-  const spinner = createSpinner('Initializing Starknet Agent...').start();
+  clearScreen();
+  console.log(logo);
+  const spinner = createSpinner('Initializing Starknet Agent').start();
 
   try {
-    spinner.success({ text: 'Agent initialized successfully!' });
+    validateEnvVars();
+    spinner.success({ text: 'Agent initialized successfully' });
 
     if (mode === 'agent') {
+      console.log(chalk.dim('\nStarting interactive session...\n'));
+
       while (true) {
         const { user } = await inquirer.prompt([
           {
             type: 'input',
             name: 'user',
-            message: chalk.green('User:'),
+            message: chalk.green('User'),
             validate: (value: string) => {
-              if (!value.trim()) {
-                return 'Please enter a valid input';
-              }
+              const trimmed = value.trim();
+              if (!trimmed) return 'Please enter a valid message';
               return true;
             },
           },
         ]);
 
-        const executionSpinner = createSpinner('').start();
+        const executionSpinner = createSpinner('Processing request').start();
 
         try {
           const agent = new StarknetAgent({
@@ -72,25 +124,15 @@ const LocalRun = async () => {
             signature: 'key',
             agentMode: 'agent',
           });
+
           const airesponse = await agent.execute(user);
-          executionSpinner.success({ text: 'Request completed!' });
-          console.log(chalk.cyan('\nResponse:'));
-          console.log(chalk.white(airesponse));
+          executionSpinner.success({ text: 'Response received' });
+
+          console.log(createBox(airesponse, { title: 'Agent' }));
         } catch (error) {
           executionSpinner.error({ text: 'Error processing request' });
-          console.error(chalk.red('Error:'), error.message);
+          console.error(createBox(error.message, { isError: true }));
         }
-
-        const { continue: shouldContinue } = await inquirer.prompt([
-          {
-            type: 'confirm',
-            name: 'continue',
-            message: 'Would you like to make another request?',
-            default: true,
-          },
-        ]);
-
-        if (!shouldContinue) break;
       }
     } else if (mode === 'auto') {
       const agent = new StarknetAgent({
@@ -103,22 +145,27 @@ const LocalRun = async () => {
         signature: 'key',
         agentMode: 'auto',
       });
-      const autoSpinner = createSpinner('Running autonomous mode...').start();
+
+      console.log(chalk.dim('\nStarting autonomous session...\n'));
+      const autoSpinner = createSpinner('Running autonomous mode').start();
+
       try {
         await agent.execute_autonomous();
-        autoSpinner.success({ text: 'Autonomous execution completed!' });
+        autoSpinner.success({ text: 'Autonomous execution completed' });
       } catch (error) {
         autoSpinner.error({ text: 'Error in autonomous mode' });
-        console.error(chalk.red('Error:'), error.message);
+        console.error(createBox(error.message, { isError: true }));
       }
     }
   } catch (error) {
     spinner.error({ text: 'Failed to initialize agent' });
-    console.error(chalk.red('Error:'), error.message);
+    console.error(createBox(error.message, { isError: true }));
   }
 };
 
 LocalRun().catch((error) => {
-  console.error(chalk.red('\nFatal Error:'), error.message);
+  console.error(
+    createBox(error.message, { isError: true, title: 'Fatal Error' })
+  );
   process.exit(1);
 });

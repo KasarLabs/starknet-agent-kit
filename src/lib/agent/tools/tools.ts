@@ -357,7 +357,7 @@ export const registerTools = () => {
   // Atlantic tools
   StarknetToolRegistry.registerTool<AtlanticParam>({
     name: 'verify_proof_service',
-    description: 'Query atlantic api to verify a proof from JSON file on starknet and return the query id',
+    description: 'This service connects to Atlantic\'s verification pipeline to validate proofs. When provided with a JSON file containing proof data, it will process the proof through Atlantic\'s verification system and return a unique identifier (atlantic_query_id) that can be usedto track and reference the verification result.',
     schema: VerifyProofServiceSchema,
     execute: verifyProofService,
   });

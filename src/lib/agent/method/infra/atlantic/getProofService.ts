@@ -37,7 +37,7 @@ export const getProofService = async (agent: StarknetAgentInterface, param: Atla
     
         const apiKey = process.env.ATLANTIC_API_KEY;
         if (!apiKey) {
-          throw new Error("https://staging.dashboard.herodotus.dev/explorer/atlantic/");
+          throw new Error("API key is missing in the environment variables.");
         }
 
         const res = await fetch(`${ATLANTIC_URL}/v1/proof-generation?apiKey=${apiKey}`, {

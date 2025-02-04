@@ -1,4 +1,4 @@
-import { simulateDeployTransaction } from 'src/lib/agent/method/transaction/simulateTransaction';
+import { simulateDeployTransaction } from 'src/lib/agent/method/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
 import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
 

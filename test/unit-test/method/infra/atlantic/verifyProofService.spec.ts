@@ -1,10 +1,10 @@
+import { AtlanticParam } from "src/lib/agent/method/infra/atlantic/types/Atlantic";
 import { verifyProofService } from "src/lib/agent/method/infra/atlantic/verifyProofService";
-import { AtlanticParam } from "src/lib/utils/types/atlantic";
 import { createMockStarknetAgent } from "test/jest/setEnvVars";
 
 const agent = createMockStarknetAgent();
 
-describe('getProofService', () => {
+describe('verifyProofService', () => {
     describe('With perfect match inputs', () => {});
     it('Should return an url to atlantic dashboard with query id', async () => {
       const getProofParam: AtlanticParam = {

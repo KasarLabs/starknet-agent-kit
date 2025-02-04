@@ -39,7 +39,7 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
 
     const apiKey = process.env.ATLANTIC_API_KEY;
     if (!apiKey) {
-      throw new Error("https://staging.dashboard.herodotus.dev/explorer/atlantic/");
+      throw new Error("API key is missing in the environment variables.");
     }
 
     const res = await fetch(`${ATLANTIC_URL}/v1/l2/atlantic-query/proof-verification?apiKey=${apiKey}`, {
@@ -57,7 +57,6 @@ export const verifyProofService = async (agent: StarknetAgentInterface, param: A
         }
         url = `${DASHBOARD_URL}${data.atlanticQueryId}`;
     }
-
     return JSON.stringify({
       status: 'success',
       url: url

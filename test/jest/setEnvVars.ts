@@ -1,9 +1,9 @@
 import { setupTestEnvironment } from '../utils/helpers';
 import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from '../../src/lib/agent/tools/tools';
-import { AccountManager } from '../../src/lib/utils/account/AccountManager';
-import { TransactionMonitor } from '../../src/lib/utils/monitoring/TransactionMonitor';
-import { ContractInteractor } from '../../src/lib/utils/contract/ContractInteractor';
+import { AccountManager } from 'src/lib/agent/method/core/account/utils/AccountManager';
+import { TransactionMonitor } from 'src/lib/agent/method/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from 'src/lib/agent/method/core/contract/utils/ContractInteractor';
 
 setupTestEnvironment();
 

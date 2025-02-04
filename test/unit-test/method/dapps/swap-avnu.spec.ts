@@ -1,8 +1,8 @@
-import { swapTokens } from 'src/lib/agent/method/dapps/defi/avnu/swapService';
-import { SwapParams } from 'src/lib/utils/types/swap';
 import { setTimeout } from 'timers/promises';
 import * as C from '../../../utils/constant';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+import { swapTokens } from 'src/lib/agent/method/avnu/swapService';
+import { SwapParams } from 'src/lib/agent/method/avnu/types/swap';
 
 const agent = createMockStarknetAgent();
 

@@ -68,12 +68,21 @@ export const createAutonomousAgent = (
         starknetAgent,
         json_config.allowed_internal_tools
       );
-      const allowedToolsKits = createAllowedToollkits(
-        json_config.external_toolkits,
-        json_config.allowed_external_tools
-      );
+      const allowedToolsKits =
+        json_config.external_toolkits && json_config.allowed_external_tools
+          ? createAllowedToollkits(
+              json_config.external_toolkits,
+              json_config.allowed_external_tools
+            )
+          : json_config.external_toolkits && !json_config.allowed_external_tools
+            ? createAllowedToollkits(json_config.external_toolkits)
+            : null;
 
-      const tools = [...allowedTools, ...allowedToolsKits];
+      const tools = allowedToolsKits
+        ? [...allowedTools, ...allowedToolsKits]
+        : allowedTools;
+
+      console.log(tools);
       const memory = new MemorySaver();
       const agentConfig = {
         configurable: { thread_id: json_config.chat_id },

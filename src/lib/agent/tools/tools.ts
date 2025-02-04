@@ -66,6 +66,7 @@ import {
   GetOwnBalanceParams,
 } from '../method/core/token/types/balance';
 import { createXpost } from '../method/X/X';
+import { Limit } from '../limit';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -83,6 +84,7 @@ export interface StarknetAgentInterface {
   accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
+  getLimit: () => Limit;
 }
 
 interface StarknetTool<P = any> {
@@ -343,11 +345,11 @@ export const registerTools = () => {
     execute: getLockedLiquidity,
   });
   StarknetToolRegistry.registerTool({
-    name : 'create_x_post',
-    description : 'Post a input in to a X post',
-    schema : createXpostSchema,
-    execute : createXpost,
-  })
+    name: 'create_x_post',
+    description: 'Post a input in to a X post',
+    schema: createXpostSchema,
+    execute: createXpost,
+  });
 };
 registerTools();
 

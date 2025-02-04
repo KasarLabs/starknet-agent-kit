@@ -5,6 +5,7 @@ import { AccountManager } from './method/core/account/utils/AccountManager';
 import { TransactionMonitor } from './method/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from './method/core/contract/utils/ContractInteractor';
 import { createAutonomousAgent } from './agent_autonomous';
+import { AddAgentLimit, Limit } from './limit';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -29,6 +30,7 @@ export class StarknetAgent implements IAgent {
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
   public readonly agentMode: string;
+  public readonly token_limit: Limit;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -40,6 +42,7 @@ export class StarknetAgent implements IAgent {
     this.aiProviderApiKey = config.aiProviderApiKey;
     this.signature = config.signature;
     this.agentMode = config.agentMode;
+    this.token_limit = AddAgentLimit();
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -103,6 +106,10 @@ export class StarknetAgent implements IAgent {
 
   getProvider(): RpcProvider {
     return this.provider;
+  }
+
+  getLimit(): Limit {
+    return this.token_limit;
   }
 
   async validateRequest(request: string): Promise<boolean> {

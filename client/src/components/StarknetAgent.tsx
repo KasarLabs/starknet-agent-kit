@@ -551,11 +551,6 @@ const StarknetAgent = () => {
                     {isActive ? 'Signature activate' : 'Signature desactivate'}
                   </span>
                 </div>
-                <UploadFile
-                  fileInfo={fileInfo}
-                  setFileInfo={setFileInfo}
-                  setSelectedFile={setSelectedFile}
-                />
 
                 <Select value={selectedStyle} onValueChange={setSelectedStyle}>
                   <SelectTrigger className="w-[180px] text-white">
@@ -591,6 +586,11 @@ const StarknetAgent = () => {
                   )}
                 </Button>
               </form>
+              <UploadFile
+                fileInfo={fileInfo}
+                setFileInfo={setFileInfo}
+                setSelectedFile={setSelectedFile}
+              />
 
               {currentResponse && (
                 <Alert className="bg-neutral-800 border-neutral-700">

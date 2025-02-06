@@ -38,10 +38,7 @@ function validateConfig(config: JsonConfig): void {
   if (
     !Array.isArray(config.allowed_internal_tools) ||
     config.allowed_internal_tools.length === 0
-    !Array.isArray(config.allowed_internal_tools) ||
-    config.allowed_internal_tools.length === 0
   ) {
-    throw new Error('allowed_internal_tools must be a non-empty array');
     throw new Error('allowed_internal_tools must be a non-empty array');
   }
 }

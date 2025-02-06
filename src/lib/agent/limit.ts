@@ -18,9 +18,7 @@ export const AddAgentLimit = (): Limit => {
       limit_token.transfer_limit = json.transfer_limit;
     }
     if (!limit_token.transfer_limit) {
-      throw new Error(
-        `You dont't define limit transfer token is at your risk`
-      );
+      throw new Error(`You dont't define limit transfer token is at your risk`);
     }
     return limit_token;
   } catch (error) {

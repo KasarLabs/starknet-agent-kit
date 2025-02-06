@@ -13,7 +13,7 @@
     "first knowledge of your AI Agent",
     "second knowledge of your AI Agent"
   ]
-  "interval":  Your agent interval beetween each transaction of the Agent in ms,
+  "interval":  "Your agent interval beetween each transaction of the Agent in ms,"
   "chat_id" : "Your Agent Chat-id",
   "allowed_tools": ["Your Allowed Tools"],
   "external_client" : [
@@ -22,6 +22,6 @@
   ],
   "allowed_external_client_tools" : [
     "first allowed_external_client_tools",
-    "second allowed_external_client_tools
+    "second allowed_external_client_tools"
   ]
 }

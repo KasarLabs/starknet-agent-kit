@@ -17,7 +17,7 @@ import {
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
-  aiProvider: 'openai' | 'anthropic' | 'ollama' | 'gemini';
+  aiProvider: string;
   provider: RpcProvider;
   accountPublicKey: string;
   accountPrivateKey: string;

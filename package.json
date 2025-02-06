@@ -1,7 +1,6 @@
 {
   "name": "starknet-agent-kit",
-  "version": "0.0.7",
-  "private": true,
+  "version": "0.0.10",
   "workspaces": [
     "client"
   ],
@@ -27,14 +26,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "clean": "rimraf dist node_modules client/node_modules client/.next client/dist",
-    "build:backend": "rimraf dist && nest build",
-    "clean:js": "rimraf \"src/**/*.js\"",
+    "clean": "rm -rf dist node_modules client/node_modules client/.next client/dist",
+    "build:backend": "rm -rf dist && nest build",
+    "clean:js": "rm -rf \"src/**/*.js\"",
     "local": "ts-node -r tsconfig-paths/register src/local.ts",
     "build:test": "pnpm clean:js && tsc -p tsconfig.build.json src/local.ts --outDir ./dist",
     "build:local": "tsc src/local.ts --outDir ./dist",
     "start:local": "pnpm build:local && node dist/local.js",
     "build:frontend": "cd client && pnpm build",
+    "build:lib": "tsc -p tsconfig.build.json",
     "build": "pnpm build:backend && pnpm build:frontend",
     "dev:backend": "nest start --watch",
     "dev:frontend": "cd client && pnpm dev",
@@ -48,7 +48,10 @@
     "test:frontend": "cd client && pnpm test",
     "setup": "./scripts/setup.sh",
     "dev:script": "./scripts/dev.sh",
-    "start:script": "./scripts/start.sh"
+    "start:script": "./scripts/start.sh",
+    "prepublishOnly": "pnpm clean && pnpm install && pnpm run build:lib",
+    "test:lib": "ts-node -r tsconfig-paths/register scripts/test-lib.ts",
+    "test:lib:local": "./scripts/test-release.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.3",
@@ -65,11 +68,13 @@
     "@nestjs/core": "^10.4.15",
     "@nestjs/platform-fastify": "^10.4.15",
     "add": "^2.0.6",
+    "boxen": "^8.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "discord.js": "^14.17.3",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
+    "gradient-string": "^3.0.0",
     "helmet": "^8.0.0",
     "inquirer": "^12.4.1",
     "langchain": "^0.3.10",
@@ -86,6 +91,7 @@
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^5.0.0",
+    "@types/gradient-string": "^1.1.6",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.17.12",
     "@types/supertest": "^6.0.0",

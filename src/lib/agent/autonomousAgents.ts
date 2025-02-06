@@ -61,12 +61,20 @@ export const createAutonomousAgent = (
   try {
     const json_config = load_json_config();
     if (json_config) {
+      console.log('Character config loaded successfully');
       console.log('JSON config loaded successfully');
 
       const allowedTools = createAllowedTools(
         starknetAgent,
         json_config.allowed_internal_tools
+        json_config.allowed_internal_tools
       );
+      const allowedToolsKits = createAllowedToollkits(
+        json_config.external_toolkits,
+        json_config.allowed_external_tools
+      );
+
+      const tools = [...allowedTools, ...allowedToolsKits];
       const allowedToolsKits =
         json_config.external_toolkits && json_config.allowed_external_tools
           ? createAllowedToollkits(
@@ -89,6 +97,7 @@ export const createAutonomousAgent = (
 
       const agent = createReactAgent({
         llm: model,
+        tools: tools,
         tools: tools,
         checkpointSaver: memory,
         messageModifier: json_config.prompt,

@@ -41,8 +41,17 @@ import {
   getClassAtSchema,
   getClassHashAtSchema,
   Transferschema,
-  createXpostSchema,
+  createTwitterpostSchema,
   CoinGeckoCheckTokenPriceSchema,
+  GetLastUserXTweetSchema,
+  ReplyTweetSchema,
+  getLastTweetsOptionsSchema,
+  createAndPostTwitterThreadSchema,
+  FollowXUserFromUsernameSchema,
+  getTwitterProfileFromUsernameSchema,
+  getTwitterUserIdFromUsernameSchema,
+  getLastTweetsAndRepliesFromUserSchema,
+  getLastTweetsFromUserSchema,
 } from '../schema/schema';
 import { swapTokens } from '../method/avnu/swapService';
 import { getRoute } from '../method/avnu/fetchRouteService';
@@ -66,7 +75,12 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../method/core/token/types/balance';
-import { createXpost } from '../method/X/X';
+import {
+  createAndPostTwitterThread,
+  createTwitterpost,
+  FollowXUserFromUsername,
+  ReplyTweet,
+} from '../method/Twitter/twitter';
 import { Limit } from '../limit';
 import {
   CoinGeckoCheckApiListSupportedTokens,
@@ -74,6 +88,16 @@ import {
   CoinGeckoCheckTokenPrice,
   CoinGeckoTrendingSearchList,
 } from '../method/coingecko/coingecko';
+import {
+  getLastTweetsAndRepliesFromUser,
+  getLastTweetsFromUser,
+  getLastTweetsOptions,
+  GetLastUserTweet,
+  getOwnTwitterAccountInfo,
+  getTwitterProfileFromUsername,
+  getTwitterUserIdFromUsername,
+} from '../method/Twitter/twitter_read';
+import { TwitterInterface } from '../method/Twitter/interface/twitter-interface';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -92,6 +116,8 @@ export interface StarknetAgentInterface {
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;
+  getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
+  getTwitterManager: () => TwitterInterface;
 }
 
 interface StarknetTool<P = any> {
@@ -351,36 +377,81 @@ export const registerTools = () => {
     schema: contractAddressSchema,
     execute: getLockedLiquidity,
   });
+  // Twitter Tools
   StarknetToolRegistry.registerTool({
-    name: 'create_x_post',
-    description: 'Post a input in to a X post',
-    schema: createXpostSchema,
-    execute: createXpost,
+    name: 'create_twitter_post',
+    description: 'Create new X/Twitter post',
+    schema: createTwitterpostSchema,
+    execute: createTwitterpost,
   });
+
   StarknetToolRegistry.registerTool({
-    name: 'coingecko_check_api_server_status',
-    description: 'Check coingecko api server status',
-    execute: CoinGeckoCheckApiServerStatus,
+    name: 'reply_twitter_tweet',
+    description: 'Reply to specific X/Twitter post by ID',
+    schema: ReplyTweetSchema,
+    execute: ReplyTweet,
   });
+
   StarknetToolRegistry.registerTool({
-    name: 'coin_gecko_check_api_list_supported_tokens',
-    description: 'Check coingecko support token list',
-    execute: CoinGeckoCheckApiListSupportedTokens,
+    name: 'get_last_tweet',
+    description: 'Get most recent post from specified X/Twitter account',
+    schema: GetLastUserXTweetSchema,
+    execute: GetLastUserTweet,
   });
+
   StarknetToolRegistry.registerTool({
-    name: 'coin_gecko_get_trendin_Search_list',
-    description: `get the The endpoint currently supports:
-Top 15 trending coins (sorted by the most popular user searches)
-Top 7 trending NFTs (sorted by the highest percentage change in floor prices)
-Top 5 trending categories (sorted by the most popular user searches)
-Cache / Update Frequency: every 10 minutes for all the API plans`,
-    execute: CoinGeckoTrendingSearchList,
+    name: 'get_last_tweets_options',
+    description: 'Get specified number of posts matching search query',
+    schema: getLastTweetsOptionsSchema,
+    execute: getLastTweetsOptions,
   });
+
   StarknetToolRegistry.registerTool({
-    name: 'coingecko_check_tokens_price',
-    description: 'check tokens price from coingecko api',
-    schema: CoinGeckoCheckTokenPriceSchema,
-    execute: CoinGeckoCheckTokenPrice,
+    name: 'create_and_post_twitter_thread',
+    description: 'Create and publish X/Twitter thread',
+    schema: createAndPostTwitterThreadSchema,
+    execute: createAndPostTwitterThread,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'follow_twitter_from_username',
+    description: 'Follow X/Twitter user by username',
+    schema: FollowXUserFromUsernameSchema,
+    execute: FollowXUserFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_twitter_profile_from_username',
+    description: 'Get full X/Twitter profile data by username',
+    schema: getTwitterProfileFromUsernameSchema,
+    execute: getTwitterProfileFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_twitter_user_id_from_username',
+    description: 'Get X/Twitter user ID from username',
+    schema: getTwitterUserIdFromUsernameSchema,
+    execute: getTwitterUserIdFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet_and_replies_from_user',
+    description: 'Get recent X/Twitter posts and replies from user',
+    schema: getLastTweetsAndRepliesFromUserSchema,
+    execute: getLastTweetsAndRepliesFromUser,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet_from_user',
+    description: 'Get recent X/Twitter posts from user',
+    schema: getLastTweetsFromUserSchema,
+    execute: getLastTweetsFromUser,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_own_twitter_account_info',
+    description: 'Get current account profile data',
+    execute: getOwnTwitterAccountInfo,
   });
 };
 registerTools();

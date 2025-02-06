@@ -60,7 +60,6 @@ export const createAutonomousAgent = (
 
   try {
     const json_config = load_json_config();
-
     if (json_config) {
       console.log('JSON config loaded successfully');
 

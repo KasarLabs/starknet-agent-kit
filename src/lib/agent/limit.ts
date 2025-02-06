@@ -10,16 +10,16 @@ export interface Limit {
 export const AddAgentLimit = (): Limit => {
   try {
     let limit_token: Limit = {} as Limit;
-    const json = require('../../../config/agents/config-limit.json');
+    const json = require('../../../config/limit/config-limit.json');
     if (!json) {
-      throw new Error(`Can't access to ./config/agents/config-limit.jspon`);
+      throw new Error(`Can't access to ./config/limit/config-limit.jspon`);
     }
     if (json.transfer_limit) {
       limit_token.transfer_limit = json.transfer_limit;
     }
     if (!limit_token.transfer_limit) {
       throw new Error(
-        `You dont't define limite transfer token is at your risk`
+        `You dont't define limit transfer token is at your risk`
       );
     }
     return limit_token;

@@ -1,0 +1,27 @@
+{
+  "name": "Your Agent name",
+  "bio" : "Your AI Agent Bio"
+  "lore" : [
+    "Some lore of your AI Agent 1",
+    "Some lore of your AI Agent 1"
+  ],
+  "objectif" : [
+    "first objectif that your AI Agent need to follow",
+    "second objectif that your AI Agent need to follow"
+  ],
+  "knowledge" : [
+    "first knowledge of your AI Agent",
+    "second knowledge of your AI Agent"
+  ]
+  "interval":  Your agent interval beetween each transaction of the Agent in ms,
+  "chat_id" : "Your Agent Chat-id",
+  "allowed_tools": ["Your Allowed Tools"],
+  "external_client" : [
+    "first external_client",
+    "second external_client"
+  ],
+  "allowed_external_client_tools" : [
+    "first allowed_external_client_tools",
+    "second allowed_external_client_tools
+  ]
+}

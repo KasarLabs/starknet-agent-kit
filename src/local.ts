@@ -4,8 +4,26 @@ import { createSpinner } from 'nanospinner';
 import { StarknetAgent } from './lib/agent/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
-
+import { load_json_config } from './lib/agent/jsonConfig';
+import yargs, { string } from 'yargs';
+import { hideBin } from 'yargs/helpers';
 config();
+
+// Utilisation
+
+const load_command = async (): Promise<string> => {
+  const argv = await yargs(hideBin(process.argv))
+    .option('agent', {
+      alias: 'a',
+      describe: 'Your config agent file name',
+      type: 'string',
+      default: 'default.agent.json',
+    })
+    .strict()
+    .parse();
+
+  return argv['agent'];
+};
 
 const clearScreen = () => {
   process.stdout.write('\x1Bc');
@@ -65,7 +83,7 @@ const LocalRun = async () => {
   clearScreen();
   console.log(logo);
   console.log(createBox('Welcome to Starknet-Agent-Kit'));
-
+  const agent_config_name = await load_command();
   const { mode } = await inquirer.prompt([
     {
       type: 'list',
@@ -93,7 +111,7 @@ const LocalRun = async () => {
   try {
     validateEnvVars();
     spinner.success({ text: 'Agent initialized successfully' });
-
+    const agent_config = load_json_config(agent_config_name);
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
@@ -123,8 +141,9 @@ const LocalRun = async () => {
             aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
             signature: 'key',
             agentMode: 'agent',
+            agentconfig: agent_config,
           });
-
+          agent.initializeTwitterManager();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -144,8 +163,10 @@ const LocalRun = async () => {
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
         signature: 'key',
         agentMode: 'auto',
+        agentconfig: agent_config,
       });
 
+      agent.initializeTwitterManager();
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
 

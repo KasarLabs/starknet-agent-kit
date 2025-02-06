@@ -1,10 +1,10 @@
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from './method/core/account/utils/AccountManager';
-import { TransactionMonitor } from './method/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from './method/core/contract/utils/ContractInteractor';
-import { createAutonomousAgent } from './agent_autonomous';
+import { AccountManager } from './plugins/core/account/utils/AccountManager';
+import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
+import { createAutonomousAgent } from './autonomousAgents';
 import { AddAgentLimit, Limit } from './limit';
 import { Scraper } from 'agent-twitter-client';
 import { TwitterApi } from 'twitter-api-v2';
@@ -12,7 +12,7 @@ import {
   TwitterInterface,
   TwitterApiConfig,
   TwitterScraperConfig,
-} from './method/Twitter/interface/twitter-interface';
+} from './plugins/Twitter/interface/twitter-interface';
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
@@ -59,7 +59,6 @@ export class StarknetAgent implements IAgent {
     this.contractInteractor = new ContractInteractor(this.provider);
 
     // Create agent executor with tools
-    console.log('Agent Mode : ', this.agentMode);
     if (this.agentMode === 'auto') {
       this.agentReactExecutor = createAutonomousAgent(this, {
         aiModel: this.aiModel,

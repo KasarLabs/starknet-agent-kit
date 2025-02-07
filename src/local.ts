@@ -115,7 +115,9 @@ const LocalRun = async () => {
 
         try {
           const agent = new StarknetAgent({
-            provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
+            provider: new RpcProvider({
+              nodeUrl: process.env.STARKNET_RPC_URL,
+            }),
             accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
             accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
             aiModel: process.env.AI_MODEL,

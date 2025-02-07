@@ -13,8 +13,12 @@ export class ConfigurationService {
       NODE_ENV: this.configService.get<string>('NODE_ENV'),
       SERVER_PORT: this.configService.get<string>('SERVER_PORT'),
       SERVER_API_KEY: this.configService.get<string>('SERVER_API_KEY'),
-      STARKNET_PRIVATE_KEY: this.configService.get<string>('STARKNET_PRIVATE_KEY'),
-      STARKNET_PUBLIC_ADDRESS: this.configService.get<string>('STARKNET_PUBLIC_ADDRESS'),
+      STARKNET_PRIVATE_KEY: this.configService.get<string>(
+        'STARKNET_PRIVATE_KEY'
+      ),
+      STARKNET_PUBLIC_ADDRESS: this.configService.get<string>(
+        'STARKNET_PUBLIC_ADDRESS'
+      ),
       STARKNET_RPC_URL: this.configService.get<string>('STARKNET_RPC_URL'),
       AI_PROVIDER: this.configService.get<string>('AI_PROVIDER'),
       AI_MODEL: this.configService.get<string>('AI_MODEL'),

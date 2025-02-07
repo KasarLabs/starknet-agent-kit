@@ -51,8 +51,10 @@ export const setupTestEnvironment = () => {
   process.env.STARKNET_PUBLIC_ADDRESS = config.accounts.account1.publicAddress;
 
   process.env.STARKNET_PRIVATE_KEY_2 = config.accounts.account2.privateKey;
-  process.env.STARKNET_PUBLIC_ADDRESS_2 = config.accounts.account2.publicAddress;
+  process.env.STARKNET_PUBLIC_ADDRESS_2 =
+    config.accounts.account2.publicAddress;
 
   process.env.STARKNET_PRIVATE_KEY_3 = config.accounts.account3.privateKey;
-  process.env.STARKNET_PUBLIC_ADDRESS_3 = config.accounts.account3.publicAddress;
+  process.env.STARKNET_PUBLIC_ADDRESS_3 =
+    config.accounts.account3.publicAddress;
 };

@@ -75,7 +75,7 @@ export const envSchema = z
     SERVER_PORT: z
       .string()
       .transform((val) => parseInt(val, 10))
-      .default('3000'),
+      .default('3001'),
 
     /** Runtime environment for the application */
     NODE_ENV: z

@@ -67,6 +67,7 @@ import {
 } from '../plugins/core/token/types/balance';
 import { withdrawEarnPosition } from '../plugins/vesu/actions/withdrawService';
 import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
+import { getLatestBoostedTokensProfile } from '../plugins/dexscreener/dexscreener';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -356,6 +357,14 @@ export const registerTools = () => {
     description: 'Withdraw total amount asset from Earn position on Vesu',
     schema: withdrawEarnSchema,
     execute: withdrawEarnPosition,
+  });
+
+  // Dexscreener
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_latest_boosted_tokens_profile',
+    description: 'get the last boosted dexscreenr tokens',
+    execute: getLatestBoostedTokensProfile,
   });
 };
 registerTools();

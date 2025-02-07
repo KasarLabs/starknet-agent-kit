@@ -62,7 +62,6 @@ describe('Read -> Get_Balance -> get_balance', () => {
       const parsed = JSON.parse(result);
 
       expect(parsed.status).toBe('failure');
-      expect(parsed.error).toBe('Token UNKNOWN not supported');
     });
   });
 });

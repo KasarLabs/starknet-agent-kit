@@ -24,15 +24,14 @@ async function bootstrap() {
       })
     );
 
-    await (app.getHttpAdapter().getInstance() as unknown as FastifyInstance).register(
-      fastifyMultipart as any,
-      {
-        limits: {
-          fileSize: 10 * 1024 * 1024, // 10MB
-          files: 1
-        },
-      }
-    );
+    await (
+      app.getHttpAdapter().getInstance() as unknown as FastifyInstance
+    ).register(fastifyMultipart as any, {
+      limits: {
+        fileSize: 10 * 1024 * 1024, // 10MB
+        files: 1,
+      },
+    });
 
     const config = app.get(ConfigurationService);
 

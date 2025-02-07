@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, ForbiddenException, ExecutionContext, CanActivate } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+  ExecutionContext,
+  CanActivate,
+} from '@nestjs/common';
 import { MultipartFile } from '@fastify/multipart';
 import { FastifyRequest } from 'fastify';
 import { createReadStream, createWriteStream, promises as fs } from 'fs';
@@ -27,19 +33,19 @@ export class FileTypeGuard implements CanActivate {
   private readonly fileSignatures: FileSignature[] = [
     {
       mime: 'application/json',
-      signatures: [[0x7B], [0x5B]]
+      signatures: [[0x7b], [0x5b]],
     },
     {
       mime: 'application/zip',
-      signatures: [[0x50, 0x4B, 0x03, 0x04]]
-    }
+      signatures: [[0x50, 0x4b, 0x03, 0x04]],
+    },
   ];
 
   constructor(private readonly allowedMimeTypes: string[] = []) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<FastifyRequest>();
-    
+
     if (!request.isMultipart()) {
       throw new ForbiddenException('La requête doit être multipart');
     }
@@ -48,7 +54,7 @@ export class FileTypeGuard implements CanActivate {
     try {
       const parts = request.parts();
       const uploadedFiles: UploadedFile[] = [];
-      
+
       for await (const part of parts) {
         if (part.type === 'file') {
           const file = part as MultipartFile;
@@ -69,11 +75,11 @@ export class FileTypeGuard implements CanActivate {
       }
 
       (request as any).uploadedFiles = uploadedFiles;
-      
+
       return true;
     } catch (error) {
       await this.cleanupFiles();
-      
+
       if (error instanceof ForbiddenException) {
         throw error;
       }
@@ -90,16 +96,18 @@ export class FileTypeGuard implements CanActivate {
     const pipeline = util.promisify(stream.pipeline);
 
     await fs.writeFile(filepath, buffer);
-    
+
     // const writeStream = createWriteStream(`./uploads/${file.filename}`);
     // await pipeline(file.file, writeStream);
 
     // Vérification optionnelle de l'intégrité
     const originalSize = buffer.length;
     const writtenSize = (await fs.stat(filepath)).size;
-    
+
     if (originalSize !== writtenSize) {
-      throw new Error(`File integrity check failed: original size ${originalSize} != written size ${writtenSize}`);
+      throw new Error(
+        `File integrity check failed: original size ${originalSize} != written size ${writtenSize}`
+      );
     }
 
     return {
@@ -107,15 +115,12 @@ export class FileTypeGuard implements CanActivate {
       filename: filename,
       mimetype: file.mimetype,
       size: buffer.length,
-      path: filepath
+      path: filepath,
     };
   }
 
   private generateFileHash(buffer: Buffer): string {
-    return createHash('sha256')
-      .update(buffer)
-      .digest('hex')
-      .substring(0, 16);
+    return createHash('sha256').update(buffer).digest('hex').substring(0, 16);
   }
 
   private getFileExtension(filename: string): string {
@@ -144,22 +149,25 @@ export class FileTypeGuard implements CanActivate {
 
   private async validateFile(buffer: Buffer): Promise<boolean> {
     const fileType = this.detectFileType(buffer);
-    
+
     if (!fileType) {
       return false;
     }
 
-    return this.allowedMimeTypes.length === 0 || this.allowedMimeTypes.includes(fileType);
+    return (
+      this.allowedMimeTypes.length === 0 ||
+      this.allowedMimeTypes.includes(fileType)
+    );
   }
 
   private async validateJson(buffer: Buffer): Promise<boolean> {
     try {
       const content = buffer.toString('utf8').trim();
-      
+
       if (!content.startsWith('{') && !content.startsWith('[')) {
         return false;
       }
-      
+
       JSON.parse(content);
       return true;
     } catch {
@@ -167,10 +175,13 @@ export class FileTypeGuard implements CanActivate {
     }
   }
 
-  private async readFileHeader(file: MultipartFile, byteLength: number): Promise<Buffer> {
+  private async readFileHeader(
+    file: MultipartFile,
+    byteLength: number
+  ): Promise<Buffer> {
     const passThrough = new PassThrough();
     file.file.pipe(passThrough);
-  
+
     return new Promise((resolve, reject) => {
       const headerChunks: Buffer[] = [];
       let bytesRead = 0;
@@ -178,14 +189,19 @@ export class FileTypeGuard implements CanActivate {
       passThrough.on('data', (chunk: Buffer) => {
         if (bytesRead < byteLength) {
           const remainingBytes = byteLength - bytesRead;
-          const slicedChunk = chunk.subarray(0, Math.min(chunk.length, remainingBytes));
+          const slicedChunk = chunk.subarray(
+            0,
+            Math.min(chunk.length, remainingBytes)
+          );
           headerChunks.push(slicedChunk);
           bytesRead += slicedChunk.length;
         }
       });
 
       passThrough.on('error', reject);
-      passThrough.on('end', () => resolve(Buffer.concat(headerChunks, byteLength)));
+      passThrough.on('end', () =>
+        resolve(Buffer.concat(headerChunks, byteLength))
+      );
     });
   }
 
@@ -199,7 +215,7 @@ export class FileTypeGuard implements CanActivate {
   }
 
   private checkSignature(buffer: Buffer, signatures: number[][]): boolean {
-    return signatures.some(signature => {
+    return signatures.some((signature) => {
       return signature.every((byte, index) => buffer[index] === byte);
     });
   }

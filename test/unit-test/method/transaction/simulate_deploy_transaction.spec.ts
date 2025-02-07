@@ -1,6 +1,9 @@
 import { simulateDeployTransaction } from 'src/lib/agent/method/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
-import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
 
@@ -140,7 +143,7 @@ describe('Simulate Deploy Transaction ', () => {
   describe('With invalid params', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
-      const invalidAgent = createMockInvalidStarknetAgent()
+      const invalidAgent = createMockInvalidStarknetAgent();
 
       const params = {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,

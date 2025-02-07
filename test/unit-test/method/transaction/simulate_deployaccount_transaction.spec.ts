@@ -1,6 +1,9 @@
 import { simulateDeployAccountTransaction } from 'src/lib/agent/method/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
-import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
 
@@ -136,7 +139,10 @@ describe('Simulate Deploy_Account Transaction ', () => {
       const invalidAgent = createMockInvalidStarknetAgent();
       // Act
 
-      const result = await simulateDeployAccountTransaction(invalidAgent, params);
+      const result = await simulateDeployAccountTransaction(
+        invalidAgent,
+        params
+      );
       const parsed = JSON.parse(result);
 
       // Assert
@@ -176,9 +182,15 @@ describe('Simulate Deploy_Account Transaction ', () => {
       ];
 
       // Act
-      const result = await simulateDeployAccountTransaction(agent, paramsArray[0]);
+      const result = await simulateDeployAccountTransaction(
+        agent,
+        paramsArray[0]
+      );
       const parsed = JSON.parse(result);
-      const result2 = await simulateDeployAccountTransaction( agent, paramsArray[1]);
+      const result2 = await simulateDeployAccountTransaction(
+        agent,
+        paramsArray[1]
+      );
       const parsed2 = JSON.parse(result2);
 
       // Assert

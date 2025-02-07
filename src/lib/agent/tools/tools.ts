@@ -139,7 +139,6 @@ export class StarknetToolRegistry {
 
 export const registerTools = () => {
   // Register balance tools
-  
 
   StarknetToolRegistry.registerTool<GetOwnBalanceParams>({
     name: 'get_own_balance',
@@ -357,14 +356,16 @@ export const registerTools = () => {
   // Atlantic tools
   StarknetToolRegistry.registerTool<AtlanticParam>({
     name: 'verify_proof_service',
-    description: 'This service connects to Atlantic\'s verification pipeline to validate proofs. When provided with a JSON file containing proof data, it will process the proof through Atlantic\'s verification system and return a unique identifier (atlantic_query_id) that can be usedto track and reference the verification result.',
+    description:
+      "This service connects to Atlantic's verification pipeline to validate proofs. When provided with a JSON file containing proof data, it will process the proof through Atlantic's verification system and return a unique identifier (atlantic_query_id) that can be usedto track and reference the verification result.",
     schema: VerifyProofServiceSchema,
     execute: verifyProofService,
   });
 
   StarknetToolRegistry.registerTool<AtlanticParam>({
     name: 'get_proof_service',
-    description: 'Query atlantic api to generate a proof from \'.zip\' file on starknet and return the query id',
+    description:
+      "Query atlantic api to generate a proof from '.zip' file on starknet and return the query id",
     schema: GetProofServiceSchema,
     execute: getProofService,
   });

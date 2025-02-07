@@ -10,7 +10,7 @@ jest.mock('starknet', () => ({
       .mockImplementation(async () => ({ balance: '2000000000000000000' })),
   })),
   RpcProvider: jest.fn(() => ({
-    nodeUrl: process.env.RPC_URL,
+    nodeUrl: process.env.STARKNET_RPC_URL,
   })),
 }));
 
@@ -36,7 +36,7 @@ describe('Read -> Get_Balance -> get_balance', () => {
 
     it('should return correct USDC balance with 6 decimals', async () => {
       const params = {
-        walletAddress: process.env.PUBLIC_ADDRESS as string,
+        walletAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         assetSymbol: 'USDC',
       };
 

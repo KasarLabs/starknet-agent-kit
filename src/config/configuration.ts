@@ -10,12 +10,12 @@ export class ConfigurationService {
   constructor(private configService: ConfigService) {
     // First, collect all env variables
     const envVariables = {
-      PORT: this.configService.get<string>('PORT'),
       NODE_ENV: this.configService.get<string>('NODE_ENV'),
-      API_KEY: this.configService.get<string>('API_KEY'),
-      PRIVATE_KEY: this.configService.get<string>('PRIVATE_KEY'),
-      PUBLIC_ADDRESS: this.configService.get<string>('PUBLIC_ADDRESS'),
-      RPC_URL: this.configService.get<string>('RPC_URL'),
+      SERVER_PORT: this.configService.get<string>('SERVER_PORT'),
+      SERVER_API_KEY: this.configService.get<string>('SERVER_API_KEY'),
+      STARKNET_PRIVATE_KEY: this.configService.get<string>('STARKNET_PRIVATE_KEY'),
+      STARKNET_PUBLIC_ADDRESS: this.configService.get<string>('STARKNET_PUBLIC_ADDRESS'),
+      STARKNET_RPC_URL: this.configService.get<string>('STARKNET_RPC_URL'),
       AI_PROVIDER: this.configService.get<string>('AI_PROVIDER'),
       AI_MODEL: this.configService.get<string>('AI_MODEL'),
       AI_PROVIDER_API_KEY: this.configService.get<string>(
@@ -37,7 +37,7 @@ export class ConfigurationService {
   }
 
   get port(): number {
-    return this.config.PORT;
+    return this.config.SERVER_PORT;
   }
 
   get nodeEnv(): string {
@@ -45,14 +45,14 @@ export class ConfigurationService {
   }
 
   get apiKey(): string {
-    return this.config.API_KEY;
+    return this.config.SERVER_API_KEY;
   }
 
   get starknet() {
     return {
-      privateKey: this.config.PRIVATE_KEY,
-      publicKey: this.config.PUBLIC_ADDRESS,
-      provider: new RpcProvider({ nodeUrl: this.config.RPC_URL }),
+      privateKey: this.config.STARKNET_PRIVATE_KEY,
+      publicKey: this.config.STARKNET_PUBLIC_ADDRESS,
+      provider: new RpcProvider({ nodeUrl: this.config.STARKNET_RPC_URL }),
     };
   }
 

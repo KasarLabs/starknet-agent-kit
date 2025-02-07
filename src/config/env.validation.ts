@@ -72,7 +72,7 @@ export const envSchema = z
   .object({
     // Server configuration
     /** Port number for the server to listen on */
-    PORT: z
+    SERVER_PORT: z
       .string()
       .transform((val) => parseInt(val, 10))
       .default('3000'),
@@ -83,21 +83,21 @@ export const envSchema = z
       .default('development'),
 
     /** API key for general server authentication */
-    API_KEY: z.string().min(1, 'API key is required for server authentication'),
+    SERVER_API_KEY: z.string().min(1, 'API key is required for server authentication'),
 
     // Starknet configuration
     /** Private key for Starknet blockchain interactions */
-    PRIVATE_KEY: z
+    STARKNET_PRIVATE_KEY: z
       .string()
       .min(1, 'Starknet private key is required for blockchain transactions'),
 
     /** Public blockchain address for the application */
-    PUBLIC_ADDRESS: z
+    STARKNET_PUBLIC_ADDRESS: z
       .string()
       .min(1, 'Public address is required for blockchain interactions'),
 
     /** RPC endpoint URL for connecting to the blockchain network */
-    RPC_URL: z
+    STARKNET_RPC_URL: z
       .string()
       .url('Invalid RPC URL. Please provide a valid blockchain RPC endpoint'),
 

@@ -51,7 +51,7 @@ describe('getOwnBlance', () => {
       };
 
       // Act
-      const result = await getOwnBalance(params, process.env.PRIVATE_KEY);
+      const result = await getOwnBalance(params, process.env.STARKNET_PRIVATE_KEY);
       const parsed = JSON.parse(result);
 
       // Assert

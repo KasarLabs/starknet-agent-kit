@@ -50,7 +50,7 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -107,7 +107,7 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -164,7 +164,7 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -264,7 +264,7 @@ describe('Simulate Declare Transaction ', () => {
       for (const params of paramsArray) {
         const result = await simulateDeclareTransaction(
           params,
-          process.env.PRIVATE_KEY
+          process.env.STARKNET_PRIVATE_KEY
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -365,12 +365,12 @@ describe('Simulate Declare Transaction ', () => {
       // Act
       const result = await simulateDeclareTransaction(
         paramsArray[0],
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeclareTransaction(
         paramsArray[1],
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

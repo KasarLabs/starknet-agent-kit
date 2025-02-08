@@ -99,25 +99,3 @@ export const getRoute = async (
     };
   }
 };
-
-
-async function testFibrous() {
-  const agent = {
-      getAccountCredentials: () => ({
-        accountPublicKey: process.env.ACCOUNT_PUBLIC_KEY,
-        accountPrivateKey: process.env.ACCOUNT_PRIVATE_KEY,
-      }),
-      getProvider: () => process.env.PROVIDER_URL,
-    } as unknown as StarknetAgentInterface;
-    const params: SwapParams = {
-      sellTokenSymbol: 'STRK',
-      buyTokenSymbol: 'ETH',
-      sellAmount: 1,
-    };
-
-    const result = await getRoute(agent, params);
-
-console.log(result);
-}
-
-testFibrous();

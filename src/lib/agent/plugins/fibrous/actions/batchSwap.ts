@@ -5,10 +5,7 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { TokenService } from './fetchTokens';
 import { Router as FibrousRouter } from 'fibrous-router-sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import {
-  BatchSwapParams,
-  SwapParams,
-} from 'src/lib/agent/methods/fibrous/types';
+import { BatchSwapParams } from '../types';
 import { SLIPPAGE_PERCENTAGE } from '../constants';
 
 export class BatchSwapService {

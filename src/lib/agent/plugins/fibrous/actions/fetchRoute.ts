@@ -82,7 +82,7 @@ export class RouteFetchService {
   }
 }
 
-export const getRoute = async (
+export const getRouteFibrous = async (
   agent: StarknetAgentInterface,
   params: RouteSchemaType
 ): Promise<RouteResult> => {

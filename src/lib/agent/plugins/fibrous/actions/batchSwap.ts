@@ -159,7 +159,7 @@ export const createSwapService = (
   return new BatchSwapService(agent, walletAddress, new FibrousRouter());
 };
 
-export const swapTokens = async (
+export const batchSwapTokens = async (
   agent: StarknetAgentInterface,
   params: BatchSwapParams
 ) => {

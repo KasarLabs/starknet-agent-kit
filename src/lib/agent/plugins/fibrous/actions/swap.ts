@@ -151,7 +151,7 @@ export const createSwapService = (
   return new SwapService(agent, walletAddress, new FibrousRouter());
 };
 
-export const swapTokens = async (
+export const swapTokensFibrous = async (
   agent: StarknetAgentInterface,
   params: SwapParams
 ) => {

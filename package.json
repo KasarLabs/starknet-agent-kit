@@ -74,6 +74,7 @@
     "discord.js": "^14.17.3",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
+    "fibrous-router-sdk": "^0.4.3",
     "gradient-string": "^3.0.0",
     "helmet": "^8.0.0",
     "inquirer": "^12.4.1",

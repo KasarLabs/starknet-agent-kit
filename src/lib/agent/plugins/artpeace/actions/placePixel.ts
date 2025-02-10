@@ -5,37 +5,45 @@ import { artpeaceAbi } from "../abis/artpeaceAbi";
 import { artpeaceAddr } from "../constants/artpeace";
 import { Checker } from "../utils/checker";
 
+
+/**
+* Places pixels on a Starknet canvas using the Artpeace contract
+* @param agent Interface for interacting with Starknet blockchain
+* @param input Object containing array of pixel parameters
+* @returns JSON string with transaction status and hash(es)
+*/
 export const placePixel = async (agent: StarknetAgentInterface, input: { params: PlacePixelParam[] }) => {
     try {
         const { params } = input;
         const credentials = agent.getAccountCredentials();
         const provider = agent.getProvider();
-        const timestamp = Math.floor(Date.now() / 1000); // time in second
         const account = new Account(provider, credentials.accountPublicKey, credentials.accountPrivateKey);       
         const artpeaceContract = new Contract(artpeaceAbi, artpeaceAddr, provider);
         
-        const callData = await Promise.all(params.map( async (param) => {
-            console.log(param.color);
+        const txHash = [];
+        for (const param of params) {
             const checker = new Checker(param.canvasId);
             const id = await checker.checkWorld();
             const position = await checker.checkPosition(param.xPos, param.yPos);
+            const timestamp = Math.floor(Date.now() / 1000);
             const color = await checker.checkColor(param.color);
             
             artpeaceContract.connect(account);
-            return artpeaceContract.populate("place_pixel", {
+            const call = artpeaceContract.populate("place_pixel", {
                 canvas_id: id,
                 pos: position,
                 color: color,
                 now: timestamp,
             });
-        }));
 
-        const res = await account.execute(callData);
-        await provider.waitForTransaction(res.transaction_hash);
+            const res = await account.execute(call);
+            await provider.waitForTransaction(res.transaction_hash);
+            txHash.push(res.transaction_hash);
+        }
 
         return JSON.stringify({
             status: 'success',
-            transaction_hash: res.transaction_hash,
+            transaction_hash: txHash,
         });
     } catch (error) {
         console.log(error);
@@ -49,33 +57,40 @@ export const placePixel = async (agent: StarknetAgentInterface, input: { params:
     }
 }
 
+
+/**
+* Generates the transaction signature data for placing pixels on Artpeace contract
+* @param input Object containing array of pixel parameters 
+* @returns JSON string with transaction data or error response
+*/
 export const placePixelSignature = async (input: { params: PlacePixelParam[] }) => {
    try { 
         const { params } = input;
-        const timestamp = Math.floor(Date.now() / 1000);
         const artpeaceContract = new Contract(artpeaceAbi, artpeaceAddr);
 
-        const callData = await Promise.all(params.map( async (param) => {
+        const callData = [];
+        for (const param of params) {
             const checker = new Checker(param.canvasId);
             const id = await checker.checkWorld();
             const position = await checker.checkPosition(param.xPos, param.yPos);
-            // const color = await checker.checkColor(param.color);
+            const color = await checker.checkColor(param.color);
+            const timestamp = Math.floor(Date.now() / 1000);
             
             const call =  artpeaceContract.populate("place_pixel", {
                 canvas_id: id,
                 pos: position,
-                color: param.color,
+                color: color,
                 now: timestamp,
             });
 
             console.log(call);
-            return {
+            callData.push({
                 status: 'success',
                 transactions: {
                     ...call
                 },
-            };
-        }));
+            });
+        }
         return JSON.stringify({ transaction_type: 'INVOKE', callData });
     } catch (error) {
         console.log(error);

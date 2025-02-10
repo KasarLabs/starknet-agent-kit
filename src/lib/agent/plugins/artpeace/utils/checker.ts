@@ -1,11 +1,24 @@
 import { WorldType } from "../types/WorldType";
 import { ColorAnalyzer } from "./colors";
 
+/**
+* Validates and processes parameters for placing pixels on ArtPeace canvas
+* @class Checker
+*/
 export class Checker {
     private world: WorldType;
 
+    /**
+    * Creates a Checker instance
+    * @param param World identifier (string name or numeric ID)
+    */
     constructor(private param: string | number) {};
 
+    /**
+    * Validates and retrieves world ID
+    * @returns Promise resolving to numeric world ID
+    * @throws Error if world validation fails
+    */
     async checkWorld() : Promise<number> {
         try{
             let id: number;
@@ -28,13 +41,19 @@ export class Checker {
             }
             const data = await response.json();
             this.world = data.data;
-            console.log(this.world);
             return (this.world.worldId);
         } catch(error) {
             throw new Error(error.message ? error.message : "Error when check the world ID for artpeace")
         }
     }
 
+    /**
+    * Converts 2D coordinates to 1D position and validates bounds
+    * @param x X-coordinate
+    * @param y Y-coordinate
+    * @returns Promise resolving to 1D position
+    * @throws Error if position is out of bounds
+    */
     async checkPosition(x: number, y: number) : Promise<number> {
         try {
             if (x > this.world.width) {
@@ -48,6 +67,12 @@ export class Checker {
         }
     }
 
+    /**
+    * Validates color and converts it to the corresponding index
+    * @param color Color value (hex or name)
+    * @returns Promise resolving to color index as string
+    * @throws Error if color is not available in the world
+    */
     async checkColor(color: string) : Promise<string> {
         try {
             const response = await fetch(`https://api.art-peace.net/get-worlds-colors?worldId=${this.world.worldId}`)
@@ -62,13 +87,14 @@ export class Checker {
             if (isHex != -1 )
                 return `${isHex}`;
 
+            console.log(allHexColor);
             const allColor: string[] = allHexColor.map((cleanColor)=> ColorAnalyzer.analyzeColor(cleanColor))
+            console.log(allColor);
 
             const index: number = allColor.indexOf(cleanColor);
             if (index === -1 ) 
                 throw new Error(`the color ${cleanColor} is not available in this world `);
 
-            console.log(allColor);
             return `${index}`;
         } catch(error) {
             throw new Error(error.message ? error.message : "Error when check the colors for artpeace")

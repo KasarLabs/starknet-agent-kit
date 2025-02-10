@@ -294,7 +294,7 @@ export const createMemecoinSchema = z.object({
     .describe('Optional salt for contract address generation'),
 });
 
-// Schema for artpeace implementation
+/* Schema for artpeace implementation */
 export const placePixelParamSchema = z.object({
   canvasId: z.union([
     z.number(),

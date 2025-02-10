@@ -1,11 +1,25 @@
+/**
+* Represents RGB color values
+* @interface RGB
+* @property r Red component (0-255)
+* @property g Green component (0-255)
+* @property b Blue component (0-255)
+*/
 export interface RGB {
-    r: number;  // Rouge (0-255)
-    g: number;  // Vert (0-255)
-    b: number;  // Bleu (0-255)
+    r: number;  
+    g: number;  
+    b: number;  
 }
-  
+
+/**
+* Represents HSV (Hue, Saturation, Value) color values
+* @interface HSV
+* @property h Hue angle in degrees (0-360)
+* @property s Saturation percentage (0-1)
+* @property v Value/Brightness percentage (0-1)
+*/
 export interface HSV {
-    h: number;  // Teinte (0-360 degrés)
-    s: number;  // Saturation (0-1)
-    v: number;  // Valeur (0-1)
+    h: number;  
+    s: number;  
+    v: number;  
 }

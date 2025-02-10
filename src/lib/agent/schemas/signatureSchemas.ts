@@ -26,6 +26,7 @@ export const getBalanceSignatureSchema = z.object({
   assetSymbol: z.string().describe('token Symbol'),
 });
 
+/* Schema for artpeace implementation */
 export const placePixelParamSchema = z.object({
   canvasId: z.union([
     z.number(),

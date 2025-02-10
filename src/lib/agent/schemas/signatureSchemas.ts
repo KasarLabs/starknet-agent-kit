@@ -25,3 +25,17 @@ export const getBalanceSignatureSchema = z.object({
   accountAddress: z.string().describe('the account address'),
   assetSymbol: z.string().describe('token Symbol'),
 });
+
+export const placePixelParamSchema = z.object({
+  canvasId: z.union([
+    z.number(),
+    z.string()
+  ]).describe('The id or the unique name of the world to dispose the pixel'),
+  xPos: z.number().describe('The position on x axe of the pixel'),
+  yPos: z.number().describe('The position on y axe of the pixel'),
+  color: z.string().describe('The color of the pixel')
+});
+
+export const placePixelSignatureSchema = z.object({
+  params: z.array(placePixelParamSchema).describe('Array of parameter to place one or multiple pixel'),
+})

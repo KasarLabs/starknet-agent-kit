@@ -43,6 +43,7 @@ import {
   Transferschema,
   depositEarnSchema,
   withdrawEarnSchema,
+  placePixelSchema,
 } from '../schemas/schema';
 import { swapTokens } from '../plugins/avnu/actions/swap';
 import { getRoute } from '../plugins/avnu/actions/fetchRoute';
@@ -67,6 +68,9 @@ import {
 } from '../plugins/core/token/types/balance';
 import { withdrawEarnPosition } from '../plugins/vesu/actions/withdrawService';
 import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
+import { PlacePixelParam } from '../plugins/artpeace/types/PlacePixelParam';
+import { placePixel } from '../plugins/artpeace/actions/placePixel';
+import { placePixelSignatureSchema } from '../schemas/signatureSchemas';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -130,6 +134,14 @@ export class StarknetToolRegistry {
 }
 
 export const registerTools = () => {
+  // Register artpeace tools
+  StarknetToolRegistry.registerTool({
+    name: 'place_pixel',
+    description: 'Places a pixel according to the colour, position and world specified by the user.',
+    schema: placePixelSignatureSchema,
+    execute: placePixel,
+  })
+
   // Register balance tools
   StarknetToolRegistry.registerTool<GetOwnBalanceParams>({
     name: 'get_own_balance',

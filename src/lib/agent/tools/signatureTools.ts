@@ -1,6 +1,8 @@
 import { tool } from '@langchain/core/tools';
 import {
   getBalanceSignatureSchema,
+  placePixelParamSchema,
+  placePixelSignatureSchema,
   transferSignatureschema,
 } from '../schemas/signatureSchemas';
 import { transfer_signature } from '../plugins/core/token/transfer';
@@ -17,6 +19,7 @@ import {
   DeployArgentAccountSignature,
   DeployOZAccountSignature,
 } from '../plugins/core/account/deployAccount';
+import { placePixelSignature } from '../plugins/artpeace/actions/placePixel';
 
 interface SignatureTool<P = any> {
   name: string;
@@ -45,6 +48,12 @@ export class StarknetSignatureToolRegistry {
 }
 
 export const RegisterSignatureTools = () => [
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'place_pixel',
+    description: 'return place pixel json transaction',
+    schema: placePixelSignatureSchema,
+    execute: placePixelSignature,
+  }),
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'transfer',
     description: 'return transfer json transaction',

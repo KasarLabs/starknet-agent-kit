@@ -67,6 +67,7 @@ import {
 } from '../plugins/core/token/types/balance';
 import { withdrawEarnPosition } from '../plugins/vesu/actions/withdrawService';
 import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
+import { telegram_get_messages_from_conversation } from '../plugins/Telegram/Telegram_bot';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -356,6 +357,11 @@ export const registerTools = () => {
     description: 'Withdraw total amount asset from Earn position on Vesu',
     schema: withdrawEarnSchema,
     execute: withdrawEarnPosition,
+  });
+  StarknetToolRegistry.registerTool({
+    name: 'telegram_get_messages_from_conversation',
+    description: 'Test telegram message',
+    execute: telegram_get_messages_from_conversation,
   });
 };
 registerTools();

@@ -33,7 +33,6 @@ export const createAllowedToollkits = (
             allowed_external_tool.includes(tool.name)
           );
       discord_tools.forEach((tool) => {
-        console.log(tool.name);
         allowedToolsKits.push(tool);
       });
     }

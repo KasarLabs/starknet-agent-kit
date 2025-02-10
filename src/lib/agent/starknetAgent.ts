@@ -13,6 +13,7 @@ import {
   TwitterApiConfig,
   TwitterScraperConfig,
 } from './plugins/Twitter/interface/twitter-interface';
+import { JsonConfig } from './jsonConfig';
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
@@ -23,6 +24,7 @@ export interface StarknetAgentConfig {
   accountPrivateKey: string;
   signature: string;
   agentMode: string;
+  agentconfig?: JsonConfig;
 }
 
 export class StarknetAgent implements IAgent {
@@ -40,6 +42,7 @@ export class StarknetAgent implements IAgent {
   public readonly signature: string;
   public readonly agentMode: string;
   public readonly token_limit: Limit;
+  public readonly agentconfig?: JsonConfig | undefined;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -51,6 +54,8 @@ export class StarknetAgent implements IAgent {
     this.aiProviderApiKey = config.aiProviderApiKey;
     this.signature = config.signature;
     this.agentMode = config.agentMode;
+    this.agentconfig = config.agentconfig;
+
     this.token_limit = AddAgentLimit();
 
     // Initialize managers
@@ -185,6 +190,9 @@ export class StarknetAgent implements IAgent {
     };
   }
 
+  getAgentConfig(): JsonConfig | undefined {
+    return this.agentconfig;
+  }
   getProvider(): RpcProvider {
     return this.provider;
   }

@@ -90,6 +90,7 @@ import {
   getTwitterProfileFromUsername,
 } from '../plugins/Twitter/twitter_read';
 import { Limit } from '../limit';
+import { JsonConfig } from '../jsonConfig';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -109,6 +110,7 @@ export interface StarknetAgentInterface {
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
+  getAgentConfig: () => JsonConfig | undefined;
   getTwitterManager: () => TwitterInterface;
 }
 

@@ -68,6 +68,7 @@
     "@nestjs/core": "^10.4.15",
     "@nestjs/platform-fastify": "^10.4.15",
     "add": "^2.0.6",
+    "agent-twitter-client": "^0.0.18",
     "boxen": "^8.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -83,8 +84,7 @@
     "rxjs": "^7.8.1",
     "starknet": "^6.11.0",
     "twitter-api-v2": "^1.19.1",
-    "zod": "^3.24.1",
-    "agent-twitter-client": "^0.0.18"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -95,6 +95,7 @@
     "@types/jest": "^29.5.2",
     "@types/node": "^20.17.12",
     "@types/supertest": "^6.0.0",
+    "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "concurrently": "^8.2.2",

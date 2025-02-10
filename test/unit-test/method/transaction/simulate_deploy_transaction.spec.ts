@@ -16,7 +16,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Act
       const result = await simulateDeployTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -42,7 +42,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Act
       const result = await simulateDeployTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -69,7 +69,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Act
       const result = await simulateDeployTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -97,7 +97,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Act
       const result = await simulateDeployTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -141,7 +141,7 @@ describe('Simulate Deploy Transaction ', () => {
       for (const params of paramsArray) {
         const result = await simulateDeployTransaction(
           params,
-          process.env.PRIVATE_KEY
+          process.env.STARKNET_PRIVATE_KEY
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -191,7 +191,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Act
       const result = await simulateDeployTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -232,12 +232,12 @@ describe('Simulate Deploy Transaction ', () => {
       // Act
       const result = await simulateDeployTransaction(
         paramsArray[0],
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeployTransaction(
         paramsArray[1],
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

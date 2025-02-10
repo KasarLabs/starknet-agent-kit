@@ -22,7 +22,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -67,7 +67,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -91,7 +91,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Act
       const result = await estimateAccountDeployFee(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 

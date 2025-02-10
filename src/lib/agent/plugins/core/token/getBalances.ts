@@ -153,7 +153,7 @@ export const getBalanceSignature = async (
       throw new Error('Both assetSymbol and address parameters are required');
     }
 
-    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const tokenAddress = validateTokenAddress(params.assetSymbol);
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);

@@ -17,7 +17,9 @@ describe('getAddress', () => {
       // Arrange
       const mockAddress = '';
 
-      process.env = { PUBLIC_ADDRESS: mockAddress } as NodeJS.ProcessEnv;
+      process.env = {
+        STARKNET_PUBLIC_ADDRESS: mockAddress,
+      } as NodeJS.ProcessEnv;
 
       // Act
 

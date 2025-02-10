@@ -67,9 +67,9 @@ const createBox = (
 
 const validateEnvVars = () => {
   const required = [
-    'RPC_URL',
-    'PRIVATE_KEY',
-    'PUBLIC_ADDRESS',
+    'STARKNET_RPC_URL',
+    'STARKNET_PRIVATE_KEY',
+    'STARKNET_PUBLIC_ADDRESS',
     'AI_MODEL',
     'AI_PROVIDER_API_KEY',
   ];
@@ -133,9 +133,11 @@ const LocalRun = async () => {
 
         try {
           const agent = new StarknetAgent({
-            provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
-            accountPrivateKey: process.env.PRIVATE_KEY,
-            accountPublicKey: process.env.PUBLIC_ADDRESS,
+            provider: new RpcProvider({
+              nodeUrl: process.env.STARKNET_RPC_URL,
+            }),
+            accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+            accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
             aiModel: process.env.AI_MODEL,
             aiProvider: 'anthropic',
             aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
@@ -155,9 +157,9 @@ const LocalRun = async () => {
       }
     } else if (mode === 'auto') {
       const agent = new StarknetAgent({
-        provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
-        accountPrivateKey: process.env.PRIVATE_KEY,
-        accountPublicKey: process.env.PUBLIC_ADDRESS,
+        provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
+        accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
         aiModel: process.env.AI_MODEL,
         aiProvider: 'anthropic',
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,

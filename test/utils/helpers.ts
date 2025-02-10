@@ -10,13 +10,13 @@ interface TestAccounts {
 }
 
 interface EnvConfig {
-  RPC_URL: string;
+  STARKNET_RPC_URL: string;
   accounts: TestAccounts;
 }
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
-    RPC_URL: 'http://127.0.0.1:5050',
+    STARKNET_RPC_URL: 'http://127.0.0.1:5050',
     accounts: {
       account1: {
         privateKey:
@@ -45,14 +45,16 @@ export const loadTestConfig = (): EnvConfig => {
 export const setupTestEnvironment = () => {
   const config = loadTestConfig();
 
-  process.env.RPC_URL = config.RPC_URL;
+  process.env.STARKNET_RPC_URL = config.STARKNET_RPC_URL;
 
-  process.env.PRIVATE_KEY = config.accounts.account1.privateKey;
-  process.env.PUBLIC_ADDRESS = config.accounts.account1.publicAddress;
+  process.env.STARKNET_PRIVATE_KEY = config.accounts.account1.privateKey;
+  process.env.STARKNET_PUBLIC_ADDRESS = config.accounts.account1.publicAddress;
 
-  process.env.PRIVATE_KEY_2 = config.accounts.account2.privateKey;
-  process.env.PUBLIC_ADDRESS_2 = config.accounts.account2.publicAddress;
+  process.env.STARKNET_PRIVATE_KEY_2 = config.accounts.account2.privateKey;
+  process.env.STARKNET_PUBLIC_ADDRESS_2 =
+    config.accounts.account2.publicAddress;
 
-  process.env.PRIVATE_KEY_3 = config.accounts.account3.privateKey;
-  process.env.PUBLIC_ADDRESS_3 = config.accounts.account3.publicAddress;
+  process.env.STARKNET_PRIVATE_KEY_3 = config.accounts.account3.privateKey;
+  process.env.STARKNET_PUBLIC_ADDRESS_3 =
+    config.accounts.account3.publicAddress;
 };

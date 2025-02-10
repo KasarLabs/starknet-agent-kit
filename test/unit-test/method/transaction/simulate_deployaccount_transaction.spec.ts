@@ -22,7 +22,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
 
       const result = await simulateDeployAccountTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -50,7 +50,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
       const result = await simulateDeployAccountTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -76,7 +76,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
       const result = await simulateDeployAccountTransaction(
         params,
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
 
@@ -119,7 +119,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       for (const params of paramsArray) {
         const result = await simulateDeployAccountTransaction(
           params,
-          process.env.PRIVATE_KEY
+          process.env.STARKNET_PRIVATE_KEY
         );
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
@@ -189,12 +189,12 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Act
       const result = await simulateDeployAccountTransaction(
         paramsArray[0],
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed = JSON.parse(result);
       const result2 = await simulateDeployAccountTransaction(
         paramsArray[1],
-        process.env.PRIVATE_KEY
+        process.env.STARKNET_PRIVATE_KEY
       );
       const parsed2 = JSON.parse(result2);
 

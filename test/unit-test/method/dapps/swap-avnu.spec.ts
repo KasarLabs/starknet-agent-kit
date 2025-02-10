@@ -14,7 +14,7 @@ describe('Swap Token with avnu-sdk', () => {
       // Act
       await setTimeout(500);
 
-      const result = await swapTokens(params, process.env.PRIVATE_KEY);
+      const result = await swapTokens(params, process.env.STARKNET_PRIVATE_KEY);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -34,7 +34,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: 12,
       };
       // Act
-      const result = await swapTokens(params, process.env.PRIVATE_KEY);
+      const result = await swapTokens(params, process.env.STARKNET_PRIVATE_KEY);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed).toMatchObject({

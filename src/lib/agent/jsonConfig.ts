@@ -37,9 +37,9 @@ const createContextFromJson = (json: any): string => {
     const lore: string = json.lore.join(']\n[');
     contextParts.push(`Your lore : [${lore}]`);
   }
-  if (Array.isArray(json.objectif)) {
-    const objectifs: string = json.objectif.join(']\n[');
-    contextParts.push(`Your objectifs : [${objectifs}]`);
+  if (Array.isArray(json.objectives)) {
+    const objectives: string = json.objectif.join(']\n[');
+    contextParts.push(`Your objectives : [${objectives}]`);
   }
   if (Array.isArray(json.knowledge)) {
     const knowledge: string = json.knowledge.join(']\n[');

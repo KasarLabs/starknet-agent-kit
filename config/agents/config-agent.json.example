@@ -5,9 +5,9 @@
     "Some lore of your AI Agent 1",
     "Some lore of your AI Agent 1"
   ],
-  "objectif" : [
-    "first objectif that your AI Agent need to follow",
-    "second objectif that your AI Agent need to follow"
+  "objectives" : [
+    "first objective that your AI Agent need to follow",
+    "second objective that your AI Agent need to follow"
   ],
   "knowledge" : [
     "first knowledge of your AI Agent",

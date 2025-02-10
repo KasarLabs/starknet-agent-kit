@@ -21,44 +21,18 @@ export class ColorAnalyzer {
     const rgb = this.hexToRgb(hex);
     const hsv = this.rgbToHsv(rgb);
     
-    if (this.isWhite(rgb)) {
+    if (this.isWhite(rgb)) 
       return "white";
-    }
 
-    if (this.isBlack(rgb)) {
+    if (this.isBlack(rgb)) 
       return "black";
-    }
 
-    if (this.isGray(rgb, hsv)) {
-      const brightness = this.calculateBrightness(rgb);
-      if (brightness > this.LIGHT_THRESHOLD) {
-        return "light gray";
-      } else if (brightness < this.DARK_THRESHOLD) {
-        return "dark gray";
-      }
+    if (this.isGray(rgb, hsv)) 
       return "gray";
-    }
 
     const baseColor = this.getBaseColor(hsv);
-    
-    const brightness = this.calculateBrightness(rgb);
-    let color = '';
 
-    if (brightness > this.LIGHT_THRESHOLD) {
-      color = `${baseColor} light`;
-    } else if (brightness < this.DARK_THRESHOLD) {
-      color = `${baseColor} dark`;
-    } else {
-      color = baseColor;
-    }
-
-    if (hsv.s < 0.2) {
-      color = `${color} gray`;
-    } else if (hsv.s > 0.8) {
-      color = `${color} bright`;
-    }
-
-    return color;
+    return baseColor;
   }
 
   /**
@@ -147,13 +121,6 @@ export class ColorAnalyzer {
     if (h < 0) h += 360;
   
     return { h, s, v };
-  }
-  
-  /**
-  * Calculates perceived brightness of an RGB color
-  */
-  private static calculateBrightness(rgb: RGB): number {
-    return (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
   }
 
   /**

@@ -8,7 +8,6 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { load_json_config } from './jsonConfig';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { DiscordSendMessagesTool } from '@langchain/community/tools/discord';
 import { createAllowedToollkits } from './tools/external_tools';
 
 export const createAutonomousAgent = (
@@ -61,20 +60,30 @@ export const createAutonomousAgent = (
 
   try {
     const json_config = load_json_config();
-
     if (json_config) {
       console.log('Character config loaded successfully');
+      console.log('JSON config loaded successfully');
 
       const allowedTools = createAllowedTools(
         starknetAgent,
         json_config.allowed_internal_tools
       );
-      const allowedToolsKits = createAllowedToollkits(
-        json_config.external_toolkits,
-        json_config.allowed_external_tools
-      );
 
-      const tools = [...allowedTools, ...allowedToolsKits];
+      const allowedToolsKits =
+        json_config.external_toolkits && json_config.allowed_external_tools
+          ? createAllowedToollkits(
+              json_config.external_toolkits,
+              json_config.allowed_external_tools
+            )
+          : json_config.external_toolkits && !json_config.allowed_external_tools
+            ? createAllowedToollkits(json_config.external_toolkits)
+            : null;
+
+      const tools = allowedToolsKits
+        ? [...allowedTools, ...allowedToolsKits]
+        : allowedTools;
+
+      console.log(tools);
       const memory = new MemorySaver();
       const agentConfig = {
         configurable: { thread_id: json_config.chat_id },

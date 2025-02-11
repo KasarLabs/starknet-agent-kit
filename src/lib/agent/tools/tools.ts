@@ -73,7 +73,7 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../plugins/core/token/types/balance';
-import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
+import { TwitterInterface } from '../plugins/Twitter/interface';
 import {
   createTwitterpost,
   ReplyTweet,
@@ -91,6 +91,8 @@ import {
 } from '../plugins/Twitter/twitter_read';
 import { Limit } from '../limit';
 import { telegram_get_messages_from_conversation } from '../plugins/Telegram/Telegram_bot';
+import { JsonConfig } from '../jsonConfig';
+import { TelegramInterface } from '../plugins/Telegram/interfaces';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -111,6 +113,8 @@ export interface StarknetAgentInterface {
   getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
   getTwitterManager: () => TwitterInterface;
+  getTelegramManager: () => TelegramInterface;
+  getAgentConfig: () => JsonConfig | undefined;
 }
 
 interface StarknetTool<P = any> {

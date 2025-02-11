@@ -1,11 +1,10 @@
 import { ChatAnthropic } from '@langchain/anthropic';
-import { createAllowedTools } from './tools/tools';
+import { createAllowedTools, createTools } from './tools/tools';
 import { AiConfig } from './plugins/core/account/types/accounts.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { load_json_config } from './jsonConfig';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
@@ -59,31 +58,30 @@ export const createAutonomousAgent = (
   const model = createModel();
 
   try {
-    const json_config = load_json_config();
+    const json_config = starknetAgent.getAgentConfig();
     if (json_config) {
       console.log('Character config loaded successfully');
       console.log('JSON config loaded successfully');
 
-      const allowedTools = createAllowedTools(
-        starknetAgent,
-        json_config.allowed_internal_tools
-      );
+      const allowedTools = json_config.allowed_internal_tools
+        ? createAllowedTools(starknetAgent, json_config.allowed_internal_tools)
+        : createTools(starknetAgent);
 
       const allowedToolsKits =
-        json_config.external_toolkits && json_config.allowed_external_tools
+        json_config.external_client && json_config.allowed_external_client_tools
           ? createAllowedToollkits(
-              json_config.external_toolkits,
-              json_config.allowed_external_tools
+              json_config.external_client,
+              json_config.allowed_external_client_tools
             )
-          : json_config.external_toolkits && !json_config.allowed_external_tools
-            ? createAllowedToollkits(json_config.external_toolkits)
+          : json_config.external_client &&
+              !json_config.allowed_external_client_tools
+            ? createAllowedToollkits(json_config.external_client)
             : null;
 
       const tools = allowedToolsKits
         ? [...allowedTools, ...allowedToolsKits]
         : allowedTools;
 
-      console.log(tools);
       const memory = new MemorySaver();
       const agentConfig = {
         configurable: { thread_id: json_config.chat_id },
@@ -99,6 +97,9 @@ export const createAutonomousAgent = (
       return { agent, agentConfig, json_config };
     }
   } catch (error) {
+    console.error(
+      `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`
+    );
     console.error('Failed to load or parse JSON config:', error);
   }
 };

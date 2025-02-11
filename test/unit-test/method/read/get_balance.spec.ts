@@ -20,7 +20,7 @@ describe('Read -> Get_Balance -> get_balance', () => {
   describe('With perfect match inputs', () => {
     it('should return correct ETH balance when all parameters are valid', async () => {
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         assetSymbol: 'ETH',
       };
 
@@ -38,7 +38,7 @@ describe('Read -> Get_Balance -> get_balance', () => {
 
     it('should return correct USDC balance with 6 decimals', async () => {
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         assetSymbol: 'USDC',
       };
 
@@ -53,7 +53,7 @@ describe('Read -> Get_Balance -> get_balance', () => {
   describe('With missing inputs', () => {
     it('should fail reason : unsupported token symbol', async () => {
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         assetSymbol: 'UNKNOWN',
       };
 

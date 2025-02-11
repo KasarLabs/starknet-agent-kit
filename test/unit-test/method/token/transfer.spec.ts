@@ -1,18 +1,21 @@
 import { transfer } from 'src/lib/agent/plugins/core/token/transfer';
 import * as C from '../../../utils/constant';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
-
+import { setupTestEnvironment } from 'test/utils/helpers';
 const agent = createMockStarknetAgent();
+
+setupTestEnvironment();
 
 describe('Transfer token', () => {
   describe('With perfect match inputs', () => {
     it('should transfer 0.5 ETH to another address', async () => {
       // Arrange
       const params = {
-        recipient_address: process.env.PUBLIC_ADDRESS_2 as string,
+        recipient_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '0.5',
         symbol: 'ETH',
       };
+
 
       // Act
       const result = await transfer(agent, params);
@@ -23,7 +26,7 @@ describe('Transfer token', () => {
         status: 'success',
         amount: '0.5',
         symbol: 'ETH',
-        recipients_address: process.env.PUBLIC_ADDRESS_2 as string,
+        recipients_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
       });
     });
   });
@@ -48,7 +51,7 @@ describe('Transfer token', () => {
     it('should fail reason : wrong amount', async () => {
       // Arrange
       const params = {
-        recipient_address: process.env.PUBLIC_ADDRESS_2 as string,
+        recipient_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: 'WRONG_AMOUNT',
         symbol: 'USDT',
       };
@@ -65,7 +68,7 @@ describe('Transfer token', () => {
     it('should fail reason : wrong symbol', async () => {
       // Arrange
       const params = {
-        recipient_address: process.env.PUBLIC_ADDRESS_2 as string,
+        recipient_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '0.2',
         symbol: 'UNKNOWN',
       };
@@ -84,7 +87,7 @@ describe('Transfer token', () => {
     it('should fail reason : not_enough_balance', async () => {
       // Arrange
       const params = {
-        recipient_address: process.env.PUBLIC_ADDRESS_2 as string,
+        recipient_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '1000000',
         symbol: 'STRK',
       };

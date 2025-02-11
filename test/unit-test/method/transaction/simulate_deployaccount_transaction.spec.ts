@@ -12,7 +12,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should simulate deploy transaction with valid payload[classHash,constructorCalldata]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -35,7 +35,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should simulate deploy account transaction with valid payload[classHash,constructorCalldata,addressSalt,contractAddress]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -60,7 +60,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should simulate deploy account transaction with full payload[classHash,constructorCalldata,addressSalt]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -84,7 +84,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               classHash: C.class_hash,
@@ -99,7 +99,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
           ],
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
           payloads: [
             {
               classHash: C.class_hash,
@@ -124,7 +124,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -152,7 +152,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               classHash: C.class_hash,
@@ -167,7 +167,7 @@ describe('Simulate Deploy_Account Transaction ', () => {
           ],
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
           payloads: [
             {
               classHash:

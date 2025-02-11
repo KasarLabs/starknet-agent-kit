@@ -6,7 +6,6 @@ declare namespace NodeJS {
     AI_PROVIDER_API_KEY: string;
     AI_MODEL: string;
     AI_PROVIDER: string;
-    API_KEY: string;
     ATLANTIC_API_KEY: string;
     SERVER_API_KEY: string;
   }

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
+import UploadFile from './ui/uploadFile';
 import { WalletAccount } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
 import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
@@ -31,6 +32,12 @@ import {
 
 const md = new MarkdownIt({ breaks: true });
 
+export interface FileInfo {
+  name: string;
+  size: number;
+  type: string;
+}
+
 const StarknetAgent = () => {
   const [input, setInput] = useState('');
   const [currentResponse, setCurrentResponse] = useState<AgentResponse | null>(
@@ -38,6 +45,8 @@ const StarknetAgent = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [Wallet, setWallet] = useState<WalletAccount | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -386,6 +395,28 @@ const StarknetAgent = () => {
     setCurrentResponse(newResponse);
 
     try {
+      // If file is detected we send it to the server
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        console.log(formData.get('file'));
+        const resp = await fetch('/api/key/upload', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          },
+          body: formData,
+        });
+        if (!resp.ok) {
+          const errorText = await resp.text();
+          console.error('API Error:', {
+            status: resp.status,
+            statusText: resp.statusText,
+            body: errorText,
+          });
+          throw new Error(errorText);
+        }
+      }
       const response = await fetch('/api/key/request', {
         method: 'POST',
         headers: {
@@ -413,6 +444,29 @@ const StarknetAgent = () => {
 
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
+
+      // If client uploads file we tell to the server to delete the file.
+      if (selectedFile) {
+        console.log(selectedFile.name);
+        const del = await fetch('api/key/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          },
+          body: JSON.stringify({ filename: selectedFile.name }),
+          credentials: 'include',
+        });
+
+        if (!del.ok) {
+          const errorText = await response.text();
+          console.error('API error:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText,
+          });
+        }
+      }
     } catch (error) {
       console.error('Request error:', error);
 
@@ -532,6 +586,11 @@ const StarknetAgent = () => {
                   )}
                 </Button>
               </form>
+              <UploadFile
+                fileInfo={fileInfo}
+                setFileInfo={setFileInfo}
+                setSelectedFile={setSelectedFile}
+              />
 
               {currentResponse && (
                 <Alert className="bg-neutral-800 border-neutral-700">

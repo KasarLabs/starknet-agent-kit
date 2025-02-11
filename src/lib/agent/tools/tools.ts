@@ -51,6 +51,8 @@ import {
   getTwitterUserIdFromUsernameSchema,
   getLastTweetsFromUserSchema,
   getLastUserXTweetSchema,
+  VerifyProofServiceSchema,
+  GetProofServiceSchema,
 } from '../schemas/schema';
 import { swapTokens } from '../plugins/avnu/actions/swap';
 import { getRoute } from '../plugins/avnu/actions/fetchRoute';
@@ -73,6 +75,9 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../plugins/core/token/types/balance';
+import { AtlanticParam } from '../plugins/infra/atlantic/types/Atlantic';
+import { verifyProofService } from '../plugins/infra/atlantic/verifyProofService';
+import { getProofService } from '../plugins/infra/atlantic/getProofService';
 import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
 import {
   createTwitterpost,
@@ -159,6 +164,7 @@ export class StarknetToolRegistry {
 
 export const registerTools = () => {
   // Register balance tools
+
   StarknetToolRegistry.registerTool<GetOwnBalanceParams>({
     name: 'get_own_balance',
     description: 'Get the balance of an asset in your wallet',
@@ -370,6 +376,23 @@ export const registerTools = () => {
     description: 'Get locked liquidity info for token',
     schema: contractAddressSchema,
     execute: getLockedLiquidity,
+  });
+
+  // Atlantic tools
+  StarknetToolRegistry.registerTool<AtlanticParam>({
+    name: 'verify_proof_service',
+    description:
+      "This service connects to Atlantic's verification pipeline to validate proofs. When provided with a JSON file containing proof data, it will process the proof through Atlantic's verification system and return a unique identifier (atlantic_query_id) that can be usedto track and reference the verification result.",
+    schema: VerifyProofServiceSchema,
+    execute: verifyProofService,
+  });
+
+  StarknetToolRegistry.registerTool<AtlanticParam>({
+    name: 'get_proof_service',
+    description:
+      "Query atlantic api to generate a proof from '.zip' file on starknet and return the query id",
+    schema: GetProofServiceSchema,
+    execute: getProofService,
   });
   // Twitter Tools
   StarknetToolRegistry.registerTool({

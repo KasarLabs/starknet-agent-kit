@@ -21,4 +21,5 @@
   "chat_id": "test",
   "external_client": ["discord"],
   "allowed_external_client_tools": ["discord-send-messages"]
+  "allowed_internal_tools": ["get_balance", "get_own_balance", "swap_tokens"]
 }

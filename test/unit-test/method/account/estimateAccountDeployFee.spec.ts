@@ -1,4 +1,4 @@
-import { estimateAccountDeployFee } from 'src/lib/agent/method/core/account/estimateAccountDeployFee';
+import { estimateAccountDeployFee } from 'src/lib/agent/plugins/core/account/estimateAccountDeployFee';
 import * as C from '../../../utils/constant';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
@@ -10,7 +10,7 @@ describe('Estimate Account Deploy Fee', () => {
       // Arrange
 
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -52,7 +52,7 @@ describe('Estimate Account Deploy Fee', () => {
     it('should fail at estimate fee reason : class_hash unvalid', async () => {
       //Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: '',
@@ -75,7 +75,7 @@ describe('Estimate Account Deploy Fee', () => {
     it('should fail at estimate fee reason : constructorCallData unvalid', async () => {
       //Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:

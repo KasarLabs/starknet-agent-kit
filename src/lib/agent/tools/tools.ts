@@ -2,24 +2,24 @@ import { tool } from '@langchain/core/tools';
 import {
   CreateOZAccount,
   CreateArgentAccount,
-} from '../method/core/account/createAccount';
+} from '../plugins/core/account/createAccount';
 import {
   DeployArgentAccount,
   DeployOZAccount,
-} from '../method/core/account/deployAccount';
-import { transfer } from '../method/core/token/transfer';
+} from '../plugins/core/account/deployAccount';
+import { transfer } from '../plugins/core/token/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
   simulateDeployTransaction,
   simulateDeclareTransaction,
-} from '../method/core/transaction/simulateTransaction';
-import { getOwnBalance, getBalance } from '../method/core/token/getBalances';
-import { getBlockNumber } from '../method/core/rpc/getBlockNumber';
-import { getBlockTransactionCount } from '../method/core/rpc/getBlockTransactionCount';
-import { getStorageAt } from '../method/core/rpc/getStorageAt';
-import { getClassAt } from '../method/core/rpc/getClassAt';
-import { getClassHashAt } from '../method/core/rpc/getClassHash';
+} from '../plugins/core/transaction/simulateTransaction';
+import { getOwnBalance, getBalance } from '../plugins/core/token/getBalances';
+import { getBlockNumber } from '../plugins/core/rpc/getBlockNumber';
+import { getBlockTransactionCount } from '../plugins/core/rpc/getBlockTransactionCount';
+import { getStorageAt } from '../plugins/core/rpc/getStorageAt';
+import { getClassAt } from '../plugins/core/rpc/getClassAt';
+import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
@@ -41,34 +41,61 @@ import {
   getClassAtSchema,
   getClassHashAtSchema,
   Transferschema,
+  createTwitterpostSchema,
+  createAndPostTwitterThreadSchema,
+  ReplyTweetSchema,
+  getLastTweetsAndRepliesFromUserSchema,
+  getLastTweetsOptionsSchema,
+  FollowXUserFromUsernameSchema,
+  getTwitterProfileFromUsernameSchema,
+  getTwitterUserIdFromUsernameSchema,
+  getLastTweetsFromUserSchema,
+  getLastUserXTweetSchema,
   VerifyProofServiceSchema,
   GetProofServiceSchema,
-} from '../schema/schema';
-import { swapTokens } from '../method/avnu/swapService';
-import { getRoute } from '../method/avnu/fetchRouteService';
-import { getSpecVersion } from '../method/core/rpc/getSpecVersion';
-import { getBlockWithTxHashes } from '../method/core/rpc/getBlockWithTxHashes';
-import { getBlockWithReceipts } from '../method/core/rpc/getBlockWithReceipts';
-import { getTransactionStatus } from '../method/core/rpc/getTransactionStatus';
-import { getClass } from '../method/core/rpc/getClass';
-import { getChainId } from '../method/core/rpc/getChainId';
-import { getSyncingStats } from '../method/core/rpc/getSyncingStats';
-import { isMemecoin } from '../method/unruggable/isMemecoin';
-import { getLockedLiquidity } from '../method/unruggable/getLockedLiquidity';
-import { launchOnEkubo } from '../method/unruggable/launchOnEkubo';
+} from '../schemas/schema';
+import { swapTokens } from '../plugins/avnu/actions/swap';
+import { getRoute } from '../plugins/avnu/actions/fetchRoute';
+import { getSpecVersion } from '../plugins/core/rpc/getSpecVersion';
+import { getBlockWithTxHashes } from '../plugins/core/rpc/getBlockWithTxHashes';
+import { getBlockWithReceipts } from '../plugins/core/rpc/getBlockWithReceipts';
+import { getTransactionStatus } from '../plugins/core/rpc/getTransactionStatus';
+import { getClass } from '../plugins/core/rpc/getClass';
+import { getChainId } from '../plugins/core/rpc/getChainId';
+import { getSyncingStats } from '../plugins/core/rpc/getSyncingStats';
+import { isMemecoin } from '../plugins/unruggable/actions/isMemecoin';
+import { getLockedLiquidity } from '../plugins/unruggable/actions/getLockedLiquidity';
+import { launchOnEkubo } from '../plugins/unruggable/actions/launchOnEkubo';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from '../method/core/account/utils/AccountManager';
-import { TransactionMonitor } from '../method/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from '../method/core/contract/utils/ContractInteractor';
-
-import { createMemecoin } from '../method/unruggable/createMemecoin';
+import { AccountManager } from '../plugins/core/account/utils/AccountManager';
+import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
+import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
 import {
   GetBalanceParams,
   GetOwnBalanceParams,
-} from '../method/core/token/types/balance';
-import { AtlanticParam } from '../method/infra/atlantic/types/Atlantic';
-import { verifyProofService } from '../method/infra/atlantic/verifyProofService';
-import { getProofService } from '../method/infra/atlantic/getProofService';
+} from '../plugins/core/token/types/balance';
+import { AtlanticParam } from '../plugins/infra/atlantic/types/Atlantic';
+import { verifyProofService } from '../plugins/infra/atlantic/verifyProofService';
+import { getProofService } from '../plugins/infra/atlantic/getProofService';
+import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
+import {
+  createTwitterpost,
+  ReplyTweet,
+  createAndPostTwitterThread,
+  FollowXUserFromUsername,
+} from '../plugins/Twitter/twitter';
+import {
+  getLastUserTweet,
+  getLastTweetsOptions,
+  getOwnTwitterAccountInfo,
+  getLastTweetsFromUser,
+  getLastTweetsAndRepliesFromUser,
+  getTwitterUserIdFromUsername,
+  getTwitterProfileFromUsername,
+} from '../plugins/Twitter/twitter_read';
+import { Limit } from '../limit';
+import { JsonConfig } from '../jsonConfig';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -86,6 +113,10 @@ export interface StarknetAgentInterface {
   accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
+  getLimit: () => Limit;
+  getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
+  getAgentConfig: () => JsonConfig | undefined;
+  getTwitterManager: () => TwitterInterface;
 }
 
 interface StarknetTool<P = any> {
@@ -95,11 +126,6 @@ interface StarknetTool<P = any> {
   responseFormat?: string;
   execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
 }
-
-// Helper function to inject agent into tool methods
-const withAgent = (fn: Function, agent: StarknetAgentInterface) => {
-  return (...args: any[]) => fn(agent, ...args);
-};
 
 export class StarknetToolRegistry {
   private static tools: StarknetTool[] = [];
@@ -125,7 +151,6 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    console.log(filteredTools);
     let tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
     return tools.map(({ name, description, schema, execute }) =>
       tool(async (params: any) => execute(agent, params), {
@@ -368,6 +393,82 @@ export const registerTools = () => {
       "Query atlantic api to generate a proof from '.zip' file on starknet and return the query id",
     schema: GetProofServiceSchema,
     execute: getProofService,
+  });
+  // Twitter Tools
+  StarknetToolRegistry.registerTool({
+    name: 'create_twitter_post',
+    description: 'Create new X/Twitter post',
+    schema: createTwitterpostSchema,
+    execute: createTwitterpost,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'reply_twitter_tweet',
+    description: 'Reply to specific X/Twitter post by ID',
+    schema: ReplyTweetSchema,
+    execute: ReplyTweet,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet',
+    description: 'Get most recent post from specified X/Twitter account',
+    schema: getLastUserXTweetSchema,
+    execute: getLastUserTweet,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweets_options',
+    description: 'Get specified number of posts matching search query',
+    schema: getLastTweetsOptionsSchema,
+    execute: getLastTweetsOptions,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'create_and_post_twitter_thread',
+    description: 'Create and publish X/Twitter thread',
+    schema: createAndPostTwitterThreadSchema,
+    execute: createAndPostTwitterThread,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'follow_twitter_from_username',
+    description: 'Follow X/Twitter user by username',
+    schema: FollowXUserFromUsernameSchema,
+    execute: FollowXUserFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_twitter_profile_from_username',
+    description: 'Get full X/Twitter profile data by username',
+    schema: getTwitterProfileFromUsernameSchema,
+    execute: getTwitterProfileFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_twitter_user_id_from_username',
+    description: 'Get X/Twitter user ID from username',
+    schema: getTwitterUserIdFromUsernameSchema,
+    execute: getTwitterUserIdFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet_and_replies_from_user',
+    description: 'Get recent X/Twitter posts and replies from user',
+    schema: getLastTweetsAndRepliesFromUserSchema,
+    execute: getLastTweetsAndRepliesFromUser,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet_from_user',
+    description: 'Get recent X/Twitter posts from user',
+    schema: getLastTweetsFromUserSchema,
+    execute: getLastTweetsFromUser,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_own_twitter_account_info',
+    description: 'Get current account profile data',
+    execute: getOwnTwitterAccountInfo,
   });
 };
 registerTools();

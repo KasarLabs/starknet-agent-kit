@@ -1,4 +1,4 @@
-import { simulateDeclareTransaction } from 'src/lib/agent/method/core/transaction/simulateTransaction';
+import { simulateDeclareTransaction } from 'src/lib/agent/plugins/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
 import {
   createMockInvalidStarknetAgent,
@@ -12,7 +12,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with valid contract', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -64,7 +64,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with valid contract and classHash', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -118,7 +118,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with all optional parameters', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -173,7 +173,7 @@ describe('Simulate Declare Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -214,7 +214,7 @@ describe('Simulate Declare Transaction ', () => {
           },
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -269,7 +269,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -313,7 +313,7 @@ describe('Simulate Declare Transaction ', () => {
 
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],

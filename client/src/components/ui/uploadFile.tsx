@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Button } from './button';
 import { Upload } from 'lucide-react';
 import { FileInfo } from '../StarknetAgent';

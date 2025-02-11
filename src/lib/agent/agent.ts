@@ -1,14 +1,15 @@
-import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { SystemMessage } from '@langchain/core/messages';
 import { createTools } from './tools/tools';
-import { AiConfig } from './method/core/account/types/accounts.js';
+import { AiConfig } from './plugins/core/account/types/accounts.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { createSignatureTools } from './tools/signature_tools';
+import { createSignatureTools } from './tools/signatureTools';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { createAllowedToollkits } from './tools/external_tools';
+import { createAllowedTools } from './tools/tools';
 
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
@@ -74,17 +75,56 @@ export const createAgent = (
         throw new Error(`Unsupported AI provider: ${aiConfig.aiProvider}`);
     }
   };
+  try {
+    const modelSelected = model();
+    const json_config = starknetAgent.getAgentConfig();
+    if (json_config) {
+      console.log('Character config loaded successfully');
+      console.log('JSON config loaded successfully');
 
-  const modelSelected = model();
-  const tools = isSignature
-    ? createSignatureTools()
-    : createTools(starknetAgent);
+      const allowedTools = createAllowedTools(
+        starknetAgent,
+        json_config.allowed_internal_tools
+      );
 
-  const agent = createReactAgent({
-    llm: modelSelected,
-    tools,
-    messageModifier: systemMessage,
-  });
+      const allowedToolsKits =
+        json_config.external_client && json_config.allowed_external_client_tools
+          ? createAllowedToollkits(
+              json_config.external_client,
+              json_config.allowed_external_client_tools
+            )
+          : json_config.external_client &&
+              !json_config.allowed_external_client_tools
+            ? createAllowedToollkits(json_config.external_client)
+            : null;
 
-  return agent;
+      const tools = allowedToolsKits
+        ? [...allowedTools, ...allowedToolsKits]
+        : allowedTools;
+
+      const agent = createReactAgent({
+        llm: modelSelected,
+        tools,
+        messageModifier: systemMessage,
+      });
+
+      return agent;
+    }
+    const tools = isSignature
+      ? createSignatureTools()
+      : createTools(starknetAgent);
+
+    const agent = createReactAgent({
+      llm: modelSelected,
+      tools,
+      messageModifier: systemMessage,
+    });
+
+    return agent;
+  } catch (error) {
+    console.error(
+      `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`
+    );
+    console.error('Failed to load or parse JSON config:', error);
+  }
 };

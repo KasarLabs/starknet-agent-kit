@@ -1,12 +1,12 @@
 declare namespace NodeJS {
   export interface ProcessEnv {
-    PRIVATE_KEY: string;
-    PUBLIC_ADDRESS: string;
+    STARKNET_PRIVATE_KEY: string;
+    STARKNET_PUBLIC_ADDRESS: string;
+    STARKNET_RPC_URL: string;
     AI_PROVIDER_API_KEY: string;
     AI_MODEL: string;
     AI_PROVIDER: string;
-    RPC_URL: string;
-    API_KEY: string;
     ATLANTIC_API_KEY: string;
+    SERVER_API_KEY: string;
   }
 }

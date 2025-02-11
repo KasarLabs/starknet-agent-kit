@@ -1,4 +1,4 @@
-import { simulateInvokeTransaction } from 'src/lib/agent/method/core/transaction/simulateTransaction';
+import { simulateInvokeTransaction } from 'src/lib/agent/plugins/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
 import {
   createMockInvalidStarknetAgent,
@@ -13,7 +13,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should simulate invoke transaction with valid payload', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress: C.contract_address,
@@ -34,7 +34,7 @@ describe('Simulate Invoke Transaction', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               contractAddress: C.contract_address,
@@ -44,7 +44,7 @@ describe('Simulate Invoke Transaction', () => {
           ],
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               contractAddress: C.contract_address,
@@ -54,7 +54,7 @@ describe('Simulate Invoke Transaction', () => {
           ],
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               contractAddress: C.contract_address,
@@ -76,7 +76,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should fail with empty calldata', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress: C.contract_address,
@@ -96,7 +96,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should fail reason : invalid privateKey ', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress: C.contract_address,
@@ -117,7 +117,7 @@ describe('Simulate Invoke Transaction', () => {
     it('should fail reason : empty contract address', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             contractAddress: '', // Adresse vide

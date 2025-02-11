@@ -1,5 +1,5 @@
-import { VerifierParam } from 'src/lib/agent/method/infra/atlantic/types/Atlantic';
-import { verifyProofService } from 'src/lib/agent/method/infra/atlantic/verifyProofService';
+import { VerifierParam } from 'src/lib/agent/plugins/infra/atlantic/types/Atlantic';
+import { verifyProofService } from 'src/lib/agent/plugins/infra/atlantic/verifyProofService';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
@@ -35,8 +35,8 @@ describe('verifyProofService', () => {
   it('Invalid Type', async () => {
     process.env.ATLANTIC_API_KEY = 'Place your api key here';
     const getProofParam: VerifierParam = {
-      filename: '',
-      memoryVerification: '',
+      filename: '/test/Pie.zip',
+      memoryVerification: 'relaxed',
     };
 
     const result = await verifyProofService(agent, getProofParam);

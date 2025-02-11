@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
-import UploadFile, { removeFile } from './ui/uploadFile';
+import UploadFile from './ui/uploadFile';
 import { WalletAccount } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
 import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
@@ -293,7 +293,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include',
@@ -421,7 +421,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include',

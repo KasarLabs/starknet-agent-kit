@@ -9,9 +9,6 @@ import {
   CairoOptionVariant,
   CairoCustomEnum,
   constants,
-  RawCalldata,
-  BigNumberish,
-  wallet
 } from 'starknet';
 import {
   argentx_classhash,
@@ -54,6 +51,57 @@ export const CreateOZAccount = async () => {
   }
 };
 
+export const CreateOZAccountSignature = async () => {
+  try {
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
+
+    const privateKey = stark.randomAddress();
+    console.log('New OZ account:\nprivateKey=', privateKey);
+    const starkKeyPub = ec.starkCurve.getStarkKey(privateKey);
+    console.log('publicKey=', starkKeyPub);
+
+    const OZaccountConstructorCallData = CallData.compile({
+      publicKey: starkKeyPub,
+    });
+
+    const OZcontractAddress = hash.calculateContractAddressFromHash(
+      starkKeyPub,
+      oz_classhash,
+      OZaccountConstructorCallData,
+      0
+    );
+    console.log('Precalculated account address=', OZcontractAddress);
+
+    const accountOz = new Account(provider, OZcontractAddress, privateKey, undefined, "0x3");
+    const deployAccountPayload = {
+      classHash: oz_classhash,
+      constructorCalldata: OZaccountConstructorCallData,
+      contractAddress: OZcontractAddress,
+      addressSalt: starkKeyPub,
+      version: 3
+    };
+    const suggestedMaxFee = await accountOz.estimateAccountDeployFee(deployAccountPayload);
+    
+    const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
+
+    return JSON.stringify({
+      status: 'success',
+      transaction_type: 'CREATE_ACCOUNT',
+      wallet: 'OpenZeppelin',
+      public_key: starkKeyPub,
+      private_key: privateKey,
+      contractaddress: OZcontractAddress,
+      deploy_fee: maxFee.toString(),
+    });
+  } catch (error) {
+    return JSON.stringify({
+      status: 'failure',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+
 export const CreateArgentAccount = async () => {
   try {
     const privateKeyAX = stark.randomAddress();
@@ -92,7 +140,6 @@ export const CreateArgentAccount = async () => {
   }
 };
 
-
 export const CreateArgentAccountSignature = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
@@ -118,12 +165,16 @@ export const CreateArgentAccountSignature = async () => {
     );
     console.log('Precalculated account address=', AXcontractAddress);
 
-    const accountAx = new Account(provider, starkKeyPubAX, privateKeyAX);
-    const suggestedMaxFee = await accountAx.estimateAccountDeployFee({
+    const accountAx = new Account(provider, AXcontractAddress, privateKeyAX, undefined, "0x3");
+    const deployAccountPayload = {
       classHash: argentx_classhash,
       constructorCalldata: AXConstructorCallData,
       contractAddress: AXcontractAddress,
-    });
+      addressSalt: starkKeyPubAX,
+      version: 3
+    };
+    const suggestedMaxFee = await accountAx.estimateAccountDeployFee(deployAccountPayload);
+  
     const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
 
     return JSON.stringify({
@@ -133,50 +184,6 @@ export const CreateArgentAccountSignature = async () => {
       public_key: starkKeyPubAX,
       private_key: privateKeyAX,
       contractaddress: AXcontractAddress,
-      deploy_fee: maxFee.toString(),
-    });
-  } catch (error) {
-    return JSON.stringify({
-      status: 'failure',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
-};
-
-export const CreateOZAccountSignature = async () => {
-  try {
-    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
-
-    const privateKey = stark.randomAddress();
-    console.log('New OZ account:\nprivateKey=', privateKey);
-    const starkKeyPub = ec.starkCurve.getStarkKey(privateKey);
-    console.log('publicKey=', starkKeyPub);
-
-    const OZaccountConstructorCallData = CallData.compile({
-      publicKey: starkKeyPub,
-    });
-    const OZcontractAddress = hash.calculateContractAddressFromHash(
-      starkKeyPub,
-      oz_classhash,
-      OZaccountConstructorCallData,
-      0
-    );
-
-    const accountAx = new Account(provider, starkKeyPub, privateKey);
-    const suggestedMaxFee = await accountAx.estimateAccountDeployFee({
-      classHash: oz_classhash,
-      constructorCalldata: OZaccountConstructorCallData,
-      contractAddress: OZcontractAddress,
-    });
-    const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
-    console.log('Precalculated account address=', OZcontractAddress);
-    return JSON.stringify({
-      status: 'success',
-      transaction_type: 'CREATE_ACCOUNT',
-      wallet: 'OpenZeppelin',
-      public_key: starkKeyPub,
-      private_key: privateKey,
-      contractaddress: OZcontractAddress,
       deploy_fee: maxFee.toString(),
     });
   } catch (error) {
@@ -210,10 +217,9 @@ export const CreateBraavosAccount = async (): Promise<string> => {
     return JSON.stringify({
       status: 'success',
       wallet: 'Braavos',
-      address,
-      publicKey,
-      privateKey,
-      constructorCalldata
+      new_account_publickey: publicKey,
+      new_account_privatekey: privateKey,
+      precalculate_address: address,
     });
   } catch (error) {
     return JSON.stringify({
@@ -222,7 +228,6 @@ export const CreateBraavosAccount = async (): Promise<string> => {
     });
   }
 };
-
 
 export const CreateBraavosAccountSignature = async () => {
   try {
@@ -303,6 +308,7 @@ export const CreateBraavosAccountSignature = async () => {
   }
 };
 
+
 export const CreateOKXAccount = async (): Promise<string> => {
   try {
     const privateKey = stark.randomAddress();
@@ -356,16 +362,20 @@ export const CreateOKXAccountSignature = async () => {
       OKXaccountConstructorCallData,
       0
     );
+    console.log('Precalculated account address=', OKXcontractAddress);
 
-    const accountAx = new Account(provider, starkKeyPub, privateKey);
-    const suggestedMaxFee = await accountAx.estimateAccountDeployFee({
+    const accountOKX = new Account(provider, OKXcontractAddress, privateKey, undefined, "0x3");
+    const deployAccountPayload = {
       classHash: okx_classhash,
       constructorCalldata: OKXaccountConstructorCallData,
       contractAddress: OKXcontractAddress,
-    });
+      addressSalt: starkKeyPub,
+      version: 3
+    };
+    const suggestedMaxFee = await accountOKX.estimateAccountDeployFee(deployAccountPayload);
+  
     const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
     
-    console.log('Precalculated account address=', OKXcontractAddress);
     return JSON.stringify({
       status: 'success',
       transaction_type: 'CREATE_ACCOUNT',

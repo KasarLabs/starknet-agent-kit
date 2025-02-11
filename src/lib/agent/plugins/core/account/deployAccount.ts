@@ -211,8 +211,7 @@ export const DeployBraavosAccount = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    
-    // Préparer les données du constructeur
+
     const initializer = CallData.compile({ public_key: params.publicKey });
     const constructorCalldata = CallData.compile({
       implementation_address: braavos_intiial_classhash,
@@ -220,7 +219,6 @@ export const DeployBraavosAccount = async (
       calldata: [...initializer]
     });
 
-    // Calculer la signature pour le déploiement
     const txHash = hash.calculateDeployAccountTransactionHash({
       contractAddress: params.precalculate_address,
       classHash: braavos_proxy_classhash,
@@ -285,7 +283,6 @@ export const DeployBraavosAccountSignature = async (
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
     
-    // Préparer les données du constructeur
     const initializer = CallData.compile({ public_key: params.publicKey });
     const constructorCalldata = CallData.compile({
       implementation_address: braavos_intiial_classhash,
@@ -293,14 +290,12 @@ export const DeployBraavosAccountSignature = async (
       calldata: [...initializer]
     });
 
-    // Estimer les frais de déploiement
     const deployAccountPayload = {
       classHash: braavos_proxy_classhash,
       constructorCalldata,
       addressSalt: params.publicKey
     };
 
-    // Calculer la signature pour l'estimation
     const txHashForEstimate = hash.calculateDeployAccountTransactionHash({
       contractAddress: params.precalculate_address,
       classHash: braavos_proxy_classhash,
@@ -325,7 +320,6 @@ export const DeployBraavosAccountSignature = async (
       ...parsedOtherSigner.map(e => e.toString())
     ];
 
-    // Obtenir l'estimation des frais
     const estimatedFee = await provider.getDeployAccountEstimateFee(
       { ...deployAccountPayload, signature: signatureForEstimate },
       { version: constants.TRANSACTION_VERSION.V2, nonce: constants.ZERO }
@@ -333,7 +327,6 @@ export const DeployBraavosAccountSignature = async (
 
     const maxFee = stark.estimatedFeeToMaxFee(estimatedFee.overall_fee);
 
-    // Déployer le compte avec les frais estimés
     const transaction = await provider.deployAccountContract(
       {
         classHash: braavos_proxy_classhash,

@@ -195,7 +195,7 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'CreateArgentAccount',
-    description: 'Create Account account',
+    description: 'Create Argent account',
     execute: CreateArgentAccount,
   });
 

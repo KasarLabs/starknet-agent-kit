@@ -44,6 +44,16 @@ import {
   depositEarnSchema,
   withdrawEarnSchema,
   batchSwapSchema,
+  createTwitterpostSchema,
+  createAndPostTwitterThreadSchema,
+  ReplyTweetSchema,
+  getLastTweetsAndRepliesFromUserSchema,
+  getLastTweetsOptionsSchema,
+  FollowXUserFromUsernameSchema,
+  getTwitterProfileFromUsernameSchema,
+  getTwitterUserIdFromUsernameSchema,
+  getLastTweetsFromUserSchema,
+  getLastUserXTweetSchema,
 } from '../schemas/schema';
 import { swapTokens } from '../plugins/avnu/actions/swap';
 import { getRoute } from '../plugins/avnu/actions/fetchRoute';
@@ -71,6 +81,24 @@ import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
 import { swapTokensFibrous } from '../plugins/fibrous/actions/swap';
 import { batchSwapTokens } from '../plugins/fibrous/actions/batchSwap';
 import { getRouteFibrous } from '../plugins/fibrous/actions/fetchRoute';
+import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
+import {
+  createTwitterpost,
+  ReplyTweet,
+  createAndPostTwitterThread,
+  FollowXUserFromUsername,
+} from '../plugins/Twitter/twitter';
+import {
+  getLastUserTweet,
+  getLastTweetsOptions,
+  getOwnTwitterAccountInfo,
+  getLastTweetsFromUser,
+  getLastTweetsAndRepliesFromUser,
+  getTwitterUserIdFromUsername,
+  getTwitterProfileFromUsername,
+} from '../plugins/Twitter/twitter_read';
+import { Limit } from '../limit';
+import { JsonConfig } from '../jsonConfig';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -88,6 +116,10 @@ export interface StarknetAgentInterface {
   accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
+  getLimit: () => Limit;
+  getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
+  getAgentConfig: () => JsonConfig | undefined;
+  getTwitterManager: () => TwitterInterface;
 }
 
 interface StarknetTool<P = any> {
@@ -347,19 +379,81 @@ export const registerTools = () => {
     schema: contractAddressSchema,
     execute: getLockedLiquidity,
   });
-
+  // Twitter Tools
   StarknetToolRegistry.registerTool({
-    name: 'deposit',
-    description: 'Deposit asset into Earn position on Vesu',
-    schema: depositEarnSchema,
-    execute: depositEarnPosition,
+    name: 'create_twitter_post',
+    description: 'Create new X/Twitter post',
+    schema: createTwitterpostSchema,
+    execute: createTwitterpost,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'withdraw',
-    description: 'Withdraw total amount asset from Earn position on Vesu',
-    schema: withdrawEarnSchema,
-    execute: withdrawEarnPosition,
+    name: 'reply_twitter_tweet',
+    description: 'Reply to specific X/Twitter post by ID',
+    schema: ReplyTweetSchema,
+    execute: ReplyTweet,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet',
+    description: 'Get most recent post from specified X/Twitter account',
+    schema: getLastUserXTweetSchema,
+    execute: getLastUserTweet,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweets_options',
+    description: 'Get specified number of posts matching search query',
+    schema: getLastTweetsOptionsSchema,
+    execute: getLastTweetsOptions,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'create_and_post_twitter_thread',
+    description: 'Create and publish X/Twitter thread',
+    schema: createAndPostTwitterThreadSchema,
+    execute: createAndPostTwitterThread,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'follow_twitter_from_username',
+    description: 'Follow X/Twitter user by username',
+    schema: FollowXUserFromUsernameSchema,
+    execute: FollowXUserFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_twitter_profile_from_username',
+    description: 'Get full X/Twitter profile data by username',
+    schema: getTwitterProfileFromUsernameSchema,
+    execute: getTwitterProfileFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_twitter_user_id_from_username',
+    description: 'Get X/Twitter user ID from username',
+    schema: getTwitterUserIdFromUsernameSchema,
+    execute: getTwitterUserIdFromUsername,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet_and_replies_from_user',
+    description: 'Get recent X/Twitter posts and replies from user',
+    schema: getLastTweetsAndRepliesFromUserSchema,
+    execute: getLastTweetsAndRepliesFromUser,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_last_tweet_from_user',
+    description: 'Get recent X/Twitter posts from user',
+    schema: getLastTweetsFromUserSchema,
+    execute: getLastTweetsFromUser,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_own_twitter_account_info',
+    description: 'Get current account profile data',
+    execute: getOwnTwitterAccountInfo,
   });
 
   StarknetToolRegistry.registerTool({

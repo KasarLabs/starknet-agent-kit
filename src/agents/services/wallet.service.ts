@@ -37,8 +37,8 @@ export class WalletService implements IWalletService {
 
   async HandleOutputIAParsing(userRequest: AgentRequestDTO): Promise<any> {
     try {
-      const request = `Your are an IA Assistant that have for objectif :
-       You will receive JSON format I want you to extract all data you can an write a response clear.
+      const request = `Your are an AI Assistant that have for objectives :
+       You will receive JSON format, I want you to extract all data you can and write a response clear.
        For the format response : 
        -  Very important You only send me back the response without any explication
        -  If its a success add ✅ if its a failure add ❌ at the start

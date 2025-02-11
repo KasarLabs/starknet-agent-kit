@@ -1,4 +1,4 @@
-import { getAddress } from 'src/lib/agent/plugins/core/account/getAddress';
+import { getAddress } from 'src/lib/agent/plugins/core/account/actions/getAddress';
 
 describe('getAddress', () => {
   describe('With perfect match inputs', () => {

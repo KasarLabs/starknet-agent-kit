@@ -1,10 +1,10 @@
-import { BlockIdAndContractAddressParams } from 'src/lib/agent/schemas/schema';
 import { BlockNumber } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { GetClassAtParams } from 'src/lib/agent/plugins/core/rpc/schema';
 
-export const getClassHashAt = async (
+export const getClassAt = async (
   agent: StarknetAgentInterface,
-  params: BlockIdAndContractAddressParams
+  params: GetClassAtParams
 ) => {
   const provider = agent.getProvider();
   try {
@@ -18,17 +18,16 @@ export const getClassHashAt = async (
       blockIdentifier = Number(blockIdentifier);
     }
 
-    const classHash = await provider.getClassHashAt(
+    const contractClass = await provider.getClassAt(
       params.contractAddress,
       blockIdentifier
     );
 
     return JSON.stringify({
       status: 'success',
-      classHash,
+      contractClass,
     });
   } catch (error) {
-    console.error('GetClassHash error:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',

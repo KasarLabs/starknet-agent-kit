@@ -1,17 +1,18 @@
-import { BlockIdParams } from 'src/lib/agent/schemas/schema';
+import { TransactionHashParams } from 'src/lib/agent/plugins/core/rpc/schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
-export const getBlockWithTxHashes = async (
+export const getTransactionByHash = async (
   agent: StarknetAgentInterface,
-  params: BlockIdParams
+  params: TransactionHashParams
 ) => {
+  const provider = agent.getProvider();
+
   try {
-    const provider = agent.getProvider();
-    const blockId = params?.blockId ?? 'latest';
-    const block = await provider.getBlockWithTxHashes(blockId);
+    const { transactionHash } = params;
+    const transaction = await provider.getTransactionByHash(transactionHash);
     return JSON.stringify({
       status: 'success',
-      block,
+      transaction,
     });
   } catch (error) {
     return JSON.stringify({

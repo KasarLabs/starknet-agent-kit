@@ -12,7 +12,7 @@ import {
 import {
   argentx_classhash,
   oz_classhash,
-} from '../contract/constants/contract';
+} from '../../contract/constants/contract';
 
 export const CreateOZAccount = async () => {
   try {

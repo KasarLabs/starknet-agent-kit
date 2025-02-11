@@ -10,11 +10,11 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import {
   argentx_classhash,
   oz_classhash,
-} from '../contract/constants/contract';
+} from '../../contract/constants/contract';
 import {
   DeployArgentParams,
   DeployOZAccountParams,
-} from './types/deployAccountTypes';
+} from '../types/deployAccountTypes';
 
 export const DeployOZAccount = async (
   agent: StarknetAgentInterface,

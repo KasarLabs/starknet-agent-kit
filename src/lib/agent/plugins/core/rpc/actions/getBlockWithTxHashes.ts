@@ -1,14 +1,14 @@
-import { BlockIdParams } from 'src/lib/agent/schemas/schema';
+import { BlockIdParams } from '../schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
-export const getBlockWithReceipts = async (
+export const getBlockWithTxHashes = async (
   agent: StarknetAgentInterface,
   params: BlockIdParams
 ) => {
   try {
     const provider = agent.getProvider();
     const blockId = params?.blockId ?? 'latest';
-    const block = await provider.getBlockWithReceipts(blockId);
+    const block = await provider.getBlockWithTxHashes(blockId);
     return JSON.stringify({
       status: 'success',
       block,

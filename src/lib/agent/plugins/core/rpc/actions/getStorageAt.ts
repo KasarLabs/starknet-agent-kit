@@ -1,19 +1,21 @@
-import { TransactionHashParams } from 'src/lib/agent/schemas/schema';
+import { GetStorageParams } from '../schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
-export const getTransactionTrace = async (
+export const getStorageAt = async (
   agent: StarknetAgentInterface,
-  params: TransactionHashParams
+  params: GetStorageParams
 ) => {
   const provider = agent.getProvider();
-
   try {
-    const { transactionHash } = params;
-    const transactionTrace =
-      await provider.getTransactionTrace(transactionHash);
+    const storage = await provider.getStorageAt(
+      params.contractAddress,
+      params.key,
+      params.blockId || 'latest'
+    );
+
     return JSON.stringify({
       status: 'success',
-      transactionTrace,
+      storage: storage.toString(),
     });
   } catch (error) {
     return JSON.stringify({

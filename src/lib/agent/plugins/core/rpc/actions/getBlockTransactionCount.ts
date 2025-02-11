@@ -1,4 +1,4 @@
-import { BlockIdParams } from 'src/lib/agent/schemas/schema';
+import { BlockIdParams } from '../schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
 export const getBlockTransactionCount = async (

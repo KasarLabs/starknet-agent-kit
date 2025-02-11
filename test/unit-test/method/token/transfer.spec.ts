@@ -1,4 +1,4 @@
-import { transfer } from 'src/lib/agent/plugins/core/token/transfer';
+import { transfer } from 'src/lib/agent/plugins/core/token/actions/transfer';
 import * as C from '../../../utils/constant';
 
 describe('Transfer token', () => {

@@ -2,45 +2,32 @@ import { tool } from '@langchain/core/tools';
 import {
   CreateOZAccount,
   CreateArgentAccount,
-} from '../plugins/core/account/createAccount';
+} from '../plugins/core/account/actions/createAccount';
 import {
   DeployArgentAccount,
   DeployOZAccount,
-} from '../plugins/core/account/deployAccount';
-import { transfer } from '../plugins/core/token/transfer';
+} from '../plugins/core/account/actions/deployAccount';
+import { transfer } from '../plugins/core/token/actions/transfer';
 import {
   simulateDeployAccountTransaction,
   simulateInvokeTransaction,
   simulateDeployTransaction,
   simulateDeclareTransaction,
-} from '../plugins/core/transaction/simulateTransaction';
-import { getOwnBalance, getBalance } from '../plugins/core/token/getBalances';
-import { getBlockNumber } from '../plugins/core/rpc/getBlockNumber';
-import { getBlockTransactionCount } from '../plugins/core/rpc/getBlockTransactionCount';
-import { getStorageAt } from '../plugins/core/rpc/getStorageAt';
-import { getClassAt } from '../plugins/core/rpc/getClassAt';
-import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
+} from '../plugins/core/transaction/actions/simulateTransaction';
 import {
-  getOwnBalanceSchema,
-  getBalanceSchema,
+  getOwnBalance,
+  getBalance,
+} from '../plugins/core/token/actions/getBalances';
+import { getBlockNumber } from '../plugins/core/rpc/actions/getBlockNumber';
+import { getBlockTransactionCount } from '../plugins/core/rpc/actions/getBlockTransactionCount';
+import { getStorageAt } from '../plugins/core/rpc/actions/getStorageAt';
+import { getClassAt } from '../plugins/core/rpc/actions/getClassAt';
+import { getClassHashAt } from '../plugins/core/rpc/actions/getClassHash';
+import {
   DeployArgentAccountSchema,
-  getStorageAtSchema,
-  swapSchema,
   DeployOZAccountSchema,
-  blockIdSchema,
-  transactionHashSchema,
-  blockIdAndContractAddressSchema,
-  simulateInvokeTransactionSchema,
-  simulateDeployAccountTransactionSchema,
-  simulateDeployTransactionSchema,
-  simulateDeclareTransactionSchema,
-  routeSchema,
-  createMemecoinSchema,
-  launchOnEkuboSchema,
-  contractAddressSchema,
-  getClassAtSchema,
-  getClassHashAtSchema,
-  Transferschema,
+} from 'src/lib/agent/plugins/core/account/schema';
+import {
   createTwitterpostSchema,
   createAndPostTwitterThreadSchema,
   ReplyTweetSchema,
@@ -51,16 +38,38 @@ import {
   getTwitterUserIdFromUsernameSchema,
   getLastTweetsFromUserSchema,
   getLastUserXTweetSchema,
-} from '../schemas/schema';
+} from '../plugins/twitter/schema';
+import { routeSchema, swapSchema } from '../plugins/avnu/schema';
+import {
+  getStorageAtSchema,
+  blockIdSchema,
+  blockIdAndContractAddressSchema,
+  contractAddressSchema,
+  getClassAtSchema,
+  getClassHashAtSchema,
+  transactionHashSchema,
+} from '../plugins/core/rpc/schema';
+import {
+  createMemecoinSchema,
+  launchOnEkuboSchema,
+} from '../plugins/unruggable/schema';
+import { Transferschema } from '../schemas/signatureSchemas';
+import {
+  simulateInvokeTransactionSchema,
+  simulateDeployAccountTransactionSchema,
+  simulateDeployTransactionSchema,
+  simulateDeclareTransactionSchema,
+} from 'src/lib/agent/plugins/core/transaction/schema';
+
 import { swapTokens } from '../plugins/avnu/actions/swap';
 import { getRoute } from '../plugins/avnu/actions/fetchRoute';
-import { getSpecVersion } from '../plugins/core/rpc/getSpecVersion';
-import { getBlockWithTxHashes } from '../plugins/core/rpc/getBlockWithTxHashes';
-import { getBlockWithReceipts } from '../plugins/core/rpc/getBlockWithReceipts';
-import { getTransactionStatus } from '../plugins/core/rpc/getTransactionStatus';
-import { getClass } from '../plugins/core/rpc/getClass';
-import { getChainId } from '../plugins/core/rpc/getChainId';
-import { getSyncingStats } from '../plugins/core/rpc/getSyncingStats';
+import { getSpecVersion } from '../plugins/core/rpc/actions/getSpecVersion';
+import { getBlockWithTxHashes } from '../plugins/core/rpc/actions/getBlockWithTxHashes';
+import { getBlockWithReceipts } from '../plugins/core/rpc/actions/getBlockWithReceipts';
+import { getTransactionStatus } from '../plugins/core/rpc/actions/getTransactionStatus';
+import { getClass } from '../plugins/core/rpc/actions/getClass';
+import { getChainId } from '../plugins/core/rpc/actions/getChainId';
+import { getSyncingStats } from '../plugins/core/rpc/actions/getSyncingStats';
 import { isMemecoin } from '../plugins/unruggable/actions/isMemecoin';
 import { getLockedLiquidity } from '../plugins/unruggable/actions/getLockedLiquidity';
 import { launchOnEkubo } from '../plugins/unruggable/actions/launchOnEkubo';
@@ -70,16 +79,20 @@ import { TransactionMonitor } from '../plugins/core/transaction/utils/Transactio
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
 import {
+  getBalanceSchema,
+  getOwnBalanceSchema,
+} from '../plugins/core/token/schema';
+import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../plugins/core/token/types/balance';
-import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
+import { TwitterInterface } from '../plugins/twitter/interface/twitter-interface';
 import {
   createTwitterpost,
   ReplyTweet,
   createAndPostTwitterThread,
   FollowXUserFromUsername,
-} from '../plugins/Twitter/twitter';
+} from '../plugins/twitter/actions/twitter';
 import {
   getLastUserTweet,
   getLastTweetsOptions,
@@ -88,7 +101,7 @@ import {
   getLastTweetsAndRepliesFromUser,
   getTwitterUserIdFromUsername,
   getTwitterProfileFromUsername,
-} from '../plugins/Twitter/twitter_read';
+} from '../plugins/twitter/actions/twitter_read';
 import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
 
@@ -246,6 +259,7 @@ export const registerTools = () => {
     execute: swapTokens,
   });
 
+  //
   StarknetToolRegistry.registerTool({
     name: 'get_route',
     description: 'Get a specific route for swapping tokens',

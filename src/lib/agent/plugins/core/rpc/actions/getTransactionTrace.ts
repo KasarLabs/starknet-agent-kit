@@ -1,21 +1,19 @@
-import { GetStorageParams } from 'src/lib/agent/schemas/schema';
+import { TransactionHashParams } from 'src/lib/agent/plugins/core/rpc/schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
-export const getStorageAt = async (
+export const getTransactionTrace = async (
   agent: StarknetAgentInterface,
-  params: GetStorageParams
+  params: TransactionHashParams
 ) => {
   const provider = agent.getProvider();
-  try {
-    const storage = await provider.getStorageAt(
-      params.contractAddress,
-      params.key,
-      params.blockId || 'latest'
-    );
 
+  try {
+    const { transactionHash } = params;
+    const transactionTrace =
+      await provider.getTransactionTrace(transactionHash);
     return JSON.stringify({
       status: 'success',
-      storage: storage.toString(),
+      transactionTrace,
     });
   } catch (error) {
     return JSON.stringify({

@@ -1,9 +1,8 @@
-import { Account, Contract, RpcProvider, transaction } from 'starknet';
+import { Account, Contract, RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { response } from 'express';
-import { tokenAddresses } from './constants/erc20';
-import { GetBalanceParams, GetOwnBalanceParams } from './types/balance';
-import { ERC20_ABI } from './abis/erc20Abi';
+import { tokenAddresses } from '../constants/erc20';
+import { GetBalanceParams, GetOwnBalanceParams } from '../types/balance';
+import { ERC20_ABI } from '../abis/erc20Abi';
 
 const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];

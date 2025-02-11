@@ -8,10 +8,10 @@ import {
   Invocation_Deploy,
   SimulateDeclareTransactionAccountParams,
   Invocation_Declare,
-} from './types/simulateTransactionTypes';
+} from '../types/simulateTransactionTypes';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { TransactionReponseFormat } from './utils/outputSimulateTransaction';
-import { DEFAULT_NONCE } from '../contract/constants/contract';
+import { TransactionReponseFormat } from '../utils/outputSimulateTransaction';
+import { DEFAULT_NONCE } from '../../contract/constants/contract';
 
 export const simulateInvokeTransaction = async (
   agent: StarknetAgentInterface,

@@ -1,18 +1,17 @@
-import { TransactionHashParams } from 'src/lib/agent/schemas/schema';
+import { BlockIdParams } from '../schema';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
-export const getTransactionByHash = async (
+export const getBlockWithReceipts = async (
   agent: StarknetAgentInterface,
-  params: TransactionHashParams
+  params: BlockIdParams
 ) => {
-  const provider = agent.getProvider();
-
   try {
-    const { transactionHash } = params;
-    const transaction = await provider.getTransactionByHash(transactionHash);
+    const provider = agent.getProvider();
+    const blockId = params?.blockId ?? 'latest';
+    const block = await provider.getBlockWithReceipts(blockId);
     return JSON.stringify({
       status: 'success',
-      transaction,
+      block,
     });
   } catch (error) {
     return JSON.stringify({

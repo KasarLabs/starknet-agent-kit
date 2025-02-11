@@ -1,4 +1,4 @@
-import { getOwnBalance } from 'src/lib/agent/plugins/core/token/getBalances';
+import { getOwnBalance } from 'src/lib/agent/plugins/core/token/actions/getBalances';
 import * as C from '../../../utils/constant';
 
 describe('getOwnBlance', () => {

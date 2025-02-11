@@ -3,20 +3,20 @@ import {
   getBalanceSignatureSchema,
   transferSignatureschema,
 } from '../schemas/signatureSchemas';
-import { transfer_signature } from '../plugins/core/token/transfer';
-import { getBalanceSignature } from '../plugins/core/token/getBalances';
+import { transfer_signature } from '../plugins/core/token/actions/transfer';
+import { getBalanceSignature } from '../plugins/core/token/actions/getBalances';
 import {
   CreateArgentAccountSignature,
   CreateOZAccountSignature,
-} from '../plugins/core/account/createAccount';
+} from '../plugins/core/account/actions/createAccount';
 import {
   DeployArgentAccountSchema,
   DeployOZAccountSchema,
-} from '../schemas/schema';
+} from '../plugins/core/account/schema';
 import {
   DeployArgentAccountSignature,
   DeployOZAccountSignature,
-} from '../plugins/core/account/deployAccount';
+} from '../plugins/core/account/actions/deployAccount';
 
 interface SignatureTool<P = any> {
   name: string;

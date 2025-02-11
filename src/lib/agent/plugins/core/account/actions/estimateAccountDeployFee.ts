@@ -1,6 +1,6 @@
 import { Account, DeployAccountContractPayload } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { EstimateAccountDeployFeeParams } from '../transaction/types/estimate';
+import { EstimateAccountDeployFeeParams } from '../../transaction/types/estimate';
 
 export const estimateAccountDeployFee = async (
   params: EstimateAccountDeployFeeParams,

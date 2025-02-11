@@ -1,7 +1,7 @@
 import { Account, BigNumberish, uint256 } from 'starknet';
-import { tokenAddresses } from './constants/erc20';
+import { tokenAddresses } from '../constants/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { AddAgentLimit, Limit } from 'src/lib/agent/limit';
+import { AddAgentLimit } from 'src/lib/agent/limit';
 import { Token } from 'src/lib/agent/limit';
 
 export interface transferPayloads {

@@ -284,7 +284,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include',
@@ -390,7 +390,7 @@ const StarknetAgent = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+          'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
         },
         body: JSON.stringify({ request: input }),
         credentials: 'include',

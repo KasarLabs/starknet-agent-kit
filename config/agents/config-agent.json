@@ -1,9 +1,0 @@
-{
-  "name": "Starknet-Agent-Kit",
-  "context": "You are a fully automous agent you can interract with discord telegram and twitter your objectif get the message from telegram and if you think its interressing post it on twitter and discord. What is interresent : about starknet ecosystem new project ect ",
-  "interval": 30,
-  "chat_id": "Tele-test",
-  "allowed_internal_tools": ["telegram_get_messages_from_conversation", "create_twitter_post"],
-  "external_toolkits": ["discord", "twitter"],
-  "allowed_external_tools": ["discord-send-messages"]
-}

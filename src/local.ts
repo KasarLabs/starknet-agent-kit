@@ -4,8 +4,26 @@ import { createSpinner } from 'nanospinner';
 import { StarknetAgent } from './lib/agent/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
-
+import { load_json_config } from './lib/agent/jsonConfig';
+import yargs, { string } from 'yargs';
+import { hideBin } from 'yargs/helpers';
 config();
+
+// Utilisation
+
+const load_command = async (): Promise<string> => {
+  const argv = await yargs(hideBin(process.argv))
+    .option('agent', {
+      alias: 'a',
+      describe: 'Your config agent file name',
+      type: 'string',
+      default: 'default.agent.json',
+    })
+    .strict()
+    .parse();
+
+  return argv['agent'];
+};
 
 const clearScreen = () => {
   process.stdout.write('\x1Bc');
@@ -49,9 +67,9 @@ const createBox = (
 
 const validateEnvVars = () => {
   const required = [
-    'RPC_URL',
-    'PRIVATE_KEY',
-    'PUBLIC_ADDRESS',
+    'STARKNET_RPC_URL',
+    'STARKNET_PRIVATE_KEY',
+    'STARKNET_PUBLIC_ADDRESS',
     'AI_MODEL',
     'AI_PROVIDER_API_KEY',
   ];
@@ -65,7 +83,7 @@ const LocalRun = async () => {
   clearScreen();
   console.log(logo);
   console.log(createBox('Welcome to Starknet-Agent-Kit'));
-
+  const agent_config_name = await load_command();
   const { mode } = await inquirer.prompt([
     {
       type: 'list',
@@ -93,7 +111,7 @@ const LocalRun = async () => {
   try {
     validateEnvVars();
     spinner.success({ text: 'Agent initialized successfully' });
-
+    const agent_config = load_json_config(agent_config_name);
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
@@ -115,19 +133,19 @@ const LocalRun = async () => {
 
         try {
           const agent = new StarknetAgent({
-            provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
-            accountPrivateKey: process.env.PRIVATE_KEY,
-            accountPublicKey: process.env.PUBLIC_ADDRESS,
+            provider: new RpcProvider({
+              nodeUrl: process.env.STARKNET_RPC_URL,
+            }),
+            accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+            accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
             aiModel: process.env.AI_MODEL,
             aiProvider: 'anthropic',
             aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
             signature: 'key',
             agentMode: 'agent',
+            agentconfig: agent_config,
           });
-
           agent.initializeTwitterManager();
-          agent.initializeTelegramManager();
-
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -139,17 +157,18 @@ const LocalRun = async () => {
       }
     } else if (mode === 'auto') {
       const agent = new StarknetAgent({
-        provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
-        accountPrivateKey: process.env.PRIVATE_KEY,
-        accountPublicKey: process.env.PUBLIC_ADDRESS,
+        provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
+        accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
         aiModel: process.env.AI_MODEL,
         aiProvider: 'anthropic',
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
         signature: 'key',
         agentMode: 'auto',
+        agentconfig: agent_config,
       });
+
       agent.initializeTwitterManager();
-      agent.initializeTelegramManager();
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
 

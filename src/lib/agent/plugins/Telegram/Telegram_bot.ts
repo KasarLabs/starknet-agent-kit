@@ -2,7 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import express, { Express, Request, Response, Application } from 'express';
 import { StarknetAgentInterface } from '../../tools/tools';
 import { getTelegramMessageUpdateFromConversationParmas } from '../../schemas/schema';
-import { TelegramServerConstant } from './types/telegram_types';
+import { TelegramServerConstant } from './types/index';
 
 /**
  * Manage a Telegram Bot server.

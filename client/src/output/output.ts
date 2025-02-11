@@ -7,7 +7,7 @@ export const CreateOutputRequest = async (input: string): Promise<string> => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
       },
       body: JSON.stringify({ request: JSON.stringify(input) }),
       credentials: 'include',

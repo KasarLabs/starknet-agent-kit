@@ -15,7 +15,6 @@ import {
 } from './plugins/Twitter/interface';
 import { JsonConfig } from './jsonConfig';
 import { TelegramInterface } from './plugins/Telegram/interfaces';
-import { error } from 'console';
 import TelegramBot from 'node-telegram-bot-api';
 
 export interface StarknetAgentConfig {

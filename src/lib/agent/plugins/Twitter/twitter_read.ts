@@ -7,7 +7,7 @@ import {
   getTwitterUserIdFromUsernameParams,
 } from '../../schemas/schema';
 import { StarknetAgentInterface } from '../../tools/tools';
-import { TweetType } from './types/twitter_types';
+import { TweetType } from './types/index';
 
 export const getLastUserTweet = async (
   agent: StarknetAgentInterface,

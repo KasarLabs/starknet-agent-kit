@@ -1,17 +1,15 @@
 import {
   Injectable,
-  BadRequestException,
   ForbiddenException,
   ExecutionContext,
   CanActivate,
 } from '@nestjs/common';
 import { MultipartFile } from '@fastify/multipart';
 import { FastifyRequest } from 'fastify';
-import { createReadStream, createWriteStream, promises as fs } from 'fs';
+import { promises as fs } from 'fs';
 import stream = require('stream');
 import * as util from 'util';
 import { join } from 'path';
-import { createHash } from 'crypto';
 import { PassThrough } from 'stream';
 
 interface FileSignature {
@@ -88,8 +86,6 @@ export class FileTypeGuard implements CanActivate {
   }
 
   private async saveFile(file: MultipartFile): Promise<UploadedFile> {
-    // const hash = this.generateFileHash(buffer);
-    // const ext = this.getFileExtension(file.filename);
     const buffer = await file.toBuffer();
     const filename = file.filename;
     const filepath = join(this.uploadDir, filename);
@@ -97,10 +93,6 @@ export class FileTypeGuard implements CanActivate {
 
     await fs.writeFile(filepath, buffer);
 
-    // const writeStream = createWriteStream(`./uploads/${file.filename}`);
-    // await pipeline(file.file, writeStream);
-
-    // Vérification optionnelle de l'intégrité
     const originalSize = buffer.length;
     const writtenSize = (await fs.stat(filepath)).size;
 
@@ -119,15 +111,6 @@ export class FileTypeGuard implements CanActivate {
     };
   }
 
-  private generateFileHash(buffer: Buffer): string {
-    return createHash('sha256').update(buffer).digest('hex').substring(0, 16);
-  }
-
-  private getFileExtension(filename: string): string {
-    const ext = filename.split('.').pop();
-    return ext ? `.${ext}` : '';
-  }
-
   private async ensureUploadDirExists(): Promise<void> {
     try {
       await fs.access(this.uploadDir);
@@ -143,7 +126,7 @@ export class FileTypeGuard implements CanActivate {
         await fs.unlink(join(this.uploadDir, file));
       }
     } catch (error) {
-      console.error('Erreur lors du nettoyage des fichiers:', error);
+      console.error('Error while cleaning files:', error);
     }
   }
 

@@ -1,4 +1,3 @@
-import { ATLANTIC_URL } from 'src/core/constants/infra/atlantic';
 import { z } from 'zod';
 
 // Available AI models for each provider

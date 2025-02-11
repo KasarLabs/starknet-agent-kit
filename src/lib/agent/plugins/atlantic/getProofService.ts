@@ -1,4 +1,4 @@
-import { ATLANTIC_URL } from 'src/core/constants/infra/atlantic';
+import { ATLANTIC_URL, DASHBOARD_URL } from './constants/atlantic';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { AtlanticParam, AtlanticRes } from './types/Atlantic';
 import { promises as fs } from 'fs';
@@ -63,7 +63,7 @@ export const getProofService = async (
           'Received an undefined response from the external API.'
         );
       }
-      url = `https://staging.dashboard.herodotus.dev/explorer/atlantic/${data.atlanticQueryId}`;
+      url = `${DASHBOARD_URL}${data.atlanticQueryId}`;
     }
     return JSON.stringify({
       status: 'success',

@@ -75,9 +75,9 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../plugins/core/token/types/balance';
-import { AtlanticParam } from '../plugins/infra/atlantic/types/Atlantic';
-import { verifyProofService } from '../plugins/infra/atlantic/verifyProofService';
-import { getProofService } from '../plugins/infra/atlantic/getProofService';
+import { AtlanticParam } from '../plugins/atlantic/types/Atlantic';
+import { verifyProofService } from '../plugins/atlantic/verifyProofService';
+import { getProofService } from '../plugins/atlantic/getProofService';
 import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
 import {
   createTwitterpost,
@@ -382,7 +382,7 @@ export const registerTools = () => {
   StarknetToolRegistry.registerTool<AtlanticParam>({
     name: 'verify_proof_service',
     description:
-      "This service connects to Atlantic's verification pipeline to validate proofs. When provided with a JSON file containing proof data, it will process the proof through Atlantic's verification system and return a unique identifier (atlantic_query_id) that can be usedto track and reference the verification result.",
+      "Query atlantic api to verify a proof from '.json' file on starknet and return the query id",
     schema: VerifyProofServiceSchema,
     execute: verifyProofService,
   });

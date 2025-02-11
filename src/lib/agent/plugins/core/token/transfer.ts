@@ -108,9 +108,6 @@ export const transfer = async (
       );
     }
 
-    console.log(tokenAddress);
-    console.log(payloads);
-    console.log(amountUint256);
     const result = await account.execute({
       contractAddress: tokenAddress,
       entrypoint: 'transfer',

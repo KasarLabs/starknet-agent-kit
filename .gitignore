@@ -2,7 +2,6 @@
 /dist
 /node_modules
 .env
-.change.md
 
 # Client
 /client/.next

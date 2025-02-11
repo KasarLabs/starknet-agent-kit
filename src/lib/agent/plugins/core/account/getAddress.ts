@@ -6,7 +6,7 @@ export const getAddress = async (agent: StarknetAgentInterface) => {
 
     if (!accountAddress) {
       throw new Error(
-        'No public address found. Please set PUBLIC_ADDRESS in your .env file!'
+        'No public address found. Please set STARKNET_PUBLIC_ADDRESS in your .env file!'
       );
     }
 

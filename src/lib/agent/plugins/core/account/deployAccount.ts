@@ -105,7 +105,7 @@ export const DeployArgentAccountSignature = async (
   params: DeployArgentParams
 ) => {
   try {
-    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
     const accountAX = new Account(
       provider,
       params.publicKeyAX,
@@ -160,7 +160,7 @@ export const DeployOZAccountSignature = async (
   params: DeployOZAccountParams
 ) => {
   try {
-    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
     const OZaccountConstructorCallData = CallData.compile({
       publicKey: params.publicKey,
     });

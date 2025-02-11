@@ -58,14 +58,23 @@ cp .env.example .env
 ```
 
 ```
-# Required Configuration
-PRIVATE_KEY="your_wallet_private_key"
-PUBLIC_ADDRESS="your_wallet_address"
-RPC_URL="your_rpc_endpoint"
-AI_PROVIDER_API_KEY="your_ai_api_key"
-AI_PROVIDER="anthropic"  # or "openai", "gemini", "ollama"
-AI_MODEL="claude-3-5-sonnet-latest"  # or your chosen model
-API_KEY="your_api_key_for_endpoints"
+# Starknet configuration (mandatory)
+STARKNET_PUBLIC_ADDRESS="YOUR_STARKNET_PUBLIC_ADDRESS"
+STARKNET_PRIVATE_KEY="YOUR_STARKNET_PRIVATE_KEY"
+STARKNET_RPC_URL="YOUR_STARKNET_RPC_URL"
+
+# AI Provider configuration (mandatory)
+AI_PROVIDER_API_KEY="YOUR_AI_PROVIDER_API_KEY"
+AI_MODEL="YOUR_AI_MODEL"
+AI_PROVIDER="YOUR_AI_PROVIDER"
+
+# NestJS server configuration
+SERVER_API_KEY="YOUR_SERVER_API_KEY"
+SERVER_PORT="YOUR_SERVER_PORT"
+
+# Agent additional configuration
+DISCORD_BOT_TOKEN?="YOUR_DISCORD_BOT_TOKEN"
+DISCORD_CHANNEL_ID?="YOUR_DISCORD_CHANNEL_ID"
 ```
 
 4. Start the development environment:

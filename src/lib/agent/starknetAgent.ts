@@ -5,6 +5,15 @@ import { AccountManager } from './plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
 import { createAutonomousAgent } from './autonomousAgents';
+import { AddAgentLimit, Limit } from './limit';
+import { Scraper } from 'agent-twitter-client';
+import { TwitterApi } from 'twitter-api-v2';
+import {
+  TwitterInterface,
+  TwitterApiConfig,
+  TwitterScraperConfig,
+} from './plugins/Twitter/interface/twitter-interface';
+import { JsonConfig } from './jsonConfig';
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
@@ -15,6 +24,7 @@ export interface StarknetAgentConfig {
   accountPrivateKey: string;
   signature: string;
   agentMode: string;
+  agentconfig?: JsonConfig;
 }
 
 export class StarknetAgent implements IAgent {
@@ -24,12 +34,15 @@ export class StarknetAgent implements IAgent {
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
   private readonly agentReactExecutor: any;
+  private twitterAccoutManager: TwitterInterface = {};
 
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
   public readonly agentMode: string;
+  public readonly token_limit: Limit;
+  public readonly agentconfig?: JsonConfig | undefined;
 
   constructor(private readonly config: StarknetAgentConfig) {
     this.validateConfig(config);
@@ -41,6 +54,9 @@ export class StarknetAgent implements IAgent {
     this.aiProviderApiKey = config.aiProviderApiKey;
     this.signature = config.signature;
     this.agentMode = config.agentMode;
+    this.agentconfig = config.agentconfig;
+
+    this.token_limit = AddAgentLimit();
 
     // Initialize managers
     this.accountManager = new AccountManager(this.provider);
@@ -75,6 +91,79 @@ export class StarknetAgent implements IAgent {
     }
   }
 
+  public async initializeTwitterManager(): Promise<void> {
+    const auth_mode = process.env.TWITTER_AUTH_MODE;
+    try {
+      if (auth_mode === 'CREDIDENTIALS') {
+        const username = process.env.TWITTER_USERNAME;
+        const password = process.env.TWITTER_PASSWORD;
+        const email = process.env.TWITTER_EMAIL;
+
+        if (!username || !password) {
+          throw new Error(
+            'Error when try to initializeTwitterManager in CREDIDENTIALS twitter_auth_mode check your .env'
+          );
+        }
+        const user_client = new Scraper();
+
+        await user_client.login(username, password, email);
+        const account = await user_client.me();
+        if (!account) {
+          throw new Error('Impossible to get your twitter account information');
+        }
+        const userClient: TwitterScraperConfig = {
+          twitter_client: user_client,
+          twitter_id: account?.userId as string,
+          twitter_username: account?.username as string,
+        };
+        this.twitterAccoutManager.twitter_scraper = userClient;
+      } else if (auth_mode === 'API') {
+        const twitter_api = process.env.TWITTER_API;
+        const twitter_api_secret = process.env.TWITTER_API_SECRET;
+        const twitter_access_token = process.env.TWITTER_ACCESS_TOKEN;
+        const twitter_access_token_secret =
+          process.env.TWITTER_ACCESS_TOKEN_SECRET;
+
+        if (
+          !twitter_api ||
+          !twitter_api_secret ||
+          !twitter_access_token ||
+          !twitter_access_token_secret
+        ) {
+          throw new Error(
+            'Error when try to initializeTwitterManager in API twitter_auth_mode check your .env'
+          );
+        }
+
+        const userClient = new TwitterApi({
+          appKey: twitter_api,
+          appSecret: twitter_api_secret,
+          accessToken: twitter_access_token,
+          accessSecret: twitter_access_token_secret,
+        });
+        if (!userClient) {
+          throw new Error(
+            'Error when trying to createn you Twitter API Account check your API Twitter Credidentials'
+          );
+        }
+
+        const apiConfig: TwitterApiConfig = {
+          twitter_api: twitter_api,
+          twitter_api_secret: twitter_api_secret,
+          twitter_access_token: twitter_access_token,
+          twitter_access_token_secret: twitter_access_token_secret,
+          twitter_api_client: userClient,
+        };
+
+        this.twitterAccoutManager.twitter_api = apiConfig;
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
   getAccountCredentials() {
     return {
       accountPrivateKey: this.accountPrivateKey,
@@ -101,8 +190,28 @@ export class StarknetAgent implements IAgent {
     };
   }
 
+  getAgentConfig(): JsonConfig | undefined {
+    return this.agentconfig;
+  }
   getProvider(): RpcProvider {
     return this.provider;
+  }
+
+  getLimit(): Limit {
+    return this.token_limit;
+  }
+
+  getTwitterAuthMode(): 'API' | 'CREDIDENTIALS' | undefined {
+    return process.env.TWITTER_AUTH_MODE as 'API' | 'CREDIDENTIALS' | undefined;
+  }
+
+  getTwitterManager(): TwitterInterface {
+    if (!this.twitterAccoutManager) {
+      throw new Error(
+        'Twitter manager not initialized. Call initializeTwitterManager() first'
+      );
+    }
+    return this.twitterAccoutManager;
   }
 
   async validateRequest(request: string): Promise<boolean> {

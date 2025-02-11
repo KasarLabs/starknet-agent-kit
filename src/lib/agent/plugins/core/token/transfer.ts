@@ -1,6 +1,8 @@
-import { Account, uint256 } from 'starknet';
+import { Account, BigNumberish, uint256 } from 'starknet';
 import { tokenAddresses } from './constants/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { AddAgentLimit, Limit } from 'src/lib/agent/limit';
+import { Token } from 'src/lib/agent/limit';
 
 export interface transferPayloads {
   recipient_address: string;
@@ -37,6 +39,31 @@ const formatTokenAmount = (amount: string, decimals: number): string => {
   return whole + paddedFraction;
 };
 
+const handleLimitTokenTransfer = (
+  amount: BigNumberish,
+  symbol: string,
+  limit: Token[]
+) => {
+  const index = limit.findIndex(
+    (token) => token.symbol.toUpperCase() === symbol.toUpperCase()
+  );
+  if (index === -1) {
+    console.log(`Not limit find for token : ${symbol}`);
+    return;
+  }
+
+  const decimals =
+    DECIMALS[limit[index].symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+  const formattedAmount = formatTokenAmount(limit[index].amount, decimals);
+  const amountUint256 = uint256.bnToUint256(formattedAmount);
+  if (BigInt(amount) > BigInt(amountUint256.low)) {
+    throw new Error(
+      `Error your limit token exceed the transaction amount.\n Transaction amount : ${amount} \n Transacion limit amount ${limit[index].amount}`
+    );
+  }
+  console.log('Limit Token : ', amountUint256.low, amount);
+};
+
 /**
  * Transfers ERC20 tokens on Starknet
  * @payload agent The agent performing the transfer
@@ -57,6 +84,13 @@ export const transfer = async (
       credentials.accountPrivateKey
     );
 
+    const limit = agent.getLimit();
+
+    if (limit.transfer_limit) {
+      console.log(
+        `Welcome to transfer limit interface your limit is set to : \n ${limit.transfer_limit[0].symbol} amount ${limit.transfer_limit[0].amount}`
+      );
+    }
     const tokenAddress = tokenAddresses[payloads.symbol];
     if (!tokenAddress) {
       throw new Error(`Token ${payloads.symbol} not supported`);
@@ -66,7 +100,13 @@ export const transfer = async (
       DECIMALS[payloads.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
     const formattedAmount = formatTokenAmount(payloads.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
-
+    if (Array.isArray(limit.transfer_limit)) {
+      handleLimitTokenTransfer(
+        amountUint256.low,
+        payloads.symbol,
+        limit.transfer_limit
+      );
+    }
     const result = await account.execute({
       contractAddress: tokenAddress,
       entrypoint: 'transfer',
@@ -123,6 +163,8 @@ export const transfer_signature = async (input: {
       throw new Error('Payloads is not an Array');
     }
 
+    const limit = AddAgentLimit();
+
     const results = await Promise.all(
       payloads.map(async (payload) => {
         const tokenAddress = tokenAddresses[payload.symbol];
@@ -139,6 +181,13 @@ export const transfer_signature = async (input: {
           DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
         const formattedAmount = formatTokenAmount(payload.amount, decimals);
         const amountUint256 = uint256.bnToUint256(formattedAmount);
+        if (Array.isArray(limit.transfer_limit)) {
+          handleLimitTokenTransfer(
+            amountUint256.low,
+            payload.symbol,
+            limit.transfer_limit
+          );
+        }
 
         return {
           status: 'success',

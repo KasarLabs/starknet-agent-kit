@@ -86,7 +86,7 @@ export const CreateArgentAccount = async () => {
 
 export const CreateArgentAccountSignature = async () => {
   try {
-    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
     const privateKeyAX = stark.randomAddress();
     console.log('AX_ACCOUNT_PRIVATE_KEY=', privateKeyAX);
     const starkKeyPubAX = ec.starkCurve.getStarkKey(privateKeyAX);
@@ -136,7 +136,7 @@ export const CreateArgentAccountSignature = async () => {
 
 export const CreateOZAccountSignature = async () => {
   try {
-    const provider = new RpcProvider({ nodeUrl: process.env.RPC_URL });
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const privateKey = stark.randomAddress();
     console.log('New OZ account:\nprivateKey=', privateKey);

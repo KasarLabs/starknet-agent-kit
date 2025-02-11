@@ -476,7 +476,6 @@ export const registerTools = () => {
     schema: routeSchema,
     execute: getRouteFibrous,
   });
-
 };
 registerTools();
 

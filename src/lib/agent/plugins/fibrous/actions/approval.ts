@@ -16,11 +16,7 @@ export class ApprovalService {
     amount: string
   ): Promise<Call | null> {
     try {
-      const contract = new Contract(
-        ERC20_ABI,
-        tokenAddress,
-        account
-      );
+      const contract = new Contract(ERC20_ABI, tokenAddress, account);
 
       const allowanceResult = await contract.call('allowance', [
         account.address,

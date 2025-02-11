@@ -19,8 +19,6 @@
   ],
   "interval": 30,
   "chat_id": "test",
-  "external_client" : [
-    "discord"
-  ],
-  "allowed_external_client_tools" : ["discord-send-messages"]
+  "external_client": ["discord"],
+  "allowed_external_client_tools": ["discord-send-messages"]
 }

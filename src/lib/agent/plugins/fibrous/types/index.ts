@@ -31,7 +31,7 @@ export interface BatchSwapParams {
  * @property {number} decimals - Number of decimal places
  * @property {string | null} logoUri - URL to token logo image
  * @property {string} volume - Last 24h trading volume in USD
- * @property {string} price - Token price in USD  
+ * @property {string} price - Token price in USD
  * @property {boolean} verified - Token verification status
  * @property {string} category - Token categorization tags
  */
@@ -44,10 +44,8 @@ export interface Token {
   volume: string;
   price: string;
   verified: boolean;
-  category: string
+  category: string;
 }
-
-
 
 /**
  * Result of a swap operation

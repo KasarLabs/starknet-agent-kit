@@ -1,4 +1,3 @@
-
 import { Account, Call } from 'starknet';
 
 import { ApprovalService } from './approval';

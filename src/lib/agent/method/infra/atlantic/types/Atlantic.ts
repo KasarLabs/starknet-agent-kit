@@ -3,7 +3,12 @@
  * @property {string} filename - The name of the file you wish to verify or generate the proof of
  */
 export type AtlanticParam = {
-    filename: string;
+  filename: string;
+};
+
+export type VerifierParam = {
+  filename: string;
+  memoryVerification: string;
 };
 
 /**
@@ -11,5 +16,5 @@ export type AtlanticParam = {
  * @property {string} atlanticQueryId - query id to retrieve the request
  */
 export interface AtlanticRes {
-    atlanticQueryId: string;
-};
+  atlanticQueryId: string;
+}

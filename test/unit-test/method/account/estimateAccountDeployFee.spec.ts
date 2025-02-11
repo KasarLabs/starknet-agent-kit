@@ -8,7 +8,7 @@ describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
     it('should estimate fees successfully with valid payload', async () => {
       // Arrange
-      
+
       const params = {
         accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
         payloads: [
@@ -24,10 +24,7 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      const result = await estimateAccountDeployFee(
-        params,
-        agent
-      );
+      const result = await estimateAccountDeployFee(params, agent);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -69,10 +66,7 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      const result = await estimateAccountDeployFee(
-        params,
-        agent
-      );
+      const result = await estimateAccountDeployFee(params, agent);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -93,10 +87,7 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      const result = await estimateAccountDeployFee(
-        params,
-        agent
-      );
+      const result = await estimateAccountDeployFee(params, agent);
       const parsed = JSON.parse(result);
 
       // Assert

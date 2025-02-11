@@ -9,18 +9,20 @@ setupTestEnvironment();
 
 export const createMockStarknetAgent = (): StarknetAgentInterface => {
   const provider = new RpcProvider({ nodeUrl: 'http://localhost:5050' });
-  
+
   return {
     getAccountCredentials: () => ({
-      accountPublicKey: '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
-      accountPrivateKey: '0x00000000000000000000000000000000b137668388dbe9acdfa3bc734cc2c469'
+      accountPublicKey:
+        '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
+      accountPrivateKey:
+        '0x00000000000000000000000000000000b137668388dbe9acdfa3bc734cc2c469',
     }),
     getModelCredentials: () => ({
       aiModel: '',
-      aiProviderApiKey: ''
+      aiProviderApiKey: '',
     }),
     getSignature: () => ({
-      signature: ''
+      signature: '',
     }),
     getProvider: () => provider,
     accountManager: new AccountManager(provider),
@@ -31,18 +33,19 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
 
 export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
   const provider = new RpcProvider({ nodeUrl: 'http://localhost:5050' });
-  
+
   return {
     getAccountCredentials: () => ({
-      accountPublicKey: '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
-      accountPrivateKey: 'dsfahdskfgdsjkah'
+      accountPublicKey:
+        '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
+      accountPrivateKey: 'dsfahdskfgdsjkah',
     }),
     getModelCredentials: () => ({
       aiModel: '',
-      aiProviderApiKey: ''
+      aiProviderApiKey: '',
     }),
     getSignature: () => ({
-      signature: ''
+      signature: '',
     }),
     getProvider: () => provider,
     accountManager: new AccountManager(provider),

@@ -1,5 +1,8 @@
 import { getOwnBalance } from 'src/lib/agent/method/core/token/getBalances';
-import { createMockInvalidStarknetAgent, createMockStarknetAgent } from 'test/jest/setEnvVars';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
 
@@ -39,7 +42,6 @@ describe('getOwnBlance', () => {
         symbol: 'ETH',
       };
       const invalidAgent = createMockInvalidStarknetAgent();
-      
 
       // Act
       const result = await getOwnBalance(invalidAgent, params);

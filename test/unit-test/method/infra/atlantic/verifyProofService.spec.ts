@@ -1,49 +1,65 @@
-import { AtlanticParam } from "src/lib/agent/method/infra/atlantic/types/Atlantic";
-import { verifyProofService } from "src/lib/agent/method/infra/atlantic/verifyProofService";
-import { createMockStarknetAgent } from "test/jest/setEnvVars";
+import { VerifierParam } from 'src/lib/agent/method/infra/atlantic/types/Atlantic';
+import { verifyProofService } from 'src/lib/agent/method/infra/atlantic/verifyProofService';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
 
 describe('verifyProofService', () => {
-    describe('With perfect match inputs', () => {});
-    it('Should return an url to atlantic dashboard with query id', async () => {
-      const getProofParam: AtlanticParam = {
-          filename: '/test/recursive_proof.json'
-      }
+  const OLD_ENV = process.env;
 
-      const result = await verifyProofService(agent, getProofParam);
-      const parsed = JSON.parse(result);
-  
-      expect(parsed).toEqual({
-        status: 'success',
-        url: expect.any(String),
-      });
-    });
-    describe('With no filename input', () => {});
-    it('Invalid Type', async () => {
-      const getProofParam: AtlanticParam = {
-          filename: '/test/Pie.zip'
-      }
-
-      const result = await verifyProofService(agent, getProofParam);
-      const parsed = JSON.parse(result);
-
-      expect(parsed).toEqual({
-        status: 'failure',
-        error: expect.any(String),
-      });
-    });
-    it('Invalid filename', async () => {
-      const getProofParam: AtlanticParam = {
-          filename: 'gfdhjgfdg'
-      }
-
-      const result = await verifyProofService(agent, getProofParam);
-      const parsed = JSON.parse(result);
-
-      expect(parsed).toEqual({
-        status: 'failure',
-        error: expect.any(String),
-      });
-    })
+  beforeEach(() => {
+    jest.resetModules(); // Most important - it clears the cache
+    process.env = { ...OLD_ENV }; // Make a copy
   });
+  afterAll(() => {
+    process.env = OLD_ENV; // Restore old environment
+  });
+
+  describe('With perfect match inputs', () => {});
+  it('Should return an url to atlantic dashboard with query id', async () => {
+    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    const getProofParam: VerifierParam = {
+      filename: '/test/recursive_proof.json',
+      memoryVerification: 'relaxed',
+    };
+
+    const result = await verifyProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'success',
+      url: expect.any(String),
+    });
+  });
+  describe('With no filename input', () => {});
+  it('Invalid Type', async () => {
+    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    const getProofParam: VerifierParam = {
+      filename: '',
+      memoryVerification: '',
+    };
+
+    const result = await verifyProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+  it('Invalid filename', async () => {
+    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    const getProofParam: VerifierParam = {
+      filename: 'sfddfds',
+      memoryVerification: 'relaxed',
+    };
+
+    const result = await verifyProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+});

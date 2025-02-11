@@ -82,6 +82,9 @@ export class Checker {
             const data = await response.json();
             const allHexColor: string[] = data.data;
 
+            if (parseInt(color) === 0)
+                return `0`;
+
             const cleanColor = color.charAt(0) === '#' ? color.substring(1) : color;
             const isHex = allHexColor.indexOf(cleanColor);
             if (isHex != -1 )

@@ -137,7 +137,7 @@ export const registerTools = () => {
   // Register artpeace tools
   StarknetToolRegistry.registerTool({
     name: 'place_pixel',
-    description: 'Places a pixel according to the colour, position and world specified by the user.',
+    description: 'Places a pixel according to the colour, position and world specified by the user',
     schema: placePixelSignatureSchema,
     execute: placePixel,
   })

@@ -1,4 +1,4 @@
-import { getAddress } from 'src/lib/agent/method/core/account/getAddress';
+import { getAddress } from 'src/lib/agent/plugins/core/account/getAddress';
 import {
   createMockInvalidStarknetAgent,
   createMockStarknetAgent,
@@ -23,7 +23,9 @@ describe('getAddress', () => {
       // Arrange
       const mockAddress = '';
 
-      process.env = { PUBLIC_ADDRESS: mockAddress } as NodeJS.ProcessEnv;
+      process.env = {
+        STARKNET_PUBLIC_ADDRESS: mockAddress,
+      } as NodeJS.ProcessEnv;
 
       // Act
 

@@ -1,8 +1,7 @@
-import { getBalance } from 'src/lib/agent/method/core/token/getBalances';
+import { getBalance } from 'src/lib/agent/plugins/core/token/getBalances';
 import { Contract } from 'starknet';
-import { string } from 'zod';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
-import { ERC20_ABI } from 'src/lib/agent/method/core/token/abis/erc20Abi';
+import { ERC20_ABI } from 'src/lib/agent/plugins/core/token/abis/erc20Abi';
 
 const agent = createMockStarknetAgent();
 
@@ -13,7 +12,7 @@ jest.mock('starknet', () => ({
       .mockImplementation(async () => ({ balance: '2000000000000000000' })),
   })),
   RpcProvider: jest.fn(() => ({
-    nodeUrl: process.env.RPC_URL,
+    nodeUrl: process.env.STARKNET_RPC_URL,
   })),
 }));
 

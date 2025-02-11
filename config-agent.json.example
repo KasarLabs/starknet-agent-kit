@@ -1,7 +1,0 @@
-{
-  "name": "Your Agent name",
-  "context": "Your Agent context",
-  "interval":  Your agent interval beetween each transaction of the Agent in ms,
-  "chat_id" : "Your Agent Chat-id",
-  "allowed_tools": ["Your Allowed Tools"]
-}

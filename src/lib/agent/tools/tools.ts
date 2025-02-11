@@ -73,7 +73,7 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../plugins/core/token/types/balance';
-import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
+import { TwitterInterface } from '../plugins/Twitter/interface';
 import {
   createTwitterpost,
   ReplyTweet,
@@ -90,7 +90,9 @@ import {
   getTwitterProfileFromUsername,
 } from '../plugins/Twitter/twitter_read';
 import { Limit } from '../limit';
+import { telegram_get_messages_from_conversation } from '../plugins/Telegram/Telegram_bot';
 import { JsonConfig } from '../jsonConfig';
+import { TelegramInterface } from '../plugins/Telegram/interfaces';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -110,8 +112,9 @@ export interface StarknetAgentInterface {
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
-  getAgentConfig: () => JsonConfig | undefined;
   getTwitterManager: () => TwitterInterface;
+  getTelegramManager: () => TelegramInterface;
+  getAgentConfig: () => JsonConfig | undefined;
 }
 
 interface StarknetTool<P = any> {
@@ -446,6 +449,12 @@ export const registerTools = () => {
     name: 'get_own_twitter_account_info',
     description: 'Get current account profile data',
     execute: getOwnTwitterAccountInfo,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'telegram_get_messages_from_conversation',
+    description: 'Get the lates messages of telegram channel',
+    execute: telegram_get_messages_from_conversation,
   });
 };
 registerTools();

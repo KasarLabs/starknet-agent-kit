@@ -28,4 +28,4 @@ export const routeSchema = z.object({
   sellAmount: z.number().positive().describe('Amount of tokens to sell'),
 });
 
-type RouteSchemaType = z.infer<typeof routeSchema>;
+export type RouteSchemaType = z.infer<typeof routeSchema>;

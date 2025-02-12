@@ -1,9 +1,7 @@
-import { z } from 'zod';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { TokenService } from './fetchTokens';
 import { Router as FibrousRouter, RouteResponse } from 'fibrous-router-sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { SwapParams } from '../types';
 import { RouteSchemaType } from '../schema';
 
 interface RouteResult {

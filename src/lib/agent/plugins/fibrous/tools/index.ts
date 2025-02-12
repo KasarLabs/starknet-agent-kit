@@ -1,4 +1,4 @@
-import StarknetToolRegistry from 'src/lib/agent/tools/tools';
+import { StarknetToolRegistry } from 'src/lib/agent/tools/tools';
 import { swapSchema } from '../../avnu/schema';
 import { swapTokensFibrous } from '../actions/swap';
 import { batchSwapSchema, routeSchema } from '../schema';

@@ -19,5 +19,5 @@
   ],
   "interval": 30,
   "chat_id": "test",
-  "allowed_internal_tools": ["get_balance", "get_own_balance", "swap_tokens"]
+  "allowed_internal_tools": ["get_balance", "get_own_balance", "swap_tokens", "create_twitter_post"]
 }

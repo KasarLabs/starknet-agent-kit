@@ -16,7 +16,7 @@ This integration allows you to connect Twitter to your agent using either the [T
 ```
 TWITTER_AUTH_MODE = "API" # API mode
 
-#Your Credidentials you get from the Developer Platform
+#Your CREDENTIALS you get from the Developer Platform
 
 TWITTER_API="YOUR_TWITTER_API"
 TWITTER_API_SECRET="YOUR_TWITTER_API_SECRET"
@@ -34,11 +34,11 @@ TWITTER_ACCESS_TOKEN_SECRET="YOUR_TWITTER_ACCESS_TOKEN_SECRET"
 4. **Actions**<br />
    In API mode, you have access to the `create_twitter_post` action.
 
-## Steps to Set Up Your Twitter Using : Twitter Scraper
+## Configuration via Twitter Scraper
 
 1. **Configure .env File :**<br />
    ```
-    TWITTER_AUTH_MODE = "CREDIDENTIALS" # API mode
+    TWITTER_AUTH_MODE = "CREDENTIALS" # API mode
 
     # Your Twitter Credentials
 

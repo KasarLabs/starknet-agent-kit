@@ -22,8 +22,8 @@ export const getLastUserTweet = async (
 ) => {
   try {
     console.log('GetLastUserTweet');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -64,8 +64,8 @@ export const getLastTweetsOptions = async (
 ) => {
   try {
     console.log('GetLastTweetsOptions');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -109,8 +109,8 @@ export const getOwnTwitterAccountInfo = async (
 ) => {
   try {
     console.log('getOwnTwitterAccountInfo');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -146,8 +146,8 @@ export const getLastTweetsFromUser = async (
 ) => {
   console.log('getLastTweetsFromUser');
   try {
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -192,8 +192,8 @@ export const getLastTweetsAndRepliesFromUser = async (
 ) => {
   try {
     console.log('getLastTweetsAndRepliesFromUser');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -239,8 +239,8 @@ export const getTwitterUserIdFromUsername = async (
 ) => {
   try {
     console.log('getTwitterUserIdFromUsername');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -274,8 +274,8 @@ export const getTwitterProfileFromUsername = async (
 ) => {
   try {
     console.log('geTwitterUserIdFromUsername');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;

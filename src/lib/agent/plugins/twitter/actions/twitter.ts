@@ -19,8 +19,8 @@ export const createTwitterpost = async (
 ) => {
   try {
     const twitter_auth_mode = agent.getTwitterAuthMode();
-    if (twitter_auth_mode === 'CREDIDENTIALS') {
-      console.log('CREDIDENTIALS');
+    if (twitter_auth_mode === 'CREDENTIALS') {
+      console.log('CREDENTIALS');
       const twitter_client =
         agent.getTwitterManager().twitter_scraper?.twitter_client;
 
@@ -71,8 +71,8 @@ export const ReplyTweet = async (
   params: ReplyTweetParams
 ) => {
   try {
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;
@@ -111,8 +111,8 @@ export const createAndPostTwitterThread = async (
     if (thread_size <= 0) {
       throw new Error('Your array of thread is empty');
     }
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_scraper = agent.getTwitterManager().twitter_scraper;
     if (!twitter_scraper) {
@@ -172,8 +172,8 @@ export const FollowXUserFromUsername = async (
 ) => {
   try {
     console.log('getXUserIdFromUsername');
-    if (agent.getTwitterAuthMode() != 'CREDIDENTIALS') {
-      throw new Error('You need to be in CREDIDENTIALS twitter_auth_mode');
+    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+      throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
     const twitter_client =
       agent.getTwitterManager().twitter_scraper?.twitter_client;

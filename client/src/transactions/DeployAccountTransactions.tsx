@@ -13,16 +13,16 @@ export const handleDeployTransactions = async (
     if (!public_key || !private_key || !contractaddress) {
       throw new Error('Invalid Credidentials');
     }
-    const deploy_input = `Deploy ${wallet_type} Account ${public_key} ${private_key} ${contractaddress}`;
+    const deploy_input = `Deploy ${wallet_type} Account publickey: ${public_key} private key: ${private_key} address: ${contractaddress}`;
+
     const fund_account_tx = await Wallet.execute(Tx);
     if (!fund_account_tx) {
       throw new Error(
         'The Transfer for fund the new account fail check your balance'
       );
     }
-
     await new Promise((resolve) => setTimeout(resolve, 20000)); // Need to improve this
-
+    
     const deploy_tx = await fetch('/api/wallet/request', {
       method: 'POST',
       headers: {

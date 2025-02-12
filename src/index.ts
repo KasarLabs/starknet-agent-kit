@@ -5,7 +5,8 @@ export * from './lib/agent/autonomousAgents';
 
 // Plugin exports
 export * from './lib/agent/plugins/core/account/types/accounts';
-export * from './lib/agent/plugins/core/account/types/deployAccountTypes';
+// export * from './lib/agent/plugins/core/account/types/deployAccountTypes';
+// export * from './lib/agent/plugins/argentx/types/argentx';
 export * from './lib/agent/plugins/core/contract/types/contract';
 export * from './lib/agent/plugins/core/token/types/balance';
 export * from './lib/agent/plugins/core/transaction/types/estimate';

@@ -47,8 +47,6 @@ describe('OZ Account Creation and Deployment', () => {
             console.log('Test de déploiement ignoré. Définissez RUN_DEPLOYMENT_TEST=true pour l\'exécuter');
             return;
         }
-
-        const accountDetails = JSON.parse(fs.readFileSync('account_details.json', 'utf8'));
         
         console.log('\nDéploiement du compte...');
         const result = await DeployOZAccountSignature(accountDetails);

@@ -111,7 +111,7 @@ export class ApprovalService {
     }
   }
 
-    /**
+  /**
    * Approves a token spending amount
    * @param {Object} params - The parameters for token approval
    * @param {string} params.tokenAddress - The address of the token contract

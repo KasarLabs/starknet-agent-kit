@@ -1,4 +1,4 @@
-import { Quote, Route } from "@avnu/avnu-sdk";
+import { Quote, Route } from '@avnu/avnu-sdk';
 
 /**
  * Interface representing the result of a route fetch operation
@@ -9,8 +9,8 @@ import { Quote, Route } from "@avnu/avnu-sdk";
  * @property {string} [error] - Error message (if failed)
  */
 export interface RouteResult {
-    status: 'success' | 'failure';
-    route?: Route;
-    quote?: Quote;
-    error?: string;
-  }
+  status: 'success' | 'failure';
+  route?: Route;
+  quote?: Quote;
+  error?: string;
+}

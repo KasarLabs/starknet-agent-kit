@@ -51,7 +51,6 @@ export const getLastUserTweet = async (
   }
 };
 
-
 /**
  * Searches tweets based on specific query and maximum tweet count
  * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
@@ -226,7 +225,6 @@ export const getLastTweetsAndRepliesFromUser = async (
     };
   }
 };
-
 
 /**
  * Gets Twitter user ID from a username

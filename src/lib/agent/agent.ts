@@ -102,7 +102,6 @@ export const createAgent = (
         ? [...allowedTools, ...allowedToolsKits]
         : allowedTools;
 
-      console.log(tools);
       const agent = createReactAgent({
         llm: modelSelected,
         tools,

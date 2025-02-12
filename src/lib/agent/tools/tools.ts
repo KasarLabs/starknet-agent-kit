@@ -14,6 +14,7 @@ import { registerTokenTools } from '../plugins/core/token/tools';
 import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
+import { register } from 'module';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -39,6 +40,7 @@ export interface StarknetAgentInterface {
 
 export interface StarknetTool<P = any> {
   name: string;
+  plugins: string;
   description: string;
   schema?: object;
   responseFormat?: string;
@@ -69,7 +71,9 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    let tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
+    let tools = this.tools.filter((tool) =>
+      allowed_tools.includes(tool.plugins)
+    );
     return tools.map(({ name, description, schema, execute }) =>
       tool(async (params: any) => execute(agent, params), {
         name,
@@ -97,8 +101,8 @@ export const registerTools = () => {
 
   registerFibrousTools();
 };
-registerTools();
 
+registerTools();
 // Initialize tools
 
 export const createTools = (agent: StarknetAgentInterface) => {

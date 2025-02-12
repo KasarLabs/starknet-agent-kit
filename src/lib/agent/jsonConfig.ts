@@ -87,6 +87,9 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
 
     if (Array.isArray(json.allowed_internal_tools)) {
       jsonconfig.allowed_internal_tools = json.allowed_internal_tools;
+      jsonconfig.allowed_internal_tools = jsonconfig.allowed_internal_tools.map(
+        (tool) => tool.toLowerCase()
+      );
     }
     if (Array.isArray(json.external_client)) {
       jsonconfig.external_client = json.external_client;

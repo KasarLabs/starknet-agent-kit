@@ -1,7 +1,13 @@
-import { Account, provider } from 'starknet';
+import { Account } from 'starknet';
 import { DeclareContractParams } from 'src/lib/agent/plugins/core/contract/types/contract';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
+/**
+* Declares a new contract on Starknet
+* @param {DeclareContractParams} params - Contract declaration parameters
+* @param {StarknetAgentInterface} agent - Starknet agent interface
+* @returns {Promise<string>} JSON string with transaction result or error
+*/
 export const declareContract = async (
   params: DeclareContractParams,
   agent: StarknetAgentInterface

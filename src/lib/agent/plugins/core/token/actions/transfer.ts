@@ -4,12 +4,20 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { AddAgentLimit } from 'src/lib/agent/limit';
 import { Token } from 'src/lib/agent/limit';
 
+/**
+ * Configuration interface for transfer operations
+ * @interface transferPayloads
+ */
 export interface transferPayloads {
   recipient_address: string;
   amount: string;
   symbol: string;
 }
 
+/**
+ * Result interface for transfer operations
+ * @interface TransferResult
+ */
 interface TransferResult {
   status: 'success' | 'failure';
   amount?: string;
@@ -20,7 +28,12 @@ interface TransferResult {
   step?: string;
 }
 
-// Constants
+/**
+ * Formats token amount with correct decimals
+ * @param {string} amount - Amount to format
+ * @param {number} decimals - Number of decimals
+ * @returns {string} Formatted amount
+ */
 const DECIMALS = {
   USDC: 6,
   USDT: 6,
@@ -39,6 +52,12 @@ const formatTokenAmount = (amount: string, decimals: number): string => {
   return whole + paddedFraction;
 };
 
+/**
+ * Checks if transfer amount is within limits
+ * @param {BigNumberish} amount - Transfer amount
+ * @param {string} symbol - Token symbol
+ * @param {Token[]} limit - Array of token limits
+ */
 const handleLimitTokenTransfer = (
   amount: BigNumberish,
   symbol: string,
@@ -147,12 +166,22 @@ export const transfer = async (
   }
 };
 
+/**
+ * Schema for transfer payload parameters
+ * @type {Object}
+ */
 export type TransferPlayloadSchema = {
   symbol: string;
   recipient_address: string;
   amount: string;
 };
 
+/**
+ * Generates transfer signature for batch transfers
+ * @param {Object} input - Transfer input
+ * @param {TransferPlayloadSchema[]} input.payloads - Array of transfer parameters
+ * @returns {Promise<string>} JSON string with transaction result
+ */
 export const transfer_signature = async (input: {
   payloads: TransferPlayloadSchema[];
 }): Promise<any> => {

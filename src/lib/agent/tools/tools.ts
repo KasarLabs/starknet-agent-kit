@@ -3,7 +3,7 @@ import { RpcProvider } from 'starknet';
 import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
-import { TwitterInterface } from '../plugins/twitter/interface/twitter-interface';
+import { TwitterInterface } from '../plugins/twitter/interface';
 import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
 import { registerTwitterTools } from '../plugins/twitter/tools';

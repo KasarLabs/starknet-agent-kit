@@ -2,6 +2,13 @@ import { Account, DeployAccountContractPayload } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { EstimateAccountDeployFeeParams } from '../../transaction/types/estimate';
 
+/**
+ * Estimates the fee required to deploy a Starknet account contract
+ * @param {EstimateAccountDeployFeeParams} params - Parameters for fee estimation
+ * @param {StarknetAgentInterface} agent - Starknet agent interface
+ * @returns {Promise<string>} JSON string with estimation result or error
+ * @throws {Error} If account address is not configured
+ */
 export const estimateAccountDeployFee = async (
   params: EstimateAccountDeployFeeParams,
   agent: StarknetAgentInterface

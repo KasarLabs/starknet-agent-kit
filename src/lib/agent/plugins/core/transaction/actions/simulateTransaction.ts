@@ -13,6 +13,12 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { TransactionReponseFormat } from '../utils/outputSimulateTransaction';
 import { DEFAULT_NONCE } from '../../contract/constants/contract';
 
+/**
+ * Simulates invoke transaction
+ * @param {StarknetAgentInterface} agent - Starknet agent
+ * @param {SimulateInvokeTransactionParams} params - Transaction parameters
+ * @returns {Promise<string>} JSON string with simulation result
+ */
 export const simulateInvokeTransaction = async (
   agent: StarknetAgentInterface,
   params: SimulateInvokeTransactionParams
@@ -55,6 +61,12 @@ export const simulateInvokeTransaction = async (
   }
 };
 
+/**
+ * Simulates deploy account transaction
+ * @param {StarknetAgentInterface} agent - Starknet agent
+ * @param {SimulateDeployTransactionAccountParams} params - Deploy account parameters
+ * @returns {Promise<string>} JSON string with simulation result
+ */
 export const simulateDeployAccountTransaction = async (
   agent: StarknetAgentInterface,
   params: SimulateDeployTransactionAccountParams
@@ -107,6 +119,12 @@ export const simulateDeployAccountTransaction = async (
   }
 };
 
+/**
+ * Simulates deploy transaction
+ * @param {StarknetAgentInterface} agent - Starknet agent
+ * @param {SimulateDeployTransactionParams} params - Deploy parameters
+ * @returns {Promise<string>} JSON string with simulation result
+ */
 export const simulateDeployTransaction = async (
   agent: StarknetAgentInterface,
   params: SimulateDeployTransactionParams
@@ -148,6 +166,12 @@ export const simulateDeployTransaction = async (
   }
 };
 
+/**
+ * Simulates declare transaction
+ * @param {StarknetAgentInterface} agent - Starknet agent
+ * @param {SimulateDeclareTransactionAccountParams} params - Declare parameters
+ * @returns {Promise<string>} JSON string with simulation result
+ */
 export const simulateDeclareTransaction = async (
   agent: StarknetAgentInterface,
   params: SimulateDeclareTransactionAccountParams

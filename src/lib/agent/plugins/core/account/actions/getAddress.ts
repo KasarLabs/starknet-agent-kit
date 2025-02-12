@@ -1,5 +1,10 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 
+/**
+ * Retrieves the Starknet account address from agent credentials
+ * @param {StarknetAgentInterface} agent - Starknet agent interface
+ * @returns {Promise<string>} JSON string with account address or error
+ */
 export const getAddress = async (agent: StarknetAgentInterface) => {
   try {
     const accountAddress = agent.getAccountCredentials()?.accountPublicKey;

@@ -4,12 +4,23 @@ import { tokenAddresses } from '../constants/erc20';
 import { GetBalanceParams, GetOwnBalanceParams } from '../types/balance';
 import { ERC20_ABI } from '../abis/erc20Abi';
 
+/**
+ * Gets token decimals based on symbol
+ * @param {string} symbol - Token symbol
+ * @returns {number} Number of decimals
+ */
 const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
   const decimals = stablecoinSymbols.includes(symbol.toUpperCase()) ? 6 : 18;
   return decimals;
 };
 
+/**
+ * Formats raw balance to human readable string
+ * @param {bigint | string | number} rawBalance - Raw balance value
+ * @param {string} symbol - Token symbol
+ * @returns {string} Formatted balance
+ */
 const formatBalance = (
   rawBalance: bigint | string | number,
   symbol: string
@@ -44,6 +55,12 @@ const formatBalance = (
   }
 };
 
+/**
+ * Validates token symbol and returns address
+ * @param {string} symbol - Token symbol to validate
+ * @returns {string} Token address
+ * @throws {Error} If token is not supported
+ */
 const validateTokenAddress = (symbol: string): string => {
   const tokenAddress = tokenAddresses[symbol];
   if (!tokenAddress) {
@@ -54,6 +71,12 @@ const validateTokenAddress = (symbol: string): string => {
   return tokenAddress;
 };
 
+/**
+ * Gets token balance for authenticated account
+ * @param {StarknetAgentInterface} agent - Starknet agent
+ * @param {GetOwnBalanceParams} params - Balance request parameters
+ * @returns {Promise<string>} JSON string with balance or error
+ */
 export const getOwnBalance = async (
   agent: StarknetAgentInterface,
   params: GetOwnBalanceParams
@@ -101,6 +124,12 @@ export const getOwnBalance = async (
   }
 };
 
+/**
+ * Gets token balance for any account
+ * @param {StarknetAgentInterface} agent - Starknet agent
+ * @param {GetBalanceParams} params - Balance request parameters
+ * @returns {Promise<string>} JSON string with balance or error
+ */
 export const getBalance = async (
   agent: StarknetAgentInterface,
   params: GetBalanceParams
@@ -144,6 +173,11 @@ export const getBalance = async (
   }
 };
 
+/**
+ * Gets token balance signature for any account
+ * @param {GetBalanceParams} params - Balance request parameters
+ * @returns {Promise<string>} JSON string with balance signature or error
+ */
 export const getBalanceSignature = async (
   params: GetBalanceParams
 ): Promise<string> => {

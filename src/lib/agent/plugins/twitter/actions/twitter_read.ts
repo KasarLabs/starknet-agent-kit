@@ -9,6 +9,13 @@ import {
 import { StarknetAgentInterface } from '../../../tools/tools';
 import { TweetType } from 'src/lib/agent/plugins/twitter/types/twitter_types';
 
+/**
+ * Retrieves the latest tweet from a specified user
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {getLastUserXTweetParams} params - Parameters containing the account name to fetch from
+ * @returns {Promise<{status: string, post_id?: string, post_text?: string, error?: any}>} The latest tweet information or error
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const getLastUserTweet = async (
   agent: StarknetAgentInterface,
   params: getLastUserXTweetParams
@@ -44,6 +51,14 @@ export const getLastUserTweet = async (
   }
 };
 
+
+/**
+ * Searches tweets based on specific query and maximum tweet count
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {getLastTweetsOptionsParams} params - Parameters containing search query and maximum tweets to fetch
+ * @returns {Promise<{status: string, result?: TweetType[], error?: any}>} Collection of matching tweets or error
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const getLastTweetsOptions = async (
   agent: StarknetAgentInterface,
   params: getLastTweetsOptionsParams
@@ -84,6 +99,12 @@ export const getLastTweetsOptions = async (
   }
 };
 
+/**
+ * Retrieves information about the authenticated Twitter account set in .env
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @returns {Promise<{status: string, my_account_username?: string, error?: any}>} Account information or error
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const getOwnTwitterAccountInfo = async (
   agent: StarknetAgentInterface
 ) => {
@@ -113,6 +134,13 @@ export const getOwnTwitterAccountInfo = async (
   }
 };
 
+/**
+ * Fetches recent tweets from a specified user
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {getLastTweetsFromUserParams} params - Parameters containing username and optional tweet limit
+ * @returns {Promise<{status: string, tweets?: TweetType[], error?: any}>} Collection of user's tweets or error
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const getLastTweetsFromUser = async (
   agent: StarknetAgentInterface,
   params: getLastTweetsFromUserParams
@@ -152,6 +180,13 @@ export const getLastTweetsFromUser = async (
   }
 };
 
+/**
+ * Retrieves recent tweets and replies from a specified user
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {getLastTweetsAndRepliesFromUserParams} params - Parameters containing username and optional tweet limit
+ * @returns {Promise<{status: string, tweets?: TweetType[], error?: any}>} Collection of user's tweets and replies or error
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const getLastTweetsAndRepliesFromUser = async (
   agent: StarknetAgentInterface,
   params: getLastTweetsAndRepliesFromUserParams
@@ -192,6 +227,14 @@ export const getLastTweetsAndRepliesFromUser = async (
   }
 };
 
+
+/**
+ * Gets Twitter user ID from a username
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {getTwitterUserIdFromUsernameParams} params - Parameters containing the username to look up
+ * @returns {Promise<{status: string, user_id?: string, error?: any}>} User ID information or error
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const getTwitterUserIdFromUsername = async (
   agent: StarknetAgentInterface,
   params: getTwitterUserIdFromUsernameParams
@@ -220,6 +263,13 @@ export const getTwitterUserIdFromUsername = async (
   }
 };
 
+/**
+ * Retrieves Twitter profile information from a username
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {getTwitterProfileFromUsernameParams} params - Parameters containing the username to fetch profile for
+ * @returns {Promise<{status: string, user_id?: any, error?: any}>} Profile information or error
+ * @throws {Error} When not in CREDENTIALS mode, client is undefined, or account doesn't exist
+ */
 export const getTwitterProfileFromUsername = async (
   agent: StarknetAgentInterface,
   params: getTwitterProfileFromUsernameParams

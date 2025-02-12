@@ -6,6 +6,13 @@ import {
   ReplyTweetParams,
 } from '../schema/index';
 
+/**
+ * Creates a new Twitter post using either credentials or API authentication
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {creatTwitterPostParams} params - Parameters containing the post content
+ * @returns {Promise<{status: string, result?: any}>} Result object indicating success/failure and optional API response
+ * @throws {Error} When neither Twitter API nor Account credentials are set
+ */
 export const createTwitterpost = async (
   agent: StarknetAgentInterface,
   params: creatTwitterPostParams
@@ -52,6 +59,13 @@ export const createTwitterpost = async (
   }
 };
 
+/**
+ * Replies to a specific tweet using Twitter credentials
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {ReplyTweetParams} params - Parameters containing the tweet ID to reply to and response text
+ * @returns {Promise<{status: string, tweet_id?: string, response_text?: string, error?: any}>} Result object with operation status
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const ReplyTweet = async (
   agent: StarknetAgentInterface,
   params: ReplyTweetParams
@@ -80,6 +94,13 @@ export const ReplyTweet = async (
   }
 };
 
+/**
+ * Creates and posts a Twitter thread from an array of messages
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {createAndPostTwitterThreadParams} params - Parameters containing array of thread messages
+ * @returns {Promise<{status: string, error?: any}>} Result object indicating thread posting status
+ * @throws {Error} When thread is empty, not in CREDENTIALS mode, or client is undefined
+ */
 export const createAndPostTwitterThread = async (
   agent: StarknetAgentInterface,
   params: createAndPostTwitterThreadParams
@@ -138,6 +159,13 @@ export const createAndPostTwitterThread = async (
   }
 };
 
+/**
+ * Follows a Twitter user specified by username
+ * @param {StarknetAgentInterface} agent - The Starknet agent instance containing Twitter authentication
+ * @param {FollowXUserFromUsernameParams} params - Parameters containing the username to follow
+ * @returns {Promise<{status: string, error?: any}>} Result object indicating follow operation status
+ * @throws {Error} When not in CREDENTIALS mode or client is undefined
+ */
 export const FollowXUserFromUsername = async (
   agent: StarknetAgentInterface,
   params: FollowXUserFromUsernameParams

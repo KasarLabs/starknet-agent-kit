@@ -1,6 +1,9 @@
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+
 interface Account {
-  agent: StarknetAgentInterface;
+  // agent: StarknetAgentInterface;
   publicAddress: string;
+  privateKey: string;
 }
 
 interface TestAccounts {
@@ -11,12 +14,14 @@ interface TestAccounts {
 
 interface EnvConfig {
   STARKNET_RPC_URL: string;
+  LOCAL_RPC_URL: string;
   accounts: TestAccounts;
 }
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
-    STARKNET_RPC_URL: 'http://127.0.0.1:5050',
+    STARKNET_RPC_URL: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b',
+    LOCAL_RPC_URL: 'http://127.0.0.1:5050',
     accounts: {
       account1: {
         privateKey:
@@ -46,15 +51,14 @@ export const setupTestEnvironment = () => {
   const config = loadTestConfig();
 
   process.env.STARKNET_RPC_URL = config.STARKNET_RPC_URL;
+  process.env.LOCAL_RPC_URL = config.LOCAL_RPC_URL;
 
   process.env.STARKNET_PRIVATE_KEY = config.accounts.account1.privateKey;
   process.env.STARKNET_PUBLIC_ADDRESS = config.accounts.account1.publicAddress;
 
   process.env.STARKNET_PRIVATE_KEY_2 = config.accounts.account2.privateKey;
-  process.env.STARKNET_PUBLIC_ADDRESS_2 =
-    config.accounts.account2.publicAddress;
+  process.env.STARKNET_PUBLIC_ADDRESS_2 = config.accounts.account2.publicAddress;
 
   process.env.STARKNET_PRIVATE_KEY_3 = config.accounts.account3.privateKey;
-  process.env.STARKNET_PUBLIC_ADDRESS_3 =
-    config.accounts.account3.publicAddress;
+  process.env.STARKNET_PUBLIC_ADDRESS_3 = config.accounts.account3.publicAddress;
 };

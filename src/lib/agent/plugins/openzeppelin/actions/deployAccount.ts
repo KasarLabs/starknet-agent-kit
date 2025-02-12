@@ -1,82 +1,59 @@
-import { Account, CallData, RpcProvider } from 'starknet';
+import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { oz_classhash } from '../constant/contract';
-import { DeployOZAccountParams } from '../types/deployAccountTypes';
+import { AccountManager } from '../../core/account/utils/AccountManager';
+import { AccountDetails} from '../../core/account/types/accounts';
   
-export const DeployOZAccount = async (
+export const DeployOKXAccount = async (
     agent: StarknetAgentInterface,
-    params: DeployOZAccountParams
-  ) => {
+    params: AccountDetails
+) => {
     try {
-      const provider = agent.getProvider();
-      const OZaccountConstructorCallData = CallData.compile({
-        publicKey: params.publicKey,
-      });
-  
-      let OZaccount = new Account(provider, params.precalculate_address, params.privateKey, undefined, "0x3");
-      const deployAccountPayload = {
-        classHash: oz_classhash,
-        constructorCalldata: OZaccountConstructorCallData,
-        addressSalt: params.publicKey,
-        contractAddress: params.precalculate_address,
-      };
-      console.log("HERE1");
-      const transaction = await OZaccount.deployAccount(deployAccountPayload);
-      console.log(
-        '✅ Open Zeppelin wallet deployed at:',
-        transaction.contract_address,
-        ' : ',
-        transaction.transaction_hash
-      );
-      return {
-        status: 'success',
-        wallet: 'OpenZeppelin',
-        transaction_hash: transaction.transaction_hash,
-      };
+        const provider = agent.getProvider();
+        
+        const accountManager = new AccountManager(provider);
+        const tx = await accountManager.deployAccount(oz_classhash, params);
+
+        console.log('✅ Openzeppelin wallet deployed at:', tx.contractAddress);
+        console.log('✅ Transaction hash:', tx.transactionHash);
+
+        return JSON.stringify({
+            status: 'success',
+            wallet: 'OpenZeppelin',
+            transaction_hash: tx.transactionHash,
+            contract_address: tx.contractAddress,
+        });
     } catch (error) {
-      return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+        return JSON.stringify({
+            status: 'failure',
+            error: error instanceof Error ? error.message : 'Unknown error',
+        });
     }
-  };
+};
   
 
 export const DeployOZAccountSignature = async (
-    params: DeployOZAccountParams
-  ) => {
+    params: AccountDetails
+) => {
     try {
-      const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
-      const OZaccountConstructorCallData = CallData.compile({
-        publicKey: params.publicKey,
-      });
-  
-      
-      let OZaccount = new Account(provider, params.precalculate_address, params.privateKey, undefined, "0x3");
-      console.log(`Account address : ${OZaccount.address}`);
-      const deployAccountPayload = {
-        classHash: oz_classhash,
-        constructorCalldata: OZaccountConstructorCallData,
-        addressSalt: params.publicKey
-      };
-      console.log("HERE1");
-      const transaction = await OZaccount.deployAccount(deployAccountPayload);
-      console.log(
-        '✅ Open Zeppelin wallet deployed at:',
-        transaction.contract_address,
-        ' : ',
-        transaction.transaction_hash
-      );
-      return JSON.stringify({
-        status: 'success',
-        wallet: 'OpenZeppelin',
-        transaction_hash: transaction.transaction_hash,
-        contract_address: transaction.contract_address,
-      });
+        const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
+        
+        const accountManager = new AccountManager(provider);
+        const tx = await accountManager.deployAccount(oz_classhash, params);
+        
+        console.log('✅ Openzeppelin wallet deployed at:', tx.contractAddress);
+        console.log('✅ Transaction hash:', tx.transactionHash);
+        
+        return JSON.stringify({
+            status: 'success',
+            wallet: 'OpenZeppelin',
+            transaction_hash: tx.transactionHash,
+            contract_address: tx.contractAddress,
+        });
     } catch (error) {
-      return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+        return JSON.stringify({
+            status: 'failure',
+            error: error instanceof Error ? error.message : 'Unknown error',
+        });
     }
-  };
+};

@@ -1,4 +1,6 @@
-import { Account, CallData, stark, hash, ec, RpcProvider } from 'starknet';
+import { Account, CallData, stark, hash, ec, RpcProvider, 
+  CairoOption, CairoOptionVariant, CairoCustomEnum
+ } from 'starknet';
 import {
   AccountDetails,
   BaseUtilityClass,
@@ -9,14 +11,13 @@ import { getDefaultProvider } from 'ethers';
 export class AccountManager implements BaseUtilityClass {
   constructor(public provider: any) {}
 
-  async createAccount(): Promise<AccountDetails> {
+  async createAccount(accountClassHash : string): Promise<AccountDetails> {
     try {
       const privateKey = stark.randomAddress();
       const publicKey = ec.starkCurve.getStarkKey(privateKey);
-      const accountClassHash =
-        '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
+
       const constructorCallData = CallData.compile({ publicKey });
-      const address = hash.calculateContractAddressFromHash(
+      const contractAddress = hash.calculateContractAddressFromHash(
         publicKey,
         accountClassHash,
         constructorCallData,
@@ -24,7 +25,36 @@ export class AccountManager implements BaseUtilityClass {
       );
 
       return {
-        address,
+        contractAddress,
+        privateKey,
+        publicKey,
+        deployStatus: false,
+      };
+    } catch (error) {
+      throw new Error(`Failed to create account: ${error.message}`);
+    }
+  }
+
+  async createAccountArgent(accountClassHash : string): Promise<AccountDetails> {
+    try {
+      const privateKey = stark.randomAddress();
+      const publicKey = ec.starkCurve.getStarkKey(privateKey);
+
+      const axSigner = new CairoCustomEnum({ Starknet: { pubkey: publicKey } });
+      const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
+      const constructorCallData = CallData.compile({
+        owner: axSigner,
+        guardian: axGuardian,
+      });
+      const contractAddress = hash.calculateContractAddressFromHash(
+        publicKey,
+        accountClassHash,
+        constructorCallData,
+        0
+      );
+
+      return {
+        contractAddress,
         privateKey,
         publicKey,
         deployStatus: false,
@@ -35,22 +65,21 @@ export class AccountManager implements BaseUtilityClass {
   }
 
   async deployAccount(
+    accountClassHash: string,
     accountDetails: AccountDetails
   ): Promise<TransactionResult> {
     try {
       const account = new Account(
         this.provider,
-        accountDetails.address,
+        accountDetails.contractAddress,
         accountDetails.privateKey
       );
 
-      const accountClassHash =
-        '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
       const constructorCallData = CallData.compile({
         publicKey: accountDetails.publicKey,
       });
 
-      const { transaction_hash } = await account.deployAccount({
+      const { transaction_hash, contract_address } = await account.deployAccount({
         classHash: accountClassHash,
         constructorCalldata: constructorCallData,
         addressSalt: accountDetails.publicKey,
@@ -61,6 +90,7 @@ export class AccountManager implements BaseUtilityClass {
       return {
         status: 'success',
         transactionHash: transaction_hash,
+        contractAddress: contract_address,
       };
     } catch (error) {
       return {
@@ -70,43 +100,41 @@ export class AccountManager implements BaseUtilityClass {
     }
   }
 
-  async getAccountBalance(address: string): Promise<string> {
-    try {
-      const balance = await this.provider.getBalance(address);
-      return balance.toString();
-    } catch (error) {
-      throw new Error(`Failed to get account balance: ${error.message}`);
-    }
-  }
+  // async getAccountBalance(address: string): Promise<string> {
+  //   try {
+  //     const balance = await this.provider.getBalance(address);
+  //     return balance.toString();
+  //   } catch (error) {
+  //     throw new Error(`Failed to get account balance: ${error.message}`);
+  //   }
+  // }
 
-  async getNonce(address: string): Promise<string> {
-    try {
-      const nonce = await this.provider.getNonceForAddress(address);
-      return nonce.toString();
-    } catch (error) {
-      throw new Error(`Failed to get nonce: ${error.message}`);
-    }
-  }
+  // async getNonce(address: string): Promise<string> {
+  //   try {
+  //     const nonce = await this.provider.getNonceForAddress(address);
+  //     return nonce.toString();
+  //   } catch (error) {
+  //     throw new Error(`Failed to get nonce: ${error.message}`);
+  //   }
+  // }
 
-  async isAccountDeployed(address: string): Promise<boolean> {
-    try {
-      const code = await this.provider.getClassAt(address);
-      return code !== null;
-    } catch (error) {
-      return false;
-    }
-  }
+  // async isAccountDeployed(address: string): Promise<boolean> {
+  //   try {
+  //     const code = await this.provider.getClassAt(address);
+  //     return code !== null;
+  //   } catch (error) {
+  //     return false;
+  //   }
+  // }
 
-  async estimateAccountDeployFee(accountDetails: AccountDetails) {
+  async estimateAccountDeployFee(accountClassHash : string, accountDetails: AccountDetails) {
     try {
       const account = new Account(
         this.provider,
-        accountDetails.address,
+        accountDetails.contractAddress,
         accountDetails.privateKey
       );
 
-      const accountClassHash =
-        '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
       const constructorCallData = CallData.compile({
         publicKey: accountDetails.publicKey,
       });

@@ -90,7 +90,7 @@ import {
   getTwitterProfileFromUsername,
 } from '../plugins/Twitter/twitter_read';
 import { Limit } from '../limit';
-import { telegram_get_messages_from_conversation } from '../plugins/Telegram/Telegram_bot';
+import { telegram_get_messages_from_conversation } from '../plugins/Telegram/actions/Telegram_bot';
 import { JsonConfig } from '../jsonConfig';
 import { TelegramInterface } from '../plugins/Telegram/interfaces';
 

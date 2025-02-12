@@ -304,18 +304,25 @@ export const createMemecoinSchema = z.object({
 
 /* Schema for artpeace implementation */
 export const placePixelParamSchema = z.object({
-  canvasId: z.union([
-    z.number(),
-    z.string()
-  ]).default(0).describe('The id or the unique name of the world to dispose the pixel, if is not provided set by default 0'),
+  canvasId: z
+    .union([z.number(), z.string()])
+    .default(0)
+    .describe(
+      'The id or the unique name of the world to dispose the pixel, if is not provided set by default 0'
+    ),
   xPos: z.number().describe('The position on x axe of the pixel'),
   yPos: z.number().describe('The position on y axe of the pixel'),
-  color: z.string().default("0").describe('The color of the pixel, if is not provided set by default 0')
+  color: z
+    .string()
+    .default('0')
+    .describe('The color of the pixel, if is not provided set by default 0'),
 });
 
 export const placePixelSchema = z.object({
-  params: z.array(placePixelParamSchema).describe('Array of parameter to place one or multiple pixel'),
-})
+  params: z
+    .array(placePixelParamSchema)
+    .describe('Array of parameter to place one or multiple pixel'),
+});
 
 /**
  * Schema for the initial launch parameters

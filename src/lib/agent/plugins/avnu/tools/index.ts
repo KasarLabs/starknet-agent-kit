@@ -12,7 +12,6 @@ export const registerAvnuTools = () => {
     execute: swapTokens,
   });
 
-  //
   StarknetToolRegistry.registerTool({
     name: 'get_route',
     description: 'Get a specific route for swapping tokens',

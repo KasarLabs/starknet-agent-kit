@@ -52,7 +52,7 @@ export class AgentsController implements OnModuleInit {
     return await this.agentService.handleUserRequest(this.agent, userRequest);
   }
 
-  @Post('upload')
+  @Post('upload_large_file')
   @UseGuards(new FileTypeGuard(['application/json', 'application/zip']))
   async uploadFile(@Req() req: FastifyRequest) {
     const logger = new Logger('Upload service');
@@ -60,7 +60,7 @@ export class AgentsController implements OnModuleInit {
     return { status: 'success', data: 'The file has been uploaded.' };
   }
 
-  @Post('delete')
+  @Post('delete_large_file')
   async deleteUploadFile(@Body() filename: filename) {
     const logger = new Logger('Upload service');
     const filePath = `./uploads/${filename.filename}`;

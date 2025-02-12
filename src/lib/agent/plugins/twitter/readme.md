@@ -1,4 +1,6 @@
+<div align="center">
 <img src="https://github.com/user-attachments/assets/a93c49d5-3259-4dc9-b508-c3688dc99162" width="250" height="250" alt="new-twitter-x-logo">
+</div>
 
 # Twitter Integration with Agent-Kit
 

@@ -11,6 +11,8 @@ import { CreateOZAccount } from '../plugins/openzeppelin/actions/createAccount';
 import { CreateAXAccount } from '../plugins/argentx/actions/createAccount';
 import { DeployAXAccount } from '../plugins/argentx/actions/deployAccount';
 import { DeployOZAccount } from '../plugins/openzeppelin/actions/deployAccount';
+import { CreateOKXAccount } from '../plugins/okx/actions/createAccount';
+import { DeployOKXAccount } from '../plugins/okx/actions/deployAccount';
 
 import { transfer } from '../plugins/core/token/transfer';
 import {
@@ -195,22 +197,35 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'DeployOZAccount',
-    description: 'Deploy a OZ Account',
+    description: 'Deploy a Open ZeppelinAccount',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'CreateArgentAccount',
-    description: 'Create Account account',
+    description: 'Create Argentx account',
     execute: CreateAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'DeployArgentAccount',
-    description: 'Deploy a Argent Account',
+    description: 'Deploy a Argentx Account',
     schema: accountDetailsSchema,
     execute: DeployAXAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'CreateOKXAccount',
+    description: 'Create OKX account',
+    execute: CreateOKXAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'DeployOKXAccount',
+    description: 'Deploy a OKX Account',
+    schema: accountDetailsSchema,
+    execute: DeployOKXAccount,
   });
 
   // Register blockchain query tools

@@ -73,10 +73,7 @@ import { Account, CallData, stark, hash, ec, RpcProvider,
           contractAddress: contract_address,
         };
       } catch (error) {
-        return {
-          status: 'failure',
-          error: error.message,
-        };
+        throw new Error(`Failed to create account: ${error.message}`);
       }
     }
   

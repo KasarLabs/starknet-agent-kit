@@ -63,10 +63,7 @@ export class AccountManager implements BaseUtilityClass {
         contractAddress: contract_address,
       };
     } catch (error) {
-      return {
-        status: 'failure',
-        error: error.message,
-      };
+      throw new Error(`Failed to create account: ${error.message}`);
     }
   }
 

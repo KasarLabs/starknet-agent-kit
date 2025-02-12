@@ -1,3 +1,5 @@
+<img src="https://github.com/user-attachments/assets/a93c49d5-3259-4dc9-b508-c3688dc99162" width="250" height="250" alt="new-twitter-x-logo">
+
 # Twitter Integration with Agent-Kit
 
 This integration allows you to connect Twitter to your agent using either the [Twitter API](https://developer.x.com/en/docs/x-api) or the [Twitter-scraper](https://github.com/elizaOS/agent-twitter-client) from Agent-Kit. Follow the instructions below to set up your Twitter account.

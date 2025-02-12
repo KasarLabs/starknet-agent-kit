@@ -12,17 +12,17 @@ This integration allows you to connect Twitter to your agent using either the [T
 - Follow this [guide](https://developer.x.com/en/support/x-api/developer-account1) if you need help creating your developer account
 
 
-### 2. Configure .env File
-```
-TWITTER_AUTH_MODE = "API" # API mode
+2. **Configure .env File**
+    ```sh
+    TWITTER_AUTH_MODE = "API" # API mode
 
-#Your CREDENTIALS you get from the Developer Platform
+    #Your CREDENTIALS you get from the Developer Platform
 
-TWITTER_API="YOUR_TWITTER_API"
-TWITTER_API_SECRET="YOUR_TWITTER_API_SECRET"
-TWITTER_ACCESS_TOKEN="YOUR_TWITTER_ACCESS_TOKEN"
-TWITTER_ACCESS_TOKEN_SECRET="YOUR_TWITTER_ACCESS_TOKEN_SECRET"
-```
+    TWITTER_API="YOUR_TWITTER_API"
+    TWITTER_API_SECRET="YOUR_TWITTER_API_SECRET"
+    TWITTER_ACCESS_TOKEN="YOUR_TWITTER_ACCESS_TOKEN"
+    TWITTER_ACCESS_TOKEN_SECRET="YOUR_TWITTER_ACCESS_TOKEN_SECRET"
+    ```
 
 3. **Initialize Twitter Manager**:<br />
    In your `StarknetAgent` class, initialize the Twitter manager by calling the `initializeTwitterManager()` function.
@@ -37,7 +37,7 @@ TWITTER_ACCESS_TOKEN_SECRET="YOUR_TWITTER_ACCESS_TOKEN_SECRET"
 ## Configuration via Twitter Scraper
 
 1. **Configure .env File :**<br />
-   ```
+   ```sh
     TWITTER_AUTH_MODE = "CREDENTIALS" # API mode
 
     # Your Twitter Credentials

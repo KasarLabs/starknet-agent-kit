@@ -1,12 +1,12 @@
 import { tool } from '@langchain/core/tools';
-import {
-  CreateOZAccount,
-  CreateArgentAccount,
-} from '../plugins/core/account/createAccount';
-import {
-  DeployArgentAccount,
-  DeployOZAccount,
-} from '../plugins/core/account/deployAccount';
+// import {
+//   CreateOZAccount,
+//   CreateArgentAccount,
+// } from '../plugins/core/account/createAccount';
+// import {
+//   DeployArgentAccount,
+//   DeployOZAccount,
+// } from '../plugins/core/account/deployAccount';
 import { transfer } from '../plugins/core/token/transfer';
 import {
   simulateDeployAccountTransaction,
@@ -181,32 +181,32 @@ export const registerTools = () => {
     execute: getBalance,
   });
 
-  // Register account creation and deployment tools
-  StarknetToolRegistry.registerTool({
-    name: 'CreateOZAccount',
-    description: 'Create Open Zeppelin account',
-    execute: CreateOZAccount,
-  });
+  // // Register account creation and deployment tools
+  // StarknetToolRegistry.registerTool({
+  //   name: 'CreateOZAccount',
+  //   description: 'Create Open Zeppelin account',
+  //   execute: CreateOZAccount,
+  // });
 
-  StarknetToolRegistry.registerTool({
-    name: 'DeployOZ',
-    description: 'Deploy a OZ Account',
-    schema: DeployOZAccountSchema,
-    execute: DeployOZAccount,
-  });
+  // StarknetToolRegistry.registerTool({
+  //   name: 'DeployOZ',
+  //   description: 'Deploy a OZ Account',
+  //   schema: DeployOZAccountSchema,
+  //   execute: DeployOZAccount,
+  // });
 
-  StarknetToolRegistry.registerTool({
-    name: 'CreateArgentAccount',
-    description: 'Create Argent account',
-    execute: CreateArgentAccount,
-  });
+  // StarknetToolRegistry.registerTool({
+  //   name: 'CreateArgentAccount',
+  //   description: 'Create Account account',
+  //   execute: CreateArgentAccount,
+  // });
 
-  StarknetToolRegistry.registerTool({
-    name: 'DeployArgent',
-    description: 'Deploy a Argent Account',
-    schema: DeployArgentAccountSchema,
-    execute: DeployArgentAccount,
-  });
+  // StarknetToolRegistry.registerTool({
+  //   name: 'DeployArgent',
+  //   description: 'Deploy a Argent Account',
+  //   schema: DeployArgentAccountSchema,
+  //   execute: DeployArgentAccount,
+  // });
 
   // Register blockchain query tools
   StarknetToolRegistry.registerTool({

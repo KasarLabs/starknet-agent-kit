@@ -2,8 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   OnModuleInit,
   Post,
+  Req,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AgentRequestDTO } from './dto/agents';
@@ -11,6 +14,13 @@ import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
 import { AgentResponseInterceptor } from 'src/lib/interceptors/response';
+import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
+import { FastifyRequest } from 'fastify';
+import { promises as fs } from 'fs';
+
+interface filename {
+  filename: string;
+}
 
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
@@ -43,5 +53,42 @@ export class AgentsController implements OnModuleInit {
   @Get('status')
   async getAgentStatus() {
     return await this.agentService.getAgentStatus(this.agent);
+  }
+
+  @Post('upload_large_file')
+  @UseGuards(new FileTypeGuard(['application/json', 'application/zip']))
+  async uploadFile(@Req() req: FastifyRequest) {
+    const logger = new Logger('Upload service');
+    logger.debug({ message: 'The file has been uploaded' });
+    return { status: 'success', data: 'The file has been uploaded.' };
+  }
+
+  @Post('delete_large_file')
+  async deleteUploadFile(@Body() filename: filename) {
+    const logger = new Logger('Upload service');
+    const filePath = `./uploads/${filename.filename}`;
+
+    try {
+      await fs.unlink(filePath);
+      logger.debug({ message: `File ${filename.filename} has been deleted` });
+      return { status: 'success', data: 'The file has been deleted.' };
+    } catch (error) {
+      logger.error('Error delete file', {
+        error: {
+          message: error.message,
+          name: error.name,
+          stack: error.stack,
+        },
+        filePath: filePath,
+      });
+      switch (error.code) {
+        case 'ENOENT':
+          throw new Error(`File not found : ${filePath}`); // Ou HttpException(404)
+        case 'EACCES':
+          throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
+        default:
+          throw new Error(`Deletion error : ${error.message}`); // throw personalised error
+      }
+    }
   }
 }

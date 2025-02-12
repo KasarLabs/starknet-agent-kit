@@ -3,10 +3,12 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { argentx_classhash } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 import { AccountDetails } from '../../core/account/types/accounts';
+import { z } from 'zod';
+import { accountDetailsSchema } from '../schemas/schema';
   
 export const DeployAXAccount = async (
     agent: StarknetAgentInterface,
-    params: AccountDetails
+    params: z.infer<typeof accountDetailsSchema>
   ) => {
     try {
         const provider = agent.getProvider();
@@ -32,7 +34,7 @@ export const DeployAXAccount = async (
 };
   
 export const DeployAXAccountSignature = async (
-    params: AccountDetails
+    params: z.infer<typeof accountDetailsSchema>
   ) => {
     try {
         const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });

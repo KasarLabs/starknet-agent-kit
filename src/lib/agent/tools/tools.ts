@@ -7,6 +7,11 @@ import { tool } from '@langchain/core/tools';
 //   DeployArgentAccount,
 //   DeployOZAccount,
 // } from '../plugins/core/account/deployAccount';
+import { CreateOZAccount } from '../plugins/openzeppelin/actions/createAccount';
+import { CreateAXAccount } from '../plugins/argentx/actions/createAccount';
+import { DeployAXAccount } from '../plugins/argentx/actions/deployAccount';
+import { DeployOZAccount } from '../plugins/openzeppelin/actions/deployAccount';
+
 import { transfer } from '../plugins/core/token/transfer';
 import {
   simulateDeployAccountTransaction,
@@ -23,10 +28,10 @@ import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
-  DeployArgentAccountSchema,
+  // DeployArgentAccountSchema,
   getStorageAtSchema,
   swapSchema,
-  DeployOZAccountSchema,
+  // DeployOZAccountSchema,
   blockIdSchema,
   transactionHashSchema,
   blockIdAndContractAddressSchema,
@@ -55,6 +60,7 @@ import {
   getLastTweetsFromUserSchema,
   getLastUserXTweetSchema,
 } from '../schemas/schema';
+import { accountDetailsSchema } from '../plugins/argentx/schemas/schema';
 import { swapTokens } from '../plugins/avnu/actions/swap';
 import { getRoute } from '../plugins/avnu/actions/fetchRoute';
 import { getSpecVersion } from '../plugins/core/rpc/getSpecVersion';
@@ -181,32 +187,31 @@ export const registerTools = () => {
     execute: getBalance,
   });
 
-  // // Register account creation and deployment tools
-  // StarknetToolRegistry.registerTool({
-  //   name: 'CreateOZAccount',
-  //   description: 'Create Open Zeppelin account',
-  //   execute: CreateOZAccount,
-  // });
+  StarknetToolRegistry.registerTool({
+    name: 'CreateOZAccount',
+    description: 'Create Open Zeppelin account',
+    execute: CreateOZAccount,
+  });
 
-  // StarknetToolRegistry.registerTool({
-  //   name: 'DeployOZ',
-  //   description: 'Deploy a OZ Account',
-  //   schema: DeployOZAccountSchema,
-  //   execute: DeployOZAccount,
-  // });
+  StarknetToolRegistry.registerTool({
+    name: 'DeployOZAccount',
+    description: 'Deploy a OZ Account',
+    schema: accountDetailsSchema,
+    execute: DeployOZAccount,
+  });
 
-  // StarknetToolRegistry.registerTool({
-  //   name: 'CreateArgentAccount',
-  //   description: 'Create Account account',
-  //   execute: CreateArgentAccount,
-  // });
+  StarknetToolRegistry.registerTool({
+    name: 'CreateArgentAccount',
+    description: 'Create Account account',
+    execute: CreateAXAccount,
+  });
 
-  // StarknetToolRegistry.registerTool({
-  //   name: 'DeployArgent',
-  //   description: 'Deploy a Argent Account',
-  //   schema: DeployArgentAccountSchema,
-  //   execute: DeployArgentAccount,
-  // });
+  StarknetToolRegistry.registerTool({
+    name: 'DeployArgentAccount',
+    description: 'Deploy a Argent Account',
+    schema: accountDetailsSchema,
+    execute: DeployAXAccount,
+  });
 
   // Register blockchain query tools
   StarknetToolRegistry.registerTool({

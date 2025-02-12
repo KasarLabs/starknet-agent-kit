@@ -19,30 +19,25 @@ describe('OZ Account Creation and Deployment', () => {
 
         const result = await CreateOZAccountSignature();
         
-        const accountData = JSON.parse(result);
+        const data = JSON.parse(result);
 
-        if (accountData.status !== 'success') {
-            console.log(accountData.error);
+        if (data.status !== 'success') {
+            console.log(data.error);
         }
-        expect(accountData.deployStatus).toBe('success');
-        expect(accountData.transaction_type).toBe('CREATE_ACCOUNT');
-        expect(accountData.wallet).toBe('OpenZeppelin');
+        expect(data.status).toBe('success');
+        expect(data.transaction_type).toBe('CREATE_ACCOUNT');
+        expect(data.wallet).toBe('OpenZeppelin');
     
-        expect(accountData.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
-        expect(accountData.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
-        expect(accountData.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(data.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(data.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(data.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
 
         console.log('\n=== DÉTAILS DU COMPTE ===');
-        console.log('Adresse:', accountData.contractAddress);
-        console.log('Clé publique:', accountData.publicKey);
-        console.log('Clé privée:', accountData.privateKey);
-        console.log('\nFrais de déploiement estimés:', accountData.deployFee.overall_fee);
-        
-        const accountInfo = {
-            ...accountData,
-        };
-        
-        fs.writeFileSync('account_details.json', JSON.stringify(accountInfo, null, 2));
+        console.log('Adresse:', data.contractAddress);
+        console.log('Clé publique:', data.publicKey);
+        console.log('Clé privée:', data.privateKey);
+        console.log('\nFrais de déploiement estimés:', data.deployFee.overall_fee);
+
         
     }, 30000); // Timeout de 30 secondes
 

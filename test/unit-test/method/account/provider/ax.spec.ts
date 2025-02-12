@@ -19,30 +19,24 @@ describe('AX Account Creation and Deployment', () => {
 
         const result = await CreateAXAccountSignature();
         
-        const accountData = JSON.parse(result);
+        const data = JSON.parse(result);
 
-        if (accountData.status !== 'success') {
-            console.log(accountData.error);
+        if (data.status !== 'success') {
+            console.log(data.error);
         }
-        expect(accountData.deployStatus).toBe('success');
-        expect(accountData.transaction_type).toBe('CREATE_ACCOUNT');
-        expect(accountData.wallet).toBe('AX');
+        expect(data.status).toBe('success');
+        expect(data.transaction_type).toBe('CREATE_ACCOUNT');
+        expect(data.wallet).toBe('AX');
     
-        expect(accountData.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
-        expect(accountData.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
-        expect(accountData.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(data.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(data.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(data.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
 
         console.log('\n=== DÉTAILS DU COMPTE ===');
-        console.log('Adresse:', accountData.contractAddress);
-        console.log('Clé publique:', accountData.publicKey);
-        console.log('Clé privée:', accountData.privateKey);
-        console.log('\nFrais de déploiement estimés:', accountData.deployFee.overall_fee);
-        
-        const accountInfo = {
-            ...accountData,
-        };
-        
-        fs.writeFileSync('account_details.json', JSON.stringify(accountInfo, null, 2));
+        console.log('Adresse:', data.contractAddress);
+        console.log('Clé publique:', data.publicKey);
+        console.log('Clé privée:', data.privateKey);
+        console.log('\nFrais de déploiement estimés:', data.deployFee.overall_fee);
         
     }, 30000); // Timeout de 30 secondes
 
@@ -52,8 +46,12 @@ describe('AX Account Creation and Deployment', () => {
             console.log('Test de déploiement ignoré. Définissez RUN_DEPLOYMENT_TEST=true pour l\'exécuter');
             return;
         }
-
-        const accountDetails = JSON.parse(fs.readFileSync('account_details.json', 'utf8'));
+        
+        const accountDetails = {
+            contractAddress: '0x4570109d7cf87789cc3673fa568f9c92eb74447974dce0907f4150ad87bb858',
+            publicKey: '0x3108d02cde928366314aa9bec262cea359f7272e2a7717f795e09cfe17df6d0',
+            privateKey: '0x418854677cff6b8ff919fde4e861080e9274f39b8fc051402d4140bcc9dadbb'
+        }
         
         console.log('\nDéploiement du compte...');
         const result = await DeployAXAccountSignature(accountDetails);
@@ -63,7 +61,6 @@ describe('AX Account Creation and Deployment', () => {
         
         if (deployResult.status === 'success') {
             console.log('Compte déployé avec succès!');
-            console.log('Hash de transaction:', deployResult.transactionHash);
         } else {
             console.error('Échec du déploiement:', deployResult.error);
         }

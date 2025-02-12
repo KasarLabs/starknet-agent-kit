@@ -34,7 +34,6 @@ import { Account, CallData, stark, hash, ec, RpcProvider,
           contractAddress,
           privateKey,
           publicKey,
-          deployStatus: false,
         };
       } catch (error) {
         throw new Error(`Failed to create account: ${error.message}`);

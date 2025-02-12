@@ -28,36 +28,6 @@ export class AccountManager implements BaseUtilityClass {
         contractAddress,
         privateKey,
         publicKey,
-        deployStatus: false,
-      };
-    } catch (error) {
-      throw new Error(`Failed to create account: ${error.message}`);
-    }
-  }
-
-  async createAccountArgent(accountClassHash : string): Promise<AccountDetails> {
-    try {
-      const privateKey = stark.randomAddress();
-      const publicKey = ec.starkCurve.getStarkKey(privateKey);
-
-      const axSigner = new CairoCustomEnum({ Starknet: { pubkey: publicKey } });
-      const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
-      const constructorCallData = CallData.compile({
-        owner: axSigner,
-        guardian: axGuardian,
-      });
-      const contractAddress = hash.calculateContractAddressFromHash(
-        publicKey,
-        accountClassHash,
-        constructorCallData,
-        0
-      );
-
-      return {
-        contractAddress,
-        privateKey,
-        publicKey,
-        deployStatus: false,
       };
     } catch (error) {
       throw new Error(`Failed to create account: ${error.message}`);

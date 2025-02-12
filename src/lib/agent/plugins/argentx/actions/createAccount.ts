@@ -8,7 +8,7 @@ export const CreateAXAccount = async () => {
         const accountDetails = await accountManager.createAccount(argentx_classhash);
 
         return JSON.stringify({
-            deployStatus: 'success',
+            status: 'success',
             wallet: 'AX',
             publicKey: accountDetails.publicKey,
             privateKey: accountDetails.privateKey,
@@ -16,7 +16,7 @@ export const CreateAXAccount = async () => {
         });
         } catch (error) {
         return JSON.stringify({
-            deployStatus: 'failure',
+            status: 'failure',
             error: error instanceof Error ? error.message : 'Unknown error',
         });
     }
@@ -32,7 +32,7 @@ export const CreateAXAccountSignature = async () => {
         const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
 
         return JSON.stringify({
-            deployStatus: 'success',
+            status: 'success',
             transaction_type: 'CREATE_ACCOUNT',
             wallet: 'AX',
             publicKey: accountDetails.publicKey,
@@ -42,7 +42,7 @@ export const CreateAXAccountSignature = async () => {
         });
     } catch (error) {
         return JSON.stringify({
-            deployStatus: 'failure',
+            status: 'failure',
             error: error instanceof Error ? error.message : 'Unknown error',
         });
     }

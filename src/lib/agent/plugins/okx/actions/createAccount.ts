@@ -8,7 +8,7 @@ export const CreateOKXAccount = async () => {
         const accountDetails = await accountManager.createAccount(okx_classhash);
 
         return JSON.stringify({
-            deployStatus: 'success',
+            status: 'success',
             wallet: 'OKX',
             publicKey: accountDetails.publicKey,
             privateKey: accountDetails.privateKey,
@@ -16,7 +16,7 @@ export const CreateOKXAccount = async () => {
         });
         } catch (error) {
         return JSON.stringify({
-            deployStatus: 'failure',
+            status: 'failure',
             error: error instanceof Error ? error.message : 'Unknown error',
         });
     }
@@ -32,7 +32,7 @@ export const CreateOKXAccountSignature = async () => {
         const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
 
         return JSON.stringify({
-            deployStatus: 'success',
+            status: 'success',
             transaction_type: 'CREATE_ACCOUNT',
             wallet: 'OKX',
             publicKey: accountDetails.publicKey,
@@ -42,7 +42,7 @@ export const CreateOKXAccountSignature = async () => {
         });
     } catch (error) {
         return JSON.stringify({
-            deployStatus: 'failure',
+            status: 'failure',
             error: error instanceof Error ? error.message : 'Unknown error',
         });
     }

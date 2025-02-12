@@ -3,10 +3,12 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { okx_classhash } from '../constant/contract';
 import { AccountManager } from '../../core/account/utils/AccountManager';
 import { AccountDetails } from '../../core/account/types/accounts';
+import { z } from 'zod';
+import { accountDetailsSchema } from '../schemas/schema';
   
 export const DeployOKXAccount = async (
     agent: StarknetAgentInterface,
-    params: AccountDetails
+    params: z.infer<typeof accountDetailsSchema>
   ) => {
     try {
         const provider = agent.getProvider();
@@ -33,7 +35,7 @@ export const DeployOKXAccount = async (
   
 
 export const DeployOKXAccountSignature = async (
-    params: AccountDetails
+    params: z.infer<typeof accountDetailsSchema>
   ) => {
     try {
         const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });

@@ -7,6 +7,16 @@ import { tool } from '@langchain/core/tools';
 //   DeployArgentAccount,
 //   DeployOZAccount,
 // } from '../plugins/core/account/deployAccount';
+
+import { CreateOZAccount } from '../plugins/openzeppelin/actions/createAccount';
+import { DeployOZAccount } from '../plugins/openzeppelin/actions/deployAccount';
+import { CreateAXAccount } from '../plugins/argentx/actions/createAccount';
+import { DeployAXAccount } from '../plugins/argentx/actions/deployAccount';
+import { CreateOKXAccount } from '../plugins/okx/actions/createAccount';
+import { DeployOKXAccount } from '../plugins/okx/actions/deployAccount';
+
+import { accountDetailsSchema } from '../plugins/argentx/schemas/schema';
+
 import { transfer } from '../plugins/core/token/transfer';
 import {
   simulateDeployAccountTransaction,
@@ -23,10 +33,10 @@ import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
-  DeployArgentAccountSchema,
+  // DeployArgentAccountSchema,
   getStorageAtSchema,
   swapSchema,
-  DeployOZAccountSchema,
+  // DeployOZAccountSchema,
   blockIdSchema,
   transactionHashSchema,
   blockIdAndContractAddressSchema,
@@ -173,6 +183,46 @@ export const registerTools = () => {
   // });
 
   // Register blockchain query tools
+
+  StarknetToolRegistry.registerTool({
+    name: 'CreateOpenzeppelinAccount',
+    description: 'Create an Open Zeppelin account',
+    execute: CreateOZAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'DeployOpenzeppelinAccount',
+    description: 'Deploy an Open Zeppelin Account',
+    schema: accountDetailsSchema,
+    execute: DeployOZAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'CreateArgentxAccount',
+    description: 'Create an Argent account',
+    execute: CreateAXAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'DeployArgentxAccount',
+    description: 'Deploy an Argent Account',
+    schema: accountDetailsSchema,
+    execute: DeployAXAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'CreateOkxAccount',
+    description: 'Create an OKX account',
+    execute: CreateOKXAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'DeployOkxAccount',
+    description: 'Deploy an OKX Account',
+    schema: accountDetailsSchema,
+    execute: DeployOKXAccount,
+  });
+
   StarknetToolRegistry.registerTool({
     name: 'get_block_number',
     description: 'Get the current block number from the Starknet network',

@@ -12,7 +12,6 @@ export interface AccountDetails {
   contractAddress: string;
   publicKey: string;
   privateKey: string;
-  deployStatus: boolean;
 }
 
 /**

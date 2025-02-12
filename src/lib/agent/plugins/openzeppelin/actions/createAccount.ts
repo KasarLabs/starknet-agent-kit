@@ -8,7 +8,7 @@ export const CreateOZAccount = async () => {
         const accountDetails = await accountManager.createAccount(oz_classhash);
 
         return JSON.stringify({
-            deployStatus: 'success',
+            status: 'success',
             wallet: 'Open Zeppelin',
             publicKey: accountDetails.publicKey,
             privateKey: accountDetails.privateKey,
@@ -16,7 +16,7 @@ export const CreateOZAccount = async () => {
         });
         } catch (error) {
         return JSON.stringify({
-            deployStatus: 'failure',
+            status: 'failure',
             error: error instanceof Error ? error.message : 'Unknown error',
         });
     }
@@ -32,7 +32,7 @@ export const CreateOZAccountSignature = async () => {
         const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
 
         return JSON.stringify({
-            deployStatus: 'success',
+            status: 'success',
             transaction_type: 'CREATE_ACCOUNT',
             wallet: 'OpenZeppelin',
             publicKey: accountDetails.publicKey,
@@ -42,7 +42,7 @@ export const CreateOZAccountSignature = async () => {
         });
     } catch (error) {
         return JSON.stringify({
-            deployStatus: 'failure',
+            status: 'failure',
             error: error instanceof Error ? error.message : 'Unknown error',
         });
     }

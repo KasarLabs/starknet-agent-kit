@@ -1,10 +1,10 @@
-import { StarknetAgentInterface } from '../../../tools/tools';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import {
   createAndPostTwitterThreadParams,
   creatTwitterPostParams,
   FollowXUserFromUsernameParams,
   ReplyTweetParams,
-} from '../schema/index';
+} from 'src/lib/agent/plugins/twitter/schema';
 
 export const createTwitterpost = async (
   agent: StarknetAgentInterface,

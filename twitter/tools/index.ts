@@ -11,14 +11,14 @@ import {
   getTwitterUserIdFromUsernameSchema,
   getLastTweetsFromUserSchema,
   getLastUserXTweetSchema,
-} from '../schema';
+} from 'src/lib/agent/plugins/twitter/schema';
 
 import {
   createTwitterpost,
   ReplyTweet,
   createAndPostTwitterThread,
   FollowXUserFromUsername,
-} from '../actions/twitter';
+} from 'src/lib/agent/plugins/twitter/actions/twitter';
 import {
   getLastUserTweet,
   getLastTweetsOptions,
@@ -27,7 +27,7 @@ import {
   getLastTweetsAndRepliesFromUser,
   getTwitterUserIdFromUsername,
   getTwitterProfileFromUsername,
-} from '../actions/twitter_read';
+} from 'src/lib/agent/plugins/twitter/actions/twitter_read';
 
 export const registerTwitterTools = () => {
   // Twitter Tools

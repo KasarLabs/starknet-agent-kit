@@ -5,8 +5,8 @@ import {
   getLastUserXTweetParams,
   getTwitterProfileFromUsernameParams,
   getTwitterUserIdFromUsernameParams,
-} from '../schema/index';
-import { StarknetAgentInterface } from '../../../tools/tools';
+} from 'src/lib/agent/plugins/twitter/schema';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { TweetType } from 'src/lib/agent/plugins/twitter/types/twitter_types';
 
 export const getLastUserTweet = async (

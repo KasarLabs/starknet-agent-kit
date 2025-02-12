@@ -3,7 +3,6 @@ import { getBalanceSchema, Transferschema } from '../schema';
 import { transfer } from '../actions/transfer';
 import { getBalance, getOwnBalance } from '../actions/getBalances';
 import { getOwnBalanceSchema } from '../schema';
-import { StarknetSignatureToolRegistry } from 'src/lib/agent/tools/signatureTools';
 
 export const registerTokenTools = () => {
   StarknetToolRegistry.registerTool({

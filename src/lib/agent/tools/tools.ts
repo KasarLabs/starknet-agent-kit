@@ -13,6 +13,7 @@ import { registerRPCTools } from '../plugins/core/rpc/tools';
 import { registerTokenTools } from '../plugins/core/token/tools';
 import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
+import { registerFibrousTools } from '../plugins/fibrous/tools';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -93,6 +94,8 @@ export const registerTools = () => {
   registerUnraggableTools();
 
   registerTwitterTools();
+
+  registerFibrousTools();
 };
 registerTools();
 

@@ -1,5 +1,5 @@
 import { estimateAccountDeployFee } from 'src/lib/agent/plugins/core/account/estimateAccountDeployFee';
-import * as C from '../../../utils/constant';
+import * as C from '../../../../utils/constant';
 
 describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {

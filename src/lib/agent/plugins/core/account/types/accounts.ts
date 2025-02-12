@@ -9,7 +9,7 @@ import { ProviderInterface } from 'starknet';
  * @property {boolean} deployStatus - Whether the account has been deployed
  */
 export interface AccountDetails {
-  address: string;
+  contractAddress: string;
   publicKey: string;
   privateKey: string;
   deployStatus: boolean;
@@ -24,6 +24,7 @@ export interface AccountDetails {
 export interface TransactionResult {
   status: 'success' | 'failure';
   transactionHash?: string;
+  contractAddress?: string;
   error?: string;
 }
 

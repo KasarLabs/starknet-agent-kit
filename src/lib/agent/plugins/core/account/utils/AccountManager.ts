@@ -1,6 +1,14 @@
-import { Account, CallData, stark, hash, ec, RpcProvider, 
-  CairoOption, CairoOptionVariant, CairoCustomEnum
- } from 'starknet';
+import {
+  Account,
+  CallData,
+  stark,
+  hash,
+  ec,
+  RpcProvider,
+  CairoOption,
+  CairoOptionVariant,
+  CairoCustomEnum,
+} from 'starknet';
 import {
   AccountDetails,
   BaseUtilityClass,
@@ -11,7 +19,7 @@ import { getDefaultProvider } from 'ethers';
 export class AccountManager implements BaseUtilityClass {
   constructor(public provider: any) {}
 
-  async createAccount(accountClassHash : string): Promise<AccountDetails> {
+  async createAccount(accountClassHash: string): Promise<AccountDetails> {
     try {
       const privateKey = stark.randomAddress();
       const publicKey = ec.starkCurve.getStarkKey(privateKey);
@@ -49,11 +57,12 @@ export class AccountManager implements BaseUtilityClass {
         publicKey: accountDetails.publicKey,
       });
 
-      const { transaction_hash, contract_address } = await account.deployAccount({
-        classHash: accountClassHash,
-        constructorCalldata: constructorCallData,
-        addressSalt: accountDetails.publicKey,
-      });
+      const { transaction_hash, contract_address } =
+        await account.deployAccount({
+          classHash: accountClassHash,
+          constructorCalldata: constructorCallData,
+          addressSalt: accountDetails.publicKey,
+        });
 
       await this.provider.waitForTransaction(transaction_hash);
 
@@ -94,7 +103,10 @@ export class AccountManager implements BaseUtilityClass {
   //   }
   // }
 
-  async estimateAccountDeployFee(accountClassHash : string, accountDetails: AccountDetails) {
+  async estimateAccountDeployFee(
+    accountClassHash: string,
+    accountDetails: AccountDetails
+  ) {
     try {
       const account = new Account(
         this.provider,

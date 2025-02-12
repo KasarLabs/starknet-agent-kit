@@ -7,4 +7,4 @@ export type DeployBraavosParams = {
   publicKey: string;
   privateKey: string;
   precalculate_address: string;
-}
+};

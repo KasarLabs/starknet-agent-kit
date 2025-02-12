@@ -20,14 +20,14 @@
 //   ) => {
 //     try {
 //       const provider = agent.getProvider();
-  
+
 //       const initializer = CallData.compile({ public_key: params.publicKey });
 //       const constructorCalldata = CallData.compile({
 //         implementation_address: braavos_intiial_classhash,
 //         initializer_selector: hash.getSelectorFromName('initializer'),
 //         calldata: [...initializer]
 //       });
-  
+
 //       const txHash = hash.calculateDeployAccountTransactionHash({
 //         contractAddress: params.precalculate_address,
 //         classHash: braavos_proxy_classhash,
@@ -38,20 +38,20 @@
 //         chainId: await provider.getChainId(),
 //         nonce: constants.ZERO
 //       });
-  
+
 //       const parsedOtherSigner = [0, 0, 0, 0, 0, 0, 0];
 //       const { r, s } = ec.starkCurve.sign(
 //         hash.computeHashOnElements([txHash, braavos_account_classhash, ...parsedOtherSigner]),
 //         params.privateKey
 //       );
-  
+
 //       const signature = [
 //         r.toString(),
 //         s.toString(),
 //         braavos_account_classhash.toString(),
 //         ...parsedOtherSigner.map(e => e.toString())
 //       ];
-  
+
 //       const transaction = await provider.deployAccountContract(
 //         {
 //           classHash: braavos_proxy_classhash,
@@ -64,14 +64,14 @@
 //           version: constants.TRANSACTION_VERSION.V2
 //         }
 //       );
-  
+
 //       console.log(
 //         '✅ Braavos wallet deployed at:',
 //         transaction.contract_address,
 //         ' : ',
 //         transaction.transaction_hash
 //       );
-  
+
 //       return {
 //         status: 'success',
 //         wallet: 'Braavos',
@@ -85,26 +85,26 @@
 //       };
 //     }
 //   };
-  
+
 // export const DeployBraavosAccountSignature = async (
 //     params: DeployBraavosParams
 //   ) => {
 //     try {
 //       const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
-      
+
 //       const initializer = CallData.compile({ public_key: params.publicKey });
 //       const constructorCalldata = CallData.compile({
 //         implementation_address: braavos_intiial_classhash,
 //         initializer_selector: hash.getSelectorFromName('initializer'),
 //         calldata: [...initializer]
 //       });
-  
+
 //       const deployAccountPayload = {
 //         classHash: braavos_proxy_classhash,
 //         constructorCalldata,
 //         addressSalt: params.publicKey
 //       };
-  
+
 //       const txHashForEstimate = hash.calculateDeployAccountTransactionHash({
 //         contractAddress: params.precalculate_address,
 //         classHash: braavos_proxy_classhash,
@@ -115,27 +115,27 @@
 //         chainId: await provider.getChainId(),
 //         nonce: constants.ZERO
 //       });
-  
+
 //       const parsedOtherSigner = [0, 0, 0, 0, 0, 0, 0];
 //       const { r, s } = ec.starkCurve.sign(
 //         hash.computeHashOnElements([txHashForEstimate, braavos_account_classhash, ...parsedOtherSigner]),
 //         params.privateKey
 //       );
-  
+
 //       const signatureForEstimate = [
 //         r.toString(),
 //         s.toString(),
 //         braavos_account_classhash.toString(),
 //         ...parsedOtherSigner.map(e => e.toString())
 //       ];
-  
+
 //       const estimatedFee = await provider.getDeployAccountEstimateFee(
 //         { ...deployAccountPayload, signature: signatureForEstimate },
 //         { version: constants.TRANSACTION_VERSION.V2, nonce: constants.ZERO }
 //       );
-  
+
 //       const maxFee = stark.estimatedFeeToMaxFee(estimatedFee.overall_fee);
-  
+
 //       const transaction = await provider.deployAccountContract(
 //         {
 //           classHash: braavos_proxy_classhash,
@@ -149,14 +149,14 @@
 //           version: constants.TRANSACTION_VERSION.V2
 //         }
 //       );
-  
+
 //       console.log(
 //         '✅ Braavos wallet with signature deployed at:',
 //         transaction.contract_address,
 //         ' : ',
 //         transaction.transaction_hash
 //       );
-  
+
 //       return JSON.stringify({
 //         status: 'success',
 //         wallet: 'Braavos',
@@ -170,4 +170,3 @@
 //       });
 //     }
 //   };
-  

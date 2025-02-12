@@ -1,6 +1,6 @@
 # Twitter Integration with Agent-Kit
 
-This integration allows you to connect Twitter to your agent using either the [Twitter API](https://developer.x.com/en/docs/x-api) or the [twitter-scraper](https://github.com/elizaOS/agent-twitter-client) from Agent-Kit. Follow the instructions below to set up your Twitter account.
+This integration allows you to connect Twitter to your agent using either the [Twitter API](https://developer.x.com/en/docs/x-api) or the [Twitter-scraper](https://github.com/elizaOS/agent-twitter-client) from Agent-Kit. Follow the instructions below to set up your Twitter account.
 
 ## Setup Using Twitter API
 

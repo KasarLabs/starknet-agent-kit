@@ -48,9 +48,9 @@ describe('OKX Account Creation and Deployment', () => {
         }
         
         const accountDetails = {
-            contractAddress: '0x4570109d7cf87789cc3673fa568f9c92eb74447974dce0907f4150ad87bb858',
-            publicKey: '0x3108d02cde928366314aa9bec262cea359f7272e2a7717f795e09cfe17df6d0',
-            privateKey: 'ddddddd'
+            contractAddress: process.env.ADDRESS as string,
+            publicKey: process.env.PUBLICKEY as string,
+            privateKey: process.env.PRIVATEKEY as string
         }
         
         console.log('\nDéploiement du compte...');

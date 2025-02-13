@@ -1,4 +1,11 @@
-import { getAddress } from 'src/lib/agent/plugins/core/account/actions/getAddress';
+import { getAddress } from 'src/lib/agent/plugins/core/account/getAddress';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
+const wrong_agent = createMockInvalidStarknetAgent();
 
 describe('getAddress', () => {
   describe('With perfect match inputs', () => {
@@ -6,7 +13,7 @@ describe('getAddress', () => {
       // Arrange
       // Act
 
-      const result = await getAddress();
+      const result = await getAddress(agent);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('success');
@@ -23,7 +30,7 @@ describe('getAddress', () => {
 
       // Act
 
-      const result = await getAddress();
+      const result = await getAddress(wrong_agent);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');

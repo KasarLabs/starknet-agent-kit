@@ -12,8 +12,13 @@ import { createAllowedToollkits } from './tools/external_tools';
 import { createAllowedTools } from './tools/tools';
 import { uuid } from 'uuidv4';
 import { MemorySaver } from '@langchain/langgraph';
-import { uuidV4 } from 'ethers';
+import { JsonConfig } from './jsonConfig';
 
+export type AgentConfig = {
+  agent: any;
+  agentConfig?: any;
+  json_config?: JsonConfig;
+};
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
@@ -88,7 +93,7 @@ export const createAgent = (
       console.log('Character config loaded successfully');
       console.log('JSON config loaded successfully');
 
-      if (starknetAgent.getAgentMemory()) {
+      if (starknetAgent.getAgentMemory().agentMemory === true) {
         memory_id = uuid().toString();
       }
       const allowedTools = createAllowedTools(
@@ -108,23 +113,37 @@ export const createAgent = (
         configurable: { thread_id: memory_id },
       };
 
-      const agent = createReactAgent({
-        llm: modelSelected,
-        tools,
-        messageModifier: systemMessage,
-        ...(memory_id != null && {
-          checkpointerSaver: memory,
-        }),
-      });
+      let agent;
+      if (memory_id === null) {
+        agent = createReactAgent({
+          llm: modelSelected,
+          tools,
+          messageModifier: systemMessage,
+        });
+      } else {
+        agent = createReactAgent({
+          llm: modelSelected,
+          tools,
+          messageModifier: systemMessage,
+          checkpointSaver: memory,
+        });
+      }
 
       if (memory_id != null) {
-        console.log('return with memory');
-        return { agent, agentConfig, json_config };
+        const result: AgentConfig = {
+          agent: agent,
+          agentConfig: agentConfig,
+          json_config: json_config,
+        };
+        return result;
       }
-      console.log('return with memory');
-      return agent;
+      const result: AgentConfig = {
+        agent: agent,
+      };
+      return result;
     }
-    if (starknetAgent.getAgentMemory()) {
+
+    if (starknetAgent.getAgentMemory().agentMemory === true) {
       memory_id = uuid().toString();
     }
 
@@ -144,11 +163,16 @@ export const createAgent = (
     });
 
     if (memory_id != null) {
-      console.log('return with memory');
-      return { agent, agentConfig };
+      const result: AgentConfig = {
+        agent: agent,
+        agentConfig: agentConfig,
+      };
+      return result;
     }
-    console.log('return with memory');
-    return agent;
+    const result: AgentConfig = {
+      agent: agent,
+    };
+    return result;
   } catch (error) {
     console.error(
       `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`

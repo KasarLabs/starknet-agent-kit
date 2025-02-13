@@ -14,7 +14,8 @@ import {
   TwitterScraperConfig,
 } from './plugins/twitter/interfaces';
 import { JsonConfig } from './jsonConfig';
-
+import { AgentConfig } from './agent';
+import { json } from 'stream/consumers';
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -34,7 +35,7 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly agentReactExecutor: any;
+  private readonly agentReactExecutor: AgentConfig | undefined;
   private twitterAccoutManager: TwitterInterface = {};
   private readonly agentMemory: boolean;
 
@@ -80,6 +81,9 @@ export class StarknetAgent implements IAgent {
         apiKey: this.aiProviderApiKey,
         aiProvider: config.aiProvider,
       });
+    }
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
     }
   }
 
@@ -225,56 +229,75 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute_autonomous(): Promise<unknown> {
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
+    }
     if (this.agentMode != 'auto') {
       throw new Error(
         `Error : impossible to use execute_automous function with agent mode : ${this.agentMode}.`
       );
     }
-    const aiMessage = await this.agentReactExecutor.agent.invoke(
-      {
-        messages: 'Choose what to do',
-      },
-      this.agentReactExecutor.agentConfig
-    );
-    console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
-    await new Promise((resolve) =>
-      setTimeout(resolve, this.agentReactExecutor.json_config.interval)
-    );
+    while (-1) {
+      const aiMessage = await this.agentReactExecutor.agent.invoke(
+        {
+          messages: 'Choose what to do',
+        },
+        this.agentReactExecutor.agentConfig
+      );
+      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
+      await new Promise((resolve) =>
+        setTimeout(resolve, this.agentReactExecutor?.json_config?.interval)
+      );
+    }
 
     return;
   }
 
   async execute(input: string): Promise<unknown> {
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
+    }
     if (this.agentMode != 'agent') {
       throw new Error(
         `Error : impossible to use execute function with agent mode : ${this.agentMode}.`
       );
     }
+    let aiMessage;
     if (this.agentMemory === true) {
       console.log(this.agentReactExecutor.agentConfig);
-      const aiMessage = await this.agentReactExecutor.agent.invoke(
+      aiMessage = await this.agentReactExecutor.agent.invoke(
         { messages: input },
         this.agentReactExecutor.agentConfig
       );
-      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
-      return aiMessage.messages[aiMessage.messages.length - 1].content;
+    } else {
+      aiMessage = await this.agentReactExecutor.agent.invoke({
+        messages: input,
+      });
     }
-
-    const aiMessage = await this.agentReactExecutor.agent.invoke({
-      messages: input,
-    });
     return aiMessage.messages[aiMessage.messages.length - 1].content;
   }
 
   async execute_call_data(input: string): Promise<unknown> {
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
+    }
     if (this.agentMode != 'agent') {
       throw new Error(
         `Error : impossible to use execute_call_data function with agent mode : ${this.agentMode}.`
       );
     }
-    const aiMessage = await this.agentReactExecutor.agent.invoke({
-      messages: input,
-    });
+
+    let aiMessage;
+    if (this.agentMemory === true) {
+      aiMessage = await this.agentReactExecutor.agent.invoke(
+        { messages: input },
+        this.agentReactExecutor.agentConfig
+      );
+    } else {
+      aiMessage = await this.agentReactExecutor.agent.invoke({
+        messages: input,
+      });
+    }
     try {
       const parsedResult = JSON.parse(
         aiMessage.messages[aiMessage.messages.length - 2].content

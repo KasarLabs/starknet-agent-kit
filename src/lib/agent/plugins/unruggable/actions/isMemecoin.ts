@@ -52,7 +52,11 @@ export const isMemecoin = async (
 ): Promise<string> => {
   try {
     const provider = agent.getProvider();
-    const contract = new Contract(FACTORY_ABI, getNetworkFactoryAddress(agent), provider);
+    const contract = new Contract(
+      FACTORY_ABI,
+      getNetworkFactoryAddress(agent),
+      provider
+    );
     const result = await contract.is_memecoin(params.contractAddress);
 
     return JSON.stringify({

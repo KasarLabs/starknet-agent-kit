@@ -79,7 +79,11 @@ export const getLockedLiquidity = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    const contract = new Contract(FACTORY_ABI, getNetworkFactoryAddress(agent), provider);
+    const contract = new Contract(
+      FACTORY_ABI,
+      getNetworkFactoryAddress(agent),
+      provider
+    );
 
     const result = await contract.locked_liquidity(params.contractAddress);
     const liquidityInfo: LockedLiquidityInfo = {

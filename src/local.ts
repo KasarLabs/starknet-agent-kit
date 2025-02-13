@@ -67,6 +67,7 @@ const createBox = (
 
 const validateEnvVars = () => {
   const required = [
+    'STARKNET_NETWORK',
     'STARKNET_RPC_URL',
     'STARKNET_PRIVATE_KEY',
     'STARKNET_PUBLIC_ADDRESS',
@@ -136,6 +137,7 @@ const LocalRun = async () => {
             provider: new RpcProvider({
               nodeUrl: process.env.STARKNET_RPC_URL,
             }),
+            network: process.env.STARKNET_NETWORK,
             accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
             accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
             aiModel: process.env.AI_MODEL,
@@ -158,6 +160,7 @@ const LocalRun = async () => {
     } else if (mode === 'auto') {
       const agent = new StarknetAgent({
         provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
+        network: process.env.STARKNET_NETWORK,
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
         accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
         aiModel: process.env.AI_MODEL,

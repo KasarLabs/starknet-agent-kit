@@ -20,6 +20,7 @@ export interface StarknetAgentConfig {
   aiModel: string;
   aiProvider: string;
   provider: RpcProvider;
+  network: string;
   accountPublicKey: string;
   accountPrivateKey: string;
   signature: string;
@@ -195,6 +196,10 @@ export class StarknetAgent implements IAgent {
   }
   getProvider(): RpcProvider {
     return this.provider;
+  }
+
+  getNetwork(): string {
+    return this.config.network;
   }
 
   getLimit(): Limit {

@@ -1,5 +1,6 @@
 declare namespace NodeJS {
   export interface ProcessEnv {
+    STARKNET_NETWORK: string;
     STARKNET_PRIVATE_KEY: string;
     STARKNET_PUBLIC_ADDRESS: string;
     STARKNET_RPC_URL: string;

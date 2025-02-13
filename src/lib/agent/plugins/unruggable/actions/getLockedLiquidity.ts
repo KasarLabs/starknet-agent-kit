@@ -1,8 +1,8 @@
 import { ContractAddressParams } from 'src/lib/agent/schemas/schema';
 import { Contract } from 'starknet';
 import { FACTORY_ABI } from '../abis/unruggableFactory';
-import { FACTORY_ADDRESS } from '../constants';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { getNetworkFactoryAddress } from '../utils/helper';
 
 type LiquidityType =
   | { type: 'JediERC20'; address: string }
@@ -79,7 +79,7 @@ export const getLockedLiquidity = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
+    const contract = new Contract(FACTORY_ABI, getNetworkFactoryAddress(agent), provider);
 
     const result = await contract.locked_liquidity(params.contractAddress);
     const liquidityInfo: LockedLiquidityInfo = {

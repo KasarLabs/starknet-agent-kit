@@ -4,17 +4,12 @@ import {
   stark,
   hash,
   ec,
-  RpcProvider,
-  CairoOption,
-  CairoOptionVariant,
-  CairoCustomEnum,
 } from 'starknet';
 import {
   AccountDetails,
   BaseUtilityClass,
   TransactionResult,
 } from '../types/accounts';
-import { getDefaultProvider } from 'ethers';
 
 export class AccountManager implements BaseUtilityClass {
   constructor(public provider: any) {}

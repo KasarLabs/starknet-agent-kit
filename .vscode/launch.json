@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug Jest Test",
+        "program": "${workspaceFolder}/node_modules/.bin/jest.js",
+        "args": [
+          "--runInBand",
+          "--no-cache",
+          "--config", "${workspaceFolder}/jest.config.js",
+          "src/test/unit-test/method/account/provider/braavos.spec.ts"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "openOnSessionStart",
+        "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+        "sourceMaps": true,
+        "smartStep": true,
+        "skipFiles": []
+      }
+    ]
+  }
+  

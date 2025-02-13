@@ -12,7 +12,7 @@ import {
   TwitterInterface,
   TwitterApiConfig,
   TwitterScraperConfig,
-} from './plugins/twitter/interface';
+} from './plugins/twitter/interfaces';
 import { JsonConfig } from './jsonConfig';
 
 export interface StarknetAgentConfig {

@@ -15,9 +15,8 @@ export interface JsonConfig {
   prompt: SystemMessage;
   interval: number;
   chat_id: string;
-  allowed_internal_tools: string[];
-  external_client?: string[];
-  allowed_external_client_tools?: string[];
+  internal_plugins: string[];
+  external_plugins?: string[];
 }
 
 const createContextFromJson = (json: any): string => {
@@ -59,7 +58,13 @@ const createContextFromJson = (json: any): string => {
 };
 
 const validateConfig = (config: JsonConfig) => {
-  const requiredFields = ['name', 'interval', 'chat_id', 'bio'] as const;
+  const requiredFields = [
+    'name',
+    'interval',
+    'chat_id',
+    'bio',
+    'internal_plugins',
+  ] as const;
 
   for (const field of requiredFields) {
     if (!config[field as keyof JsonConfig]) {
@@ -85,18 +90,14 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
     jsonconfig.interval = json.interval;
     jsonconfig.chat_id = json.chat_id;
 
-    if (Array.isArray(json.allowed_internal_tools)) {
-      jsonconfig.allowed_internal_tools = json.allowed_internal_tools;
-      jsonconfig.allowed_internal_tools = jsonconfig.allowed_internal_tools.map(
-        (tool) => tool.toLowerCase()
+    if (Array.isArray(json.internal_plugins)) {
+      jsonconfig.internal_plugins = json.internal_plugins;
+      jsonconfig.internal_plugins = jsonconfig.internal_plugins.map((tool) =>
+        tool.toLowerCase()
       );
     }
-    if (Array.isArray(json.external_client)) {
-      jsonconfig.external_client = json.external_client;
-    }
-    if (Array.isArray(json.allowed_external_client_tools)) {
-      jsonconfig.allowed_external_client_tools =
-        json.allowed_external_client_tools;
+    if (Array.isArray(json.external_plugins)) {
+      jsonconfig.external_plugins = json.external_plugins;
     }
     return jsonconfig;
   } catch (error) {

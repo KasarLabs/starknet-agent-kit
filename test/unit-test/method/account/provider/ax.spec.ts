@@ -50,7 +50,7 @@ describe('AX Account Creation and Deployment', () => {
         const accountDetails = {
             contractAddress: '0x4570109d7cf87789cc3673fa568f9c92eb74447974dce0907f4150ad87bb858',
             publicKey: '0x3108d02cde928366314aa9bec262cea359f7272e2a7717f795e09cfe17df6d0',
-            privateKey: '0x418854677cff6b8ff919fde4e861080e9274f39b8fc051402d4140bcc9dadbb'
+            privateKey: 'fffff'
         }
         
         console.log('\nDéploiement du compte...');

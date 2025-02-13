@@ -13,7 +13,6 @@ export class ConfigurationService {
       NODE_ENV: this.configService.get<string>('NODE_ENV'),
       SERVER_PORT: this.configService.get<string>('SERVER_PORT'),
       SERVER_API_KEY: this.configService.get<string>('SERVER_API_KEY'),
-      STARKNET_NETWORK: this.configService.get<string>('STARKNET_NETWORK'),
       STARKNET_PRIVATE_KEY: this.configService.get<string>(
         'STARKNET_PRIVATE_KEY'
       ),
@@ -53,12 +52,19 @@ export class ConfigurationService {
     return this.config.SERVER_API_KEY;
   }
 
-  get starknet() {
+  get starknet(): {
+    privateKey: string;
+    publicKey: string;
+    provider: RpcProvider;
+    network: Promise<string>;
+  } {
     return {
       privateKey: this.config.STARKNET_PRIVATE_KEY,
       publicKey: this.config.STARKNET_PUBLIC_ADDRESS,
       provider: new RpcProvider({ nodeUrl: this.config.STARKNET_RPC_URL }),
-      network: this.config.STARKNET_NETWORK,
+      network: new RpcProvider({
+        nodeUrl: this.config.STARKNET_RPC_URL,
+      }).getChainId(),
     };
   }
 

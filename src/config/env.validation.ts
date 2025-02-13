@@ -88,8 +88,6 @@ export const envSchema = z
       .min(1, 'API key is required for server authentication'),
 
     // Starknet configuration
-    /** Starknet network to interact with */
-    STARKNET_NETWORK: z.string().default('testnet'),
     /** Private key for Starknet blockchain interactions */
     STARKNET_PRIVATE_KEY: z
       .string()

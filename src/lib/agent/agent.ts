@@ -16,7 +16,7 @@ const systemMessage = new SystemMessage(`
   
   Response formats ⚡:
 
-  Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash}
+  Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash} when chain id is 0x534e5f4d41494e otherwise use this foramt https://sepolia.starkscan.co/tx/{transaction_hash}
   
   Errors:
   {

@@ -13,9 +13,10 @@ export class WalletController implements OnModuleInit {
     private readonly config: ConfigurationService
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     this.agent = new StarknetAgent({
       provider: this.config.starknet.provider,
+      network: await this.config.starknet.network,
       accountPrivateKey: this.config.starknet.privateKey,
       accountPublicKey: this.config.starknet.publicKey,
       aiModel: this.config.ai.model,

@@ -75,7 +75,7 @@ export const decimalsScale = (decimals: number) =>
 
 export const getNetworkFactoryAddress = (agent: StarknetAgentInterface) => {
   const network = agent.getNetwork();
-  return network === 'mainnet'
+  return network === '0x534e5f4d41494e'
     ? FACTORY_ADDRESS_MAINNET
     : FACTORY_ADDRESS_TESTNET;
 };

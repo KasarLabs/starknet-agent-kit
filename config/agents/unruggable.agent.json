@@ -20,5 +20,5 @@
   "chat_id": "test",
   "external_client": [],
   "allowed_external_client_tools": [],
-  "allowed_internal_tools": ["get_balance", "get_own_balance", "swap_tokens", "launch_memecoin", "launch_on_ekubo"]
+  "allowed_internal_tools": ["get_balance", "get_own_balance", "swap_tokens", "create_memecoin", "launch_on_ekubo"]
 }

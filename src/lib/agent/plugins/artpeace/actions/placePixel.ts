@@ -4,6 +4,7 @@ import { Account, constants, Contract, num, RPC } from 'starknet';
 import { artpeaceAbi } from '../abis/artpeaceAbi';
 import { artpeaceAddr } from '../constants/artpeace';
 import { Checker } from '../utils/checker';
+import { ArtpeaceHelper } from '../utils/helper';
 
 /**
  * Places pixels on a Starknet canvas using the Artpeace contract
@@ -30,11 +31,8 @@ export const placePixel = async (
 
     const txHash = [];
     for (const param of params) {
-      const checker = new Checker(param.canvasId);
-      const id = await checker.checkWorld();
-      const position = await checker.checkPosition(param.xPos, param.yPos);
+      const {id, position, color} = await ArtpeaceHelper.validateAndFillDefaults(param);
       const timestamp = Math.floor(Date.now() / 1000);
-      const color = await checker.checkColor(param.color);
 
       artpeaceContract.connect(account);
       const call = artpeaceContract.populate('place_pixel', {
@@ -79,10 +77,7 @@ export const placePixelSignature = async (input: {
 
     const callData = [];
     for (const param of params) {
-      const checker = new Checker(param.canvasId);
-      const id = await checker.checkWorld();
-      const position = await checker.checkPosition(param.xPos, param.yPos);
-      const color = await checker.checkColor(param.color);
+        const {id, position, color} = await ArtpeaceHelper.validateAndFillDefaults(param)
       const timestamp = Math.floor(Date.now() / 1000);
 
       const call = artpeaceContract.populate('place_pixel', {

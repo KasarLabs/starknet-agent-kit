@@ -26,23 +26,21 @@ export class Checker {
         const response = await fetch(
           `https://api.art-peace.net/get-world-id?worldName=${this.param}`
         );
-
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error(`HTTP Error status: ${response.status}`);
-        }
-        const data: number = await response.json();
-        id = data;
-        console.log('id: ', id);
-      } else {
+
+        const data = await response.json();
+        id = data.data;
+      } else
         id = this.param;
-      }
+
       const response = await fetch(
         `https://api.art-peace.net/get-world?worldId=${id}`
       );
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP Error status: ${response.status}`);
-      }
+
+
       const data = await response.json();
       this.world = data.data;
       return this.world.worldId;
@@ -123,4 +121,11 @@ export class Checker {
       );
     }
   }
+
+    getWorldSize(): {width: number, height: number} {
+        return {
+            width: this.world.width,
+            height: this.world.height
+        }
+    }
 }

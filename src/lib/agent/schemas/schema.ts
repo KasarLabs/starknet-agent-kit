@@ -306,21 +306,22 @@ export const createMemecoinSchema = z.object({
 export const placePixelParamSchema = z.object({
   canvasId: z
     .union([z.number(), z.string()])
-    .default(0)
+    .optional()
     .describe(
-      'The id or the unique name of the world to dispose the pixel, if is not provided set by default 0'
+      'The id or the unique name of the world to dispose the pixel'
     ),
-  xPos: z.number().describe('The position on x axe of the pixel'),
-  yPos: z.number().describe('The position on y axe of the pixel'),
+  xPos: z.number().optional().describe('The position on x axe of the pixel'),
+  yPos: z.number().optional().describe('The position on y axe of the pixel'),
   color: z
     .string()
-    .default('0')
-    .describe('The color of the pixel, if is not provided set by default 0'),
+    .optional()
+    .describe('The color of the pixel'),
 });
 
 export const placePixelSchema = z.object({
   params: z
     .array(placePixelParamSchema)
+    .optional()
     .describe('Array of parameter to place one or multiple pixel'),
 });
 

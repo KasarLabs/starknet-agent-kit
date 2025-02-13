@@ -7,8 +7,8 @@
  * @property color Color value for the pixel
  */
 export interface PlacePixelParam {
-  canvasId: number | string;
-  xPos: number;
-  yPos: number;
-  color: string;
+  canvasId?: number | string;
+  xPos?: number;
+  yPos?: number;
+  color?: string;
 }

@@ -174,8 +174,8 @@ export const registerTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'place_pixel',
     description:
-      'Places a pixel according to the colour, position and world specified by the user',
-    schema: placePixelSignatureSchema,
+      'Places a pixel',
+    schema: placePixelSchema,
     execute: placePixel,
   });
 

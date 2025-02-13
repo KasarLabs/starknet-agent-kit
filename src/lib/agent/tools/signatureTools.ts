@@ -24,6 +24,8 @@ import { CreateOZAccountSignature } from '../plugins/openzeppelin/actions/create
 import { DeployOZAccountSignature } from '../plugins/openzeppelin/actions/deployAccount';
 import { CreateOKXAccountSignature } from '../plugins/okx/actions/createAccount';
 import { DeployOKXAccountSignature } from '../plugins/okx/actions/deployAccount';
+import { CreateBraavosAccountSignature } from '../plugins/braavos/actions/createAccount';
+import { DeployBraavosAccountSignature } from '../plugins/braavos/actions/deployAccount';
 
 import { accountDetailsSchema } from '../plugins/argentx/schemas/schema';
 
@@ -85,6 +87,12 @@ export const RegisterSignatureTools = () => [
     execute: CreateOKXAccountSignature,
   }),
   StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'create_braavos_account',
+    description:
+      'create braavos account return the privateKey/publicKey/contractAddress',
+    execute: CreateBraavosAccountSignature,
+  }),
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'deploy_argent_account',
     description: 'deploy argent account return the deploy transaction address',
     schema: accountDetailsSchema,
@@ -102,6 +110,12 @@ export const RegisterSignatureTools = () => [
     description: 'deploy okx account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOKXAccountSignature,
+  }),
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'deploy_braavos_account',
+    description: 'deploy braavos account return the deploy transaction address',
+    schema: accountDetailsSchema,
+    execute: DeployBraavosAccountSignature,
   }),
   // StarknetSignatureToolRegistry.RegisterSignatureTools({
   //   name: 'create_argent_account',

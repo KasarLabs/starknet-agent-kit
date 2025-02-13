@@ -1,166 +1,198 @@
 import {
-  Account,
-  CallData,
-  stark,
-  hash,
-  ec,
-  constants,
-} from 'starknet';
-import {
-  AccountDetails,
-  BaseUtilityClass,
-  TransactionResult,
-} from '../../core/account/types/accounts';
-
-export class AccountManager implements BaseUtilityClass {
-  constructor(
-    public provider: any,
-    public initialClasshash: string,
-    public proxyClasshash: string,
-    public accountClasshash: string
-  ) {}
-
-  private getConstructorCalldata(publicKey: string) {
-    return CallData.compile(this.getConstructorRawdata(publicKey));
+    Account,
+    CallData,
+    stark,
+    hash,
+    ec,
+    constants,
+    RpcProvider,
+    BigNumberish,
+    DeployContractResponse,
+    Calldata,
+    num
+  } from 'starknet';
+  
+  export interface AccountDetails {
+    contractAddress: string;
+    privateKey: string;
+    publicKey: string;
   }
-
-  private getConstructorRawdata(publicKey: string) {
-    const initializer = CallData.compile({ publicKey });
-    return {
-        implementation_address: this.initialClasshash,
-        initializer_selector: hash.getSelectorFromName('initializer'),
-        calldata: [...initializer]
-    };
+  
+  export interface TransactionResult {
+    status: 'success' | 'error';
+    transactionHash: string;
+    contractAddress?: string;
   }
-
-  async createAccount(): Promise<AccountDetails> {
-    try {
-      const privateKey = stark.randomAddress();
-      const publicKey = ec.starkCurve.getStarkKey(privateKey);
-
-      const constructorCalldata = this.getConstructorCalldata(publicKey);
-      const contractAddress = hash.calculateContractAddressFromHash(
-        publicKey,
-        this.proxyClasshash,
-        constructorCalldata,
-        0
-      );
-
-      return {
-        contractAddress,
-        privateKey,
-        publicKey,
-      };
-    } catch (error) {
-      throw new Error(`Failed to create account: ${error.message}`);
+  
+  export class AccountManager {
+    constructor(
+      public provider: RpcProvider,
+      public initialClassHash: string,
+      public proxyClassHash: string,
+      public accountClassHash: string
+    ) {}
+  
+    private calcInit(publicKey: string): Calldata {
+      return CallData.compile({ public_key: publicKey });
     }
-  }
-
-  private async getInvocation(accountDetails: AccountDetails) {
-    const chainId = await this.provider.getChainId();
-    const txHashForEstimate = hash.calculateDeployAccountTransactionHash({
-        contractAddress: BigInt(accountDetails.contractAddress),
-        classHash: BigInt(this.proxyClasshash),
-        constructorCalldata: this.getConstructorCalldata(accountDetails.publicKey),
-        salt: BigInt(accountDetails.publicKey),
-        version: constants.TRANSACTION_VERSION.V2,
-        maxFee: BigInt(constants.ZERO),
-        chainId: chainId,
-        nonce: BigInt(constants.ZERO)
-    });
-
-    const parsedOtherSigner = [0, 0, 0, 0, 0, 0, 0];
-    const { r, s } = ec.starkCurve.sign(
-        hash.computeHashOnElements([
-          txHashForEstimate, 
-          this.accountClasshash, 
-          ...parsedOtherSigner
-        ]),
-        accountDetails.privateKey
-    );
-
-    const signatureForEstimate = [
+  
+    private getProxyConstructor(initializer: Calldata): Calldata {
+      return CallData.compile({
+        implementation_address: this.initialClassHash,
+        initializer_selector: hash.getSelectorFromName('initializer'),
+        calldata: [...initializer],
+      });
+    }
+  
+    async createAccount(): Promise<AccountDetails> {
+      try {
+        const privateKey = stark.randomAddress();
+        const publicKey = ec.starkCurve.getStarkKey(privateKey);
+  
+        const initializer = this.calcInit(publicKey);
+        const constructorCalldata = this.getProxyConstructor(initializer);
+  
+        const contractAddress = hash.calculateContractAddressFromHash(
+          publicKey,
+          this.proxyClassHash,
+          constructorCalldata,
+          0
+        );
+  
+        return {
+          contractAddress,
+          privateKey,
+          publicKey,
+        };
+      } catch (error) {
+        throw new Error(`Failed to create account: ${error.message}`);
+      }
+    }
+  
+    private getBraavosSignature(
+      contractAddress: BigNumberish,
+      constructorCalldata: Calldata,
+      publicKey: BigNumberish,
+      version: bigint,
+      maxFee: BigNumberish,
+      chainId: constants.StarknetChainId,
+      nonce: bigint,
+      privateKey: BigNumberish
+    ): string[] {
+      const txHash = hash.calculateDeployAccountTransactionHash({
+          contractAddress,
+          classHash: this.proxyClassHash,
+          constructorCalldata,
+          salt:publicKey,
+          version: "0x1",
+          maxFee,
+          chainId,
+          nonce
+      }
+      );
+  
+      const parsedOtherSigner = [0, 0, 0, 0, 0, 0, 0];
+      const { r, s } = ec.starkCurve.sign(
+        hash.computeHashOnElements([txHash, this.accountClassHash, ...parsedOtherSigner]),
+        num.toHex(privateKey)
+      );
+  
+      return [
         r.toString(),
         s.toString(),
-        this.accountClasshash.toString(),
-        ...parsedOtherSigner.map(e => e.toString())
-    ];
-
-    console.log('signatureForEstimate', signatureForEstimate);
-    console.log("Try1");
-    console.log('Try to convert: ', BigInt(accountDetails.publicKey));
-    console.log("Try2");
-    return { 
-      classHash: this.proxyClasshash,
-      constructorCalldata: this.getConstructorRawdata(accountDetails.publicKey),
-      addressSalt: BigInt(accountDetails.publicKey), //bigNumberish ?
-      signature: signatureForEstimate || [],
-     }
-  }
-
-  async deployAccount(
-    accountDetails: AccountDetails,
-  ): Promise<TransactionResult> {
-    try {
-      const invocation = await this.getInvocation(accountDetails);
-      const details = {
-        nonce: constants.ZERO,
-        version: constants.TRANSACTION_VERSION.V3
+        this.accountClassHash.toString(),
+        ...parsedOtherSigner.map((e) => e.toString()),
+      ];
+    }
+  
+    async estimateAccountDeployFee(
+      accountDetails: AccountDetails
+    ): Promise<bigint> {
+      try {
+        const version = "0x1";
+        const nonce = constants.ZERO;
+        const chainId = await this.provider.getChainId();
+        
+        const initializer = this.calcInit(accountDetails.publicKey);
+        const constructorCalldata = this.getProxyConstructor(initializer);
+  
+        const signature = this.getBraavosSignature(
+          accountDetails.contractAddress,
+          constructorCalldata,
+          accountDetails.publicKey,
+          BigInt(version),
+          constants.ZERO,
+          chainId,
+          BigInt(nonce),
+          accountDetails.privateKey
+        );
+  
+        const deployAccountPayload = {
+          classHash: this.proxyClassHash,
+          constructorCalldata,
+          addressSalt: accountDetails.publicKey,
+          signature
+        };
+  
+        const response = await this.provider.getDeployAccountEstimateFee(
+          deployAccountPayload,
+          { version, nonce }
+        );
+  
+        return stark.estimatedFeeToMaxFee(response.overall_fee);
+      } catch (error) {
+        throw new Error(`Failed to estimate deploy fee: ${error.message}`);
       }
-      
-      const { transaction_hash, contract_address } = await this.provider.deployAccountContract(invocation, details);
-      await this.provider.waitForTransaction(transaction_hash);
-
-      return {
-        status: 'success',
-        transactionHash: transaction_hash,
-        contractAddress: contract_address,
-      };
-    } catch (error) {
-      throw new Error(`Failed to create account: ${error.message}`);
+    }
+  
+    async deployAccount(
+      accountDetails: AccountDetails,
+      maxFee?: BigNumberish
+    ): Promise<TransactionResult> {
+      try {
+        const version = "0x1";
+        const nonce = constants.ZERO;
+        const chainId = await this.provider.getChainId();
+  
+        const initializer = this.calcInit(accountDetails.publicKey);
+        const constructorCalldata = this.getProxyConstructor(initializer);
+  
+        maxFee = maxFee ?? await this.estimateAccountDeployFee(accountDetails);
+  
+        const signature = this.getBraavosSignature(
+          accountDetails.contractAddress,
+          constructorCalldata,
+          accountDetails.publicKey,
+          BigInt(version),
+          maxFee,
+          chainId,
+          BigInt(nonce),
+          accountDetails.privateKey
+        );
+  
+        const { transaction_hash, contract_address } = await this.provider.deployAccountContract(
+          {
+            classHash: this.proxyClassHash,
+            constructorCalldata,
+            addressSalt: accountDetails.publicKey,
+            signature,
+          },
+          {
+            nonce,
+            maxFee,
+            version,
+          }
+        );
+  
+        await this.provider.waitForTransaction(transaction_hash);
+  
+        return {
+          status: 'success',
+          transactionHash: transaction_hash,
+          contractAddress: contract_address,
+        };
+      } catch (error) {
+        throw new Error(`Failed to deploy account: ${error.message}`);
+      }
     }
   }
-
-  // async getAccountBalance(address: string): Promise<string> {
-  //   try {
-  //     const balance = await this.provider.getBalance(address);
-  //     return balance.toString();
-  //   } catch (error) {
-  //     throw new Error(`Failed to get account balance: ${error.message}`);
-  //   }
-  // }
-
-  // async getNonce(address: string): Promise<string> {
-  //   try {
-  //     const nonce = await this.provider.getNonceForAddress(address);
-  //     return nonce.toString();
-  //   } catch (error) {
-  //     throw new Error(`Failed to get nonce: ${error.message}`);
-  //   }
-  // }
-
-  // async isAccountDeployed(address: string): Promise<boolean> {
-  //   try {
-  //     const code = await this.provider.getClassAt(address);
-  //     return code !== null;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
-
-  async estimateAccountDeployFee(
-    accountDetails: AccountDetails
-  ) {
-    try {
-      const invocation = await this.getInvocation(accountDetails);
-      const details = {
-        nonce: constants.ZERO,
-        version: constants.TRANSACTION_VERSION.V3
-      }
-      console.log('invocation', invocation);
-      return await this.provider.getDeployAccountEstimateFee(invocation, details);
-    } catch (error) {
-      throw new Error(`Failed to estimate deploy fee: ${error.message}`);
-    }
-  }
-}

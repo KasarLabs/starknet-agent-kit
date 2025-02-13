@@ -13,6 +13,8 @@ import { DeployAXAccount } from '../plugins/argentx/actions/deployAccount';
 import { DeployOZAccount } from '../plugins/openzeppelin/actions/deployAccount';
 import { CreateOKXAccount } from '../plugins/okx/actions/createAccount';
 import { DeployOKXAccount } from '../plugins/okx/actions/deployAccount';
+import { CreateBraavosAccount } from '../plugins/braavos/actions/createAccount';
+import { DeployBraavosAccount } from '../plugins/braavos/actions/deployAccount';
 
 import { transfer } from '../plugins/core/token/transfer';
 import {
@@ -197,7 +199,7 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'DeployOZAccount',
-    description: 'Deploy a Open ZeppelinAccount',
+    description: 'Deploy a Open Zeppelin Account',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
@@ -226,6 +228,19 @@ export const registerTools = () => {
     description: 'Deploy a OKX Account',
     schema: accountDetailsSchema,
     execute: DeployOKXAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'CreateBraavosAccount',
+    description: 'Create Braavos account',
+    execute: CreateBraavosAccount,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'DeployBraavosAccount',
+    description: 'Deploy a Braavos Account',
+    schema: accountDetailsSchema,
+    execute: DeployBraavosAccount,
   });
 
   // Register blockchain query tools

@@ -22,7 +22,7 @@ export const DeployBraavosAccount = async (
       braavos_proxy_classhash,
       braavos_account_classhash
     );
-
+  
     const tx = await accountManager.deployAccount(params);
 
     console.log('✅ Braavos wallet deployed at:', tx.contractAddress);

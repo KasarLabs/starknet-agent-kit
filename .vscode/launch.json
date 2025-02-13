@@ -4,21 +4,21 @@
       {
         "type": "node",
         "request": "launch",
-        "name": "Debug Jest Test",
-        "program": "${workspaceFolder}/node_modules/.bin/jest.js",
+        "name": "Debug Braavos Tests",
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
         "args": [
           "--runInBand",
-          "--no-cache",
-          "--config", "${workspaceFolder}/jest.config.js",
-          "src/test/unit-test/method/account/provider/braavos.spec.ts"
+          "test/unit-test/method/account/provider/braavos.spec.ts"
         ],
+        "cwd": "${workspaceFolder}",
         "console": "integratedTerminal",
-        "internalConsoleOptions": "openOnSessionStart",
-        "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+        "internalConsoleOptions": "neverOpen",
         "sourceMaps": true,
-        "smartStep": true,
-        "skipFiles": []
+        "env": {
+          "NODE_ENV": "test",
+          "STARKNET_RPC_URL": "${env:STARKNET_RPC_URL}",
+          "RUN_DEPLOYMENT_TEST": "true"
+        }
       }
     ]
   }
-  

@@ -7,8 +7,9 @@ import { AccountManager } from '../utils/AccountManager';
 
 export const CreateBraavosAccount = async () => {
   try {
+    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
     const accountManager = new AccountManager(
-      undefined,
+      provider,
       braavos_initial_classhash,
       braavos_proxy_classhash,
       braavos_account_classhash
@@ -45,7 +46,7 @@ export const CreateBraavosAccountSignature = async () => {
     const accountDetails = await accountManager.createAccount();
     
     const suggestedMaxFee = await accountManager.estimateAccountDeployFee(accountDetails);
-    const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;
+    const maxFee = suggestedMaxFee * 2n;
 
     return JSON.stringify({
       status: 'success',

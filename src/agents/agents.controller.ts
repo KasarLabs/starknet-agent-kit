@@ -32,6 +32,7 @@ export class AgentsController implements OnModuleInit {
       aiProviderApiKey: this.config.ai.apiKey,
       signature: 'key',
       agentMode: 'agent',
+      agentMemory : true,
     });
   }
 

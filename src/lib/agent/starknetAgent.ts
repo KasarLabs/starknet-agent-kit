@@ -24,6 +24,7 @@ export interface StarknetAgentConfig {
   accountPrivateKey: string;
   signature: string;
   agentMode: string;
+  agentMemory: boolean;
   agentconfig?: JsonConfig;
 }
 
@@ -35,6 +36,7 @@ export class StarknetAgent implements IAgent {
   private readonly aiProviderApiKey: string;
   private readonly agentReactExecutor: any;
   private twitterAccoutManager: TwitterInterface = {};
+  private readonly agentMemory: boolean;
 
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
@@ -55,6 +57,7 @@ export class StarknetAgent implements IAgent {
     this.signature = config.signature;
     this.agentMode = config.agentMode;
     this.agentconfig = config.agentconfig;
+    this.agentMemory = config.agentMemory;
 
     this.token_limit = AddAgentLimit();
 
@@ -189,14 +192,17 @@ export class StarknetAgent implements IAgent {
       agentMode: this.agentMode,
     };
   }
-
+  getAgentMemory() {
+    return {
+      agentMemory: this.agentMemory,
+    };
+  }
   getAgentConfig(): JsonConfig | undefined {
     return this.agentconfig;
   }
   getProvider(): RpcProvider {
     return this.provider;
   }
-
   getLimit(): Limit {
     return this.token_limit;
   }
@@ -219,38 +225,56 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute_autonomous(): Promise<unknown> {
-    while (-1) {
-      const aiMessage = await this.agentReactExecutor.agent.invoke(
-        {
-          messages: 'Choose what to do',
-        },
-        this.agentReactExecutor.agentConfig
-      );
-      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
-      await new Promise((resolve) =>
-        setTimeout(resolve, this.agentReactExecutor.json_config.interval)
+    if (this.agentMode != 'auto') {
+      throw new Error(
+        `Error : impossible to use execute_automous function with agent mode : ${this.agentMode}.`
       );
     }
+    const aiMessage = await this.agentReactExecutor.agent.invoke(
+      {
+        messages: 'Choose what to do',
+      },
+      this.agentReactExecutor.agentConfig
+    );
+    console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
+    await new Promise((resolve) =>
+      setTimeout(resolve, this.agentReactExecutor.json_config.interval)
+    );
+
     return;
   }
 
   async execute(input: string): Promise<unknown> {
     if (this.agentMode != 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentMode}`
+        `Error : impossible to use execute function with agent mode : ${this.agentMode}.`
       );
     }
-    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
+    if (this.agentMemory === true) {
+      console.log(this.agentReactExecutor.agentConfig);
+      const aiMessage = await this.agentReactExecutor.agent.invoke(
+        { messages: input },
+        this.agentReactExecutor.agentConfig
+      );
+      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
+      return aiMessage.messages[aiMessage.messages.length - 1].content;
+    }
+
+    const aiMessage = await this.agentReactExecutor.agent.invoke({
+      messages: input,
+    });
     return aiMessage.messages[aiMessage.messages.length - 1].content;
   }
 
   async execute_call_data(input: string): Promise<unknown> {
     if (this.agentMode != 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentMode}`
+        `Error : impossible to use execute_call_data function with agent mode : ${this.agentMode}.`
       );
     }
-    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
+    const aiMessage = await this.agentReactExecutor.agent.invoke({
+      messages: input,
+    });
     try {
       const parsedResult = JSON.parse(
         aiMessage.messages[aiMessage.messages.length - 2].content

@@ -186,53 +186,53 @@ export const registerTools = () => {
 
   // Register account-related tools
   StarknetToolRegistry.registerTool({
-    name: 'CreateOZAccount',
-    description: 'Create Open Zeppelin account return the privateKey/publicKey/contractAddress',
+    name: 'create_new_openzeppelin_account',
+    description: 'Create a new Open Zeppelin account and returns credentials',
     execute: CreateOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'CreateArgentAccount',
-    description: 'Create Argentx account return the privateKey/publicKey/contractAddress',
+    name: 'create_new_argent_account',
+    description: 'Creates a new Argent account and returns credentials',
     execute: CreateAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'CreateOKXAccount',
-    description: 'Create OKX account return the privateKey/publicKey/contractAddress',
+    name: 'create_new_okx_account',
+    description: 'Create a new OKX account and returns credentials',
     execute: CreateOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'CreateBraavosAccount',
-    description: 'Create Braavos account return the privateKey/publicKey/contractAddress',
+    name: 'create_new_braavos_account',
+    description: 'Create a new Braavos account and returns credentials',
     execute: CreateBraavosAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'DeployOZAccount',
-    description: 'Deploy a Open Zeppelin Account return the deploy transaction address',
+    name: 'deploy_existing_openzeppelin_account',
+    description: 'Deploy an existing Open Zeppelin Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'DeployArgentAccount',
-    description: 'Deploy a Argentx Account return the deploy transaction address',
+    name: 'deploy_existing_argent_account',
+    description: 'Deploy an existing Argentx Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'DeployOKXAccount',
-    description: 'Deploy a OKX Account return the deploy transaction address',
+    name: 'deploy_existing_okx_account',
+    description: 'Deploy an existing OKX Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'DeployBraavosAccount',
-    description: 'Deploy a Braavos Account return the deploy transaction address',
+    name: 'deploy_existing_braavos_account',
+    description: 'Deploy an existing Braavos Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployBraavosAccount,
   });

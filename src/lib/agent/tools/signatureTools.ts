@@ -60,9 +60,9 @@ export const RegisterSignatureTools = () => [
 
   // Register account-related tools
   StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_argent_account',
+    name: 'create_argentx_account',
     description:
-      'create argent account return the privateKey/publicKey/contractAddress',
+      'create argentx account return the privateKey/publicKey/contractAddress',
     execute: CreateAXAccountSignature,
   }),
 

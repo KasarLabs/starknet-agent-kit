@@ -211,28 +211,32 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'deployExistingOpenzeppelinAccount',
-    description: 'Deploy an existing Open Zeppelin Account return the deploy transaction address',
+    description:
+      'Deploy an existing Open Zeppelin Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'deployExistingArgentAccount',
-    description: 'Deploy an existing Argentx Account return the deploy transaction address',
+    description:
+      'Deploy an existing Argentx Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'deployExistingOkxAccount',
-    description: 'Deploy an existing OKX Account return the deploy transaction address',
+    description:
+      'Deploy an existing OKX Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'deployExistingBraavosAccount',
-    description: 'Deploy an existing Braavos Account return the deploy transaction address',
+    description:
+      'Deploy an existing Braavos Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployBraavosAccount,
   });

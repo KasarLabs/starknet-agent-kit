@@ -1,10 +1,4 @@
-import {
-  Account,
-  CallData,
-  stark,
-  hash,
-  ec,
-} from 'starknet';
+import { Account, CallData, stark, hash, ec } from 'starknet';
 import {
   AccountDetails,
   BaseUtilityClass,

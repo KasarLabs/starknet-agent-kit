@@ -22,7 +22,6 @@ import {
  * @implements {BaseUtilityClass}
  */
 export class AccountManager implements BaseUtilityClass {
-
   constructor(public provider: any) {}
 
   /**
@@ -61,7 +60,6 @@ export class AccountManager implements BaseUtilityClass {
       throw new Error(`Failed to create account: ${error.message}`);
     }
   }
-
 
   /**
    * Deploys an account to the network.
@@ -111,7 +109,6 @@ export class AccountManager implements BaseUtilityClass {
       throw new Error(`Failed to create account: ${error.message}`);
     }
   }
-
 
   /**
    * Estimates deployment fee for an account.

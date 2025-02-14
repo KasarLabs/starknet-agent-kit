@@ -24,14 +24,14 @@ export const DeployBraavosAccount = async (
 ) => {
   try {
     const provider = agent.getProvider();
-    
+
     const accountManager = new AccountManager(
       provider,
       braavos_initial_classhash,
       braavos_proxy_classhash,
       braavos_account_classhash
     );
-  
+
     const tx = await accountManager.deployAccount(params);
 
     console.log('✅ Braavos wallet deployed at:', tx.contractAddress);
@@ -64,7 +64,7 @@ export const DeployBraavosAccountSignature = async (
 ) => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
-    
+
     const accountManager = new AccountManager(
       provider,
       braavos_initial_classhash,

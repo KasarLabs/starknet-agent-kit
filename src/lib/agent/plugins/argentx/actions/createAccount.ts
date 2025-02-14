@@ -12,7 +12,8 @@ import { AccountManager } from '../utils/AccountManager';
 export const CreateAXAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
-    const accountDetails = await accountManager.createAccount(argentx_classhash);
+    const accountDetails =
+      await accountManager.createAccount(argentx_classhash);
 
     return JSON.stringify({
       status: 'success',

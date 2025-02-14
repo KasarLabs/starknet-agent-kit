@@ -6,7 +6,6 @@ import { AccountDetails } from '../../core/account/types/accounts';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 
-
 /**
  * Deploys an ArgentX account using Starknet agent.
  * @async

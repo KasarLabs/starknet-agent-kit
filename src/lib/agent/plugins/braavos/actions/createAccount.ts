@@ -1,8 +1,9 @@
 import { RpcProvider } from 'starknet';
-import { 
-  braavos_initial_classhash, 
+import {
+  braavos_initial_classhash,
   braavos_proxy_classhash,
-  braavos_account_classhash } from '../constant/contract';
+  braavos_account_classhash,
+} from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 
 /**
@@ -58,8 +59,9 @@ export const CreateBraavosAccountSignature = async () => {
     );
 
     const accountDetails = await accountManager.createAccount();
-    
-    const suggestedMaxFee = await accountManager.estimateAccountDeployFee(accountDetails);
+
+    const suggestedMaxFee =
+      await accountManager.estimateAccountDeployFee(accountDetails);
     const maxFee = suggestedMaxFee * 2n;
 
     return JSON.stringify({

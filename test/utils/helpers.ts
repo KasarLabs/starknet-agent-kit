@@ -16,7 +16,8 @@ interface EnvConfig {
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
-    STARKNET_RPC_URL: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b',
+    STARKNET_RPC_URL:
+      'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b',
     accounts: {
       account1: {
         privateKey:
@@ -51,10 +52,10 @@ export const setupTestEnvironment = () => {
   process.env.STARKNET_PUBLIC_ADDRESS = config.accounts.account1.publicAddress;
 
   process.env.STARKNET_PRIVATE_KEY_2 = config.accounts.account2.privateKey;
-  process.env.STARKNET_PUBLIC_ADDRESS_2 = 
+  process.env.STARKNET_PUBLIC_ADDRESS_2 =
     config.accounts.account2.publicAddress;
 
   process.env.STARKNET_PRIVATE_KEY_3 = config.accounts.account3.privateKey;
-  process.env.STARKNET_PUBLIC_ADDRESS_3 = 
+  process.env.STARKNET_PUBLIC_ADDRESS_3 =
     config.accounts.account3.publicAddress;
 };

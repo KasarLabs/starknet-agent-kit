@@ -42,7 +42,6 @@ export const DeployOKXAccount = async (
   }
 };
 
-
 /**
  * Deploys an OKX account using RPC.
  * @async

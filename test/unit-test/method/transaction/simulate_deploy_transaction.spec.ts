@@ -1,11 +1,18 @@
-import { simulateDeployTransaction } from 'src/lib/agent/plugins/transaction/simulateTransaction';
+import { simulateDeployTransaction } from 'src/lib/agent/plugins/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
+const wrong_agent = createMockInvalidStarknetAgent();
 describe('Simulate Deploy Transaction ', () => {
   describe('With perfect match inputs', () => {
     it('should simulate deploy transaction with valid payload[classHash]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -14,10 +21,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeployTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -27,7 +31,7 @@ describe('Simulate Deploy Transaction ', () => {
     it('should simulate deploy transaction with valid payload[classHash,constructorCalldata]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -40,10 +44,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeployTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -53,7 +54,7 @@ describe('Simulate Deploy Transaction ', () => {
     it('should simulate deploy transaction with valid payload[classHash,salt,constructorCalldata]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -67,10 +68,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeployTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -80,7 +78,7 @@ describe('Simulate Deploy Transaction ', () => {
     it('should simulate deploy transaction with full payload[classHash,salt,unique,constructorCalldata]', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -95,10 +93,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeployTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -109,7 +104,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               classHash: C.class_hash,
@@ -123,7 +118,7 @@ describe('Simulate Deploy Transaction ', () => {
           ],
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
 
           payloads: [
             {
@@ -139,10 +134,7 @@ describe('Simulate Deploy Transaction ', () => {
 
       // Act & Assert
       for (const params of paramsArray) {
-        const result = await simulateDeployTransaction(
-          params,
-          process.env.STARKNET_PRIVATE_KEY
-        );
+        const result = await simulateDeployTransaction(agent, params);
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
       }
@@ -152,7 +144,7 @@ describe('Simulate Deploy Transaction ', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -165,7 +157,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(params, '0xinvalid');
+      const result = await simulateDeployTransaction(wrong_agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -175,7 +167,7 @@ describe('Simulate Deploy Transaction ', () => {
     it('should fail reason : invalid classHash', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: '',
@@ -189,10 +181,7 @@ describe('Simulate Deploy Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeployTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeployTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -202,7 +191,7 @@ describe('Simulate Deploy Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           payloads: [
             {
               classHash: C.class_hash,
@@ -216,7 +205,7 @@ describe('Simulate Deploy Transaction ', () => {
           ],
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
           payloads: [
             {
               classHash: '',
@@ -230,15 +219,9 @@ describe('Simulate Deploy Transaction ', () => {
       ];
 
       // Act
-      const result = await simulateDeployTransaction(
-        paramsArray[0],
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeployTransaction(agent, paramsArray[0]);
       const parsed = JSON.parse(result);
-      const result2 = await simulateDeployTransaction(
-        paramsArray[1],
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result2 = await simulateDeployTransaction(agent, paramsArray[1]);
       const parsed2 = JSON.parse(result2);
 
       // Assert

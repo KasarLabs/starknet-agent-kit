@@ -1,12 +1,15 @@
 import { estimateAccountDeployFee } from 'src/lib/agent/plugins/core/account/estimateAccountDeployFee';
 import * as C from '../../../../utils/constant';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
 
 describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
     it('should estimate fees successfully with valid payload', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: C.class_hash,
@@ -20,10 +23,7 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      const result = await estimateAccountDeployFee(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await estimateAccountDeployFee(params, agent);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -51,7 +51,7 @@ describe('Estimate Account Deploy Fee', () => {
     it('should fail at estimate fee reason : class_hash unvalid', async () => {
       //Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash: '',
@@ -65,10 +65,7 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      const result = await estimateAccountDeployFee(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await estimateAccountDeployFee(params, agent);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -77,7 +74,7 @@ describe('Estimate Account Deploy Fee', () => {
     it('should fail at estimate fee reason : constructorCallData unvalid', async () => {
       //Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [
           {
             classHash:
@@ -89,10 +86,7 @@ describe('Estimate Account Deploy Fee', () => {
         ],
       };
       // Act
-      const result = await estimateAccountDeployFee(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await estimateAccountDeployFee(params, agent);
       const parsed = JSON.parse(result);
 
       // Assert

@@ -1,12 +1,19 @@
-import { simulateDeclareTransaction } from 'src/lib/agent/plugins/transaction/simulateTransaction';
+import { simulateDeclareTransaction } from 'src/lib/agent/plugins/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
+
+const agent = createMockStarknetAgent();
+const wrong_agent = createMockInvalidStarknetAgent();
 
 describe('Simulate Declare Transaction ', () => {
   describe('With perfect match inputs', () => {
     it('should simulate declare transaction with valid contract', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -48,10 +55,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -61,7 +65,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with valid contract and classHash', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -105,10 +109,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -118,7 +119,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should simulate declare transaction with all optional parameters', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -162,10 +163,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(
-        params,
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, params);
       const parsed = JSON.parse(result);
 
       // Assert
@@ -217,7 +215,7 @@ describe('Simulate Declare Transaction ', () => {
           },
         },
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_3 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -262,10 +260,7 @@ describe('Simulate Declare Transaction ', () => {
 
       // Act & Assert
       for (const params of paramsArray) {
-        const result = await simulateDeclareTransaction(
-          params,
-          process.env.STARKNET_PRIVATE_KEY
-        );
+        const result = await simulateDeclareTransaction(agent, params);
         const parsed = JSON.parse(result);
         expect(parsed.status).toBe('success');
       }
@@ -275,7 +270,7 @@ describe('Simulate Declare Transaction ', () => {
     it('should fail reason : invalid private_key', async () => {
       // Arrange
       const params = {
-        accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         contract: {
           program: {
             builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -305,7 +300,7 @@ describe('Simulate Declare Transaction ', () => {
       };
 
       // Act
-      const result = await simulateDeclareTransaction(params, '0xinvalid');
+      const result = await simulateDeclareTransaction(wrong_agent, params);
       const parsed = JSON.parse(result);
       // Assert
 
@@ -316,7 +311,7 @@ describe('Simulate Declare Transaction ', () => {
       // Arrange
       const paramsArray = [
         {
-          accountAddress: process.env.PUBLIC_ADDRESS_2 as string,
+          accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
           contract: {
             program: {
               builtins: ['range_check', 'pedersen', 'bitwise'],
@@ -363,15 +358,9 @@ describe('Simulate Declare Transaction ', () => {
         },
       ];
       // Act
-      const result = await simulateDeclareTransaction(
-        paramsArray[0],
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result = await simulateDeclareTransaction(agent, paramsArray[0]);
       const parsed = JSON.parse(result);
-      const result2 = await simulateDeclareTransaction(
-        paramsArray[1],
-        process.env.STARKNET_PRIVATE_KEY
-      );
+      const result2 = await simulateDeclareTransaction(agent, paramsArray[1]);
       const parsed2 = JSON.parse(result2);
 
       // Assert

@@ -52,4 +52,6 @@ export interface IAgent {
   };
 
   getProvider(): RpcProvider;
+
+  getNetwork(): string;
 }

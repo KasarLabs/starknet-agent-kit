@@ -116,6 +116,7 @@ export interface StarknetAgentInterface {
   accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
+  getNetwork: () => string;
   getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDIDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;

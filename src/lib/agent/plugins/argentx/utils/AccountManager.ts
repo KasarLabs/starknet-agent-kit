@@ -15,9 +15,24 @@ import {
   TransactionResult,
 } from '../../core/account/types/accounts';
 
+/**
+ * Manages Starknet account operations for ArgentX wallets, including creation, deployment, and fee estimation.
+ * Uses Cairo custom enums for owner and guardian management specific to ArgentX implementation.
+ * @class
+ * @implements {BaseUtilityClass}
+ */
 export class AccountManager implements BaseUtilityClass {
+
   constructor(public provider: any) {}
 
+  /**
+   * Creates a new account instance with generated keys.
+   * @async
+   * @method createAccount
+   * @param {string} accountClassHash - The class hash for the account type
+   * @returns {Promise<AccountDetails>} The created account details
+   * @throws {Error} If account creation fails
+   */
   async createAccount(accountClassHash: string): Promise<AccountDetails> {
     try {
       const privateKey = stark.randomAddress();
@@ -47,6 +62,16 @@ export class AccountManager implements BaseUtilityClass {
     }
   }
 
+
+  /**
+   * Deploys an account to the network.
+   * @async
+   * @method deployAccount
+   * @param {string} accountClassHash - The class hash for the account type
+   * @param {AccountDetails} accountDetails - The account details
+   * @returns {Promise<TransactionResult>} The deployment transaction result
+   * @throws {Error} If deployment fails
+   */
   async deployAccount(
     accountClassHash: string,
     accountDetails: AccountDetails
@@ -87,33 +112,16 @@ export class AccountManager implements BaseUtilityClass {
     }
   }
 
-  // async getAccountBalance(address: string): Promise<string> {
-  //   try {
-  //     const balance = await this.provider.getBalance(address);
-  //     return balance.toString();
-  //   } catch (error) {
-  //     throw new Error(`Failed to get account balance: ${error.message}`);
-  //   }
-  // }
 
-  // async getNonce(address: string): Promise<string> {
-  //   try {
-  //     const nonce = await this.provider.getNonceForAddress(address);
-  //     return nonce.toString();
-  //   } catch (error) {
-  //     throw new Error(`Failed to get nonce: ${error.message}`);
-  //   }
-  // }
-
-  // async isAccountDeployed(address: string): Promise<boolean> {
-  //   try {
-  //     const code = await this.provider.getClassAt(address);
-  //     return code !== null;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
-
+  /**
+   * Estimates deployment fee for an account.
+   * @async
+   * @method estimateAccountDeployFee
+   * @param {string} accountClassHash - The class hash for the account type
+   * @param {AccountDetails} accountDetails - The account details
+   * @returns {Promise<Object>} The estimated fee details
+   * @throws {Error} If fee estimation fails
+   */
   async estimateAccountDeployFee(
     accountClassHash: string,
     accountDetails: AccountDetails

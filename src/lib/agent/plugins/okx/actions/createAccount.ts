@@ -2,6 +2,13 @@ import { RpcProvider } from 'starknet';
 import { okx_classhash } from '../constant/contract';
 import { AccountManager } from '../../core/account/utils/AccountManager';
 
+/**
+ * Creates a new OKX account.
+ * @async
+ * @function CreateOKXAccount
+ * @returns {Promise<string>} JSON string with account details
+ * @throws {Error} If account creation fails
+ */
 export const CreateOKXAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
@@ -22,6 +29,13 @@ export const CreateOKXAccount = async () => {
   }
 };
 
+/**
+ * Creates an OKX account with deployment fee estimation.
+ * @async
+ * @function CreateOKXAccountSignature
+ * @returns {Promise<string>} JSON string with account and fee details
+ * @throws {Error} If creation or fee estimation fails
+ */
 export const CreateOKXAccountSignature = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });

@@ -6,6 +6,16 @@ import { AccountDetails } from '../../core/account/types/accounts';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 
+
+/**
+ * Deploys an ArgentX account using Starknet agent.
+ * @async
+ * @function DeployAXAccount
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment result
+ * @throws {Error} If deployment fails
+ */
 export const DeployAXAccount = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof accountDetailsSchema>
@@ -33,6 +43,14 @@ export const DeployAXAccount = async (
   }
 };
 
+/**
+ * Deploys an ArgentX account using RPC.
+ * @async
+ * @function DeployAXAccountSignature
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment result
+ * @throws {Error} If deployment fails
+ */
 export const DeployAXAccountSignature = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {

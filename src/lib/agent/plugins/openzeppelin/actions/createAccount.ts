@@ -2,6 +2,13 @@ import { RpcProvider } from 'starknet';
 import { oz_classhash } from '../constant/contract';
 import { AccountManager } from '../../core/account/utils/AccountManager';
 
+/**
+ * Creates a new OpenZeppelin account.
+ * @async
+ * @function CreateOZAccount
+ * @returns {Promise<string>} JSON string with account details
+ * @throws {Error} If account creation fails
+ */
 export const CreateOZAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
@@ -22,6 +29,13 @@ export const CreateOZAccount = async () => {
   }
 };
 
+/**
+ * Creates an OpenZeppelin account with deployment fee estimation.
+ * @async
+ * @function CreateOZAccountSignature
+ * @returns {Promise<string>} JSON string with account and fee details
+ * @throws {Error} If creation or fee estimation fails
+ */
 export const CreateOZAccountSignature = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });

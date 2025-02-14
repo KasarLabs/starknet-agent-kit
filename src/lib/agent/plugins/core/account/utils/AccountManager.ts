@@ -11,9 +11,21 @@ import {
   TransactionResult,
 } from '../types/accounts';
 
+/**
+ * Manages Starknet account operations including creation, deployment, and fee estimation.
+ * @class
+ * @implements {BaseUtilityClass}
+ */
 export class AccountManager implements BaseUtilityClass {
   constructor(public provider: any) {}
 
+  /**
+   * Creates a new account with generated keys.
+   * @async
+   * @param {string} accountClassHash - The class hash for the account type
+   * @returns {Promise<AccountDetails>} The created account details
+   * @throws {Error} If account creation fails
+   */
   async createAccount(accountClassHash: string): Promise<AccountDetails> {
     try {
       const privateKey = stark.randomAddress();
@@ -37,6 +49,14 @@ export class AccountManager implements BaseUtilityClass {
     }
   }
 
+  /**
+   * Deploys an account to the network.
+   * @async
+   * @param {string} accountClassHash - The class hash for the account type
+   * @param {AccountDetails} accountDetails - The account details
+   * @returns {Promise<TransactionResult>} The deployment result
+   * @throws {Error} If deployment fails
+   */
   async deployAccount(
     accountClassHash: string,
     accountDetails: AccountDetails
@@ -98,6 +118,14 @@ export class AccountManager implements BaseUtilityClass {
   //   }
   // }
 
+  /**
+   * Estimates account deployment fee.
+   * @async
+   * @param {string} accountClassHash - The class hash for the account type
+   * @param {AccountDetails} accountDetails - The account details
+   * @returns {Promise<Object>} The estimated fee details
+   * @throws {Error} If fee estimation fails
+   */
   async estimateAccountDeployFee(
     accountClassHash: string,
     accountDetails: AccountDetails

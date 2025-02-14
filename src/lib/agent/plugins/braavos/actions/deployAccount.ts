@@ -9,6 +9,15 @@ import {
   braavos_proxy_classhash,
 } from '../constant/contract';
 
+/**
+ * Deploys a Braavos account using a Starknet agent.
+ * @async
+ * @function DeployBraavosAccount
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment status and transaction details
+ * @throws {Error} If deployment fails
+ */
 export const DeployBraavosAccount = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof accountDetailsSchema>
@@ -42,6 +51,14 @@ export const DeployBraavosAccount = async (
   }
 };
 
+/**
+ * Deploys a Braavos account using direct RPC connection.
+ * @async
+ * @function DeployBraavosAccountSignature
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment status and transaction details
+ * @throws {Error} If deployment fails
+ */
 export const DeployBraavosAccountSignature = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {

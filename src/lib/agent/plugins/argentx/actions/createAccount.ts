@@ -2,11 +2,17 @@ import { RpcProvider } from 'starknet';
 import { argentx_classhash } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 
+/**
+ * Creates a new ArgentX account.
+ * @async
+ * @function CreateAXAccount
+ * @returns {Promise<string>} JSON string with account details
+ * @throws {Error} If account creation fails
+ */
 export const CreateAXAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
-    const accountDetails =
-      await accountManager.createAccount(argentx_classhash);
+    const accountDetails = await accountManager.createAccount(argentx_classhash);
 
     return JSON.stringify({
       status: 'success',
@@ -23,6 +29,13 @@ export const CreateAXAccount = async () => {
   }
 };
 
+/**
+ * Creates an ArgentX account with deployment fee estimation.
+ * @async
+ * @function CreateAXAccountSignature
+ * @returns {Promise<string>} JSON string with account and fee details
+ * @throws {Error} If creation or fee estimation fails
+ */
 export const CreateAXAccountSignature = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });

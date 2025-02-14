@@ -2,10 +2,18 @@ import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { okx_classhash } from '../constant/contract';
 import { AccountManager } from '../../core/account/utils/AccountManager';
-import { AccountDetails } from '../../core/account/types/accounts';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 
+/**
+ * Deploys an OKX account using Starknet agent.
+ * @async
+ * @function DeployOKXAccount
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment result
+ * @throws {Error} If deployment fails
+ */
 export const DeployOKXAccount = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof accountDetailsSchema>
@@ -34,6 +42,15 @@ export const DeployOKXAccount = async (
   }
 };
 
+
+/**
+ * Deploys an OKX account using RPC.
+ * @async
+ * @function DeployOKXAccountSignature
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment result
+ * @throws {Error} If deployment fails
+ */
 export const DeployOKXAccountSignature = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {

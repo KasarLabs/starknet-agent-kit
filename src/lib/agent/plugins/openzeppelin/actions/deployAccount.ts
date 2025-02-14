@@ -2,10 +2,18 @@ import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { oz_classhash } from '../constant/contract';
 import { AccountManager } from '../../core/account/utils/AccountManager';
-import { AccountDetails } from '../../core/account/types/accounts';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 
+/**
+ * Deploys an OpenZeppelin account using Starknet agent.
+ * @async
+ * @function DeployOZAccount
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment result
+ * @throws {Error} If deployment fails
+ */
 export const DeployOZAccount = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof accountDetailsSchema>
@@ -33,6 +41,14 @@ export const DeployOZAccount = async (
   }
 };
 
+/**
+ * Deploys an OpenZeppelin account using RPC.
+ * @async
+ * @function DeployOZAccountSignature
+ * @param {z.infer<typeof accountDetailsSchema>} params - Account details
+ * @returns {Promise<string>} JSON string with deployment result
+ * @throws {Error} If deployment fails
+ */
 export const DeployOZAccountSignature = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {

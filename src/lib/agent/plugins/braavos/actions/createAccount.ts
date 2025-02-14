@@ -5,6 +5,13 @@ import {
   braavos_account_classhash } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 
+/**
+ * Creates a new Braavos account with generated keys and address.
+ * @async
+ * @function CreateBraavosAccount
+ * @returns {Promise<string>} JSON string with account details and creation status
+ * @throws {Error} If account creation fails
+ */
 export const CreateBraavosAccount = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
@@ -32,6 +39,13 @@ export const CreateBraavosAccount = async () => {
   }
 };
 
+/**
+ * Creates a new Braavos account and estimates deployment fees.
+ * @async
+ * @function CreateBraavosAccountSignature
+ * @returns {Promise<string>} JSON string with account details and estimated deployment fee
+ * @throws {Error} If account creation or fee estimation fails
+ */
 export const CreateBraavosAccountSignature = async () => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });

@@ -43,6 +43,7 @@ import {
   Transferschema,
   depositEarnSchema,
   withdrawEarnSchema,
+  placePixelSchema,
   batchSwapSchema,
   createTwitterpostSchema,
   createAndPostTwitterThreadSchema,
@@ -78,6 +79,7 @@ import {
 } from '../plugins/core/token/types/balance';
 import { withdrawEarnPosition } from '../plugins/vesu/actions/withdrawService';
 import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
+import { placePixel } from '../plugins/artpeace/actions/placePixel';
 import { swapTokensFibrous } from '../plugins/fibrous/actions/swap';
 import { batchSwapTokens } from '../plugins/fibrous/actions/batchSwap';
 import { getRouteFibrous } from '../plugins/fibrous/actions/fetchRoute';
@@ -166,6 +168,14 @@ export class StarknetToolRegistry {
 }
 
 export const registerTools = () => {
+  // Register artpeace tools
+  StarknetToolRegistry.registerTool({
+    name: 'place_pixel',
+    description: 'Places a pixel, all parameters are optional',
+    schema: placePixelSchema,
+    execute: placePixel,
+  });
+
   // Register balance tools
   StarknetToolRegistry.registerTool<GetOwnBalanceParams>({
     name: 'get_own_balance',

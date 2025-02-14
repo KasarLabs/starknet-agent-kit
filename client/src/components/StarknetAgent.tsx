@@ -9,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
 import {
-  // contractClassResponseToLegacyCompiledContract,
   WalletAccount,
 } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';

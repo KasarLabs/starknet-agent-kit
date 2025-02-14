@@ -15,7 +15,6 @@ import {
   BaseUtilityClass,
   TransactionResult,
 } from '../../core/account/types/accounts';
-import { AnyComponent } from 'discord.js';
 
 /**
  * Manages Braavos wallet operations using Starknet's proxy pattern.

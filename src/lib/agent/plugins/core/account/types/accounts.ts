@@ -1,4 +1,3 @@
-import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ProviderInterface } from 'starknet';
 
 /**
@@ -9,10 +8,9 @@ import { ProviderInterface } from 'starknet';
  * @property {boolean} deployStatus - Whether the account has been deployed
  */
 export interface AccountDetails {
-  address: string;
+  contractAddress: string;
   publicKey: string;
   privateKey: string;
-  deployStatus: boolean;
 }
 
 /**
@@ -24,6 +22,7 @@ export interface AccountDetails {
 export interface TransactionResult {
   status: 'success' | 'failure';
   transactionHash?: string;
+  contractAddress?: string;
   error?: string;
 }
 
@@ -43,16 +42,6 @@ export interface BaseUtilityClass {
 export interface ContractDeployResult {
   transactionHash: string;
   contractAddress: string | string[];
-}
-
-/**
- * Representation of a token amount with precision
- * @property {string} amount - The token amount
- * @property {number} decimals - Number of decimal places
- */
-export interface TokenAmount {
-  amount: string;
-  decimals: number;
 }
 
 /**
@@ -93,18 +82,6 @@ export type StarkNetDomain = {
   name: string;
   version: string;
   chainId: string | number;
-};
-
-/**
- * Elliptic curve signature components
- * @property {string} r - The r component of the signature
- * @property {string} s - The s component of the signature
- * @property {number | null} [recoveryParam] - Optional recovery parameter
- */
-export type WeierstrassSignatureType = {
-  r: string;
-  s: string;
-  recoveryParam?: number | null;
 };
 
 /**

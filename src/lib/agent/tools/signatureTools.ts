@@ -5,18 +5,17 @@ import {
 } from '../schemas/signatureSchemas';
 import { transfer_signature } from '../plugins/core/token/transfer';
 import { getBalanceSignature } from '../plugins/core/token/getBalances';
-import {
-  CreateArgentAccountSignature,
-  CreateOZAccountSignature,
-} from '../plugins/core/account/createAccount';
-import {
-  DeployArgentAccountSchema,
-  DeployOZAccountSchema,
-} from '../schemas/schema';
-import {
-  DeployArgentAccountSignature,
-  DeployOZAccountSignature,
-} from '../plugins/core/account/deployAccount';
+
+import { CreateAXAccountSignature } from '../plugins/argentx/actions/createAccount';
+import { DeployAXAccountSignature } from '../plugins/argentx/actions/deployAccount';
+import { CreateOZAccountSignature } from '../plugins/openzeppelin/actions/createAccount';
+import { DeployOZAccountSignature } from '../plugins/openzeppelin/actions/deployAccount';
+import { CreateOKXAccountSignature } from '../plugins/okx/actions/createAccount';
+import { DeployOKXAccountSignature } from '../plugins/okx/actions/deployAccount';
+import { CreateBraavosAccountSignature } from '../plugins/braavos/actions/createAccount';
+import { DeployBraavosAccountSignature } from '../plugins/braavos/actions/deployAccount';
+
+import { accountDetailsSchema } from '../plugins/argentx/schemas/schema';
 
 interface SignatureTool<P = any> {
   name: string;
@@ -51,36 +50,71 @@ export const RegisterSignatureTools = () => [
     schema: transferSignatureschema,
     execute: transfer_signature,
   }),
+
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'getbalance',
     description: 'return the amoumt of token at a account address',
     schema: getBalanceSignatureSchema,
     execute: getBalanceSignature,
   }),
+
+  // Register account-related tools
   StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_argent_account',
+    name: 'createArgentxAccount',
     description:
-      'create argent account return the privateKey/publicKey/contractAddress',
-    execute: CreateArgentAccountSignature,
+      'create Argentx/AX account return the privateKey/publicKey/contractAddress',
+    execute: CreateAXAccountSignature,
   }),
+
   StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_open_zeppelin_account',
+    name: 'createOpenzeppelinAccount',
     description:
-      'create open_zeppelin/OZ account return the privateKey/publicKey/contractAddress',
+      'create Open_zeppelin/OZ account return the privateKey/publicKey/contractAddress',
     execute: CreateOZAccountSignature,
   }),
+
   StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_argent_account',
-    description: 'deploy argent account return the deploy transaction address',
-    schema: DeployArgentAccountSchema,
-    execute: DeployArgentAccountSignature,
-  }),
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_open_zeppelin_account',
+    name: 'createOkxAccount',
     description:
-      'deploy open_zeppelin account return the deploy transaction address',
-    schema: DeployOZAccountSchema,
+      'create okx account return the privateKey/publicKey/contractAddress',
+    execute: CreateOKXAccountSignature,
+  }),
+
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'createBraavosAccount',
+    description:
+      'create braavos account return the privateKey/publicKey/contractAddress',
+    execute: CreateBraavosAccountSignature,
+  }),
+
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'deployArgentxAccount',
+    description:
+      'deploy Argentx/AX account return the deploy transaction address',
+    schema: accountDetailsSchema,
+    execute: DeployAXAccountSignature,
+  }),
+
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'deployOpenzeppelinAccount',
+    description:
+      'deploy Open_zeppelin/OZ account return the deploy transaction address',
+    schema: accountDetailsSchema,
     execute: DeployOZAccountSignature,
+  }),
+
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'deployOkxAccount',
+    description: 'deploy okx account return the deploy transaction address',
+    schema: accountDetailsSchema,
+    execute: DeployOKXAccountSignature,
+  }),
+
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'deployBraavosAccount',
+    description: 'deploy braavos account return the deploy transaction address',
+    schema: accountDetailsSchema,
+    execute: DeployBraavosAccountSignature,
   }),
 ];
 

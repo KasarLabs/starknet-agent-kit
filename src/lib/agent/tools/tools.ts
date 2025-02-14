@@ -186,52 +186,52 @@ export const registerTools = () => {
 
   // Register account-related tools
   StarknetToolRegistry.registerTool({
-    name: 'create_new_openzeppelin_account',
+    name: 'createNewOpenzeppelinAccount',
     description: 'Create a new Open Zeppelin account and returns credentials',
     execute: CreateOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'create_new_argent_account',
+    name: 'createNewArgentAccount',
     description: 'Creates a new Argent account and returns credentials',
     execute: CreateAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'create_new_okx_account',
+    name: 'createNewOkxAccount',
     description: 'Create a new OKX account and returns credentials',
     execute: CreateOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'create_new_braavos_account',
+    name: 'createNewBraavosAccount',
     description: 'Create a new Braavos account and returns credentials',
     execute: CreateBraavosAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deploy_existing_openzeppelin_account',
+    name: 'deployExistingOpenzeppelinAccount',
     description: 'Deploy an existing Open Zeppelin Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deploy_existing_argent_account',
+    name: 'deployExistingArgentAccount',
     description: 'Deploy an existing Argentx Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deploy_existing_okx_account',
+    name: 'deployExistingOkxAccount',
     description: 'Deploy an existing OKX Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deploy_existing_braavos_account',
+    name: 'deployExistingBraavosAccount',
     description: 'Deploy an existing Braavos Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployBraavosAccount,

@@ -22,6 +22,21 @@ const UploadFile = ({
   setFileInfo,
   setSelectedFile,
 }: UplaodProps) => {
+  const allowedTypes = [
+    'application/json',
+    'application/zip',
+    'application/x-zip-compressed',
+  ];
+
+  const validateFile = (file: File): boolean => {
+    const extension = file.name.toLowerCase().split('.').pop();
+    const isValidExtension = ['zip', 'json'].includes(extension || '');
+
+    const isValidType = allowedTypes.includes(file.type);
+
+    return isValidExtension && isValidType;
+  };
+
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
@@ -29,6 +44,11 @@ const UploadFile = ({
   }, []);
 
   const handleFileSelection = (file: File) => {
+    if (!validateFile(file)) {
+      alert('Only .zip and .json files are accepted');
+      return;
+    }
+
     setSelectedFile(file);
     setFileInfo({
       name: file.name,
@@ -77,13 +97,14 @@ const UploadFile = ({
             <div className="flex flex-row justify-center items-center gap-2">
               <Upload className="w-6 h-6 text-neutral-400" />
               <p className="text-sm text-neutral-300">
-                Drop a file here or click to upload
+                Upload a .zip or .json file here or click to download
               </p>
             </div>
             <input
               id="file-upload"
               type="file"
               onChange={handleFileChange}
+              accept=".json,.zip"
               className="hidden"
             />
           </label>

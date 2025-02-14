@@ -31,15 +31,13 @@ export class Checker {
 
         const data = await response.json();
         id = data.data;
-      } else
-        id = this.param;
+      } else id = this.param;
 
       const response = await fetch(
         `https://api.art-peace.net/get-world?worldId=${id}`
       );
       if (!response.ok)
         throw new Error(`HTTP Error status: ${response.status}`);
-
 
       const data = await response.json();
       this.world = data.data;
@@ -100,11 +98,9 @@ export class Checker {
 
       if (parseInt(color) === 0) return `0`;
 
-      console.log(allHexColor);
       const allColor: string[] = allHexColor.map((cleanColor) =>
         ColorAnalyzer.analyzeColor(cleanColor)
       );
-      console.log(allColor);
 
       const index: number = allColor.indexOf(cleanColor);
       if (index === -1)
@@ -122,10 +118,10 @@ export class Checker {
     }
   }
 
-    getWorldSize(): {width: number, height: number} {
-        return {
-            width: this.world.width,
-            height: this.world.height
-        }
-    }
+  getWorldSize(): { width: number; height: number } {
+    return {
+      width: this.world.width,
+      height: this.world.height,
+    };
+  }
 }

@@ -1,10 +1,9 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { PlacePixelParam } from '../types/PlacePixelParam';
-import { Account, constants, Contract, num, RPC } from 'starknet';
+import { Account, constants, Contract } from 'starknet';
 import { artpeaceAbi } from '../abis/artpeaceAbi';
 import { artpeaceAddr } from '../constants/artpeace';
-import { Checker } from '../utils/checker';
 import { ArtpeaceHelper } from '../utils/helper';
+import { placePixelParam } from 'src/lib/agent/schemas/schema';
 
 /**
  * Places pixels on a Starknet canvas using the Artpeace contract
@@ -14,7 +13,7 @@ import { ArtpeaceHelper } from '../utils/helper';
  */
 export const placePixel = async (
   agent: StarknetAgentInterface,
-  input: { params: PlacePixelParam[] }
+  input: { params: placePixelParam[] }
 ) => {
   try {
     const { params } = input;
@@ -31,7 +30,8 @@ export const placePixel = async (
 
     const txHash = [];
     for (const param of params) {
-      const {id, position, color} = await ArtpeaceHelper.validateAndFillDefaults(param);
+      const { id, position, color } =
+        await ArtpeaceHelper.validateAndFillDefaults(param);
       const timestamp = Math.floor(Date.now() / 1000);
 
       artpeaceContract.connect(account);
@@ -52,7 +52,6 @@ export const placePixel = async (
       transaction_hash: txHash,
     });
   } catch (error) {
-    console.log(error);
     return JSON.stringify({
       status: 'error',
       error: {
@@ -69,7 +68,7 @@ export const placePixel = async (
  * @returns JSON string with transaction data or error response
  */
 export const placePixelSignature = async (input: {
-  params: PlacePixelParam[];
+  params: placePixelParam[];
 }) => {
   try {
     const { params } = input;
@@ -77,7 +76,8 @@ export const placePixelSignature = async (input: {
 
     const callData = [];
     for (const param of params) {
-        const {id, position, color} = await ArtpeaceHelper.validateAndFillDefaults(param)
+      const { id, position, color } =
+        await ArtpeaceHelper.validateAndFillDefaults(param);
       const timestamp = Math.floor(Date.now() / 1000);
 
       const call = artpeaceContract.populate('place_pixel', {
@@ -87,7 +87,6 @@ export const placePixelSignature = async (input: {
         now: timestamp,
       });
 
-      console.log(call);
       callData.push({
         status: 'success',
         transactions: {
@@ -97,7 +96,6 @@ export const placePixelSignature = async (input: {
     }
     return JSON.stringify({ transaction_type: 'INVOKE', callData });
   } catch (error) {
-    console.log(error);
     return {
       status: 'error',
       error: {

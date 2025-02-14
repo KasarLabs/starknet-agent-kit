@@ -79,9 +79,7 @@ import {
 } from '../plugins/core/token/types/balance';
 import { withdrawEarnPosition } from '../plugins/vesu/actions/withdrawService';
 import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
-import { PlacePixelParam } from '../plugins/artpeace/types/PlacePixelParam';
 import { placePixel } from '../plugins/artpeace/actions/placePixel';
-import { placePixelSignatureSchema } from '../schemas/signatureSchemas';
 import { swapTokensFibrous } from '../plugins/fibrous/actions/swap';
 import { batchSwapTokens } from '../plugins/fibrous/actions/batchSwap';
 import { getRouteFibrous } from '../plugins/fibrous/actions/fetchRoute';
@@ -173,8 +171,7 @@ export const registerTools = () => {
   // Register artpeace tools
   StarknetToolRegistry.registerTool({
     name: 'place_pixel',
-    description:
-      'Places a pixel',
+    description: 'Places a pixel, all parameters are optional',
     schema: placePixelSchema,
     execute: placePixel,
   });

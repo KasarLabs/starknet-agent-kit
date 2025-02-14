@@ -50,7 +50,7 @@ export class StarknetSignatureToolRegistry {
 export const RegisterSignatureTools = () => [
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'place_pixel',
-    description: 'return place pixel json transaction',
+    description: 'Places a pixel, all parameters are optional',
     schema: placePixelSignatureSchema,
     execute: placePixelSignature,
   }),

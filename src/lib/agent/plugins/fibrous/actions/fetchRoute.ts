@@ -1,21 +1,8 @@
-import { z } from 'zod';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { TokenService } from './fetchTokens';
 import { Router as FibrousRouter, RouteResponse } from 'fibrous-router-sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { SwapParams } from '../types';
-
-export const routeSchema = z.object({
-  sellTokenSymbol: z
-    .string()
-    .describe("Symbol of the token to sell (e.g., 'ETH', 'USDC')"),
-  buyTokenSymbol: z
-    .string()
-    .describe("Symbol of the token to buy (e.g., 'ETH', 'USDC')"),
-  sellAmount: z.number().positive().describe('Amount of tokens to sell'),
-});
-
-type RouteSchemaType = z.infer<typeof routeSchema>;
+import { RouteSchemaType } from '../schema';
 
 interface RouteResult {
   status: 'success' | 'failure';

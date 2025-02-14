@@ -1,4 +1,4 @@
-import { LaunchOnEkuboParams } from 'src/lib/agent/schemas/schema';
+import { LaunchOnEkuboParams } from '../schema/';
 import { FACTORY_ABI } from '../abis/unruggableFactory';
 import { FACTORY_ADDRESS } from '../constants';
 import { Contract } from 'starknet';

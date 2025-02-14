@@ -23,12 +23,28 @@ import {
   getVTokenContract,
 } from '../utils/contracts';
 
+/**
+ * Service for managing withdrawal operations from earning positions
+ * @class WithdrawEarnService
+ */
 export class WithdrawEarnService {
+  /**
+   * Creates an instance of WithdrawEarnService
+   * @param {StarknetAgentInterface} agent - The Starknet agent for blockchain interactions
+   * @param {string} walletAddress - The wallet address executing the withdrawals
+   */
   constructor(
     private agent: StarknetAgentInterface,
     private walletAddress: string
   ) {}
 
+  /**
+   * Retrieves token price from the pool extension contract
+   * @param {IBaseToken} token - The token to get price for
+   * @param {string} poolId - The pool identifier
+   * @param {Hex} poolExtension - The pool extension contract address
+   * @returns {Promise<ITokenValue | undefined>} Token price information if available
+   */
   public async getTokenPrice(
     token: IBaseToken,
     poolId: string,
@@ -47,6 +63,14 @@ export class WithdrawEarnService {
     }
   }
 
+  /**
+   * Retrieves and updates pool assets with their prices
+   * @private
+   * @param {IPool['id']} poolId - Pool identifier
+   * @param {IPool['extensionContractAddress']} poolExtensionContractAddress - Extension contract address
+   * @param {IPoolAsset[]} poolAssets - Array of pool assets
+   * @returns {Promise<IPoolAsset[]>} Updated pool assets with prices
+   */
   private async getPoolAssetsPrice(
     poolId: IPool['id'],
     poolExtensionContractAddress: IPool['extensionContractAddress'],
@@ -66,6 +90,14 @@ export class WithdrawEarnService {
     );
   }
 
+  /**
+   * Retrieves and updates pool assets with prices and risk metrics
+   * @private
+   * @param {IPool['id']} poolId - Pool identifier
+   * @param {IPool['extensionContractAddress']} poolExtensionContractAddress - Extension contract address
+   * @param {IPoolAsset[]} poolAssets - Array of pool assets
+   * @returns {Promise<IPoolAsset[]>} Updated pool assets with prices and risk metrics
+   */
   private async getPoolAssetsPriceAndRiskMdx(
     poolId: IPool['id'],
     poolExtensionContractAddress: IPool['extensionContractAddress'],
@@ -87,6 +119,11 @@ export class WithdrawEarnService {
     );
   }
 
+  /**
+   * Retrieves pool information and updates assets with prices
+   * @param {string} poolId - Pool identifier
+   * @returns {Promise<IPool>} Updated pool information
+   */
   public async getPool(poolId: string): Promise<IPool> {
     const data = await fetch(`${VESU_API_URL}/pools/${poolId}`).then((res) =>
       res.json()
@@ -104,6 +141,12 @@ export class WithdrawEarnService {
     return { ...pool, assets };
   }
 
+  /**
+   * Retrieves token balance for a given wallet address
+   * @param {IBaseToken} baseToken - The token to check balance for
+   * @param {Hex} walletAddress - The wallet address to check
+   * @returns {Promise<bigint>} Token balance
+   */
   async getTokenBalance(
     baseToken: IBaseToken,
     walletAddress: Hex
@@ -121,6 +164,13 @@ export class WithdrawEarnService {
       });
   }
 
+  /**
+   * Generates approval calls for vToken operations
+   * @param {Address} assetAddress - Address of the asset to approve
+   * @param {Address} vTokenAddress - Address of the vToken
+   * @param {bigint} amount - Amount to approve
+   * @returns {Promise<Call>} Approval transaction call
+   */
   async approveVTokenCalls(
     assetAddress: Address,
     vTokenAddress: Address,
@@ -136,6 +186,12 @@ export class WithdrawEarnService {
     return approveCall;
   }
 
+  /**
+   * Executes a withdrawal transaction
+   * @param {WithdrawParams} params - Withdrawal parameters
+   * @param {StarknetAgentInterface} agent - Starknet agent
+   * @returns {Promise<WithdrawResult>} Result of the withdrawal operation
+   */
   async withdrawEarnTransaction(
     params: WithdrawParams,
     agent: StarknetAgentInterface
@@ -220,6 +276,13 @@ export class WithdrawEarnService {
   }
 }
 
+/**
+ * Creates a new WithdrawEarnService instance
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {string} [walletAddress] - The wallet address
+ * @returns {WithdrawEarnService} A new WithdrawEarnService instance
+ * @throws {Error} If wallet address is not provided
+ */
 export const withdrawService = (
   agent: StarknetAgentInterface,
   walletAddress?: string
@@ -231,6 +294,12 @@ export const withdrawService = (
   return new WithdrawEarnService(agent, walletAddress);
 };
 
+/**
+ * Utility function to execute a withdrawal operation
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {WithdrawParams} params - The withdrawal parameters
+ * @returns {Promise<string>} JSON string containing the withdrawal result
+ */
 export const withdrawEarnPosition = async (
   agent: StarknetAgentInterface,
   params: WithdrawParams

@@ -10,7 +10,15 @@ import { createSignatureTools } from './tools/signatureTools';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
 import { createAllowedTools } from './tools/tools';
+import { uuid } from 'uuidv4';
+import { MemorySaver } from '@langchain/langgraph';
+import { JsonConfig } from './jsonConfig';
 
+export type AgentConfig = {
+  agent: any;
+  agentConfig?: any;
+  json_config?: JsonConfig;
+};
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
@@ -77,39 +85,72 @@ export const createAgent = (
   };
   try {
     const modelSelected = model();
+    let memory_id = null;
+    const memory = new MemorySaver();
+
     const json_config = starknetAgent.getAgentConfig();
     if (json_config) {
       console.log('Character config loaded successfully');
       console.log('JSON config loaded successfully');
 
+      if (starknetAgent.getAgentMemory().agentMemory === true) {
+        memory_id = uuid().toString();
+      }
       const allowedTools = createAllowedTools(
         starknetAgent,
-        json_config.allowed_internal_tools
+        json_config.internal_plugins
       );
 
-      const allowedToolsKits =
-        json_config.external_client && json_config.allowed_external_client_tools
-          ? createAllowedToollkits(
-              json_config.external_client,
-              json_config.allowed_external_client_tools
-            )
-          : json_config.external_client &&
-              !json_config.allowed_external_client_tools
-            ? createAllowedToollkits(json_config.external_client)
-            : null;
+      const allowedToolsKits = json_config.external_plugins
+        ? createAllowedToollkits(json_config.external_plugins)
+        : null;
 
       const tools = allowedToolsKits
         ? [...allowedTools, ...allowedToolsKits]
         : allowedTools;
 
-      const agent = createReactAgent({
-        llm: modelSelected,
-        tools,
-        messageModifier: systemMessage,
-      });
+      const agentConfig = {
+        configurable: { thread_id: memory_id },
+      };
 
-      return agent;
+      let agent;
+      if (memory_id === null) {
+        agent = createReactAgent({
+          llm: modelSelected,
+          tools,
+          messageModifier: systemMessage,
+        });
+      } else {
+        agent = createReactAgent({
+          llm: modelSelected,
+          tools,
+          messageModifier: systemMessage,
+          checkpointSaver: memory,
+        });
+      }
+
+      if (memory_id != null) {
+        const result: AgentConfig = {
+          agent: agent,
+          agentConfig: agentConfig,
+          json_config: json_config,
+        };
+        return result;
+      }
+      const result: AgentConfig = {
+        agent: agent,
+      };
+      return result;
     }
+
+    if (starknetAgent.getAgentMemory().agentMemory === true) {
+      memory_id = uuid().toString();
+    }
+
+    const agentConfig = {
+      configurable: { thread_id: memory_id },
+    };
+
     const tools = isSignature
       ? createSignatureTools()
       : createTools(starknetAgent);
@@ -118,9 +159,20 @@ export const createAgent = (
       llm: modelSelected,
       tools,
       messageModifier: systemMessage,
+      checkpointSaver: memory,
     });
 
-    return agent;
+    if (memory_id != null) {
+      const result: AgentConfig = {
+        agent: agent,
+        agentConfig: agentConfig,
+      };
+      return result;
+    }
+    const result: AgentConfig = {
+      agent: agent,
+    };
+    return result;
   } catch (error) {
     console.error(
       `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`

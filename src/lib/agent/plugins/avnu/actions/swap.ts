@@ -1,11 +1,5 @@
-import {
-  executeSwap,
-  fetchQuotes,
-  QuoteRequest,
-  Quote,
-  Route,
-} from '@avnu/avnu-sdk';
-import { Account, RpcProvider } from 'starknet';
+import { executeSwap, fetchQuotes, QuoteRequest, Quote } from '@avnu/avnu-sdk';
+import { Account } from 'starknet';
 
 import { ApprovalService } from './approval';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
@@ -13,10 +7,19 @@ import { SwapParams, SwapResult } from '../types';
 import { DEFAULT_QUOTE_SIZE, SLIPPAGE_PERCENTAGE } from '../constants';
 import { TokenService } from './fetchTokens';
 
+/**
+ * Service handling token swap operations using AVNU SDK
+ * @class SwapService
+ */
 export class SwapService {
   private tokenService: TokenService;
   private approvalService: ApprovalService;
 
+  /**
+   * Creates an instance of SwapService
+   * @param {StarknetAgentInterface} agent - The Starknet agent for blockchain interactions
+   * @param {string} walletAddress - The wallet address executing the swaps
+   */
   constructor(
     private agent: StarknetAgentInterface,
     private walletAddress: string
@@ -25,10 +28,20 @@ export class SwapService {
     this.approvalService = new ApprovalService(agent);
   }
 
+  /**
+   * Initializes the token service
+   * @returns {Promise<void>}
+   */
   async initialize(): Promise<void> {
     await this.tokenService.initializeTokens();
   }
 
+  /**
+   * Safely stringifies objects containing BigInt values
+   * @private
+   * @param {unknown} obj - Object to stringify
+   * @returns {string} JSON string with BigInt values converted to strings
+   */
   private safeStringify(obj: unknown): string {
     return JSON.stringify(
       obj,
@@ -37,6 +50,12 @@ export class SwapService {
     );
   }
 
+  /**
+   * Extracts spender address from a quote
+   * @private
+   * @param {Quote} quote - The quote containing route information
+   * @returns {string|undefined} The spender address if available
+   */
   private extractSpenderAddress(quote: Quote): string | undefined {
     if (quote.routes?.length > 0) {
       const mainRoute = quote.routes[0];
@@ -46,6 +65,12 @@ export class SwapService {
     return undefined;
   }
 
+  /**
+   * Executes a token swap transaction
+   * @param {SwapParams} params - The swap parameters
+   * @param {StarknetAgentInterface} agent - The Starknet agent
+   * @returns {Promise<SwapResult>} The result of the swap operation
+   */
   async executeSwapTransaction(
     params: SwapParams,
     agent: StarknetAgentInterface
@@ -142,6 +167,12 @@ export class SwapService {
     }
   }
 
+  /**
+   * Monitors the status of a swap transaction
+   * @private
+   * @param {string} txHash - The transaction hash to monitor
+   * @returns {Promise<{receipt: any, events: any}>} Transaction receipt and events
+   */
   private async monitorSwapStatus(txHash: string) {
     const receipt = await this.agent.transactionMonitor.waitForTransaction(
       txHash,
@@ -154,6 +185,13 @@ export class SwapService {
   }
 }
 
+/**
+ * Creates a new SwapService instance
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {string} [walletAddress] - The wallet address
+ * @returns {SwapService} A new SwapService instance
+ * @throws {Error} If wallet address is not provided
+ */
 export const createSwapService = (
   agent: StarknetAgentInterface,
   walletAddress?: string

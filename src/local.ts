@@ -115,6 +115,22 @@ const LocalRun = async () => {
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
+      const agent = new StarknetAgent({
+        provider: new RpcProvider({
+          nodeUrl: process.env.STARKNET_RPC_URL,
+        }),
+        accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
+        aiModel: process.env.AI_MODEL,
+        aiProvider: 'anthropic',
+        aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
+        signature: 'key',
+        agentMode: 'agent',
+        agentconfig: agent_config,
+        agentMemory: true,
+      });
+      agent.initializeTwitterManager();
+
       while (true) {
         const { user } = await inquirer.prompt([
           {
@@ -132,20 +148,6 @@ const LocalRun = async () => {
         const executionSpinner = createSpinner('Processing request').start();
 
         try {
-          const agent = new StarknetAgent({
-            provider: new RpcProvider({
-              nodeUrl: process.env.STARKNET_RPC_URL,
-            }),
-            accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
-            accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
-            aiModel: process.env.AI_MODEL,
-            aiProvider: 'anthropic',
-            aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
-            signature: 'key',
-            agentMode: 'agent',
-            agentconfig: agent_config,
-          });
-          agent.initializeTwitterManager();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -165,6 +167,7 @@ const LocalRun = async () => {
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
         signature: 'key',
         agentMode: 'auto',
+        agentMemory: true,
         agentconfig: agent_config,
       });
 

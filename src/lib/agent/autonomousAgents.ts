@@ -8,6 +8,8 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
+import { AgentConfig } from './agent';
+import { Agent } from 'http';
 
 export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
@@ -63,20 +65,13 @@ export const createAutonomousAgent = (
       console.log('Character config loaded successfully');
       console.log('JSON config loaded successfully');
 
-      const allowedTools = json_config.allowed_internal_tools
-        ? createAllowedTools(starknetAgent, json_config.allowed_internal_tools)
+      const allowedTools = json_config.internal_plugins
+        ? createAllowedTools(starknetAgent, json_config.internal_plugins)
         : createTools(starknetAgent);
 
-      const allowedToolsKits =
-        json_config.external_client && json_config.allowed_external_client_tools
-          ? createAllowedToollkits(
-              json_config.external_client,
-              json_config.allowed_external_client_tools
-            )
-          : json_config.external_client &&
-              !json_config.allowed_external_client_tools
-            ? createAllowedToollkits(json_config.external_client)
-            : null;
+      const allowedToolsKits = json_config.external_plugins
+        ? createAllowedToollkits(json_config.external_plugins)
+        : null;
 
       const tools = allowedToolsKits
         ? [...allowedTools, ...allowedToolsKits]
@@ -94,7 +89,12 @@ export const createAutonomousAgent = (
         messageModifier: json_config.prompt,
       });
 
-      return { agent, agentConfig, json_config };
+      const result: AgentConfig = {
+        agent,
+        agentConfig,
+        json_config,
+      };
+      return result;
     }
   } catch (error) {
     console.error(

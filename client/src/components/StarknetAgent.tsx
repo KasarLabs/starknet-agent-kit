@@ -324,7 +324,6 @@ const StarknetAgent = () => {
         result.transaction_type === 'CREATE_ACCOUNT' &&
         result.status === 'success'
       ) {
-        console.log('HERE');
         const account_details = result as ACCOUNT;
         if (!account_details) {
           throw new Error('Account not set');
@@ -358,9 +357,8 @@ const StarknetAgent = () => {
         result.transaction_type != 'READ' &&
         result.transaction_type != 'CREATE_ACCOUNT'
       ) {
-        // to check
         throw new Error(
-          'The transactions has to be an INVOKE or DeployAccount transaction'
+          'Invalid transaction type. Expected INVOKE, READ, or CREATE_ACCOUNT'
         );
       }
     } catch (error) {

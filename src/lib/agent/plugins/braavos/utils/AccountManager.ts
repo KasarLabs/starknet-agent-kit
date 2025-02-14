@@ -15,6 +15,7 @@ import {
   BaseUtilityClass,
   TransactionResult,
 } from '../../core/account/types/accounts';
+import { AnyComponent } from 'discord.js';
 
 /**
  * Manages Braavos wallet operations using Starknet's proxy pattern.
@@ -74,7 +75,7 @@ export class AccountManager implements BaseUtilityClass {
     accountDetails: AccountDetails
   ): Promise<bigint> {
     try {
-      const version = '0x1';
+      const version = constants.TRANSACTION_VERSION.V1;
       const nonce = constants.ZERO;
       const chainId = await this.provider.getChainId();
 
@@ -124,7 +125,7 @@ export class AccountManager implements BaseUtilityClass {
     maxFee?: BigNumberish
   ): Promise<TransactionResult> {
     try {
-      const version = '0x1';
+      const version = constants.TRANSACTION_VERSION.V1;
       const nonce = constants.ZERO;
       const chainId = await this.provider.getChainId();
 
@@ -198,7 +199,7 @@ export class AccountManager implements BaseUtilityClass {
       classHash: this.proxyClassHash,
       constructorCalldata,
       salt: publicKey,
-      version: '0x1',
+      version: constants.TRANSACTION_VERSION.V1,
       maxFee,
       chainId,
       nonce,

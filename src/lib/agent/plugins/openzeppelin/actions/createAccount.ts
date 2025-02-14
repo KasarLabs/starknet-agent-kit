@@ -1,6 +1,6 @@
 import { RpcProvider } from 'starknet';
-import { oz_classhash } from '../constant/contract';
-import { AccountManager } from '../../core/account/utils/AccountManager';
+import { OZ_CLASSHASH } from '../constant/contract';
+import { AccountManager } from '../utils/AccountManager';
 
 /**
  * Creates a new OpenZeppelin account.
@@ -12,7 +12,7 @@ import { AccountManager } from '../../core/account/utils/AccountManager';
 export const CreateOZAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
-    const accountDetails = await accountManager.createAccount(oz_classhash);
+    const accountDetails = await accountManager.createAccount(OZ_CLASSHASH);
 
     return JSON.stringify({
       status: 'success',
@@ -41,9 +41,9 @@ export const CreateOZAccountSignature = async () => {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const accountManager = new AccountManager(provider);
-    const accountDetails = await accountManager.createAccount(oz_classhash);
+    const accountDetails = await accountManager.createAccount(OZ_CLASSHASH);
     const suggestedMaxFee = await accountManager.estimateAccountDeployFee(
-      oz_classhash,
+      OZ_CLASSHASH,
       accountDetails
     );
     const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;

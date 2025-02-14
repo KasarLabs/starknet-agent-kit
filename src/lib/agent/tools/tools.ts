@@ -71,7 +71,6 @@ import { isMemecoin } from '../plugins/unruggable/actions/isMemecoin';
 import { getLockedLiquidity } from '../plugins/unruggable/actions/getLockedLiquidity';
 import { launchOnEkubo } from '../plugins/unruggable/actions/launchOnEkubo';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
@@ -116,7 +115,6 @@ export interface StarknetAgentInterface {
     signature: string;
   };
   getProvider: () => RpcProvider;
-  accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;
@@ -187,40 +185,44 @@ export const registerTools = () => {
   // Register account-related tools
   StarknetToolRegistry.registerTool({
     name: 'createNewOpenzeppelinAccount',
-    description: 'Create a new Open Zeppelin account and returns credentials',
+    description:
+      'Create a new Open Zeppelin/OZ account and returns privateKey/publicKey/contractAddress',
     execute: CreateOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'createNewArgentAccount',
-    description: 'Creates a new Argent account and returns credentials',
+    name: 'createNewArgentxAccount',
+    description:
+      'Creates a new Argentx/AX account and returns privateKey/publicKey/contractAddress without deploying it',
     execute: CreateAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'createNewOkxAccount',
-    description: 'Create a new OKX account and returns credentials',
+    description:
+      'Create a new OKX account and returns privateKey/publicKey/contractAddress',
     execute: CreateOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'createNewBraavosAccount',
-    description: 'Create a new Braavos account and returns credentials',
+    description:
+      'Create a new Braavos account and returns privateKey/publicKey/contractAddress',
     execute: CreateBraavosAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'deployExistingOpenzeppelinAccount',
     description:
-      'Deploy an existing Open Zeppelin Account return the deploy transaction address',
+      'Deploy an existing Open Zeppelin/OZ Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deployExistingArgentAccount',
+    name: 'deployExistingArgentxAccount',
     description:
-      'Deploy an existing Argentx Account return the deploy transaction address',
+      'Deploy an existing Argentx/AX Account return the deploy transaction address',
     schema: accountDetailsSchema,
     execute: DeployAXAccount,
   });

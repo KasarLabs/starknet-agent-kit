@@ -1,23 +1,12 @@
-import {
-  Account,
-  CallData,
-  stark,
-  hash,
-  ec,
-  RpcProvider,
-  CairoOption,
-  CairoOptionVariant,
-  CairoCustomEnum,
-} from 'starknet';
+import { Account, CallData, stark, hash, ec } from 'starknet';
 import {
   AccountDetails,
   BaseUtilityClass,
   TransactionResult,
-} from '../../core/account/types/accounts';
+} from '../types/accounts';
 
 /**
- * Manages Starknet account operations for ArgentX wallets, including creation, deployment, and fee estimation.
- * Uses Cairo custom enums for owner and guardian management specific to ArgentX implementation.
+ * Manages Starknet account operations including creation, deployment, and fee estimation.
  * @class
  * @implements {BaseUtilityClass}
  */
@@ -29,9 +18,8 @@ export class AccountManager implements BaseUtilityClass {
   }
 
   /**
-   * Creates a new account instance with generated keys.
+   * Creates a new account with generated keys.
    * @async
-   * @method createAccount
    * @param {string} accountClassHash - The class hash for the account type
    * @returns {Promise<AccountDetails>} The created account details
    * @throws {Error} If account creation fails
@@ -41,13 +29,7 @@ export class AccountManager implements BaseUtilityClass {
       const privateKey = stark.randomAddress();
       const publicKey = ec.starkCurve.getStarkKey(privateKey);
 
-      const axSigner = new CairoCustomEnum({ Starknet: { pubkey: publicKey } });
-      const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
-      const constructorCallData = CallData.compile({
-        owner: axSigner,
-        guardian: axGuardian,
-      });
-
+      const constructorCallData = CallData.compile({ publicKey });
       const contractAddress = hash.calculateContractAddressFromHash(
         publicKey,
         accountClassHash,
@@ -68,10 +50,9 @@ export class AccountManager implements BaseUtilityClass {
   /**
    * Deploys an account to the network.
    * @async
-   * @method deployAccount
    * @param {string} accountClassHash - The class hash for the account type
    * @param {AccountDetails} accountDetails - The account details
-   * @returns {Promise<TransactionResult>} The deployment transaction result
+   * @returns {Promise<TransactionResult>} The deployment result
    * @throws {Error} If deployment fails
    */
   async deployAccount(
@@ -85,20 +66,14 @@ export class AccountManager implements BaseUtilityClass {
         accountDetails.privateKey
       );
 
-      const axSigner = new CairoCustomEnum({
-        Starknet: { pubkey: accountDetails.publicKey },
-      });
-      const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
       const constructorCallData = CallData.compile({
-        owner: axSigner,
-        guardian: axGuardian,
+        publicKey: accountDetails.publicKey,
       });
 
       const { transaction_hash, contract_address } =
         await account.deployAccount({
           classHash: accountClassHash,
           constructorCalldata: constructorCallData,
-          contractAddress: accountDetails.contractAddress,
           addressSalt: accountDetails.publicKey,
         });
 
@@ -115,9 +90,8 @@ export class AccountManager implements BaseUtilityClass {
   }
 
   /**
-   * Estimates deployment fee for an account.
+   * Estimates account deployment fee.
    * @async
-   * @method estimateAccountDeployFee
    * @param {string} accountClassHash - The class hash for the account type
    * @param {AccountDetails} accountDetails - The account details
    * @returns {Promise<Object>} The estimated fee details
@@ -134,19 +108,13 @@ export class AccountManager implements BaseUtilityClass {
         accountDetails.privateKey
       );
 
-      const axSigner = new CairoCustomEnum({
-        Starknet: { pubkey: accountDetails.publicKey },
-      });
-      const axGuardian = new CairoOption<unknown>(CairoOptionVariant.None);
       const constructorCallData = CallData.compile({
-        owner: axSigner,
-        guardian: axGuardian,
+        publicKey: accountDetails.publicKey,
       });
 
       return await account.estimateAccountDeployFee({
         classHash: accountClassHash,
         constructorCalldata: constructorCallData,
-        contractAddress: accountDetails.contractAddress,
         addressSalt: accountDetails.publicKey,
       });
     } catch (error) {

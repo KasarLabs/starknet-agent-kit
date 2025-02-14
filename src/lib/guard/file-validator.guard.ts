@@ -45,7 +45,7 @@ export class FileTypeGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<FastifyRequest>();
 
     if (!request.isMultipart()) {
-      throw new ForbiddenException('La requête doit être multipart');
+      throw new ForbiddenException('The request must be multipart');
     }
     await this.ensureUploadDirExists();
 
@@ -89,7 +89,6 @@ export class FileTypeGuard implements CanActivate {
     const buffer = await file.toBuffer();
     const filename = file.filename;
     const filepath = join(this.uploadDir, filename);
-    const pipeline = util.promisify(stream.pipeline);
 
     await fs.writeFile(filepath, buffer);
 
@@ -156,36 +155,6 @@ export class FileTypeGuard implements CanActivate {
     } catch {
       return false;
     }
-  }
-
-  private async readFileHeader(
-    file: MultipartFile,
-    byteLength: number
-  ): Promise<Buffer> {
-    const passThrough = new PassThrough();
-    file.file.pipe(passThrough);
-
-    return new Promise((resolve, reject) => {
-      const headerChunks: Buffer[] = [];
-      let bytesRead = 0;
-
-      passThrough.on('data', (chunk: Buffer) => {
-        if (bytesRead < byteLength) {
-          const remainingBytes = byteLength - bytesRead;
-          const slicedChunk = chunk.subarray(
-            0,
-            Math.min(chunk.length, remainingBytes)
-          );
-          headerChunks.push(slicedChunk);
-          bytesRead += slicedChunk.length;
-        }
-      });
-
-      passThrough.on('error', reject);
-      passThrough.on('end', () =>
-        resolve(Buffer.concat(headerChunks, byteLength))
-      );
-    });
   }
 
   private detectFileType(buffer: Buffer): string | null {

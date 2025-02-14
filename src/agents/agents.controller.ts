@@ -83,7 +83,7 @@ export class AgentsController implements OnModuleInit {
       });
       switch (error.code) {
         case 'ENOENT':
-          throw new Error(`File not found : ${filePath}`); // Ou HttpException(404)
+          throw new Error(`File not found : ${filePath}`); // HttpException(404)
         case 'EACCES':
           throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
         default:

@@ -24,12 +24,28 @@ import {
   getVTokenContract,
 } from '../utils/contracts';
 
+/**
+ * Service for managing deposit operations and earning positions
+ * @class DepositEarnService
+ */
 export class DepositEarnService {
+  /**
+   * Creates an instance of DepositEarnService
+   * @param {StarknetAgentInterface} agent - The Starknet agent for blockchain interactions
+   * @param {string} walletAddress - The wallet address executing the deposits
+   */
   constructor(
     private agent: StarknetAgentInterface,
     private walletAddress: string
   ) {}
 
+  /**
+   * Retrieves token price from the pool extension contract
+   * @param {IBaseToken} token - The token to get price for
+   * @param {string} poolId - The pool identifier
+   * @param {Hex} poolExtension - The pool extension contract address
+   * @returns {Promise<ITokenValue | undefined>} Token price information if available
+   */
   public async getTokenPrice(
     token: IBaseToken,
     poolId: string,
@@ -48,6 +64,14 @@ export class DepositEarnService {
     }
   }
 
+  /**
+   * Retrieves and updates pool assets with their prices
+   * @private
+   * @param {IPool['id']} poolId - Pool identifier
+   * @param {IPool['extensionContractAddress']} poolExtensionContractAddress - Extension contract address
+   * @param {IPoolAsset[]} poolAssets - Array of pool assets
+   * @returns {Promise<IPoolAsset[]>} Updated pool assets with prices
+   */
   private async getPoolAssetsPrice(
     poolId: IPool['id'],
     poolExtensionContractAddress: IPool['extensionContractAddress'],
@@ -67,6 +91,14 @@ export class DepositEarnService {
     );
   }
 
+  /**
+   * Retrieves and updates pool assets with prices and risk metrics
+   * @private
+   * @param {IPool['id']} poolId - Pool identifier
+   * @param {IPool['extensionContractAddress']} poolExtensionContractAddress - Extension contract address
+   * @param {IPoolAsset[]} poolAssets - Array of pool assets
+   * @returns {Promise<IPoolAsset[]>} Updated pool assets with prices and risk metrics
+   */
   private async getPoolAssetsPriceAndRiskMdx(
     poolId: IPool['id'],
     poolExtensionContractAddress: IPool['extensionContractAddress'],
@@ -88,6 +120,11 @@ export class DepositEarnService {
     );
   }
 
+  /**
+   * Retrieves pool information and updates assets with prices
+   * @param {string} poolId - Pool identifier
+   * @returns {Promise<IPool>} Updated pool information
+   */
   public async getPool(poolId: string): Promise<IPool> {
     const data = await fetch(`${VESU_API_URL}/pools/${poolId}`).then((res) =>
       res.json()
@@ -104,6 +141,14 @@ export class DepositEarnService {
 
     return { ...pool, assets };
   }
+
+  /**
+   * Generates approval call for vToken operations
+   * @param {Address} assetAddress - Address of the asset to approve
+   * @param {Address} vTokenAddress - Address of the vToken
+   * @param {bigint} amount - Amount to approve
+   * @returns {Promise<Call>} Approval transaction call
+   */
   async approveVTokenCalls(
     assetAddress: Address,
     vTokenAddress: Address,
@@ -119,6 +164,12 @@ export class DepositEarnService {
     return approveCall;
   }
 
+  /**
+   * Executes a deposit transaction
+   * @param {DepositParams} params - Deposit parameters
+   * @param {StarknetAgentInterface} agent - Starknet agent
+   * @returns {Promise<DepositResult>} Result of the deposit operation
+   */
   async depositEarnTransaction(
     params: DepositParams,
     agent: StarknetAgentInterface
@@ -212,6 +263,13 @@ export class DepositEarnService {
   }
 }
 
+/**
+ * Creates a new DepositEarnService instance
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {string} [walletAddress] - The wallet address
+ * @returns {DepositEarnService} A new DepositEarnService instance
+ * @throws {Error} If wallet address is not provided
+ */
 export const createDepositEarnService = (
   agent: StarknetAgentInterface,
   walletAddress?: string
@@ -223,6 +281,12 @@ export const createDepositEarnService = (
   return new DepositEarnService(agent, walletAddress);
 };
 
+/**
+ * Utility function to execute a deposit operation
+ * @param {StarknetAgentInterface} agent - The Starknet agent
+ * @param {DepositParams} params - The deposit parameters
+ * @returns {Promise<string>} JSON string containing the deposit result
+ */
 export const depositEarnPosition = async (
   agent: StarknetAgentInterface,
   params: DepositParams

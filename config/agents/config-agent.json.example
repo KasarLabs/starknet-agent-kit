@@ -16,12 +16,12 @@
   "interval":  "Your agent interval beetween each transaction of the Agent in ms,"
   "chat_id" : "Your Agent Chat-id",
   "allowed_tools": ["Your Allowed Tools"],
-  "external_client" : [
-    "first external_client",
-    "second external_client"
+  "external_plugins" : [
+    "first external_plugins",
+    "second external_plugins"
   ],
-  "allowed_external_client_tools" : [
-    "first allowed_external_client_tools",
-    "second allowed_external_client_tools"
+  "allowed_external_plugins_tools" : [
+    "first allowed_external_plugins_tools",
+    "second allowed_external_plugins_tools"
   ]
 }

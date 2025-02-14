@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 export const Transferschema = z.object({
   recipient_address: z.string().describe('The recipient public address'),
   amount: z.string().describe('The amount'),

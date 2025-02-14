@@ -7,10 +7,7 @@ import {
 import { MultipartFile } from '@fastify/multipart';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import stream = require('stream');
-import * as util from 'util';
 import { join } from 'path';
-import { PassThrough } from 'stream';
 
 interface FileSignature {
   mime: string;

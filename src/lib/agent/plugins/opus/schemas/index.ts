@@ -29,6 +29,15 @@ export type Ray = z.infer<typeof raySchema>;
 
 // Custom types
 
+export const assetBalanceInputSchema = z.object({
+  symbol: z.string().describe("Symbol of asset"),
+  amount: z.string().describe("Amount of asset"),
+});
+export const assetBalancesInputSchema = z.array(assetBalanceInputSchema);
+
+export type AssetBalanceInput = z.infer<typeof assetBalanceInputSchema>;
+export type AssetBalancesInput = z.infer<typeof assetBalancesInputSchema>;
+
 export const assetBalanceSchema = z.object({
   address: z.string().describe("Address of asset"),
   amount: z.bigint().describe("Amount of asset"),
@@ -49,8 +58,7 @@ export type Health = z.infer<typeof healthSchema>;
 // Transaction schemas
 
 export const openTroveSchema = z.object({
-  collateralSymbol: z.string().describe("Symbol of asset"),
-  collateralAmount: z.string().describe("Amount of asset"),
+  collaterals: assetBalancesInputSchema.describe("Collateral assets to deposit"),
   borrowAmount: z.string().describe("Amount of CASH to borrow"),
   maxBorrowFeePct: z.string().describe("Maximum borrow fee as a % of borrow amount"),
 });

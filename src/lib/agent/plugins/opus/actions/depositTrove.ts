@@ -1,16 +1,16 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { OpenTroveParams } from '../schemas';
+import { DepositTroveParams } from '../schemas';
 import { createTroveManager } from '../utils/troveManager';
 
-export const openTrove = async (
+export const depositTrove = async (
   agent: StarknetAgentInterface,
-  params: OpenTroveParams
+  params: DepositTroveParams
 ): Promise<string> => {
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
   try {
     const TroveManagementService = createTroveManager(agent, accountAddress);
-    const result = await TroveManagementService.openTroveTransaction(
+    const result = await TroveManagementService.depositTransaction(
       params,
       agent
     );

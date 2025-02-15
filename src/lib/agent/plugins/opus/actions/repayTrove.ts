@@ -1,6 +1,6 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { RepayTroveParams } from '../schemas';
-import { createTroveManagementService } from '../utils/opus';
+import { createTroveManager } from '../utils/troveManager';
 
 export const repayTrove = async (
   agent: StarknetAgentInterface,
@@ -9,7 +9,7 @@ export const repayTrove = async (
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
   try {
-    const TroveManagementService = createTroveManagementService(agent, accountAddress);
+    const TroveManagementService = createTroveManager(agent, accountAddress);
     const result = await TroveManagementService.repayTransaction(
       params,
       agent

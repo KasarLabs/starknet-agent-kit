@@ -1,14 +1,14 @@
 import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
 import { parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { BorrowTroveResult, OpenTroveResult, RepayTroveResult } from '../interfaces';
-import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, forgeFeePaidEventSchema, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema } from '../schemas';
-import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from '../utils/contracts';
+import { BorrowTroveResult, DepositTroveResult, OpenTroveResult, RepayTroveResult } from '../interfaces';
+import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema } from '../schemas';
+import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
 import { tokenAddresses } from '../../core/token/constants/erc20';
 
 const FORGE_FEE_PAID_EVENT_IDENTIFIER = 'opus::core::shrine::shrine::ForgeFeePaid';
 
-export class TroveManagementService {
+export class TroveManager {
   shrine: Contract;
   abbot: Contract;
   sentinel: Contract;
@@ -184,6 +184,73 @@ export class TroveManagementService {
     }
   }
 
+  async depositTransaction(
+    params: DepositTroveParams,
+    agent: StarknetAgentInterface
+  ): Promise<DepositTroveResult> {
+    await this.initialise();
+    try {
+      const account = new Account(
+        this.agent.contractInteractor.provider,
+        this.walletAddress,
+        this.agent.getAccountCredentials().accountPrivateKey
+      );
+
+      const [assetBalances, approveAssetsCalls] = await this.prepareCollateralDeposits([params.collateral]);
+
+      const depositCall =
+        await this.abbot.populateTransaction.deposit(
+          params.troveId,
+          assetBalances[0],
+        );
+
+      const beforeHealth = healthSchema.parse(
+        await this.shrine.get_trove_health(params.troveId)
+      );
+      const tx = await account.execute([
+        ...approveAssetsCalls,
+        {
+          contractAddress: depositCall.contractAddress,
+          entrypoint: depositCall.entrypoint,
+          calldata: depositCall.calldata,
+        },
+      ]);
+
+      const provider = agent.getProvider();
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+
+      let afterHealth;
+      if (txReceipt.isSuccess()) {
+        afterHealth = healthSchema.parse(
+          await this.shrine.get_trove_health(params.troveId)
+        );
+      }
+
+      const depositResult: DepositTroveResult = {
+        status: 'success',
+        trove_id: params.troveId.toString(),
+        before_value: beforeHealth.value.formatted,
+        after_value: afterHealth?.value.formatted,
+        before_ltv: beforeHealth.ltv.formatted,
+        after_ltv: afterHealth?.ltv.formatted,
+        transaction_hash: tx.transaction_hash,
+      };
+
+      return depositResult;
+    } catch (error) {
+      console.error('Detailed deposit error:', error);
+      if (error instanceof Error) {
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      return {
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+
   async borrowTransaction(
     params: BorrowTroveParams,
     agent: StarknetAgentInterface
@@ -245,7 +312,7 @@ export class TroveManagementService {
 
       return borrowResult;
     } catch (error) {
-      console.error('Detailed open trove error:', error);
+      console.error('Detailed borrow error:', error);
       if (error instanceof Error) {
         console.error('Error type:', error.constructor.name);
         console.error('Error message:', error.message);
@@ -314,7 +381,7 @@ export class TroveManagementService {
 
       return repayResult;
     } catch (error) {
-      console.error('Detailed open trove error:', error);
+      console.error('Detailed repay error:', error);
       if (error instanceof Error) {
         console.error('Error type:', error.constructor.name);
         console.error('Error message:', error.message);
@@ -328,14 +395,14 @@ export class TroveManagementService {
   }
 }
 
-export const createTroveManagementService = (
+export const createTroveManager = (
   agent: StarknetAgentInterface,
   walletAddress?: string
-): TroveManagementService => {
+): TroveManager => {
   if (!walletAddress) {
     throw new Error('Wallet address not configured');
   }
 
-  const service = new TroveManagementService(agent, walletAddress);
+  const service = new TroveManager(agent, walletAddress);
   return service;
 };

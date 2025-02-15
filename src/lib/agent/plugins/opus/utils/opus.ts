@@ -68,6 +68,49 @@ export class TroveManagementService {
     });
   }
 
+  async prepareCollateralDeposits(collaterals: AssetBalancesInput): Promise<[AssetBalances, Call[]]> {
+    const yangs = (await this.sentinel.get_yang_addresses()).map((yang: string) => num.toBigInt(yang));
+
+    let assetBalances: AssetBalances = [];
+    let approveAssetsCalls: Call[] = [];
+
+    await Promise.all(
+      collaterals.map(async (collateral) => {
+        const collateralAddress = tokenAddresses[collateral.symbol];
+        if (!yangs.includes(num.toBigInt(collateralAddress))) {
+          throw new Error(`${collateralAddress} is not a valid collateral`);
+        }
+
+        const asset = getErc20Contract(collateralAddress);
+        const gate = await this.sentinel.get_gate_address(collateralAddress);
+        const collateralDecimals = await asset.decimals();
+        const collateralAmount = parseUnits(
+          collateral.amount,
+          collateralDecimals,
+        );
+
+        const assetBalance: AssetBalance = {
+          address: collateralAddress,
+          amount: collateralAmount,
+        };
+        assetBalances.push(assetBalance);
+
+        const approveCall = asset.populateTransaction.approve(
+          gate,
+          assetBalance.amount,
+        );
+  
+        approveAssetsCalls.push({
+          contractAddress: approveCall.contractAddress,
+          entrypoint: approveCall.entrypoint,
+          calldata: approveCall.calldata,
+        });
+      })
+    );
+
+    return [assetBalances, approveAssetsCalls];
+  }
+
   async openTroveTransaction(
     params: OpenTroveParams,
     agent: StarknetAgentInterface
@@ -80,45 +123,7 @@ export class TroveManagementService {
         this.agent.getAccountCredentials().accountPrivateKey
       );
 
-      const yangs = (await this.sentinel.get_yang_addresses()).map((yang: string) => num.toBigInt(yang));
-
-      let assetBalances: AssetBalances = [];
-      let approveAssetsCalls: Call[] = [];
-
-      await Promise.all(
-        params.collaterals.map(async (collateral) => {
-          const collateralAddress = tokenAddresses[collateral.symbol];
-          if (!yangs.includes(num.toBigInt(collateralAddress))) {
-            throw new Error(`${collateralAddress} is not a valid collateral`);
-          }
-
-          const asset = getErc20Contract(collateralAddress);
-          const gate = await this.sentinel.get_gate_address(collateralAddress);
-          const collateralDecimals = await asset.decimals();
-          const collateralAmount = parseUnits(
-            collateral.amount,
-            collateralDecimals,
-          );
-
-          const assetBalance: AssetBalance = {
-            address: collateralAddress,
-            amount: collateralAmount,
-          };
-          assetBalances.push(assetBalance);
-
-          const approveCall = asset.populateTransaction.approve(
-            gate,
-            assetBalance.amount,
-          );
-    
-          approveAssetsCalls.push({
-            contractAddress: approveCall.contractAddress,
-            entrypoint: approveCall.entrypoint,
-            calldata: approveCall.calldata,
-          });
-        })
-      );      
-
+      const [assetBalances, approveAssetsCalls] = await this.prepareCollateralDeposits(params.collaterals);
       const borrowAmount = parseUnits(params.borrowAmount, 18);
       const maxBorrowFeePct = await this.parseMaxBorrowFeePctWithCheck(params.maxBorrowFeePct);
 

@@ -34,6 +34,18 @@ export class FileTypeGuard implements CanActivate {
       mime: 'application/zip',
       signatures: [[0x50, 0x4b, 0x03, 0x04]],
     },
+    {
+      mime: 'image/jpeg',
+      signatures: [
+        [0xff, 0xd8, 0xff, 0xe0],
+        [0xff, 0xd8, 0xff, 0xe1],
+        [0xff, 0xd8, 0xff, 0xe8],
+      ],
+    },
+    {
+      mime: 'image/png',
+      signatures: [[0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]],
+    },
   ];
 
   constructor(private readonly allowedMimeTypes: string[] = []) {}
@@ -58,11 +70,14 @@ export class FileTypeGuard implements CanActivate {
 
           const isFile = await this.validateFile(buffer);
           if (!isFile) {
-            const isJson = await this.validateJson(buffer);
-            if (!isJson) {
-              fs.unlink(uploadedFile.path);
-              throw new ForbiddenException('Unauthorized file type');
+            if (this.allowedMimeTypes.indexOf('application/json') != -1) {
+              const isJson = await this.validateJson(buffer);
+              if (!isJson) {
+                fs.unlink(uploadedFile.path);
+                throw new ForbiddenException('Unauthorized file type');
+              }
             }
+            throw new ForbiddenException('Unauthorized file type');
           }
 
           uploadedFiles.push(uploadedFile);

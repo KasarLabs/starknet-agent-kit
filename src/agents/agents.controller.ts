@@ -18,10 +18,6 @@ import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 
-interface filename {
-  filename: string;
-}
-
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
 export class AgentsController implements OnModuleInit {
@@ -56,7 +52,14 @@ export class AgentsController implements OnModuleInit {
   }
 
   @Post('upload_large_file')
-  @UseGuards(new FileTypeGuard(['application/json', 'application/zip']))
+  @UseGuards(
+    new FileTypeGuard([
+      'application/json',
+      'application/zip',
+      'image/jpeg',
+      'image/png',
+    ])
+  )
   async uploadFile(@Req() req: FastifyRequest) {
     const logger = new Logger('Upload service');
     logger.debug({ message: 'The file has been uploaded' });
@@ -64,7 +67,7 @@ export class AgentsController implements OnModuleInit {
   }
 
   @Post('delete_large_file')
-  async deleteUploadFile(@Body() filename: filename) {
+  async deleteUploadFile(@Body() filename: { filename: string }) {
     const logger = new Logger('Upload service');
     const filePath = `./uploads/${filename.filename}`;
 

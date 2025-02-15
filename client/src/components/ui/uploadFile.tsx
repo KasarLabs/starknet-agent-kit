@@ -26,11 +26,16 @@ const UploadFile = ({
     'application/json',
     'application/zip',
     'application/x-zip-compressed',
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
   ];
 
   const validateFile = (file: File): boolean => {
     const extension = file.name.toLowerCase().split('.').pop();
-    const isValidExtension = ['zip', 'json'].includes(extension || '');
+    const isValidExtension = ['zip', 'json', 'jpg', 'jpeg', 'png'].includes(
+      extension || ''
+    );
 
     const isValidType = allowedTypes.includes(file.type);
 
@@ -45,7 +50,7 @@ const UploadFile = ({
 
   const handleFileSelection = (file: File) => {
     if (!validateFile(file)) {
-      alert('Only .zip and .json files are accepted');
+      alert('Only .zip, .json, jpg and png files are accepted');
       return;
     }
 
@@ -97,14 +102,14 @@ const UploadFile = ({
             <div className="flex flex-row justify-center items-center gap-2">
               <Upload className="w-6 h-6 text-neutral-400" />
               <p className="text-sm text-neutral-300">
-                Upload a .zip or .json file here or click to download
+                Upload a .zip, .json, jpg or png file here or click to download
               </p>
             </div>
             <input
               id="file-upload"
               type="file"
               onChange={handleFileChange}
-              accept=".json,.zip"
+              accept=".json,.zip,.jpg,.jpeg,.png"
               className="hidden"
             />
           </label>

@@ -284,6 +284,28 @@ const StarknetAgent = () => {
 
     setCurrentResponse(newResponse);
     try {
+      // If file is detected we send it to the server
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        const resp = await fetch('/api/wallet/upload_large_file', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
+          },
+          body: formData,
+        });
+        if (!resp.ok) {
+          const errorText = await resp.text();
+          console.error('API Error:', {
+            status: resp.status,
+            statusText: resp.statusText,
+            body: errorText,
+          });
+          throw new Error(errorText);
+        }
+      }
+
       const response = await fetch('/api/wallet/request', {
         method: 'POST',
         headers: {
@@ -299,6 +321,28 @@ const StarknetAgent = () => {
       }
       if (!Wallet) {
         throw new Error('Wallet not initialized. Please connect your wallet.');
+      }
+
+      // If file is detected we send delete request to the server
+      if (selectedFile) {
+        const del = await fetch('api/wallet/delete_large_file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
+          },
+          body: JSON.stringify({ filename: selectedFile.name }),
+          credentials: 'include',
+        });
+
+        if (!del.ok) {
+          const errorText = await response.text();
+          console.error('API error:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText,
+          });
+        }
       }
 
       const result = await response.json();

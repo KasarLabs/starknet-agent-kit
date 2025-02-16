@@ -9,8 +9,8 @@ export const borrowTrove = async (
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
   try {
-    const TroveManagementService = createTroveManager(agent, accountAddress);
-    const result = await TroveManagementService.borrowTransaction(
+    const TroveManager = createTroveManager(agent, accountAddress);
+    const result = await TroveManager.borrowTransaction(
       params,
       agent
     );

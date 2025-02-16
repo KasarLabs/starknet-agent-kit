@@ -9,8 +9,8 @@ export const repayTrove = async (
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
   try {
-    const TroveManagementService = createTroveManager(agent, accountAddress);
-    const result = await TroveManagementService.repayTransaction(
+    const TroveManager = createTroveManager(agent, accountAddress);
+    const result = await TroveManager.repayTransaction(
       params,
       agent
     );

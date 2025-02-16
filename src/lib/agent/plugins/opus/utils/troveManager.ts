@@ -1,8 +1,8 @@
 import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
 import { parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { BorrowTroveResult, DepositTroveResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
-import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
+import { BorrowTroveResult, DepositTroveResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
+import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
 import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
 import { tokenAddresses } from '../../core/token/constants/erc20';
 
@@ -23,6 +23,34 @@ export class TroveManager {
     this.shrine = getShrineContract(chainId);
     this.abbot = getAbbotContract(chainId);
     this.sentinel = getSentinelContract(chainId);
+  }
+
+  async getUserTroves(
+    params: GetUserTrovesParams,
+    _agent: StarknetAgentInterface
+  ): Promise<DepositTroveResult> {
+    await this.initialise();
+    try {
+      const troves = await this.abbot.get_user_trove_ids(params.user);
+      const formattedTroves = troves.map((troveId: bigint) => {return troveId.toString()});
+      const getUserTrovesResult: GetUserTrovesResult = {
+        status: 'success',
+        troves: formattedTroves,
+      };
+
+      return getUserTrovesResult;
+    } catch (error) {
+      console.error('Detailed get user troves error:', error);
+      if (error instanceof Error) {
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      return {
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
   }
 
   getBorrowFeeFromEvent(txReceipt: GetTransactionReceiptResponse): [string, string] {

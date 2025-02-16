@@ -57,6 +57,11 @@ export type Health = z.infer<typeof healthSchema>;
 
 // Transaction schemas
 
+export const getUserTrovesSchema = z.object({
+  user: z.string().describe("Address of user"),
+});
+export type GetUserTrovesParams = z.infer<typeof getUserTrovesSchema>;
+
 export const openTroveSchema = z.object({
   collaterals: assetBalancesInputSchema.describe("Collateral assets to deposit"),
   borrowAmount: z.string().describe("Amount of CASH to borrow"),

@@ -1,5 +1,8 @@
-export interface TroveActionResult {
+export interface Status {
   status: 'success' | 'failure';
+}
+
+export interface TroveActionResult extends Status {
   trove_id?: string;
   transaction_hash?: string;
   error?: string;
@@ -31,3 +34,7 @@ export interface RepayTroveResult extends TroveActionResult, DebtActionResult {}
 export interface BorrowTroveResult extends TroveActionResult, DebtActionResult, BorrowActionResult {}
 export interface DepositTroveResult extends TroveActionResult, CollateralActionResult {}
 export interface WithdrawTroveResult extends TroveActionResult, CollateralActionResult {}
+
+export interface GetUserTrovesResult extends Status {
+  troves: string[],
+}

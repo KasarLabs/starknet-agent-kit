@@ -1,8 +1,8 @@
 import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
 import { parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { BorrowTroveResult, DepositTroveResult, OpenTroveResult, RepayTroveResult } from '../interfaces';
-import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema } from '../schemas';
+import { BorrowTroveResult, DepositTroveResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
+import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
 import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
 import { tokenAddresses } from '../../core/token/constants/erc20';
 
@@ -239,6 +239,72 @@ export class TroveManager {
       return depositResult;
     } catch (error) {
       console.error('Detailed deposit error:', error);
+      if (error instanceof Error) {
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      return {
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+
+  async withdrawTransaction(
+    params: WithdrawTroveParams,
+    agent: StarknetAgentInterface
+  ): Promise<WithdrawTroveResult> {
+    await this.initialise();
+    try {
+      const account = new Account(
+        this.agent.contractInteractor.provider,
+        this.walletAddress,
+        this.agent.getAccountCredentials().accountPrivateKey
+      );
+
+      const [assetBalances, _approveAssetsCalls] = await this.prepareCollateralDeposits([params.collateral]);
+
+      const depositCall =
+        await this.abbot.populateTransaction.withdraw(
+          params.troveId,
+          assetBalances[0],
+        );
+
+      const beforeHealth = healthSchema.parse(
+        await this.shrine.get_trove_health(params.troveId)
+      );
+      const tx = await account.execute([
+        {
+          contractAddress: depositCall.contractAddress,
+          entrypoint: depositCall.entrypoint,
+          calldata: depositCall.calldata,
+        },
+      ]);
+
+      const provider = agent.getProvider();
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+
+      let afterHealth;
+      if (txReceipt.isSuccess()) {
+        afterHealth = healthSchema.parse(
+          await this.shrine.get_trove_health(params.troveId)
+        );
+      }
+
+      const withdrawResult: WithdrawTroveResult = {
+        status: 'success',
+        trove_id: params.troveId.toString(),
+        before_value: beforeHealth.value.formatted,
+        after_value: afterHealth?.value.formatted,
+        before_ltv: beforeHealth.ltv.formatted,
+        after_ltv: afterHealth?.ltv.formatted,
+        transaction_hash: tx.transaction_hash,
+      };
+
+      return withdrawResult;
+    } catch (error) {
+      console.error('Detailed withdraw error:', error);
       if (error instanceof Error) {
         console.error('Error type:', error.constructor.name);
         console.error('Error message:', error.message);

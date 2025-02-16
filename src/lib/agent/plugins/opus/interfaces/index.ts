@@ -30,3 +30,4 @@ export interface OpenTroveResult extends TroveActionResult, BorrowActionResult {
 export interface RepayTroveResult extends TroveActionResult, DebtActionResult {}
 export interface BorrowTroveResult extends TroveActionResult, DebtActionResult, BorrowActionResult {}
 export interface DepositTroveResult extends TroveActionResult, CollateralActionResult {}
+export interface WithdrawTroveResult extends TroveActionResult, CollateralActionResult {}

@@ -2,7 +2,7 @@ import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'sta
 import { formatUnits, parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { BorrowTroveResult, DepositTroveResult, GetBorrowFeeResult, GetTroveHealthResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
-import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetTroveHealthParams, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
+import { AssetBalance, AssetBalanceInput, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetTroveHealthParams, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, wadSchema, WithdrawTroveParams } from '../schemas';
 import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
 import { tokenAddresses } from '../../core/token/constants/erc20';
 
@@ -12,21 +12,24 @@ export class TroveManager {
   shrine: Contract;
   abbot: Contract;
   sentinel: Contract;
+  yangs: bigint[];
 
   constructor(
     private agent: StarknetAgentInterface,
     private walletAddress: string
   ) {}
 
-  async initialise() {
+  async initialize() {
     const chainId = await this.agent.getProvider().getChainId();
     this.shrine = getShrineContract(chainId);
     this.abbot = getAbbotContract(chainId);
     this.sentinel = getSentinelContract(chainId);
+
+    this.yangs = (await this.sentinel.get_yang_addresses()).map((yang: string) => num.toBigInt(yang));
   }
 
   async getUserTroves(params: GetUserTrovesParams): Promise<GetUserTrovesResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const troves = await this.abbot.get_user_trove_ids(params.user);
       const formattedTroves = troves.map((troveId: bigint) => {return troveId.toString()});
@@ -50,7 +53,7 @@ export class TroveManager {
   }
 
   async getBorrowFee(): Promise<GetBorrowFeeResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const borrowFee = wadSchema.safeParse(
         await this.shrine.get_forge_fee_pct()
@@ -76,7 +79,7 @@ export class TroveManager {
   }
 
   async getTroveHealth(params: GetTroveHealthParams): Promise<GetTroveHealthResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const troveHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
@@ -127,54 +130,37 @@ export class TroveManager {
     return maxBorrowFeePct;
   }
 
-  async approveAssetBalancesForSentinel(
-    assetBalances: AssetBalances,
-    sentinelAddress: string,
-  ): Promise<Call[]> {
+  async parseAssetBalanceInput(assetBalanceInput: AssetBalanceInput): Promise<AssetBalance> {
+    const collateralAddress = tokenAddresses[assetBalanceInput.symbol];
+    if (!this.yangs.includes(num.toBigInt(collateralAddress))) {
+      throw new Error(`${collateralAddress} is not a valid collateral`);
+    }
 
-    return Array.from(assetBalances ?? []).map(( assetBalance ) => {
-      const tokenContract = getErc20Contract(assetBalance.address);
-
-      const approveCall = tokenContract.populateTransaction.approve(
-        sentinelAddress,
-        assetBalance.amount,
-      );
-
-      return {
-        contractAddress: approveCall.contractAddress,
-        entrypoint: approveCall.entrypoint,
-        calldata: approveCall.calldata,
-      };
-    });
+    const asset = getErc20Contract(collateralAddress);
+    const collateralDecimals = await asset.decimals();
+    const collateralAmount = parseUnits(
+      assetBalanceInput.amount,
+      collateralDecimals,
+    );
+    
+    const assetBalance: AssetBalance = {
+      address: collateralAddress,
+      amount: collateralAmount,
+    };
+    return assetBalance;
   }
 
   async prepareCollateralDeposits(collaterals: AssetBalancesInput): Promise<[AssetBalances, Call[]]> {
-    const yangs = (await this.sentinel.get_yang_addresses()).map((yang: string) => num.toBigInt(yang));
-
-    let assetBalances: AssetBalances = [];
-    let approveAssetsCalls: Call[] = [];
+    const assetBalances: AssetBalances = [];
+    const approveAssetsCalls: Call[] = [];
 
     await Promise.all(
       collaterals.map(async (collateral) => {
-        const collateralAddress = tokenAddresses[collateral.symbol];
-        if (!yangs.includes(num.toBigInt(collateralAddress))) {
-          throw new Error(`${collateralAddress} is not a valid collateral`);
-        }
-
-        const asset = getErc20Contract(collateralAddress);
-        const gate = await this.sentinel.get_gate_address(collateralAddress);
-        const collateralDecimals = await asset.decimals();
-        const collateralAmount = parseUnits(
-          collateral.amount,
-          collateralDecimals,
-        );
-
-        const assetBalance: AssetBalance = {
-          address: collateralAddress,
-          amount: collateralAmount,
-        };
+        let assetBalance = await this.parseAssetBalanceInput(collateral);
         assetBalances.push(assetBalance);
 
+        const asset = getErc20Contract(assetBalance.address);
+        const gate = await this.sentinel.get_gate_address(assetBalance.address);
         const approveCall = asset.populateTransaction.approve(
           gate,
           assetBalance.amount,
@@ -195,7 +181,7 @@ export class TroveManager {
     params: OpenTroveParams,
     agent: StarknetAgentInterface
   ): Promise<OpenTroveResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,
@@ -268,7 +254,7 @@ export class TroveManager {
     params: DepositTroveParams,
     agent: StarknetAgentInterface
   ): Promise<DepositTroveResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,
@@ -335,7 +321,7 @@ export class TroveManager {
     params: WithdrawTroveParams,
     agent: StarknetAgentInterface
   ): Promise<WithdrawTroveResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,
@@ -343,12 +329,12 @@ export class TroveManager {
         this.agent.getAccountCredentials().accountPrivateKey
       );
 
-      const [assetBalances, _approveAssetsCalls] = await this.prepareCollateralDeposits([params.collateral]);
+      const assetBalance = await this.parseAssetBalanceInput(params.collateral);
 
       const depositCall =
         await this.abbot.populateTransaction.withdraw(
           params.troveId,
-          assetBalances[0],
+          assetBalance,
         );
 
       const beforeHealth = healthSchema.safeParse(
@@ -401,7 +387,7 @@ export class TroveManager {
     params: BorrowTroveParams,
     agent: StarknetAgentInterface
   ): Promise<BorrowTroveResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,
@@ -475,7 +461,7 @@ export class TroveManager {
     params: RepayTroveParams,
     agent: StarknetAgentInterface
   ): Promise<RepayTroveResult> {
-    await this.initialise();
+    await this.initialize();
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,

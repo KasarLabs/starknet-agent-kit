@@ -62,6 +62,11 @@ export const getUserTrovesSchema = z.object({
 });
 export type GetUserTrovesParams = z.infer<typeof getUserTrovesSchema>;
 
+export const getTroveHealthSchema = z.object({
+  troveId: z.number().describe("Trove ID"),
+});
+export type GetTroveHealthParams = z.infer<typeof getTroveHealthSchema>;
+
 export const openTroveSchema = z.object({
   collaterals: assetBalancesInputSchema.describe("Collateral assets to deposit"),
   borrowAmount: z.string().describe("Amount of CASH to borrow"),

@@ -1,8 +1,8 @@
 import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
 import { parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { BorrowTroveResult, DepositTroveResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
-import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
+import { BorrowTroveResult, DepositTroveResult, GetTroveHealthResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
+import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetTroveHealthParams, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
 import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
 import { tokenAddresses } from '../../core/token/constants/erc20';
 
@@ -28,7 +28,7 @@ export class TroveManager {
   async getUserTroves(
     params: GetUserTrovesParams,
     _agent: StarknetAgentInterface
-  ): Promise<DepositTroveResult> {
+  ): Promise<GetUserTrovesResult> {
     await this.initialise();
     try {
       const troves = await this.abbot.get_user_trove_ids(params.user);
@@ -48,7 +48,37 @@ export class TroveManager {
       }
       return {
         status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+
+  async getTroveHealth(
+    params: GetTroveHealthParams,
+    _agent: StarknetAgentInterface
+  ): Promise<GetTroveHealthResult> {
+    await this.initialise();
+    try {
+      const troveHealth = healthSchema.parse(
+        await this.shrine.get_trove_health(params.troveId)
+      );
+      const getTroveHealthResult: GetTroveHealthResult = {
+        status: 'success',
+        debt: troveHealth.debt.formatted,
+        value: troveHealth.value.formatted,
+        ltv: troveHealth.ltv.formatted,
+        threshold: troveHealth.threshold.formatted,
+      };
+
+      return getTroveHealthResult;
+    } catch (error) {
+      console.error('Detailed get trove health error:', error);
+      if (error instanceof Error) {
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      return {
+        status: 'failure',
       };
     }
   }

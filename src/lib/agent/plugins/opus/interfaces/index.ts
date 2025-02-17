@@ -36,5 +36,13 @@ export interface DepositTroveResult extends TroveActionResult, CollateralActionR
 export interface WithdrawTroveResult extends TroveActionResult, CollateralActionResult {}
 
 export interface GetUserTrovesResult extends Status {
-  troves: string[],
+  troves?: string[],
+}
+
+export interface GetTroveHealthResult extends Status {
+  trove_id?: string;
+  debt?: string;
+  value?: string;
+  ltv?: string;
+  threshold?: string;
 }

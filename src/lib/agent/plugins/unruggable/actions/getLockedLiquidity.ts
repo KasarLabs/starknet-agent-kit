@@ -1,4 +1,4 @@
-import { ContractAddressParams } from 'src/lib/agent/schemas/schema';
+import { ContractAddressParams } from 'src/lib/agent/plugins/unruggable/schema';
 import { Contract } from 'starknet';
 import { FACTORY_ABI } from '../abis/unruggableFactory';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';

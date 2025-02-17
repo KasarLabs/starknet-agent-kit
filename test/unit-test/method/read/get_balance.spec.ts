@@ -1,4 +1,4 @@
-import { getBalance } from 'src/lib/agent/plugins/core/token/getBalances';
+import { getBalance } from 'src/lib/agent/plugins/core/token/actions/getBalances';
 import { Contract } from 'starknet';
 import { string } from 'zod';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';

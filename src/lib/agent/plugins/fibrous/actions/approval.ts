@@ -61,15 +61,4 @@ export class ApprovalService {
       );
     }
   }
-
-  async approveToken(/* ... */) {
-    const provider = this.agent.getProvider();
-    const credentials = this.agent.getAccountCredentials();
-    const account = new Account(
-      provider,
-      credentials.accountPublicKey,
-      credentials.accountPrivateKey
-    );
-    // ... rest of the method
-  }
 }

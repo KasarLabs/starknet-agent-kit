@@ -4,7 +4,6 @@ import { swapTokens } from '../actions/swap';
 import { getRoute } from '../actions/fetchRoute';
 
 export const registerAvnuTools = () => {
-  // Register DeFi tools
   StarknetToolRegistry.registerTool({
     name: 'swap_tokens',
     plugins: 'avnu',

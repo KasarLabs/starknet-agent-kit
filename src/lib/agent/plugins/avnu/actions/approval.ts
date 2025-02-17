@@ -110,24 +110,4 @@ export class ApprovalService {
       );
     }
   }
-
-  /**
-   * Approves a token spending amount
-   * @param {Object} params - The parameters for token approval
-   * @param {string} params.tokenAddress - The address of the token contract
-   * @param {string} params.spenderAddress - The address being approved to spend tokens
-   * @param {string} params.amount - The amount to approve
-   * @returns {Promise<void>}
-   * @throws {Error} If approval fails
-   */
-  async approveToken(/* ... */) {
-    const provider = this.agent.getProvider();
-    const credentials = this.agent.getAccountCredentials();
-    const account = new Account(
-      provider,
-      credentials.accountPublicKey,
-      credentials.accountPrivateKey
-    );
-    // ... rest of the method
-  }
 }

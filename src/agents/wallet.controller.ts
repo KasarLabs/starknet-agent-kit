@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Logger,
+  NotFoundException,
   OnModuleInit,
   Post,
   Req,
@@ -55,7 +56,10 @@ export class WalletController implements OnModuleInit {
   async uploadFile(@Req() req: FastifyRequest) {
     const logger = new Logger('Upload service');
     logger.debug({ message: 'The file has been uploaded' });
-    return { status: 'success', data: 'The file has been uploaded.' };
+    return {
+      status: 'success',
+      data:'The file has been uploaded.'
+    }
   }
 
   @Post('delete_large_file')
@@ -78,7 +82,7 @@ export class WalletController implements OnModuleInit {
       });
       switch (error.code) {
         case 'ENOENT':
-          throw new Error(`File not found : ${filePath}`); // HttpException(404)
+          throw new NotFoundException(`File not found : ${filePath}`); // HttpException(404)
         case 'EACCES':
           throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
         default:

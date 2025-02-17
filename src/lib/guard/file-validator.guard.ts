@@ -7,7 +7,7 @@ import {
 import { MultipartFile } from '@fastify/multipart';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import { join } from 'path';
+import path, { join } from 'path';
 
 interface FileSignature {
   mime: string;
@@ -99,7 +99,17 @@ export class FileTypeGuard implements CanActivate {
 
   private async saveFile(file: MultipartFile): Promise<UploadedFile> {
     const buffer = await file.toBuffer();
-    const filename = file.filename;
+    const {name, ext} = path.parse(file.filename);
+
+    const secret = process.env.SECRET_PHRASE;
+    if (!secret) {
+      throw new Error('SECRET_PHRASE must be defined in .env file');
+    }
+
+    const hash = await this.createHash(`${name}${secret}`);
+
+    const filename = `${hash}${ext}`;
+
     const filepath = join(this.uploadDir, filename);
 
     await fs.writeFile(filepath, buffer);
@@ -120,6 +130,14 @@ export class FileTypeGuard implements CanActivate {
       size: buffer.length,
       path: filepath,
     };
+  }
+
+  private async createHash(text: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   private async ensureUploadDirExists(): Promise<void> {

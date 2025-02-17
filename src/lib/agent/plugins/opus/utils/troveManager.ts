@@ -1,5 +1,5 @@
 import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
-import { parseUnits } from 'ethers';
+import { formatUnits, parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { BorrowTroveResult, DepositTroveResult, GetBorrowFeeResult, GetTroveHealthResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
 import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetTroveHealthParams, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
@@ -55,9 +55,10 @@ export class TroveManager {
       const borrowFee = wadSchema.safeParse(
         await this.shrine.get_forge_fee_pct()
       );
+      const borrowFeePct = formatUnits(borrowFee.data!.value, 16);
       const getBorrowFeeResult: GetBorrowFeeResult = {
         status: 'success',
-        borrow_fee: borrowFee.data?.formatted,
+        borrow_fee: `${borrowFeePct}%`,
       };
 
       return getBorrowFeeResult;
@@ -113,14 +114,14 @@ export class TroveManager {
 
   async parseMaxBorrowFeePctWithCheck(borrowFeePct: string): Promise<bigint> {
     const maxBorrowFeePct = parseUnits(
-      borrowFeePct,
+      borrowFeePct.slice(0, -1),
       16, // 1% is equivalent to 10 ** 16
     );
     const currentBorrowFeePct = wadSchema.safeParse(
       await this.shrine.get_forge_fee_pct()
     );
     if (maxBorrowFeePct < currentBorrowFeePct.data!.value) {
-      throw new Error(`Max borrow fee of ${maxBorrowFeePct}% is lower than current: ${currentBorrowFeePct.data!.formatted}%`);
+      throw new Error(`Max borrow fee of ${borrowFeePct} is lower than current: ${currentBorrowFeePct.data!.formatted}%`);
     }
 
     return maxBorrowFeePct;

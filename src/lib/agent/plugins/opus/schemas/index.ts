@@ -70,7 +70,9 @@ export type GetTroveHealthParams = z.infer<typeof getTroveHealthSchema>;
 export const openTroveSchema = z.object({
   collaterals: assetBalancesInputSchema.describe("Collateral assets to deposit"),
   borrowAmount: z.string().describe("Amount of CASH to borrow"),
-  maxBorrowFeePct: z.string().describe("Maximum borrow fee as a % of borrow amount"),
+  maxBorrowFeePct: z.string()
+    .regex(/.*%$/, "Must end with %")
+    .describe("Maximum borrow fee as a % of borrow amount"),
 });
 
 export type OpenTroveParams = z.infer<typeof openTroveSchema>;

@@ -59,8 +59,8 @@ export class WalletController implements OnModuleInit {
     logger.debug({ message: 'The file has been uploaded' });
     return {
       status: 'success',
-      data:'The file has been uploaded.'
-    }
+      data: 'The file has been uploaded.',
+    };
   }
 
   @Post('delete_large_file')
@@ -68,8 +68,7 @@ export class WalletController implements OnModuleInit {
     const logger = new Logger('Delete service');
 
     const path = process.env.PATH_UPLOAD_DIR;
-    if (!path) 
-      throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`)
+    if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
     const filePath = `${path}${filename.filename}`;
     const normalizedPath = path.normalize();

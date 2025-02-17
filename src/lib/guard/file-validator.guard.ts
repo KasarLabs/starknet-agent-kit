@@ -99,7 +99,7 @@ export class FileTypeGuard implements CanActivate {
 
   private async saveFile(file: MultipartFile): Promise<UploadedFile> {
     const buffer = await file.toBuffer();
-    const {name, ext} = path.parse(file.filename);
+    const { name, ext } = path.parse(file.filename);
 
     const secret = process.env.SECRET_PHRASE;
     if (!secret) {
@@ -137,7 +137,7 @@ export class FileTypeGuard implements CanActivate {
     const data = encoder.encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 
   private async ensureUploadDirExists(): Promise<void> {

@@ -12,17 +12,18 @@ const tty = require('tty');
 
 config();
 
- const fs = require('fs');
+const fs = require('fs');
 
 const ttyFd = fs.openSync('/dev/tty', 'r+');
 
-const ttyWrite= fs.createWriteStream(null, { fd: ttyFd });
-  
-const prompt = inquirer.createPromptModule({
-    input: process.stdin,
-    output: ttyWrite
-    });
+const ttyRead = fs.createReadStream(null, { fd: ttyFd });
+const ttyWrite = fs.createWriteStream(null, { fd: ttyFd });
 
+// Utiliser process.stdout pour l'output
+const prompt = inquirer.createPromptModule({
+  input: ttyRead,
+  output: process.stdout,
+});
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
     .option('agent', {
@@ -98,22 +99,11 @@ const LocalRun = async () => {
   const agent_config_name = await load_command();
   const { mode } = await prompt([
     {
-      type: 'list',
+      type: 'input',
       name: 'mode',
-      message: 'Select operation mode:',
-      choices: [
-        {
-          name: `${chalk.green('>')} Interactive Mode`,
-          value: 'agent',
-          short: 'Interactive',
-        },
-        {
-          name: `${chalk.blue('>')} Autonomous Mode`,
-          value: 'auto',
-          short: 'Autonomous',
-        },
-      ],
-    },
+      message: chalk.blue('Select operation mode (agent/auto):'),
+      validate: input => ['agent', 'auto'].includes(input)
+    }  
   ]);
 
   clearScreen();
@@ -125,14 +115,14 @@ const LocalRun = async () => {
     spinner.success({ text: 'Agent initialized successfully' });
     const agent_config = load_json_config(agent_config_name);
     if (mode === 'agent') {
-      console.log(('\nStarting interactive session...\n'));
+      console.log(chalk.dim('\nStarting interactive session...\n'));
 
       while (true) {
         const { user } = await prompt([
           {
             type: 'input',
             name: 'user',
-            message: 'User :',
+            message: chalk.green('User'),
             validate: (value: string) => {
               const trimmed = value.trim();
               if (!trimmed) return 'Please enter a valid message';

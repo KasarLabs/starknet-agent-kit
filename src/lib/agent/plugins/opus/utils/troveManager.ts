@@ -1,12 +1,49 @@
-import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
-import { formatUnits, parseUnits } from 'ethers';
-import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { BorrowTroveResult, DepositTroveResult, GetBorrowFeeResult, GetTroveHealthResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
-import { AssetBalance, AssetBalanceInput, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetTroveHealthParams, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, wadSchema, WithdrawTroveParams } from '../schemas';
-import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
-import { tokenAddresses } from '../../core/token/constants/erc20';
+import {
+  num,
+  Account,
+  Call,
+  Contract,
+  GetTransactionReceiptResponse,
+} from "starknet";
+import { formatUnits, parseUnits } from "ethers";
+import { StarknetAgentInterface } from "src/lib/agent/tools/tools";
+import {
+  BorrowTroveResult,
+  DepositTroveResult,
+  GetBorrowFeeResult,
+  GetTroveHealthResult,
+  GetUserTrovesResult,
+  OpenTroveResult,
+  RepayTroveResult,
+  WithdrawTroveResult,
+} from "../interfaces";
+import {
+  AssetBalance,
+  AssetBalanceInput,
+  AssetBalances,
+  AssetBalancesInput,
+  BorrowTroveParams,
+  DepositTroveParams,
+  forgeFeePaidEventSchema,
+  GetTroveHealthParams,
+  GetUserTrovesParams,
+  healthSchema,
+  OpenTroveParams,
+  RepayTroveParams,
+  troveOpenedEventSchema,
+  wadSchema,
+  WithdrawTroveParams,
+} from "../schemas";
+import {
+  getAbbotContract,
+  getErc20Contract,
+  getSentinelContract,
+  getShrineContract,
+} from "./contracts";
+import { tokenAddresses } from "../../core/token/constants/erc20";
 
-const FORGE_FEE_PAID_EVENT_IDENTIFIER = 'opus::core::shrine::shrine::ForgeFeePaid';
+const FORGE_FEE_PAID_EVENT_IDENTIFIER =
+  "opus::core::shrine::shrine::ForgeFeePaid";
 
 export class TroveManager {
   shrine: Contract;
@@ -25,29 +62,35 @@ export class TroveManager {
     this.abbot = getAbbotContract(chainId);
     this.sentinel = getSentinelContract(chainId);
 
-    this.yangs = (await this.sentinel.get_yang_addresses()).map((yang: string) => num.toBigInt(yang));
+    this.yangs = (await this.sentinel.get_yang_addresses()).map(
+      (yang: string) => num.toBigInt(yang)
+    );
   }
 
-  async getUserTroves(params: GetUserTrovesParams): Promise<GetUserTrovesResult> {
+  async getUserTroves(
+    params: GetUserTrovesParams
+  ): Promise<GetUserTrovesResult> {
     await this.initialize();
     try {
       const troves = await this.abbot.get_user_trove_ids(params.user);
-      const formattedTroves = troves.map((troveId: bigint) => {return troveId.toString()});
+      const formattedTroves = troves.map((troveId: bigint) => {
+        return troveId.toString();
+      });
       const getUserTrovesResult: GetUserTrovesResult = {
-        status: 'success',
+        status: "success",
         troves: formattedTroves,
       };
 
       return getUserTrovesResult;
     } catch (error) {
-      console.error('Detailed get user troves error:', error);
+      console.error("Detailed get user troves error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
+        status: "failure",
       };
     }
   }
@@ -60,32 +103,34 @@ export class TroveManager {
       );
       const borrowFeePct = formatUnits(borrowFee.data!.value, 16);
       const getBorrowFeeResult: GetBorrowFeeResult = {
-        status: 'success',
+        status: "success",
         borrow_fee: `${borrowFeePct}%`,
       };
 
       return getBorrowFeeResult;
     } catch (error) {
-      console.error('Detailed get borrow fee error:', error);
+      console.error("Detailed get borrow fee error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
+        status: "failure",
       };
     }
   }
 
-  async getTroveHealth(params: GetTroveHealthParams): Promise<GetTroveHealthResult> {
+  async getTroveHealth(
+    params: GetTroveHealthParams
+  ): Promise<GetTroveHealthResult> {
     await this.initialize();
     try {
       const troveHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
       );
       const getTroveHealthResult: GetTroveHealthResult = {
-        status: 'success',
+        status: "success",
         debt: troveHealth.data?.debt.formatted,
         value: troveHealth.data?.value.formatted,
         ltv: troveHealth.data?.ltv.formatted,
@@ -94,43 +139,56 @@ export class TroveManager {
 
       return getTroveHealthResult;
     } catch (error) {
-      console.error('Detailed get trove health error:', error);
+      console.error("Detailed get trove health error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
+        status: "failure",
       };
     }
   }
 
-  getBorrowFeeFromEvent(txReceipt: GetTransactionReceiptResponse): [string, string] {
+  getBorrowFeeFromEvent(
+    txReceipt: GetTransactionReceiptResponse
+  ): [string, string] {
     const shrineEvents = this.shrine.parseEvents(txReceipt);
-    
+
     const forgeFeePaidEvent = forgeFeePaidEventSchema.safeParse(
-      shrineEvents.find(event => FORGE_FEE_PAID_EVENT_IDENTIFIER in event)![FORGE_FEE_PAID_EVENT_IDENTIFIER]
+      shrineEvents.find((event) => FORGE_FEE_PAID_EVENT_IDENTIFIER in event)![
+        FORGE_FEE_PAID_EVENT_IDENTIFIER
+      ]
     );
-    return [forgeFeePaidEvent.data!.fee.formatted, forgeFeePaidEvent.data!.fee_pct.formatted];
+    return [
+      forgeFeePaidEvent.data!.fee.formatted,
+      forgeFeePaidEvent.data!.fee_pct.formatted,
+    ];
   }
 
   async parseMaxBorrowFeePctWithCheck(borrowFeePct: string): Promise<bigint> {
     const maxBorrowFeePct = parseUnits(
       borrowFeePct.slice(0, -1),
-      16, // 1% is equivalent to 10 ** 16
+      16 // 1% is equivalent to 10 ** 16
     );
     const currentBorrowFeePct = wadSchema.safeParse(
       await this.shrine.get_forge_fee_pct()
     );
     if (maxBorrowFeePct < currentBorrowFeePct.data!.value) {
-      throw new Error(`Max borrow fee of ${borrowFeePct} is lower than current: ${currentBorrowFeePct.data!.formatted}%`);
+      throw new Error(
+        `Max borrow fee of ${borrowFeePct} is lower than current: ${
+          currentBorrowFeePct.data!.formatted
+        }%`
+      );
     }
 
     return maxBorrowFeePct;
   }
 
-  async parseAssetBalanceInput(assetBalanceInput: AssetBalanceInput): Promise<AssetBalance> {
+  async parseAssetBalanceInput(
+    assetBalanceInput: AssetBalanceInput
+  ): Promise<AssetBalance> {
     const collateralAddress = tokenAddresses[assetBalanceInput.symbol];
     if (!this.yangs.includes(num.toBigInt(collateralAddress))) {
       throw new Error(`${collateralAddress} is not a valid collateral`);
@@ -140,9 +198,9 @@ export class TroveManager {
     const collateralDecimals = await asset.decimals();
     const collateralAmount = parseUnits(
       assetBalanceInput.amount,
-      collateralDecimals,
+      collateralDecimals
     );
-    
+
     const assetBalance: AssetBalance = {
       address: collateralAddress,
       amount: collateralAmount,
@@ -150,22 +208,24 @@ export class TroveManager {
     return assetBalance;
   }
 
-  async prepareCollateralDeposits(collaterals: AssetBalancesInput): Promise<[AssetBalances, Call[]]> {
+  async prepareCollateralDeposits(
+    collaterals: AssetBalancesInput
+  ): Promise<[AssetBalances, Call[]]> {
     const assetBalances: AssetBalances = [];
     const approveAssetsCalls: Call[] = [];
 
     await Promise.all(
       collaterals.map(async (collateral) => {
-        let assetBalance = await this.parseAssetBalanceInput(collateral);
+        const assetBalance = await this.parseAssetBalanceInput(collateral);
         assetBalances.push(assetBalance);
 
         const asset = getErc20Contract(assetBalance.address);
         const gate = await this.sentinel.get_gate_address(assetBalance.address);
         const approveCall = asset.populateTransaction.approve(
           gate,
-          assetBalance.amount,
+          assetBalance.amount
         );
-  
+
         approveAssetsCalls.push({
           contractAddress: approveCall.contractAddress,
           entrypoint: approveCall.entrypoint,
@@ -189,16 +249,18 @@ export class TroveManager {
         this.agent.getAccountCredentials().accountPrivateKey
       );
 
-      const [assetBalances, approveAssetsCalls] = await this.prepareCollateralDeposits(params.collaterals);
+      const [assetBalances, approveAssetsCalls] =
+        await this.prepareCollateralDeposits(params.collaterals);
       const borrowAmount = parseUnits(params.borrowAmount, 18);
-      const maxBorrowFeePct = await this.parseMaxBorrowFeePctWithCheck(params.maxBorrowFeePct);
+      const maxBorrowFeePct = await this.parseMaxBorrowFeePctWithCheck(
+        params.maxBorrowFeePct
+      );
 
-      const openTroveCall =
-        await this.abbot.populateTransaction.open_trove(
-          assetBalances,
-          { val: borrowAmount },
-          { val: maxBorrowFeePct },
-        );
+      const openTroveCall = await this.abbot.populateTransaction.open_trove(
+        assetBalances,
+        { val: borrowAmount },
+        { val: maxBorrowFeePct }
+      );
 
       const tx = await account.execute([
         ...approveAssetsCalls,
@@ -210,25 +272,26 @@ export class TroveManager {
       ]);
 
       const provider = agent.getProvider();
-      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash);
 
       let troveId;
       let borrowFeePaid;
       let borrowFeePct;
       if (txReceipt.isSuccess()) {
         const abbotEvents = this.abbot.parseEvents(txReceipt);
-        const troveOpenedIdentifier = 'opus::core::abbot::abbot::TroveOpened';
-        const troveOpenedEvent = abbotEvents.find(event => troveOpenedIdentifier in event)![troveOpenedIdentifier];
-        const parsedTroveOpenedEvent = troveOpenedEventSchema.safeParse(
-          troveOpenedEvent
-        );
+        const troveOpenedIdentifier = "opus::core::abbot::abbot::TroveOpened";
+        const troveOpenedEvent = abbotEvents.find(
+          (event) => troveOpenedIdentifier in event
+        )![troveOpenedIdentifier];
+        const parsedTroveOpenedEvent =
+          troveOpenedEventSchema.safeParse(troveOpenedEvent);
         troveId = parsedTroveOpenedEvent.data!.trove_id.toString();
 
         [borrowFeePaid, borrowFeePct] = this.getBorrowFeeFromEvent(txReceipt);
       }
 
       const openTroveResult: OpenTroveResult = {
-        status: 'success',
+        status: "success",
         trove_id: troveId,
         borrow_fee: borrowFeePaid,
         borrow_fee_pct: borrowFeePct,
@@ -237,15 +300,15 @@ export class TroveManager {
 
       return openTroveResult;
     } catch (error) {
-      console.error('Detailed open trove error:', error);
+      console.error("Detailed open trove error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        status: "failure",
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -262,13 +325,13 @@ export class TroveManager {
         this.agent.getAccountCredentials().accountPrivateKey
       );
 
-      const [assetBalances, approveAssetsCalls] = await this.prepareCollateralDeposits([params.collateral]);
+      const [assetBalances, approveAssetsCalls] =
+        await this.prepareCollateralDeposits([params.collateral]);
 
-      const depositCall =
-        await this.abbot.populateTransaction.deposit(
-          params.troveId,
-          assetBalances[0],
-        );
+      const depositCall = await this.abbot.populateTransaction.deposit(
+        params.troveId,
+        assetBalances[0]
+      );
 
       const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
@@ -283,7 +346,7 @@ export class TroveManager {
       ]);
 
       const provider = agent.getProvider();
-      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash);
 
       let afterHealth;
       if (txReceipt.isSuccess()) {
@@ -293,7 +356,7 @@ export class TroveManager {
       }
 
       const depositResult: DepositTroveResult = {
-        status: 'success',
+        status: "success",
         trove_id: params.troveId.toString(),
         before_value: beforeHealth.data?.value.formatted,
         after_value: afterHealth?.data?.value.formatted,
@@ -304,15 +367,15 @@ export class TroveManager {
 
       return depositResult;
     } catch (error) {
-      console.error('Detailed deposit error:', error);
+      console.error("Detailed deposit error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        status: "failure",
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -331,11 +394,10 @@ export class TroveManager {
 
       const assetBalance = await this.parseAssetBalanceInput(params.collateral);
 
-      const depositCall =
-        await this.abbot.populateTransaction.withdraw(
-          params.troveId,
-          assetBalance,
-        );
+      const depositCall = await this.abbot.populateTransaction.withdraw(
+        params.troveId,
+        assetBalance
+      );
 
       const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
@@ -349,7 +411,7 @@ export class TroveManager {
       ]);
 
       const provider = agent.getProvider();
-      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash);
 
       let afterHealth;
       if (txReceipt.isSuccess()) {
@@ -359,7 +421,7 @@ export class TroveManager {
       }
 
       const withdrawResult: WithdrawTroveResult = {
-        status: 'success',
+        status: "success",
         trove_id: params.troveId.toString(),
         before_value: beforeHealth.data?.value.formatted,
         after_value: afterHealth?.data?.value.formatted,
@@ -370,15 +432,15 @@ export class TroveManager {
 
       return withdrawResult;
     } catch (error) {
-      console.error('Detailed withdraw error:', error);
+      console.error("Detailed withdraw error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        status: "failure",
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -396,13 +458,14 @@ export class TroveManager {
       );
 
       const borrowAmount = parseUnits(params.amount, 18);
-      const maxBorrowFeePct = await this.parseMaxBorrowFeePctWithCheck(params.maxBorrowFeePct);
-      const borrowCall =
-        await this.abbot.populateTransaction.forge(
-          params.troveId,
-          { val: borrowAmount },
-          { val: maxBorrowFeePct},
-        );
+      const maxBorrowFeePct = await this.parseMaxBorrowFeePctWithCheck(
+        params.maxBorrowFeePct
+      );
+      const borrowCall = await this.abbot.populateTransaction.forge(
+        params.troveId,
+        { val: borrowAmount },
+        { val: maxBorrowFeePct }
+      );
 
       const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
@@ -416,7 +479,7 @@ export class TroveManager {
       ]);
 
       const provider = agent.getProvider();
-      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash);
 
       let afterHealth;
       let borrowFeePaid;
@@ -430,7 +493,7 @@ export class TroveManager {
       }
 
       const borrowResult: BorrowTroveResult = {
-        status: 'success',
+        status: "success",
         trove_id: params.troveId.toString(),
         amount: borrowAmount.toString(),
         borrow_fee: borrowFeePaid,
@@ -444,15 +507,15 @@ export class TroveManager {
 
       return borrowResult;
     } catch (error) {
-      console.error('Detailed borrow error:', error);
+      console.error("Detailed borrow error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        status: "failure",
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -469,15 +532,11 @@ export class TroveManager {
         this.agent.getAccountCredentials().accountPrivateKey
       );
 
-      const repayAmount = parseUnits(
-        params.amount,
-        18,
+      const repayAmount = parseUnits(params.amount, 18);
+      const repayCall = await this.abbot.populateTransaction.melt(
+        params.troveId,
+        { val: repayAmount }
       );
-      const repayCall =
-        await this.abbot.populateTransaction.melt(
-          params.troveId,
-          { val: repayAmount },
-        );
 
       const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
@@ -491,9 +550,9 @@ export class TroveManager {
       ]);
 
       const provider = agent.getProvider();
-      const txReceipt = await provider.waitForTransaction(tx.transaction_hash)
+      const txReceipt = await provider.waitForTransaction(tx.transaction_hash);
 
-    let afterHealth;
+      let afterHealth;
       if (txReceipt.isSuccess()) {
         afterHealth = healthSchema.safeParse(
           await this.shrine.get_trove_health(params.troveId)
@@ -501,7 +560,7 @@ export class TroveManager {
       }
 
       const repayResult: RepayTroveResult = {
-        status: 'success',
+        status: "success",
         trove_id: params.troveId.toString(),
         amount: repayAmount.toString(),
         before_debt: beforeHealth.data?.debt.formatted,
@@ -513,15 +572,15 @@ export class TroveManager {
 
       return repayResult;
     } catch (error) {
-      console.error('Detailed repay error:', error);
+      console.error("Detailed repay error:", error);
       if (error instanceof Error) {
-        console.error('Error type:', error.constructor.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
       }
       return {
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        status: "failure",
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -532,7 +591,7 @@ export const createTroveManager = (
   walletAddress?: string
 ): TroveManager => {
   if (!walletAddress) {
-    throw new Error('Wallet address not configured');
+    throw new Error("Wallet address not configured");
   }
 
   const service = new TroveManager(agent, walletAddress);

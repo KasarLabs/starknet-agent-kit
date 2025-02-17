@@ -30,6 +30,7 @@
     "build:backend": "rm -rf dist && nest build",
     "clean:js": "rm -rf \"src/**/*.js\"",
     "local": "ts-node -r tsconfig-paths/register src/local.ts",
+    "curl": "ts-node -r tsconfig-paths/register src/curl.ts",
     "build:test": "pnpm clean:js && tsc -p tsconfig.build.json src/local.ts --outDir ./dist",
     "build:local": "tsc src/local.ts --outDir ./dist",
     "start:local": "pnpm build:local && node dist/local.js",

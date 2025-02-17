@@ -46,3 +46,7 @@ export interface GetTroveHealthResult extends Status {
   ltv?: string;
   threshold?: string;
 }
+
+export interface GetBorrowFeeResult extends Status {
+  borrow_fee?: string;
+}

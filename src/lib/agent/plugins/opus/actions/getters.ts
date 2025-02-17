@@ -10,10 +10,7 @@ export const getUserTroves = async (
 
   try {
     const TroveManager = createTroveManager(agent, accountAddress);
-    const result = await TroveManager.getUserTroves(
-      params,
-      agent
-    );
+    const result = await TroveManager.getUserTroves(params);
     return JSON.stringify({
       status: "success",
       data: result,
@@ -34,10 +31,27 @@ export const getTroveHealth = async (
 
   try {
     const TroveManager = createTroveManager(agent, accountAddress);
-    const result = await TroveManager.getTroveHealth(
-      params,
-      agent
-    );
+    const result = await TroveManager.getTroveHealth(params);
+    return JSON.stringify({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    return JSON.stringify({
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
+
+export const getBorrowFee = async (
+  agent: StarknetAgentInterface,
+): Promise<string> => {
+  const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
+
+  try {
+    const TroveManager = createTroveManager(agent, accountAddress);
+    const result = await TroveManager.getBorrowFee();
     return JSON.stringify({
       status: "success",
       data: result,

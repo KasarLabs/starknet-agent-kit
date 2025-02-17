@@ -1,7 +1,7 @@
 import { num, Account, Call, Contract, GetTransactionReceiptResponse } from 'starknet';
 import { parseUnits } from 'ethers';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { BorrowTroveResult, DepositTroveResult, GetTroveHealthResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
+import { BorrowTroveResult, DepositTroveResult, GetBorrowFeeResult, GetTroveHealthResult, GetUserTrovesResult, OpenTroveResult, RepayTroveResult, WithdrawTroveResult } from '../interfaces';
 import { AssetBalance, AssetBalances, AssetBalancesInput, BorrowTroveParams, DepositTroveParams, forgeFeePaidEventSchema, GetTroveHealthParams, GetUserTrovesParams, healthSchema, OpenTroveParams, RepayTroveParams, troveOpenedEventSchema, Wad, wadSchema, WithdrawTroveParams } from '../schemas';
 import { getAbbotContract, getErc20Contract, getSentinelContract, getShrineContract } from './contracts';
 import { tokenAddresses } from '../../core/token/constants/erc20';
@@ -25,10 +25,7 @@ export class TroveManager {
     this.sentinel = getSentinelContract(chainId);
   }
 
-  async getUserTroves(
-    params: GetUserTrovesParams,
-    _agent: StarknetAgentInterface
-  ): Promise<GetUserTrovesResult> {
+  async getUserTroves(params: GetUserTrovesParams): Promise<GetUserTrovesResult> {
     await this.initialise();
     try {
       const troves = await this.abbot.get_user_trove_ids(params.user);
@@ -52,21 +49,43 @@ export class TroveManager {
     }
   }
 
-  async getTroveHealth(
-    params: GetTroveHealthParams,
-    _agent: StarknetAgentInterface
-  ): Promise<GetTroveHealthResult> {
+  async getBorrowFee(): Promise<GetBorrowFeeResult> {
     await this.initialise();
     try {
-      const troveHealth = healthSchema.parse(
+      const borrowFee = wadSchema.safeParse(
+        await this.shrine.get_forge_fee_pct()
+      );
+      const getBorrowFeeResult: GetBorrowFeeResult = {
+        status: 'success',
+        borrow_fee: borrowFee.data?.formatted,
+      };
+
+      return getBorrowFeeResult;
+    } catch (error) {
+      console.error('Detailed get borrow fee error:', error);
+      if (error instanceof Error) {
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      return {
+        status: 'failure',
+      };
+    }
+  }
+
+  async getTroveHealth(params: GetTroveHealthParams): Promise<GetTroveHealthResult> {
+    await this.initialise();
+    try {
+      const troveHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
       );
       const getTroveHealthResult: GetTroveHealthResult = {
         status: 'success',
-        debt: troveHealth.debt.formatted,
-        value: troveHealth.value.formatted,
-        ltv: troveHealth.ltv.formatted,
-        threshold: troveHealth.threshold.formatted,
+        debt: troveHealth.data?.debt.formatted,
+        value: troveHealth.data?.value.formatted,
+        ltv: troveHealth.data?.ltv.formatted,
+        threshold: troveHealth.data?.threshold.formatted,
       };
 
       return getTroveHealthResult;
@@ -86,10 +105,10 @@ export class TroveManager {
   getBorrowFeeFromEvent(txReceipt: GetTransactionReceiptResponse): [string, string] {
     const shrineEvents = this.shrine.parseEvents(txReceipt);
     
-    const forgeFeePaidEvent = forgeFeePaidEventSchema.parse(
+    const forgeFeePaidEvent = forgeFeePaidEventSchema.safeParse(
       shrineEvents.find(event => FORGE_FEE_PAID_EVENT_IDENTIFIER in event)![FORGE_FEE_PAID_EVENT_IDENTIFIER]
     );
-    return [forgeFeePaidEvent.fee.formatted, forgeFeePaidEvent.fee_pct.formatted];
+    return [forgeFeePaidEvent.data!.fee.formatted, forgeFeePaidEvent.data!.fee_pct.formatted];
   }
 
   async parseMaxBorrowFeePctWithCheck(borrowFeePct: string): Promise<bigint> {
@@ -97,9 +116,11 @@ export class TroveManager {
       borrowFeePct,
       16, // 1% is equivalent to 10 ** 16
     );
-    const currentBorrowFeePct: Wad = await this.shrine.get_forge_fee_pct();
-    if (maxBorrowFeePct < currentBorrowFeePct.value) {
-      throw new Error(`Max borrow fee of ${maxBorrowFeePct}% is lower than current: ${currentBorrowFeePct.formatted}%`);
+    const currentBorrowFeePct = wadSchema.safeParse(
+      await this.shrine.get_forge_fee_pct()
+    );
+    if (maxBorrowFeePct < currentBorrowFeePct.data!.value) {
+      throw new Error(`Max borrow fee of ${maxBorrowFeePct}% is lower than current: ${currentBorrowFeePct.data!.formatted}%`);
     }
 
     return maxBorrowFeePct;
@@ -211,10 +232,10 @@ export class TroveManager {
         const abbotEvents = this.abbot.parseEvents(txReceipt);
         const troveOpenedIdentifier = 'opus::core::abbot::abbot::TroveOpened';
         const troveOpenedEvent = abbotEvents.find(event => troveOpenedIdentifier in event)![troveOpenedIdentifier];
-        const parsedTroveOpenedEvent = troveOpenedEventSchema.parse(
+        const parsedTroveOpenedEvent = troveOpenedEventSchema.safeParse(
           troveOpenedEvent
         );
-        troveId = parsedTroveOpenedEvent.trove_id.toString();
+        troveId = parsedTroveOpenedEvent.data!.trove_id.toString();
 
         [borrowFeePaid, borrowFeePct] = this.getBorrowFeeFromEvent(txReceipt);
       }
@@ -262,7 +283,7 @@ export class TroveManager {
           assetBalances[0],
         );
 
-      const beforeHealth = healthSchema.parse(
+      const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
       );
       const tx = await account.execute([
@@ -279,7 +300,7 @@ export class TroveManager {
 
       let afterHealth;
       if (txReceipt.isSuccess()) {
-        afterHealth = healthSchema.parse(
+        afterHealth = healthSchema.safeParse(
           await this.shrine.get_trove_health(params.troveId)
         );
       }
@@ -287,10 +308,10 @@ export class TroveManager {
       const depositResult: DepositTroveResult = {
         status: 'success',
         trove_id: params.troveId.toString(),
-        before_value: beforeHealth.value.formatted,
-        after_value: afterHealth?.value.formatted,
-        before_ltv: beforeHealth.ltv.formatted,
-        after_ltv: afterHealth?.ltv.formatted,
+        before_value: beforeHealth.data?.value.formatted,
+        after_value: afterHealth?.data?.value.formatted,
+        before_ltv: beforeHealth.data?.ltv.formatted,
+        after_ltv: afterHealth?.data?.ltv.formatted,
         transaction_hash: tx.transaction_hash,
       };
 
@@ -329,7 +350,7 @@ export class TroveManager {
           assetBalances[0],
         );
 
-      const beforeHealth = healthSchema.parse(
+      const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
       );
       const tx = await account.execute([
@@ -345,7 +366,7 @@ export class TroveManager {
 
       let afterHealth;
       if (txReceipt.isSuccess()) {
-        afterHealth = healthSchema.parse(
+        afterHealth = healthSchema.safeParse(
           await this.shrine.get_trove_health(params.troveId)
         );
       }
@@ -353,10 +374,10 @@ export class TroveManager {
       const withdrawResult: WithdrawTroveResult = {
         status: 'success',
         trove_id: params.troveId.toString(),
-        before_value: beforeHealth.value.formatted,
-        after_value: afterHealth?.value.formatted,
-        before_ltv: beforeHealth.ltv.formatted,
-        after_ltv: afterHealth?.ltv.formatted,
+        before_value: beforeHealth.data?.value.formatted,
+        after_value: afterHealth?.data?.value.formatted,
+        before_ltv: beforeHealth.data?.ltv.formatted,
+        after_ltv: afterHealth?.data?.ltv.formatted,
         transaction_hash: tx.transaction_hash,
       };
 
@@ -396,7 +417,7 @@ export class TroveManager {
           { val: maxBorrowFeePct},
         );
 
-      const beforeHealth = healthSchema.parse(
+      const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
       );
       const tx = await account.execute([
@@ -414,7 +435,7 @@ export class TroveManager {
       let borrowFeePaid;
       let borrowFeePct;
       if (txReceipt.isSuccess()) {
-        afterHealth = healthSchema.parse(
+        afterHealth = healthSchema.safeParse(
           await this.shrine.get_trove_health(params.troveId)
         );
 
@@ -427,10 +448,10 @@ export class TroveManager {
         amount: borrowAmount.toString(),
         borrow_fee: borrowFeePaid,
         borrow_fee_pct: borrowFeePct,
-        before_debt: beforeHealth.debt.formatted,
-        after_debt: afterHealth?.debt.formatted,
-        before_ltv: beforeHealth.ltv.formatted,
-        after_ltv: afterHealth?.ltv.formatted,
+        before_debt: beforeHealth.data?.debt.formatted,
+        after_debt: afterHealth?.data?.debt.formatted,
+        before_ltv: beforeHealth.data?.ltv.formatted,
+        after_ltv: afterHealth?.data?.ltv.formatted,
         transaction_hash: tx.transaction_hash,
       };
 
@@ -471,7 +492,7 @@ export class TroveManager {
           { val: repayAmount },
         );
 
-      const beforeHealth = healthSchema.parse(
+      const beforeHealth = healthSchema.safeParse(
         await this.shrine.get_trove_health(params.troveId)
       );
       const tx = await account.execute([
@@ -487,7 +508,7 @@ export class TroveManager {
 
     let afterHealth;
       if (txReceipt.isSuccess()) {
-        afterHealth = healthSchema.parse(
+        afterHealth = healthSchema.safeParse(
           await this.shrine.get_trove_health(params.troveId)
         );
       }
@@ -496,10 +517,10 @@ export class TroveManager {
         status: 'success',
         trove_id: params.troveId.toString(),
         amount: repayAmount.toString(),
-        before_debt: beforeHealth.debt.formatted,
-        after_debt: afterHealth?.debt.formatted,
-        before_ltv: beforeHealth.ltv.formatted,
-        after_ltv: afterHealth?.ltv.formatted,
+        before_debt: beforeHealth.data?.debt.formatted,
+        after_debt: afterHealth?.data?.debt.formatted,
+        before_ltv: beforeHealth.data?.ltv.formatted,
+        after_ltv: afterHealth?.data?.ltv.formatted,
         transaction_hash: tx.transaction_hash,
       };
 

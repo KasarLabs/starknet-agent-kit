@@ -70,7 +70,19 @@ export class AgentsController implements OnModuleInit {
   @Post('delete_large_file')
   async deleteUploadFile(@Body() filename: { filename: string }) {
     const logger = new Logger('Upload service');
-    const filePath = `./uploads/${filename.filename}`;
+    
+    const path = process.env.PATH_UPLOAD_DIR;
+    if (!path) 
+      throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`)
+
+    const filePath = `${path}${filename.filename}`;
+    const normalizedPath = path.normalize();
+
+    try {
+      await fs.access(normalizedPath);
+    } catch {
+      throw new NotFoundException(`File not found : ${filePath}`);
+    }
 
     try {
       await fs.unlink(filePath);

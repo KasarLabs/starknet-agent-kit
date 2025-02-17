@@ -15,6 +15,7 @@ import { AgentRequestDTO } from './dto/agents';
 import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
+import path from 'path';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -65,7 +66,19 @@ export class WalletController implements OnModuleInit {
   @Post('delete_large_file')
   async deleteUploadFile(@Body() filename: { filename: string }) {
     const logger = new Logger('Delete service');
-    const filePath = `./uploads/${filename.filename}`;
+
+    const path = process.env.PATH_UPLOAD_DIR;
+    if (!path) 
+      throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`)
+
+    const filePath = `${path}${filename.filename}`;
+    const normalizedPath = path.normalize();
+
+    try {
+      await fs.access(normalizedPath);
+    } catch {
+      throw new NotFoundException(`File not found : ${filePath}`);
+    }
 
     try {
       await fs.unlink(filePath);

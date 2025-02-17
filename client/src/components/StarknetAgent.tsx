@@ -280,6 +280,7 @@ const StarknetAgent = () => {
 
     setCurrentResponse(newResponse);
     try {
+      const start = Date.now();
       const response = await fetch('/api/wallet/request', {
         method: 'POST',
         headers: {
@@ -289,7 +290,8 @@ const StarknetAgent = () => {
         body: JSON.stringify({ request: input }),
         credentials: 'include',
       });
-
+      const end = Date.now();
+      console.log(`Time: ${end - start}ms`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

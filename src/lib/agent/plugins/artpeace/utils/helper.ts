@@ -5,10 +5,8 @@ import { Checker } from './checker';
  * Helper class for handling pixel placement and position validation in an art system
  */
 export class ArtpeaceHelper {
-  /** Default world/canvas identifier */
-  static DEFAULT_WORLD = 0;
   /** Default color value for pixels */
-  static DEFAULT_COLOR = '0';
+  static DEFAULT_COLOR = 'black';
 
   /**
    * Generates a random position within the specified dimensions
@@ -36,10 +34,9 @@ export class ArtpeaceHelper {
    * @returns A promise resolving to an object containing validated id, position and color
    */
   static async validateAndFillDefaults(
-    param: placePixelParam
-  ): Promise<{ id: number; position: number; color: string }> {
-    const checker = new Checker(param.canvasId ?? this.DEFAULT_WORLD);
-    const id = await checker.checkWorld();
+    param: placePixelParam,
+    checker: Checker
+  ): Promise<{ position: number; color: string }> {
     const { width, height } = checker.getWorldSize();
     const randomPos = this.generateRandomPosition(width, height);
     const position = await checker.checkPosition(
@@ -49,7 +46,6 @@ export class ArtpeaceHelper {
     const color = await checker.checkColor(param.color ?? this.DEFAULT_COLOR);
 
     return {
-      id,
       position,
       color,
     };

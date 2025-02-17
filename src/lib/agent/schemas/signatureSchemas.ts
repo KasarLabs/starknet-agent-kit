@@ -43,7 +43,7 @@ export const placePixelParamSchema = z.object({
     .optional()
     .nullable()
     .describe('The position on y axe of the pixel'),
-  color: z.string().optional().default('0').describe('The color of the pixel'),
+  color: z.string().optional().default('0').describe('The color of the pixel by name or by hexadecimal'),
 });
 
 export const placePixelSignatureSchema = z.object({

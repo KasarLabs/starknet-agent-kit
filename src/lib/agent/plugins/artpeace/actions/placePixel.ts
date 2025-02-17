@@ -4,6 +4,7 @@ import { artpeaceAbi } from '../abis/artpeaceAbi';
 import { artpeaceAddr } from '../constants/artpeace';
 import { ArtpeaceHelper } from '../utils/helper';
 import { placePixelParam } from 'src/lib/agent/schemas/schema';
+import { Checker } from '../utils/checker';
 
 /**
  * Places pixels on a Starknet canvas using the Artpeace contract
@@ -27,11 +28,14 @@ export const placePixel = async (
       constants.TRANSACTION_VERSION.V3
     );
     const artpeaceContract = new Contract(artpeaceAbi, artpeaceAddr, provider);
+    const checker = new Checker(params[0].canvasId);
+    const id = checker.checkWorld();
+    checker.getColors();
 
     const txHash = [];
     for (const param of params) {
-      const { id, position, color } =
-        await ArtpeaceHelper.validateAndFillDefaults(param);
+      const { position, color } =
+        await ArtpeaceHelper.validateAndFillDefaults(param, checker);
       const timestamp = Math.floor(Date.now() / 1000);
 
       artpeaceContract.connect(account);
@@ -71,37 +75,54 @@ export const placePixelSignature = async (input: {
   params: placePixelParam[];
 }) => {
   try {
+    const start = Date.now();
     const { params } = input;
-    const artpeaceContract = new Contract(artpeaceAbi, artpeaceAddr);
+    const checker = new Checker(params[0].canvasId);
+    const id = await checker.checkWorld();
+    await checker.getColors();
+    let timestamp = Math.floor(Date.now() / 1000);
 
-    const callData = [];
+    const results = [];
     for (const param of params) {
-      const { id, position, color } =
-        await ArtpeaceHelper.validateAndFillDefaults(param);
-      const timestamp = Math.floor(Date.now() / 1000);
+      const { position, color } =
+        await ArtpeaceHelper.validateAndFillDefaults(param, checker);
 
-      const call = artpeaceContract.populate('place_pixel', {
-        canvas_id: id,
-        pos: position,
-        color: color,
-        now: timestamp,
-      });
+      const call = {
+        status: 'success',
+        transactions: {
+          contractAddress: artpeaceAddr,
+          entrypoint: 'place_pixel',
+          calldata: [
+            id,
+            position,
+            color,
+            timestamp,
+          ],
+        },
+      }
 
-      callData.push({
+      timestamp = timestamp + 5;
+      results.push({
         status: 'success',
         transactions: {
           ...call,
         },
       });
     }
-    return JSON.stringify({ transaction_type: 'INVOKE', callData });
+   results.map((call, index) => {
+      console.log(`${index}: `, call.transactions.transactions.calldata);
+    });
+    const end = Date.now();
+    console.log(`place_pixel time: ${end - start}ms`)
+    return JSON.stringify({ transaction_type: 'INVOKE', results });
   } catch (error) {
-    return {
+    console.log(error);
+    return JSON.stringify({
       status: 'error',
       error: {
         code: 'PLACE_PIXEL_CALL_DATA_ERROR',
         message: error.message || 'Failed to generate place_pixel call data',
       },
-    };
+    });
   }
 };

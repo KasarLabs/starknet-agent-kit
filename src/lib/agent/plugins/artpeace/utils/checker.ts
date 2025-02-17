@@ -7,6 +7,8 @@ import { ColorAnalyzer } from './colors';
  */
 export class Checker {
   private world: WorldType;
+  private colors: string[];
+  private hexColors: string[];
 
   /**
    * Creates a Checker instance
@@ -75,13 +77,7 @@ export class Checker {
     }
   }
 
-  /**
-   * Validates color and converts it to the corresponding index
-   * @param color Color value (hex or name)
-   * @returns Promise resolving to color index as string
-   * @throws Error if color is not available in the world
-   */
-  async checkColor(color: string): Promise<string> {
+  async getColors() {
     try {
       const response = await fetch(
         `https://api.art-peace.net/get-worlds-colors?worldId=${this.world.worldId}`
@@ -91,18 +87,31 @@ export class Checker {
       }
       const data = await response.json();
       const allHexColor: string[] = data.data;
-
-      const cleanColor = color.charAt(0) === '#' ? color.substring(1) : color;
-      const isHex = allHexColor.indexOf(cleanColor);
-      if (isHex != -1) return `${isHex}`;
-
-      if (parseInt(color) === 0) return `0`;
-
+      this.hexColors = allHexColor;
       const allColor: string[] = allHexColor.map((cleanColor) =>
         ColorAnalyzer.analyzeColor(cleanColor)
       );
+      this.colors = allColor;
+    } catch (error) {
+      throw new Error(error.message)
+    }
+  }
 
-      const index: number = allColor.indexOf(cleanColor);
+  /**
+   * Validates color and converts it to the corresponding index
+   * @param color Color value (hex or name)
+   * @returns Promise resolving to color index as string
+   * @throws Error if color is not available in the world
+   */
+  async checkColor(color: string): Promise<string> {
+    try {
+      const cleanColor = color.charAt(0) === '#' ? color.substring(1) : color;
+      const isHex = this.hexColors.indexOf(cleanColor);
+      if (isHex != -1) return `${isHex}`;
+
+      if (parseInt(color) === 0) return `1`;
+
+      const index: number = this.colors.indexOf(cleanColor);
       if (index === -1)
         throw new Error(
           `the color ${cleanColor} is not available in this world `

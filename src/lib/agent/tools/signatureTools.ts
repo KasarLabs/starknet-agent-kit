@@ -20,6 +20,7 @@ import {
   DeployOZAccountSignature,
 } from '../plugins/core/account/deployAccount';
 import { placePixelSignature } from '../plugins/artpeace/actions/placePixel';
+import { placeStencil } from '../plugins/artpeace/actions/placeStencil';
 
 interface SignatureTool<P = any> {
   name: string;
@@ -53,6 +54,11 @@ export const RegisterSignatureTools = () => [
     description: 'Places a pixel, all parameters are optional',
     schema: placePixelSignatureSchema,
     execute: placePixelSignature,
+  }),
+  StarknetSignatureToolRegistry.RegisterSignatureTools({
+    name: 'place_stencil',
+    description: 'convert an image on stencil to place pixel',
+    execute: placeStencil,
   }),
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'transfer',

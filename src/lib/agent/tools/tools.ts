@@ -75,7 +75,21 @@ import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
 import { openTrove } from '../plugins/opus/actions/openTrove';
 import { borrowTrove } from '../plugins/opus/actions/borrowTrove';
 import { repayTrove } from '../plugins/opus/actions/repayTrove';
-import { borrowTroveSchema, collateralActionSchema, getTroveHealthSchema, getUserTrovesSchema, openTroveSchema, repayTroveSchema } from '../plugins/opus/schemas';
+import { depositTrove } from '../plugins/opus/actions/depositTrove';
+import { withdrawTrove } from '../plugins/opus/actions/withdrawTrove';
+import { 
+  getBorrowFee, 
+  getTroveHealth, 
+  getUserTroves, 
+} from '../plugins/opus/actions/getters';
+import { 
+  borrowTroveSchema, 
+  collateralActionSchema, 
+  getTroveHealthSchema, 
+  getUserTrovesSchema, 
+  openTroveSchema, 
+  repayTroveSchema,
+} from '../plugins/opus/schemas';
 import {
   GetBalanceParams,
   GetOwnBalanceParams,
@@ -103,9 +117,6 @@ import {
 } from '../plugins/Twitter/twitter_read';
 import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
-import { depositTrove } from '../plugins/opus/actions/depositTrove';
-import { withdrawTrove } from '../plugins/opus/actions/withdrawTrove';
-import { getBorrowFee, getTroveHealth, getUserTroves } from '../plugins/opus/actions/getters';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -161,7 +172,7 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    const tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
+    let tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
     return tools.map(({ name, description, schema, execute }) =>
       tool(async (params: any) => execute(agent, params), {
         name,

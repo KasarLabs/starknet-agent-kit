@@ -69,6 +69,10 @@ import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
+import { openTrove } from '../plugins/opus/actions/openTrove';
+import { borrowTrove } from '../plugins/opus/actions/borrowTrove';
+import { repayTrove } from '../plugins/opus/actions/repayTrove';
+import { borrowTroveSchema, collateralActionSchema, getTroveHealthSchema, getUserTrovesSchema, openTroveSchema, repayTroveSchema } from '../plugins/opus/schemas';
 import {
   GetBalanceParams,
   GetOwnBalanceParams,
@@ -91,6 +95,9 @@ import {
 } from '../plugins/Twitter/twitter_read';
 import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
+import { depositTrove } from '../plugins/opus/actions/depositTrove';
+import { withdrawTrove } from '../plugins/opus/actions/withdrawTrove';
+import { getBorrowFee, getTroveHealth, getUserTroves } from '../plugins/opus/actions/getters';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -146,7 +153,7 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    let tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
+    const tools = this.tools.filter((tool) => allowed_tools.includes(tool.name));
     return tools.map(({ name, description, schema, execute }) =>
       tool(async (params: any) => execute(agent, params), {
         name,
@@ -371,6 +378,63 @@ export const registerTools = () => {
     schema: contractAddressSchema,
     execute: getLockedLiquidity,
   });
+  
+  // Opus
+  StarknetToolRegistry.registerTool({
+    name: 'open_trove',
+    description: 'Open a Trove on Opus',
+    schema: openTroveSchema,
+    execute: openTrove,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_user_troves',
+    description: 'Get trove IDs for an address on Opus',
+    schema: getUserTrovesSchema,
+    execute: getUserTroves,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_trove_health',
+    description: 'Get the health of a trove on Opus',
+    schema: getTroveHealthSchema,
+    execute: getTroveHealth,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_borrow_fee',
+    description: 'Get the current borrow fee for Opus',
+    execute: getBorrowFee,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'deposit_trove',
+    description: 'Deposit collateral to a Trove on Opus',
+    schema: collateralActionSchema,
+    execute: depositTrove,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'withdraw_trove',
+    description: 'Withdraw collateral from a Trove on Opus',
+    schema: collateralActionSchema,
+    execute: withdrawTrove,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'borrow_trove',
+    description: 'Borrow CASH for a Trove on Opus',
+    schema: borrowTroveSchema,
+    execute: borrowTrove,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'repay_trove',
+    description: 'Repay CASH for a Trove on Opus',
+    schema: repayTroveSchema,
+    execute: repayTrove,
+  });
+
   // Twitter Tools
   StarknetToolRegistry.registerTool({
     name: 'create_twitter_post',

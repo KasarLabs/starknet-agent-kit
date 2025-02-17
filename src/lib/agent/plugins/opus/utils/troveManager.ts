@@ -48,6 +48,10 @@ const FORGE_FEE_PAID_EVENT_IDENTIFIER =
 const TROVE_OPENED_EVENT_IDENTIFIER =
   "opus::core::abbot::abbot::TroveOpened";
 
+/**
+ * Manages trove operations including creation, borrowing, repayment, and health monitoring
+ * @class TroveManager
+ */
 export class TroveManager {
   shrine: Contract;
   abbot: Contract;
@@ -59,6 +63,10 @@ export class TroveManager {
     private walletAddress: string
   ) {}
 
+  /**
+   * Initializes contracts and retrieves yang addresses
+   * @async
+   */
   async initialize() {
     const chainId = await this.agent.getProvider().getChainId();
     this.shrine = getShrineContract(chainId);
@@ -70,6 +78,12 @@ export class TroveManager {
     );
   }
 
+  /**
+   * Retrieves all troves associated with a user
+   * @async
+   * @param {GetUserTrovesParams} params - Parameter schema containing user address
+   * @returns {Promise<GetUserTrovesResult>} List of trove IDs or failure status
+   */
   async getUserTroves(
     params: GetUserTrovesParams
   ): Promise<GetUserTrovesResult> {
@@ -98,6 +112,11 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Retrieves current borrowing fee percentage
+   * @async
+   * @returns {Promise<GetBorrowFeeResult>} Current borrow fee percentage or failure status
+   */
   async getBorrowFee(): Promise<GetBorrowFeeResult> {
     await this.initialize();
     try {
@@ -124,6 +143,12 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Gets health metrics for a specific trove
+   * @async
+   * @param {GetTroveHealthParams} params - Parameters containing trove ID
+   * @returns {Promise<GetTroveHealthResult>} Trove health metrics or failure status
+   */
   async getTroveHealth(
     params: GetTroveHealthParams
   ): Promise<GetTroveHealthResult> {
@@ -154,6 +179,11 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Extracts borrow fee information from transaction receipt
+   * @param {GetTransactionReceiptResponse} txReceipt - Transaction receipt
+   * @returns {[string, string]} Tuple of [fee amount, fee percentage]
+   */
   getBorrowFeeFromEvent(
     txReceipt: GetTransactionReceiptResponse
   ): [string, string] {
@@ -170,6 +200,13 @@ export class TroveManager {
     ];
   }
 
+  /**
+   * Validates and parses max borrow fee percentage
+   * @async
+   * @param {string} borrowFeePct - Maximum borrow fee percentage
+   * @returns {Promise<bigint>} Parsed borrow fee in base units
+   * @throws {Error} If max borrow fee is lower than current fee
+   */
   async parseMaxBorrowFeePctWithCheck(borrowFeePct: string): Promise<bigint> {
     const maxBorrowFeePct = parseUnits(
       borrowFeePct.slice(0, -1),
@@ -189,6 +226,13 @@ export class TroveManager {
     return maxBorrowFeePct;
   }
 
+  /**
+   * Parses and validates asset balance input
+   * @async
+   * @param {AssetBalanceInput} assetBalanceInput - Input containing asset symbol and amount
+   * @returns {Promise<AssetBalance>} Parsed asset balance
+   * @throws {Error} If collateral is not valid
+   */
   async parseAssetBalanceInput(
     assetBalanceInput: AssetBalanceInput
   ): Promise<AssetBalance> {
@@ -211,6 +255,12 @@ export class TroveManager {
     return assetBalance;
   }
 
+  /**
+   * Prepares collateral deposits by creating approval calls
+   * @async
+   * @param {AssetBalancesInput} collaterals - List of collateral inputs
+   * @returns {Promise<[AssetBalances, Call[]]>} Tuple of parsed balances and approval calls
+   */
   async prepareCollateralDeposits(
     collaterals: AssetBalancesInput
   ): Promise<[AssetBalances, Call[]]> {
@@ -240,6 +290,13 @@ export class TroveManager {
     return [assetBalances, approveAssetsCalls];
   }
 
+  /**
+   * Opens a new trove with specified collateral and borrow amount
+   * @async
+   * @param {OpenTroveParams} params - Parameters for opening trove
+   * @param {StarknetAgentInterface} agent - Starknet agent interface
+   * @returns {Promise<OpenTroveResult>} Transaction result including trove ID and fees
+   */
   async openTroveTransaction(
     params: OpenTroveParams,
     agent: StarknetAgentInterface
@@ -315,6 +372,13 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Deposits additional collateral to an existing trove
+   * @async
+   * @param {DepositTroveParams} params - Parameters for deposit
+   * @param {StarknetAgentInterface} agent - Starknet agent interface
+   * @returns {Promise<DepositTroveResult>} Transaction result including health metrics
+   */
   async depositTransaction(
     params: DepositTroveParams,
     agent: StarknetAgentInterface
@@ -382,6 +446,13 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Withdraws collateral from an existing trove
+   * @async
+   * @param {WithdrawTroveParams} params - Parameters for withdrawal
+   * @param {StarknetAgentInterface} agent - Starknet agent interface
+   * @returns {Promise<WithdrawTroveResult>} Transaction result including health metrics
+   */
   async withdrawTransaction(
     params: WithdrawTroveParams,
     agent: StarknetAgentInterface
@@ -447,6 +518,13 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Borrows additional tokens from an existing trove
+   * @async
+   * @param {BorrowTroveParams} params - Parameters for borrowing
+   * @param {StarknetAgentInterface} agent - Starknet agent interface
+   * @returns {Promise<BorrowTroveResult>} Transaction result including borrowed amount and fees
+   */
   async borrowTransaction(
     params: BorrowTroveParams,
     agent: StarknetAgentInterface
@@ -522,6 +600,13 @@ export class TroveManager {
     }
   }
 
+  /**
+   * Repays debt for an existing trove
+   * @async
+   * @param {RepayTroveParams} params - Parameters for repayment
+   * @param {StarknetAgentInterface} agent - Starknet agent interface
+   * @returns {Promise<RepayTroveResult>} Transaction result including updated debt metrics
+   */
   async repayTransaction(
     params: RepayTroveParams,
     agent: StarknetAgentInterface
@@ -588,6 +673,13 @@ export class TroveManager {
   }
 }
 
+/**
+ * Creates a new TroveManager instance
+ * @param {StarknetAgentInterface} agent - Starknet agent interface
+ * @param {string} [walletAddress] - Optional wallet address
+ * @returns {TroveManager} New TroveManager instance
+ * @throws {Error} If wallet address is not provided
+ */
 export const createTroveManager = (
   agent: StarknetAgentInterface,
   walletAddress?: string

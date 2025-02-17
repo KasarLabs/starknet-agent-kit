@@ -146,6 +146,7 @@ const LocalRun = async () => {
             agentconfig: agent_config,
           });
           agent.initializeTwitterManager();
+          agent.initializeTelegramManager();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -169,6 +170,7 @@ const LocalRun = async () => {
       });
 
       agent.initializeTwitterManager();
+      agent.initializeTelegramManager();
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
 

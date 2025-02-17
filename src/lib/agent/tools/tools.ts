@@ -41,6 +41,9 @@ import {
   getClassAtSchema,
   getClassHashAtSchema,
   Transferschema,
+  depositEarnSchema,
+  withdrawEarnSchema,
+  batchSwapSchema,
   createTwitterpostSchema,
   createAndPostTwitterThreadSchema,
   ReplyTweetSchema,
@@ -77,6 +80,11 @@ import {
   GetBalanceParams,
   GetOwnBalanceParams,
 } from '../plugins/core/token/types/balance';
+import { withdrawEarnPosition } from '../plugins/vesu/actions/withdrawService';
+import { depositEarnPosition } from '../plugins/vesu/actions/depositService';
+import { swapTokensFibrous } from '../plugins/fibrous/actions/swap';
+import { batchSwapTokens } from '../plugins/fibrous/actions/batchSwap';
+import { getRouteFibrous } from '../plugins/fibrous/actions/fetchRoute';
 import { TwitterInterface } from '../plugins/Twitter/interface/twitter-interface';
 import {
   createTwitterpost,
@@ -196,7 +204,7 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'CreateArgentAccount',
-    description: 'Create Account account',
+    description: 'Create Argent account',
     execute: CreateArgentAccount,
   });
 
@@ -510,6 +518,27 @@ export const registerTools = () => {
     name: 'get_own_twitter_account_info',
     description: 'Get current account profile data',
     execute: getOwnTwitterAccountInfo,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'swap',
+    description: 'Swap a token for another token',
+    schema: swapSchema,
+    execute: swapTokensFibrous,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'batch_swap',
+    description: 'Swap multiple tokens for another token',
+    schema: batchSwapSchema,
+    execute: batchSwapTokens,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'route',
+    description: 'Get a specific route for swapping tokens',
+    schema: routeSchema,
+    execute: getRouteFibrous,
   });
 };
 registerTools();

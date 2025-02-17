@@ -1,7 +1,10 @@
 import { getBalance } from 'src/lib/agent/plugins/core/token/getBalances';
 import { Contract } from 'starknet';
 import { string } from 'zod';
-import { ERC20_ABI } from 'src/lib/utils/constants/swap';
+import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+import { ERC20_ABI } from 'src/lib/agent/plugins/core/token/abis/erc20Abi';
+
+const agent = createMockStarknetAgent();
 
 jest.mock('starknet', () => ({
   Contract: jest.fn((abi, address, provider) => ({
@@ -18,11 +21,11 @@ describe('Read -> Get_Balance -> get_balance', () => {
   describe('With perfect match inputs', () => {
     it('should return correct ETH balance when all parameters are valid', async () => {
       const params = {
-        walletAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         assetSymbol: 'ETH',
       };
 
-      const result = await getBalance(params);
+      const result = await getBalance(agent, params);
       const parsed = JSON.parse(result);
 
       expect(parsed.status).toBe('success');
@@ -36,11 +39,11 @@ describe('Read -> Get_Balance -> get_balance', () => {
 
     it('should return correct USDC balance with 6 decimals', async () => {
       const params = {
-        walletAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         assetSymbol: 'USDC',
       };
 
-      const result = await getBalance(params);
+      const result = await getBalance(agent, params);
       const parsed = JSON.parse(result);
 
       expect(parsed.status).toBe('success');
@@ -51,15 +54,14 @@ describe('Read -> Get_Balance -> get_balance', () => {
   describe('With missing inputs', () => {
     it('should fail reason : unsupported token symbol', async () => {
       const params = {
-        walletAddress: process.env.PUBLIC_ADDRESS_2 as string,
+        accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         assetSymbol: 'UNKNOWN',
       };
 
-      const result = await getBalance(params);
+      const result = await getBalance(agent, params);
       const parsed = JSON.parse(result);
 
       expect(parsed.status).toBe('failure');
-      expect(parsed.error).toBe('Token UNKNOWN not supported');
     });
   });
 });

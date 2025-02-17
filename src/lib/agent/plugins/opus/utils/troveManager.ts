@@ -45,6 +45,9 @@ import { tokenAddresses } from "../../core/token/constants/erc20";
 const FORGE_FEE_PAID_EVENT_IDENTIFIER =
   "opus::core::shrine::shrine::ForgeFeePaid";
 
+const TROVE_OPENED_EVENT_IDENTIFIER =
+  "opus::core::abbot::abbot::TroveOpened";
+
 export class TroveManager {
   shrine: Contract;
   abbot: Contract;
@@ -279,10 +282,9 @@ export class TroveManager {
       let borrowFeePct;
       if (txReceipt.isSuccess()) {
         const abbotEvents = this.abbot.parseEvents(txReceipt);
-        const troveOpenedIdentifier = "opus::core::abbot::abbot::TroveOpened";
         const troveOpenedEvent = abbotEvents.find(
-          (event) => troveOpenedIdentifier in event
-        )![troveOpenedIdentifier];
+          (event) => TROVE_OPENED_EVENT_IDENTIFIER in event
+        )![TROVE_OPENED_EVENT_IDENTIFIER];
         const parsedTroveOpenedEvent =
           troveOpenedEventSchema.safeParse(troveOpenedEvent);
         troveId = parsedTroveOpenedEvent.data!.trove_id.toString();
@@ -334,7 +336,7 @@ export class TroveManager {
       );
 
       const beforeHealth = healthSchema.safeParse(
-        await this.shrine.get_trove_health(params.troveId)
+        await this.shrine.get_trove_healWhat th(params.troveId)
       );
       const tx = await account.execute([
         ...approveAssetsCalls,

@@ -14,6 +14,7 @@ import { registerTokenTools } from '../plugins/core/token/tools';
 import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
+import { registerOpusTools } from '../plugins/opus/tools';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -99,6 +100,8 @@ export const registerTools = () => {
   registerTwitterTools();
 
   registerFibrousTools();
+
+  registerOpusTools();
 };
 
 registerTools();

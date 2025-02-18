@@ -16,7 +16,7 @@ config();
 
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
-    .option('agent', {
+    .option('AGENT', {
       alias: 'a',
       describe: 'Your config agent file name',
       type: 'string',
@@ -25,7 +25,7 @@ const load_command = async (): Promise<string> => {
     .strict()
     .parse();
 
-  return argv['agent'];
+  return argv['AGENT'];
 };
 
 const clearScreen = () => {
@@ -191,6 +191,7 @@ const LocalRun = async () => {
             agentMode: 'agent',
             agentconfig: agent_config,
           });
+          agent.initializeTwitterManager();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -213,6 +214,7 @@ const LocalRun = async () => {
         agentconfig: agent_config,
       });
 
+      agent.initializeTwitterManager();
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
 

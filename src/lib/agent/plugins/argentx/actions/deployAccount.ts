@@ -2,7 +2,6 @@ import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ARGENTX_CLASSHASH } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
-import { AccountDetails } from '../../core/account/types/accounts';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 

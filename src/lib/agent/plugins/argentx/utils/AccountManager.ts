@@ -13,7 +13,7 @@ import {
   AccountDetails,
   BaseUtilityClass,
   TransactionResult,
-} from '../../core/account/types/accounts';
+} from '../types/accounts';
 
 /**
  * Manages Starknet account operations for ArgentX wallets, including creation, deployment, and fee estimation.

@@ -1,4 +1,4 @@
-import { getAddress } from 'src/lib/agent/plugins/core/account/getAddress';
+import { getAddress } from 'src/lib/agent/plugins/core/account/actions/getAddress';
 import {
   createMockInvalidStarknetAgent,
   createMockStarknetAgent,
@@ -6,6 +6,7 @@ import {
 
 const agent = createMockStarknetAgent();
 const wrong_agent = createMockInvalidStarknetAgent();
+
 describe('getAddress', () => {
   describe('With perfect match inputs', () => {
     it('returns success with account address', async () => {

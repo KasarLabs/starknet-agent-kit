@@ -1,9 +1,13 @@
 import { setTimeout } from 'timers/promises';
-import { createMockStarknetAgent } from 'test/jest/setEnvVars';
+import {
+  createMockInvalidStarknetAgent,
+  createMockStarknetAgent,
+} from 'test/jest/setEnvVars';
 import { swapTokens } from 'src/lib/agent/plugins/avnu/actions/swap';
 import { SwapParams } from 'src/lib/agent/plugins/avnu/types';
 
 const agent = createMockStarknetAgent();
+const wrong_agent = createMockInvalidStarknetAgent();
 
 describe('Swap Token with avnu-sdk', () => {
   describe('With perfect match inputs', () => {
@@ -102,7 +106,7 @@ describe('Swap Token with avnu-sdk', () => {
         sellAmount: 300,
       };
       // Act
-      const result = await swapTokens(agent, params);
+      const result = await swapTokens(wrong_agent, params);
       const parsed = JSON.parse(result);
       // Assert
       expect(parsed.status).toBe('failure');

@@ -7,9 +7,10 @@ import { config } from 'dotenv';
 import { load_json_config } from './lib/agent/jsonConfig';
 import yargs, { string } from 'yargs';
 import { hideBin } from 'yargs/helpers';
-config();
+import * as fs from 'fs';
+import path from 'path';
 
-// Utilisation
+config();
 
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
@@ -65,7 +66,24 @@ const createBox = (
   return result;
 };
 
-const validateEnvVars = () => {
+function reloadEnvVars() {
+  Object.keys(process.env).forEach((key) => {
+    delete process.env[key];
+  });
+
+  const result = config({
+    path: path.resolve(process.cwd(), '.env'),
+    override: true,
+  });
+
+  if (result.error) {
+    throw new Error('Failed to reload .env file');
+  }
+
+  return result.parsed;
+}
+
+const validateEnvVars = async () => {
   const required = [
     'STARKNET_RPC_URL',
     'STARKNET_PRIVATE_KEY',
@@ -73,9 +91,33 @@ const validateEnvVars = () => {
     'AI_MODEL',
     'AI_PROVIDER_API_KEY',
   ];
-  const missing = required.filter((key) => !process.env[key]);
-  if (missing.length > 0) {
-    throw new Error(`Missing environment variables:\n${missing.join('\n')}`);
+  const missings = required.filter((key) => !process.env[key]);
+  if (missings.length > 0) {
+    console.error(`Missing environment variables:\n${missings.join('\n')}`);
+    for (const missing of missings) {
+      const { prompt } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'prompt',
+          message: chalk.redBright(`Enter the value of ${missing}:`),
+          validate: (value: string) => {
+            const trimmed = value.trim();
+            if (!trimmed) return 'Please enter a valid message';
+            return true;
+          },
+        },
+      ]);
+
+      await new Promise((resolve, reject) => {
+        fs.appendFile('.env', `\n${missing}=${prompt}\n`, (err) => {
+          if (err) reject(new Error('Error when trying to write on .env file'));
+          resolve(null);
+        });
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    reloadEnvVars();
+    await validateEnvVars();
   }
 };
 
@@ -109,7 +151,8 @@ const LocalRun = async () => {
   const spinner = createSpinner('Initializing Starknet Agent').start();
 
   try {
-    validateEnvVars();
+    spinner.stop();
+    await validateEnvVars();
     spinner.success({ text: 'Agent initialized successfully' });
     const agent_config = load_json_config(agent_config_name);
     if (mode === 'agent') {

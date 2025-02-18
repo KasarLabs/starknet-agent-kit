@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
-import UploadFile from './ui/uploadFile';
 import { WalletAccount } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
 import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
@@ -29,14 +28,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { FileInfo } from '../interfaces/fileInfo';
+import UploadFile from './ui/uploadFile';
 
 const md = new MarkdownIt({ breaks: true });
-
-export interface FileInfo {
-  name: string;
-  size: number;
-  type: string;
-}
 
 const StarknetAgent = () => {
   const [input, setInput] = useState('');
@@ -45,12 +40,12 @@ const StarknetAgent = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [Wallet, setWallet] = useState<WalletAccount | null>(null);
   const [isActive, setIsActive] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState<string>('normal');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
 
   // When in loading state for >5s, we show "Processing..."
   useEffect(() => {
@@ -289,6 +284,28 @@ const StarknetAgent = () => {
 
     setCurrentResponse(newResponse);
     try {
+      // If file is detected we send it to the server
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        const resp = await fetch('/api/wallet/upload_large_file', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
+          },
+          body: formData,
+        });
+        if (!resp.ok) {
+          const errorText = await resp.text();
+          console.error('API Error:', {
+            status: resp.status,
+            statusText: resp.statusText,
+            body: errorText,
+          });
+          throw new Error(errorText);
+        }
+      }
+
       const response = await fetch('/api/wallet/request', {
         method: 'POST',
         headers: {
@@ -304,6 +321,28 @@ const StarknetAgent = () => {
       }
       if (!Wallet) {
         throw new Error('Wallet not initialized. Please connect your wallet.');
+      }
+
+      // If file is detected we send delete request to the server
+      if (selectedFile) {
+        const del = await fetch('api/wallet/delete_large_file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
+          },
+          body: JSON.stringify({ filename: selectedFile.name }),
+          credentials: 'include',
+        });
+
+        if (!del.ok) {
+          const errorText = await response.text();
+          console.error('API error:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText,
+          });
+        }
       }
 
       const result = await response.json();
@@ -402,7 +441,7 @@ const StarknetAgent = () => {
         const resp = await fetch('/api/key/upload_large_file', {
           method: 'POST',
           headers: {
-            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+            'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
           },
           body: formData,
         });
@@ -444,12 +483,13 @@ const StarknetAgent = () => {
       const formattedText = formatResponse(JSON.stringify(data));
       typeResponse({ ...newResponse, text: formattedText });
 
+      // If file is detected we send delete request to the server
       if (selectedFile) {
         const del = await fetch('api/key/delete_large_file', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+            'x-api-key': process.env.NEXT_PUBLIC_SERVER_API_KEY || '',
           },
           body: JSON.stringify({ filename: selectedFile.name }),
           credentials: 'include',

@@ -1,4 +1,4 @@
-import { simulateDeclareTransaction } from 'src/lib/agent/plugins/core/transaction/simulateTransaction';
+import { simulateDeclareTransaction } from 'src/lib/agent/plugins/core/transaction/actions/simulateTransaction';
 import * as C from '../../../utils/constant';
 import {
   createMockInvalidStarknetAgent,
@@ -6,6 +6,7 @@ import {
 } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
+const wrong_agent = createMockInvalidStarknetAgent();
 
 describe('Simulate Declare Transaction ', () => {
   describe('With perfect match inputs', () => {
@@ -301,7 +302,7 @@ describe('Simulate Declare Transaction ', () => {
       const invalidAgent = createMockInvalidStarknetAgent();
 
       // Act
-      const result = await simulateDeclareTransaction(invalidAgent, params);
+      const result = await simulateDeclareTransaction(wrong_agent, params);
       const parsed = JSON.parse(result);
       // Assert
 

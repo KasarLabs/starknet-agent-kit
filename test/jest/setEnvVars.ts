@@ -5,7 +5,7 @@ import { AccountManager } from 'src/lib/agent/plugins/core/account/utils/Account
 import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
 import { Limit } from 'src/lib/agent/limit';
-import { TwitterInterface } from 'src/lib/agent/plugins/Twitter/interface/twitter-interface';
+import { TwitterInterface } from 'src/lib/agent/plugins/twitter/interfaces';
 
 setupTestEnvironment();
 
@@ -50,8 +50,7 @@ export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
 
   return {
     getAccountCredentials: () => ({
-      accountPublicKey:
-        '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
+      accountPublicKey: 'dlksjflkdsjf',
       accountPrivateKey: 'dsfahdskfgdsjkah',
     }),
     getModelCredentials: () => ({

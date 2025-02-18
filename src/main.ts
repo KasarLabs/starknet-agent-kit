@@ -10,8 +10,8 @@ import helmet from 'helmet';
 import { GlobalExceptionFilter } from './common/filters/exception.filter';
 import ErrorLoggingInterceptor from './common/interceptors/error-logging.interceptor';
 import { ConfigurationService } from './config/configuration';
-import fastifyMultipart from '@fastify/multipart';
 import { FastifyInstance } from 'fastify';
+import fastifyMultipart from '@fastify/multipart';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');

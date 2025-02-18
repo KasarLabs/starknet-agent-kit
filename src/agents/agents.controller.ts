@@ -1,28 +1,23 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  NotFoundException,
+  OnModuleInit,
+  Post,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AgentRequestDTO } from './dto/agents';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
 import { AgentResponseInterceptor } from 'src/lib/interceptors/response';
-import {
-  Body,
-  Controller,
-  Get,
-  OnModuleInit,
-  Param,
-  Post,
-  Req,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-  Logger,
-} from '@nestjs/common';
+import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
-import { FileTypeGuard } from './guard/file-validator.guard';
 import { promises as fs } from 'fs';
-
-interface filename {
-  filename: string;
-}
 
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
@@ -52,8 +47,20 @@ export class AgentsController implements OnModuleInit {
     return await this.agentService.handleUserRequest(this.agent, userRequest);
   }
 
+  @Get('status')
+  async getAgentStatus() {
+    return await this.agentService.getAgentStatus(this.agent);
+  }
+
   @Post('upload_large_file')
-  @UseGuards(new FileTypeGuard(['application/json', 'application/zip']))
+  @UseGuards(
+    new FileTypeGuard([
+      'application/json',
+      'application/zip',
+      'image/jpeg',
+      'image/png',
+    ])
+  )
   async uploadFile(@Req() req: FastifyRequest) {
     const logger = new Logger('Upload service');
     logger.debug({ message: 'The file has been uploaded' });
@@ -61,9 +68,20 @@ export class AgentsController implements OnModuleInit {
   }
 
   @Post('delete_large_file')
-  async deleteUploadFile(@Body() filename: filename) {
+  async deleteUploadFile(@Body() filename: { filename: string }) {
     const logger = new Logger('Upload service');
-    const filePath = `./uploads/${filename.filename}`;
+
+    const path = process.env.PATH_UPLOAD_DIR;
+    if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
+
+    const filePath = `${path}${filename.filename}`;
+    const normalizedPath = path.normalize();
+
+    try {
+      await fs.access(normalizedPath);
+    } catch {
+      throw new NotFoundException(`File not found : ${filePath}`);
+    }
 
     try {
       await fs.unlink(filePath);
@@ -80,17 +98,12 @@ export class AgentsController implements OnModuleInit {
       });
       switch (error.code) {
         case 'ENOENT':
-          throw new Error(`File not found : ${filePath}`); // Ou HttpException(404)
+          throw new NotFoundException(`File not found : ${filePath}`); // HttpException(404)
         case 'EACCES':
           throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
         default:
           throw new Error(`Deletion error : ${error.message}`); // throw personalised error
       }
     }
-  }
-
-  @Get('status')
-  async getAgentStatus() {
-    return await this.agentService.getAgentStatus(this.agent);
   }
 }

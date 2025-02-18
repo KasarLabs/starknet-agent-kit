@@ -1,10 +1,11 @@
-import { getOwnBalance } from 'src/lib/agent/plugins/core/token/getBalances';
+import { getOwnBalance } from 'src/lib/agent/plugins/core/token/actions/getBalances';
 import {
   createMockInvalidStarknetAgent,
   createMockStarknetAgent,
 } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
+const wrong_agent = createMockInvalidStarknetAgent();
 
 describe('getOwnBlance', () => {
   describe('With perfect match inputs', () => {
@@ -44,7 +45,7 @@ describe('getOwnBlance', () => {
       const invalidAgent = createMockInvalidStarknetAgent();
 
       // Act
-      const result = await getOwnBalance(invalidAgent, params);
+      const result = await getOwnBalance(wrong_agent, params);
       const parsed = JSON.parse(result);
 
       // Assert

@@ -1,7 +1,8 @@
-import { transfer } from 'src/lib/agent/plugins/core/token/transfer';
+import { transfer } from 'src/lib/agent/plugins/core/token/actions/transfer';
 import * as C from '../../../utils/constant';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 import { setupTestEnvironment } from 'test/utils/helpers';
+
 const agent = createMockStarknetAgent();
 
 setupTestEnvironment();

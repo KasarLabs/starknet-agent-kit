@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Button } from './button';
 import { Upload } from 'lucide-react';
-import { FileInfo } from '../StarknetAgent';
+import { FileInfo } from '../../interfaces/fileInfo';
 
 interface UplaodProps {
   fileInfo: FileInfo | null;
@@ -22,6 +22,26 @@ const UploadFile = ({
   setFileInfo,
   setSelectedFile,
 }: UplaodProps) => {
+  const allowedTypes = [
+    'application/json',
+    'application/zip',
+    'application/x-zip-compressed',
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+  ];
+
+  const validateFile = (file: File): boolean => {
+    const extension = file.name.toLowerCase().split('.').pop();
+    const isValidExtension = ['zip', 'json', 'jpg', 'jpeg', 'png'].includes(
+      extension || ''
+    );
+
+    const isValidType = allowedTypes.includes(file.type);
+
+    return isValidExtension && isValidType;
+  };
+
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
@@ -29,6 +49,11 @@ const UploadFile = ({
   }, []);
 
   const handleFileSelection = (file: File) => {
+    if (!validateFile(file)) {
+      alert('Only .zip, .json, jpg and png files are accepted');
+      return;
+    }
+
     setSelectedFile(file);
     setFileInfo({
       name: file.name,
@@ -77,13 +102,14 @@ const UploadFile = ({
             <div className="flex flex-row justify-center items-center gap-2">
               <Upload className="w-6 h-6 text-neutral-400" />
               <p className="text-sm text-neutral-300">
-                Drop a file here or click to upload
+                Upload a .zip, .json, jpg or png file here or click to download
               </p>
             </div>
             <input
               id="file-upload"
               type="file"
               onChange={handleFileChange}
+              accept=".json,.zip,.jpg,.jpeg,.png"
               className="hidden"
             />
           </label>

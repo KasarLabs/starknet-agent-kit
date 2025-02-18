@@ -400,7 +400,7 @@ export class TroveManager {
       );
 
       const beforeHealth = healthSchema.safeParse(
-        await this.shrine.get_trove_healWhat th(params.troveId)
+        await this.shrine.get_trove_health(params.troveId)
       );
       const tx = await account.execute([
         ...approveAssetsCalls,

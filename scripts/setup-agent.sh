@@ -143,7 +143,7 @@ main () {
 	success "Dependencies installed successfully."
 
 	info "Starting the agent..."
-	pnpm run curl --agent=$AGENT_NAME.agent.json
+	pnpm run local --agent=$AGENT_NAME.agent.json < /dev/tty
 
 }
 

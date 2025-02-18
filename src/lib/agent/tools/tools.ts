@@ -71,7 +71,6 @@ import { isMemecoin } from '../plugins/unruggable/actions/isMemecoin';
 import { getLockedLiquidity } from '../plugins/unruggable/actions/getLockedLiquidity';
 import { launchOnEkubo } from '../plugins/unruggable/actions/launchOnEkubo';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
@@ -116,7 +115,6 @@ export interface StarknetAgentInterface {
     signature: string;
   };
   getProvider: () => RpcProvider;
-  accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;

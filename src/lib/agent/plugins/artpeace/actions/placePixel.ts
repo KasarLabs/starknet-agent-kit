@@ -3,7 +3,7 @@ import { Account, constants, Contract } from 'starknet';
 import { artpeaceAbi } from '../abis/artpeaceAbi';
 import { artpeaceAddr } from '../constants/artpeace';
 import { ArtpeaceHelper } from '../utils/helper';
-import { placePixelParam } from 'src/lib/agent/schemas/schema';
+import { placePixelParam } from '../schema';
 import { Checker } from '../utils/checker';
 
 /**
@@ -34,8 +34,10 @@ export const placePixel = async (
 
     const txHash = [];
     for (const param of params) {
-      const { position, color } =
-        await ArtpeaceHelper.validateAndFillDefaults(param, checker);
+      const { position, color } = await ArtpeaceHelper.validateAndFillDefaults(
+        param,
+        checker
+      );
       const timestamp = Math.floor(Date.now() / 1000);
 
       artpeaceContract.connect(account);
@@ -84,22 +86,19 @@ export const placePixelSignature = async (input: {
 
     const results = [];
     for (const param of params) {
-      const { position, color } =
-        await ArtpeaceHelper.validateAndFillDefaults(param, checker);
+      const { position, color } = await ArtpeaceHelper.validateAndFillDefaults(
+        param,
+        checker
+      );
 
       const call = {
         status: 'success',
         transactions: {
           contractAddress: artpeaceAddr,
           entrypoint: 'place_pixel',
-          calldata: [
-            id,
-            position,
-            color,
-            timestamp,
-          ],
+          calldata: [id, position, color, timestamp],
         },
-      }
+      };
 
       timestamp = timestamp + 5;
       results.push({
@@ -109,11 +108,11 @@ export const placePixelSignature = async (input: {
         },
       });
     }
-   results.map((call, index) => {
+    results.map((call, index) => {
       console.log(`${index}: `, call.transactions.transactions.calldata);
     });
     const end = Date.now();
-    console.log(`place_pixel time: ${end - start}ms`)
+    console.log(`place_pixel time: ${end - start}ms`);
     return JSON.stringify({ transaction_type: 'INVOKE', results });
   } catch (error) {
     console.log(error);

@@ -1,11 +1,21 @@
-import { Body, Controller, Logger, OnModuleInit, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Logger,
+  NotFoundException,
+  OnModuleInit,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { ConfigurationService } from '../config/configuration';
 import { WalletService } from './services/wallet.service';
 import { AgentRequestDTO } from './dto/agents';
 import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
-import { promises as fs } from 'fs';
 import { FastifyRequest } from 'fastify';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -47,13 +57,27 @@ export class WalletController implements OnModuleInit {
   async uploadFile(@Req() req: FastifyRequest) {
     const logger = new Logger('Upload service');
     logger.debug({ message: 'The file has been uploaded' });
-    return { status: 'success', data: 'The file has been uploaded.' };
+    return {
+      status: 'success',
+      data: 'The file has been uploaded.',
+    };
   }
 
   @Post('delete_large_file')
   async deleteUploadFile(@Body() filename: { filename: string }) {
     const logger = new Logger('Delete service');
-    const filePath = `./uploads/${filename.filename}`;
+
+    const path = process.env.PATH_UPLOAD_DIR;
+    if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
+
+    const filePath = `${path}${filename.filename}`;
+    const normalizedPath = path.normalize();
+
+    try {
+      await fs.access(normalizedPath);
+    } catch {
+      throw new NotFoundException(`File not found : ${filePath}`);
+    }
 
     try {
       await fs.unlink(filePath);
@@ -70,7 +94,7 @@ export class WalletController implements OnModuleInit {
       });
       switch (error.code) {
         case 'ENOENT':
-          throw new Error(`File not found : ${filePath}`); // HttpException(404)
+          throw new NotFoundException(`File not found : ${filePath}`); // HttpException(404)
         case 'EACCES':
           throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
         default:

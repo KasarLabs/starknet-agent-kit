@@ -1,4 +1,4 @@
-import { placePixelParam } from 'src/lib/agent/schemas/schema';
+import { placePixelParam } from '../schema';
 import { Checker } from './checker';
 
 /**

@@ -94,7 +94,7 @@ export class Checker {
       );
       this.colors = allColor;
     } catch (error) {
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
   }
 

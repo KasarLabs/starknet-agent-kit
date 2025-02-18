@@ -111,7 +111,6 @@ main () {
 	fi
 
 	CONFIG_FILE="$AGENT_CONFIG_DIR/$AGENT_NAME.agent.json"
-	echo "CONFIG FILE : $CONFIG_FILE"
 
 	if [ -f "$CONFIG_FILE" ]; then
 		info "A configuration file for '$AGENT_NAME' already exists."
@@ -124,10 +123,12 @@ main () {
 			read -p "Do you want to overwrite it? (y/N) " -n 1 -r
 		fi
 		echo
-    
+
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
 			echo "$HTTP_BODY" > "$CONFIG_FILE"
 		fi
+	else
+		echo "$HTTP_BODY" > "$CONFIG_FILE"
 	fi
 
 	success "Configuration has been successfully saved to $CONFIG_FILE."

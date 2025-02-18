@@ -186,7 +186,7 @@ const LocalRun = async () => {
             signature: 'key',
             agentMode: 'agent',
             agentconfig: agent_config,
-            agentMemory : false,
+            agentMemory: false,
           });
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
@@ -208,7 +208,7 @@ const LocalRun = async () => {
         signature: 'key',
         agentMode: 'auto',
         agentconfig: agent_config,
-        agentMemory : true,
+        agentMemory: true,
       });
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();

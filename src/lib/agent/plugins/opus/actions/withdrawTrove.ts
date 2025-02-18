@@ -9,8 +9,8 @@ export const withdrawTrove = async (
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
   try {
-    const TroveManager = createTroveManager(agent, accountAddress);
-    const result = await TroveManager.withdrawTransaction(
+    const troveManager = createTroveManager(agent, accountAddress);
+    const result = await troveManager.withdrawTransaction(
       params,
       agent
     );

@@ -30,8 +30,8 @@ export const getTroveHealth = async (
   const accountAddress = agent.getAccountCredentials()?.accountPublicKey;
 
   try {
-    const TroveManager = createTroveManager(agent, accountAddress);
-    const result = await TroveManager.getTroveHealth(params);
+    const troveManager = createTroveManager(agent, accountAddress);
+    const result = await troveManager.getTroveHealth(params);
     return JSON.stringify({
       status: "success",
       data: result,

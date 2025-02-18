@@ -12,8 +12,6 @@ import path from 'path';
 
 config();
 
-// Utilisation
-
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
     .option('AGENT', {

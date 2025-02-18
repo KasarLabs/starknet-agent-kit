@@ -9,6 +9,10 @@ import yargs, { string } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';
 import path from 'path';
+import {
+  checkFormatStarknetAddress,
+  checkStarknetRpcUrl,
+} from './lib/utils/parsing';
 
 config();
 
@@ -66,24 +70,34 @@ const createBox = (
   return result;
 };
 
-function reloadEnvVars() {
-  Object.keys(process.env).forEach((key) => {
-    delete process.env[key];
+function removeDuplicates() {
+  const fs = require('fs');
+  const path = '.env';
+
+  const envFileContent = fs.readFileSync(path, 'utf-8');
+
+  const lines = envFileContent.split('\n');
+  const uniqueLines: string[] = [];
+  const seenKeys = new Set();
+
+  lines.forEach((line: string) => {
+    const match = line.match(/^([^=]+)=/);
+    if (match) {
+      const key = match[1];
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
+        uniqueLines.push(line);
+      }
+    } else {
+      uniqueLines.push(line);
+    }
   });
 
-  const result = config({
-    path: path.resolve(process.cwd(), '.env'),
-    override: true,
-  });
-
-  if (result.error) {
-    throw new Error('Failed to reload .env file');
-  }
-
-  return result.parsed;
+  fs.writeFileSync(path, uniqueLines.join('\n'), 'utf-8');
 }
 
 const validateEnvVars = async () => {
+  removeDuplicates();
   const required = [
     'STARKNET_RPC_URL',
     'STARKNET_PRIVATE_KEY',
@@ -91,33 +105,70 @@ const validateEnvVars = async () => {
     'AI_MODEL',
     'AI_PROVIDER_API_KEY',
   ];
-  const missings = required.filter((key) => !process.env[key]);
-  if (missings.length > 0) {
-    console.error(`Missing environment variables:\n${missings.join('\n')}`);
-    for (const missing of missings) {
+
+  const missings = await Promise.all(
+    required.map(async (key) => {
+      if (!process.env[key]) {
+        return key;
+      }
+      switch (key) {
+        case 'STARKNET_PRIVATE_KEY':
+        case 'STARKNET_PUBLIC_ADDRESS':
+          if (!checkFormatStarknetAddress(process.env[key])) {
+            console.error(`${chalk.red(`Invalid ${key} address`)}`);
+            return key;
+          }
+          break;
+        case 'STARKNET_RPC_URL':
+          if ((await checkStarknetRpcUrl(process.env[key])) === false) {
+            console.error(`${chalk.red(`Invalid ${key} address`)}`);
+            return key;
+          }
+          break;
+      }
+      return null;
+    })
+  );
+
+  const filteredMissings = missings.filter((key) => key !== null);
+  console.log('Duplicates removed successfully.');
+  if (filteredMissings.length > 0) {
+    console.error(
+      `Missing environment variables:\n${filteredMissings.join('\n')}`
+    );
+    for (const missing of filteredMissings) {
       const { prompt } = await inquirer.prompt([
         {
           type: 'input',
           name: 'prompt',
           message: chalk.redBright(`Enter the value of ${missing}:`),
-          validate: (value: string) => {
+          validate: async (value: string) => {
             const trimmed = value.trim();
-            if (!trimmed) return 'Please enter a valid message';
+            switch (missing) {
+              case 'STARKNET_PRIVATE_KEY':
+              case 'STARKNET_PUBLIC_ADDRESS':
+                if (!checkFormatStarknetAddress(value)) {
+                  return `Please enter a valid ${missing}`;
+                }
+                break;
+              case 'STARKNET_RPC_URL':
+                if ((await checkStarknetRpcUrl(value)) === false) {
+                  return `Please enter a valid ${missing}`;
+                }
+                break;
+              default:
+                if (!trimmed) {
+                  return 'Please enter a valid message';
+                }
+            }
+
             return true;
           },
         },
       ]);
-
-      await new Promise((resolve, reject) => {
-        fs.appendFile('.env', `\n${missing}=${prompt}\n`, (err) => {
-          if (err) reject(new Error('Error when trying to write on .env file'));
-          resolve(null);
-        });
-      });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      process.env[missing] = prompt;
+      console.log(`${missing} updated successfully in process.env.`);
     }
-    reloadEnvVars();
-    await validateEnvVars();
   }
 };
 
@@ -221,6 +272,7 @@ const LocalRun = async () => {
       }
     }
   } catch (error) {
+    console.log(error);
     spinner.error({ text: 'Failed to initialize agent' });
     console.error(createBox(error.message, { isError: true }));
   }

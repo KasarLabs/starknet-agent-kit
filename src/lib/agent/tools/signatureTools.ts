@@ -89,7 +89,8 @@ export const RegisterSignatureTools = () => [
 
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'deploy_argent_account',
-    description: 'deploy argent account return the privateKey/publicKey/contractAddress',
+    description:
+      'deploy argent account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployAXAccountSignature,
   }),
@@ -104,14 +105,16 @@ export const RegisterSignatureTools = () => [
 
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'deploy_okx_account',
-    description: 'deploy okx account return the privateKey/publicKey/contractAddress',
+    description:
+      'deploy okx account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployOKXAccountSignature,
   }),
 
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'deploy_braavos_account',
-    description: 'deploy braavos account return the privateKey/publicKey/contractAddress',
+    description:
+      'deploy braavos account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployBraavosAccountSignature,
   }),

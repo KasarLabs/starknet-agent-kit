@@ -54,5 +54,5 @@ describe('Braavos Account Creation and Deployment', () => {
     } else {
       console.error('Failure:', deployResult.error);
     }
-  }, 30000); 
+  }, 30000);
 });

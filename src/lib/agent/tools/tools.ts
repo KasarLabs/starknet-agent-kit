@@ -184,7 +184,8 @@ export const registerTools = () => {
   // Register account-related tools
   StarknetToolRegistry.registerTool({
     name: 'create_new_braavos_account',
-    description: 'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
+    description:
+      'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
     execute: async (agent: StarknetAgentInterface) => {
       const response = await CreateBraavosAccount();
       return wrapAccountCreationResponse(response);
@@ -193,7 +194,8 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'create_new_openzeppelin_account',
-    description: 'Create a new Open Zeppelin account and return the privateKey/publicKey/contractAddress',
+    description:
+      'Create a new Open Zeppelin account and return the privateKey/publicKey/contractAddress',
     execute: async (agent: StarknetAgentInterface) => {
       const response = await CreateOZAccount();
       return wrapAccountCreationResponse(response);
@@ -202,7 +204,8 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'create_new_argentx_account',
-    description: 'Creates a new ArgentX account and return the privateKey/publicKey/contractAddress',
+    description:
+      'Creates a new ArgentX account and return the privateKey/publicKey/contractAddress',
     execute: async (agent: StarknetAgentInterface) => {
       const response = await CreateAXAccount();
       return wrapAccountCreationResponse(response);
@@ -211,7 +214,8 @@ export const registerTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'create_new_okx_account',
-    description: 'Create a new OKX account and return the privateKey/publicKey/contractAddress',
+    description:
+      'Create a new OKX account and return the privateKey/publicKey/contractAddress',
     execute: async (agent: StarknetAgentInterface) => {
       const response = await CreateOKXAccount();
       return wrapAccountCreationResponse(response);

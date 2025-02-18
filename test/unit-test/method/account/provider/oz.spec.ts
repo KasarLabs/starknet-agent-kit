@@ -31,8 +31,7 @@ describe('OZ Account Creation and Deployment', () => {
     expect(data.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
-
-  }, 30000); 
+  }, 30000);
 
   it('should deploy the account', async () => {
     if (!process.env.RUN_DEPLOYMENT_TEST) {

@@ -16,8 +16,7 @@ interface EnvConfig {
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
-    STARKNET_RPC_URL:
-      'http://127.0.0.1:5050',
+    STARKNET_RPC_URL: 'http://127.0.0.1:5050',
     accounts: {
       account1: {
         privateKey:

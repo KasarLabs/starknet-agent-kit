@@ -8,9 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
-import {
-  WalletAccount,
-} from 'starknet';
+import { WalletAccount } from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
 import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
 import {

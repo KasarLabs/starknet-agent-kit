@@ -10,13 +10,13 @@ export const wrapAccountCreationResponse = (response: string) => {
   try {
     const data = JSON.parse(response) as AccountResponse;
     if (data.status === 'success') {
-        return JSON.stringify({
-          ...data,
-          message: `✅ Your ${data.wallet} account has been successfully created at ${data.contractAddress}\nPublic key: ${data.publicKey}\nPrivate key: ${data.privateKey}`
-        });
+      return JSON.stringify({
+        ...data,
+        message: `✅ Your ${data.wallet} account has been successfully created at ${data.contractAddress}\nPublic key: ${data.publicKey}\nPrivate key: ${data.privateKey}`,
+      });
     }
     return response;
   } catch {
     return response;
   }
-}; 
+};

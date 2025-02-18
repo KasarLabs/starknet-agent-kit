@@ -8,6 +8,7 @@ import { CreateOKXAccount } from '../plugins/okx/actions/createAccount';
 import { DeployOKXAccount } from '../plugins/okx/actions/deployAccount';
 import { CreateBraavosAccount } from '../plugins/braavos/actions/createAccount';
 import { DeployBraavosAccount } from '../plugins/braavos/actions/deployAccount';
+import { wrapAccountCreationResponse } from './utils/accountTools';
 
 import { transfer } from '../plugins/core/token/transfer';
 import {
@@ -182,27 +183,39 @@ export const registerTools = () => {
 
   // Register account-related tools
   StarknetToolRegistry.registerTool({
+    name: 'create_new_braavos_account',
+    description: 'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
+    execute: async (agent: StarknetAgentInterface) => {
+      const response = await CreateBraavosAccount();
+      return wrapAccountCreationResponse(response);
+    },
+  });
+
+  StarknetToolRegistry.registerTool({
     name: 'create_new_openzeppelin_account',
     description: 'Create a new Open Zeppelin account and return the privateKey/publicKey/contractAddress',
-    execute: CreateOZAccount,
+    execute: async (agent: StarknetAgentInterface) => {
+      const response = await CreateOZAccount();
+      return wrapAccountCreationResponse(response);
+    },
   });
 
   StarknetToolRegistry.registerTool({
     name: 'create_new_argentx_account',
     description: 'Creates a new ArgentX account and return the privateKey/publicKey/contractAddress',
-    execute: CreateAXAccount,
+    execute: async (agent: StarknetAgentInterface) => {
+      const response = await CreateAXAccount();
+      return wrapAccountCreationResponse(response);
+    },
   });
 
   StarknetToolRegistry.registerTool({
     name: 'create_new_okx_account',
     description: 'Create a new OKX account and return the privateKey/publicKey/contractAddress',
-    execute: CreateOKXAccount,
-  });
-
-  StarknetToolRegistry.registerTool({
-    name: 'create_new_braavos_account',
-    description: 'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
-    execute: CreateBraavosAccount,
+    execute: async (agent: StarknetAgentInterface) => {
+      const response = await CreateOKXAccount();
+      return wrapAccountCreationResponse(response);
+    },
   });
 
   StarknetToolRegistry.registerTool({

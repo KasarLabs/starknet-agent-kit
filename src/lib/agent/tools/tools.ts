@@ -15,6 +15,8 @@ import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
 import { register } from 'module';
+import { registerTelegramTools } from '../plugins/telegram/tools';
+import { TelegramInterface } from '../plugins/telegram/interfaces';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -36,6 +38,7 @@ export interface StarknetAgentInterface {
   getTwitterAuthMode: () => 'API' | 'CREDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;
   getTwitterManager: () => TwitterInterface;
+  getTelegramManager: () => TelegramInterface;
 }
 
 export interface StarknetTool<P = any> {
@@ -100,6 +103,8 @@ export const registerTools = () => {
   registerTwitterTools();
 
   registerFibrousTools();
+
+  registerTelegramTools();
 };
 
 registerTools();

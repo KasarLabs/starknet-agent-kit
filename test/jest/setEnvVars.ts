@@ -5,12 +5,12 @@ import { AccountManager } from 'src/lib/agent/plugins/core/account/utils/Account
 import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
 import { Limit } from 'src/lib/agent/limit';
-import { TwitterInterface } from 'src/lib/agent/plugins/Twitter/interface/twitter-interface';
+import { TwitterInterface } from 'src/lib/agent/plugins/twitter/interfaces/index';
 
 setupTestEnvironment();
 
 export const createMockStarknetAgent = (): StarknetAgentInterface => {
-  const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
+  const provider = new RpcProvider({ nodeUrl: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b' });
   const twitter_interface: TwitterInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;
@@ -19,9 +19,9 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
   return {
     getAccountCredentials: () => ({
       accountPublicKey:
-        '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
+        '',
       accountPrivateKey:
-        '0x00000000000000000000000000000000b137668388dbe9acdfa3bc734cc2c469',
+        '',
     }),
     getModelCredentials: () => ({
       aiModel: '',
@@ -42,7 +42,7 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
 };
 
 export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
-  const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
+  const provider = new RpcProvider({ nodeUrl: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b' });
   const twitter_interface: TwitterInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;

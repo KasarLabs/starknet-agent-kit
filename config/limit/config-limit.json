@@ -2,7 +2,7 @@
   "transfer_limit": [
     {
       "symbol": "ETH",
-      "amount": "0.000001"
+      "amount": "1"
     },
     {
       "symbol": "STRK",

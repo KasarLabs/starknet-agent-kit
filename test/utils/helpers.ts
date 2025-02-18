@@ -16,19 +16,21 @@ interface EnvConfig {
 
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
-    STARKNET_RPC_URL: 'http://127.0.0.1:5050',
+    // STARKNET_RPC_URL: 'http://127.0.0.1:5050',
+    STARKNET_RPC_URL: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b',
+    // STARKNET_RPC_URL: 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky',
     accounts: {
       account1: {
         privateKey:
-          '0x00000000000000000000000000000000b137668388dbe9acdfa3bc734cc2c469',
+          'ddddf4b4820ec3f9bb3e38',
         publicAddress:
-          '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
+          '0x059a5B246cBf2E4202445A5f1fA74C4A96BAdF0e6bB11067D2fD30Cb5391a8c1',
       },
       account2: {
         privateKey:
-          '0x00000000000000000000000000000000e8c2801d899646311100a661d32587aa',
+          'ddd4820ec3f9bb3e38',
         publicAddress:
-          '0x02939f2dc3f80cc7d620e8a86f2e69c1e187b7ff44b74056647368b5c49dc370',
+          '0x059a5B246cBf2E4202445A5f1fA74C4A96BAdF0e6bB11067D2fD30Cb5391a8c1',
       },
       account3: {
         privateKey:

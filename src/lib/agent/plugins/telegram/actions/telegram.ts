@@ -97,9 +97,7 @@ class TelegramBotServer {
       }
     });
 
-    this.server = this.app.listen(this.port, () => {
-      console.log(`Server started on port ${this.port}`);
-    });
+    this.server = this.app.listen(this.port, () => {});
   }
 
   /**
@@ -113,9 +111,7 @@ class TelegramBotServer {
       await this.bot.deleteWebHook();
 
       await this.bot.setWebHook(`${this.url}/bot${this.token}`);
-      console.log(`New webhook configured at ${this.url}/bot${this.token}`);
       const webhookInfo = await this.bot.getWebHookInfo();
-      console.log('Webhook information:', webhookInfo);
     } catch (error) {
       console.log('Error while configuring Telegram webhook:', error);
     }
@@ -124,7 +120,6 @@ class TelegramBotServer {
   private setupBotHandlers(): void {
     this.bot.on('message', async (msg: TelegramBot.Message) => {
       try {
-        console.log('test', msg.text);
         if (msg.chat.id === this.channel_id && this.max_message > 0) {
           this.pendingMessages.push(msg);
           this.max_message = this.max_message - 1;
@@ -243,10 +238,7 @@ export const telegram_get_messages_from_conversation = async (
       params.max_message,
       params.channel_id
     );
-    console.log(params.channel_id);
-    console.log(params.max_message);
     const messages = await bot.start();
-    console.log('Retrieved messages:', messages);
     await bot.cleanup();
     return {
       status: 'success',

@@ -166,7 +166,6 @@ const LocalRun = async () => {
         agentMode: 'auto',
         agentconfig: agent_config,
       });
-
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
 

@@ -5,7 +5,7 @@ import { AccountManager } from 'src/lib/agent/plugins/core/account/utils/Account
 import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
 import { Limit } from 'src/lib/agent/limit';
-import { TwitterInterface } from 'src/lib/agent/plugins/Twitter/interface/twitter-interface';
+import { TwitterInterface } from 'src/lib/agent/plugins/twitter/interfaces';
 
 setupTestEnvironment();
 
@@ -38,6 +38,9 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
     getTwitterAuthMode: () => twitter_auth_mode,
     getAgentConfig: () => json_config,
     getTwitterManager: () => twitter_interface,
+    getAgentMemory: () => ({
+      agentMemory: false,
+    }),
   };
 };
 
@@ -68,5 +71,8 @@ export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
     getTwitterAuthMode: () => twitter_auth_mode,
     getAgentConfig: () => json_config,
     getTwitterManager: () => twitter_interface,
+    getAgentMemory: () => ({
+      agentMemory: false,
+    }),
   };
 };

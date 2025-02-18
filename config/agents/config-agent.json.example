@@ -15,13 +15,6 @@
   ]
   "interval":  "Your agent interval beetween each transaction of the Agent in ms,"
   "chat_id" : "Your Agent Chat-id",
-  "allowed_tools": ["Your Allowed Tools"],
-  "external_plugins" : [
-    "first external_plugins",
-    "second external_plugins"
-  ],
-  "allowed_external_plugins_tools" : [
-    "first allowed_external_plugins_tools",
-    "second allowed_external_plugins_tools"
-  ]
+  "internal_plugins" : ["Your first internal plugin", "Your second internal plugin"]
+  "external_plugins" : ["Your first external plugin", "Your second external plugin"]
 }

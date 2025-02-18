@@ -32,18 +32,10 @@ describe('OKX Account Creation and Deployment', () => {
     expect(data.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
 
-    console.log('\n=== DÉTAILS DU COMPTE ===');
-    console.log('Adresse:', data.contractAddress);
-    console.log('Clé publique:', data.publicKey);
-    console.log('Clé privée:', data.privateKey);
-    console.log('\nFrais de déploiement estimés:', data.deployFee.overall_fee);
-  }, 30000); // Timeout de 30 secondes
+  }, 30000); 
 
   it('should deploy the account', async () => {
     if (!process.env.RUN_DEPLOYMENT_TEST) {
-      console.log(
-        "Test de déploiement ignoré. Définissez RUN_DEPLOYMENT_TEST=true pour l'exécuter"
-      );
       return;
     }
 
@@ -60,10 +52,10 @@ describe('OKX Account Creation and Deployment', () => {
     expect(deployResult.status).toBe('success');
 
     if (deployResult.status === 'success') {
-      console.log('Compte déployé avec succès!');
-      console.log('Hash de transaction:', deployResult.transactionHash);
+      console.log('Deployed successfully!');
+      console.log('Hash:', deployResult.transactionHash);
     } else {
-      console.error('Échec du déploiement:', deployResult.error);
+      console.error('Failure:', deployResult.error);
     }
-  }, 300000); // Timeout de 5 minutes pour le déploiement
+  }, 300000); 
 });

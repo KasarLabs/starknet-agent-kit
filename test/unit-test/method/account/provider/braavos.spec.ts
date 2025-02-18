@@ -29,14 +29,11 @@ describe('Braavos Account Creation and Deployment', () => {
     expect(data.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
-  }, 30000); // Timeout de 30 secondes
+  }, 30000);
 
   it('should deploy the account', async () => {
     debugger;
     if (!process.env.RUN_DEPLOYMENT_TEST) {
-      console.log(
-        "Test de déploiement ignoré. Définissez RUN_DEPLOYMENT_TEST=true pour l'exécuter"
-      );
       return;
     }
 
@@ -46,20 +43,16 @@ describe('Braavos Account Creation and Deployment', () => {
       privateKey: process.env.PRIVATEKEY as string,
     };
 
-    console.log('\nDéploiement du compte...');
     const result = await DeployBraavosAccountSignature(accountDetails);
 
     const deployResult = JSON.parse(result);
     // expect(deployResult.status).toBe('success');
 
     if (deployResult.status === 'success') {
-      console.log('Compte déployé avec succès!');
-      console.log('Hash de transaction:', deployResult.transactionHash);
+      console.log('Deployed successfully!');
+      console.log('Hash :', deployResult.transactionHash);
     } else {
-      console.error(
-        '------------------------------\nÉchec du déploiement:',
-        deployResult.error
-      );
+      console.error('Failure:', deployResult.error);
     }
-  }, 30000); // Timeout de 5 minutes pour le déploiement
+  }, 30000); 
 });

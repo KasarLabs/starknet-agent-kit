@@ -5,14 +5,20 @@ import { StarknetAgent } from './lib/agent/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
 import { load_json_config } from './lib/agent/jsonConfig';
-import yargs, { string } from 'yargs';
+import yargs, { choices, string } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';
-import path from 'path';
 import {
   checkFormatStarknetAddress,
   checkStarknetRpcUrl,
 } from './lib/utils/parsing';
+import { PluginsNeedEnvValue } from './lib/utils/parsing';
+import { TelegramEnvField } from './lib/agent/plugins/telegram/constant';
+import { type } from 'os';
+import {
+  TwitterApiEnvFields,
+  TwitterCredentialsrEnvFields,
+} from './lib/agent/plugins/twitter/constant';
 
 config();
 
@@ -71,7 +77,6 @@ const createBox = (
 };
 
 function removeDuplicates() {
-  const fs = require('fs');
   const path = '.env';
 
   const envFileContent = fs.readFileSync(path, 'utf-8');
@@ -106,6 +111,7 @@ const validateEnvVars = async () => {
     'AI_PROVIDER_API_KEY',
   ];
 
+  console.log(required);
   const missings = await Promise.all(
     required.map(async (key) => {
       if (!process.env[key]) {
@@ -177,6 +183,9 @@ const LocalRun = async () => {
   console.log(logo);
   console.log(createBox('Welcome to Starknet-Agent-Kit'));
   const agent_config_name = await load_command();
+  if (!agent_config_name) {
+    throw new Error('Failed to load agent config from command line');
+  }
   const { mode } = await inquirer.prompt([
     {
       type: 'list',
@@ -204,8 +213,11 @@ const LocalRun = async () => {
   try {
     spinner.stop();
     await validateEnvVars();
-    spinner.success({ text: 'Agent initialized successfully' });
     const agent_config = load_json_config(agent_config_name);
+    if (!agent_config) {
+      throw new Error('Failed to load agent config');
+    }
+    spinner.success({ text: 'Agent initialized successfully' });
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
@@ -262,7 +274,7 @@ const LocalRun = async () => {
       });
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
-
+      agent.initializeTwitterManager();
       try {
         await agent.execute_autonomous();
         autoSpinner.success({ text: 'Autonomous execution completed' });

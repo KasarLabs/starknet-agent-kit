@@ -4,9 +4,9 @@ import { AccountManager } from '../utils/AccountManager';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 import {
-  braavos_account_classhash,
-  braavos_initial_classhash,
-  braavos_proxy_classhash,
+  BRAAVOS_ACCOUNT_CLASSHASH,
+  BRAAVOS_INITIAL_CLASSHASH,
+  BRAAVOS_PROXY_CLASSHASH,
 } from '../constant/contract';
 
 /**
@@ -27,15 +27,12 @@ export const DeployBraavosAccount = async (
 
     const accountManager = new AccountManager(
       provider,
-      braavos_initial_classhash,
-      braavos_proxy_classhash,
-      braavos_account_classhash
+      BRAAVOS_INITIAL_CLASSHASH,
+      BRAAVOS_PROXY_CLASSHASH,
+      BRAAVOS_ACCOUNT_CLASSHASH
     );
 
     const tx = await accountManager.deployAccount(params);
-
-    console.log('✅ Braavos wallet deployed at:', tx.contractAddress);
-    console.log('✅ Transaction hash:', tx.transactionHash);
 
     return JSON.stringify({
       status: 'success',
@@ -67,15 +64,12 @@ export const DeployBraavosAccountSignature = async (
 
     const accountManager = new AccountManager(
       provider,
-      braavos_initial_classhash,
-      braavos_proxy_classhash,
-      braavos_account_classhash
+      BRAAVOS_INITIAL_CLASSHASH,
+      BRAAVOS_PROXY_CLASSHASH,
+      BRAAVOS_ACCOUNT_CLASSHASH
     );
 
     const tx = await accountManager.deployAccount(params);
-
-    console.log('✅ Braavos wallet deployed at:', tx.contractAddress);
-    console.log('✅ Transaction hash:', tx.transactionHash);
 
     return JSON.stringify({
       status: 'success',

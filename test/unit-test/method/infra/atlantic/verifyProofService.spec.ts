@@ -17,9 +17,11 @@ describe('verifyProofService', () => {
 
   describe('With perfect match inputs', () => {});
   it('Should return an url to atlantic dashboard with query id', async () => {
-    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {
-      filename: '/test/recursive_proof.json',
+      filename: 'recursive_proof.json',
       memoryVerification: 'relaxed',
     };
 
@@ -33,9 +35,11 @@ describe('verifyProofService', () => {
   });
   describe('With no filename input', () => {});
   it('Invalid Type', async () => {
-    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {
-      filename: '/test/Pie.zip',
+      filename: 'Pie.zip',
       memoryVerification: 'relaxed',
     };
 
@@ -48,10 +52,62 @@ describe('verifyProofService', () => {
     });
   });
   it('Invalid filename', async () => {
-    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {
       filename: 'sfddfds',
       memoryVerification: 'relaxed',
+    };
+
+    const result = await verifyProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+  it('Invalid API key', async () => {
+    process.env.ATLANTIC_API_KEY = 'invalid';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
+    const getProofParam: VerifierParam = {
+      filename: 'recursive_proof.json',
+      memoryVerification: 'relaxed',
+    };
+
+    const result = await verifyProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+  it('invalid upload path', async () => {
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR = './invalid/path';
+    const getProofParam: VerifierParam = {
+      filename: 'recursive_proof.json',
+      memoryVerification: 'relaxed',
+    };
+
+    const result = await verifyProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+  it('Invalide memory verification', async () => {
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
+    const getProofParam: VerifierParam = {
+      filename: 'recursive_proof.json',
+      memoryVerification: 'invalid',
     };
 
     const result = await verifyProofService(agent, getProofParam);

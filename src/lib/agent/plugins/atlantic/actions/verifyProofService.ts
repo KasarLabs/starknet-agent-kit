@@ -35,7 +35,7 @@ export const verifyProofService = async (
     let buffer;
     try {
       buffer = await fs.readFile(fullName, 'utf-8');
-      if (!validateJson(buffer)) {
+      if (!(await validateJson(buffer))) {
         throw new ValidationError("The file isn't an json type.");
       }
     } catch (error) {

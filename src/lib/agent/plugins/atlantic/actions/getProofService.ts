@@ -26,7 +26,7 @@ export const getProofService = async (
     let buffer;
     try {
       buffer = await fs.readFile(fullName);
-      if (!validateZip(buffer)) {
+      if (!(await validateZip(buffer))) {
         throw new Error('Is not a zip file.');
       }
     } catch (error) {

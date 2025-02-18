@@ -16,9 +16,11 @@ describe('getProofService', () => {
   });
   describe('With perfect match inputs', () => {});
   it('Should return an url to atlantic dashboard with query id', async () => {
-    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: AtlanticParam = {
-      filename: '/test/Pie.zip',
+      filename: 'Pie.zip',
     };
 
     const result = await getProofService(agent, getProofParam);
@@ -31,9 +33,11 @@ describe('getProofService', () => {
   });
   describe('With no filename input', () => {});
   it('Invalid type', async () => {
-    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: AtlanticParam = {
-      filename: '/test/Proof.json',
+      filename: 'Proof.json',
     };
 
     const result = await getProofService(agent, getProofParam);
@@ -45,9 +49,42 @@ describe('getProofService', () => {
     });
   });
   it('Invalid filename', async () => {
-    process.env.ATLANTIC_API_KEY = 'Place your api key here';
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: AtlanticParam = {
       filename: 'gfdhjgfdg',
+    };
+
+    const result = await getProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+  it('Invalid API key', async () => {
+    process.env.ATLANTIC_API_KEY = 'Invalid API key';
+    process.env.PATH_UPLOAD_DIR =
+      './test/unit-test/method/infra/atlantic/uploads/';
+    const getProofParam: AtlanticParam = {
+      filename: 'Pie.zip',
+    };
+
+    const result = await getProofService(agent, getProofParam);
+    const parsed = JSON.parse(result);
+
+    expect(parsed).toEqual({
+      status: 'failure',
+      error: expect.any(String),
+    });
+  });
+  it('Invalid path upload dir', async () => {
+    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.PATH_UPLOAD_DIR = './test/infra/atlantic/invalid/';
+    const getProofParam: AtlanticParam = {
+      filename: 'Pie.zip',
     };
 
     const result = await getProofService(agent, getProofParam);

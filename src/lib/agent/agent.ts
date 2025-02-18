@@ -84,19 +84,12 @@ export const createAgent = (
 
       const allowedTools = createAllowedTools(
         starknetAgent,
-        json_config.allowed_internal_tools
+        json_config.internal_plugins
       );
 
-      const allowedToolsKits =
-        json_config.external_client && json_config.allowed_external_client_tools
-          ? createAllowedToollkits(
-              json_config.external_client,
-              json_config.allowed_external_client_tools
-            )
-          : json_config.external_client &&
-              !json_config.allowed_external_client_tools
-            ? createAllowedToollkits(json_config.external_client)
-            : null;
+      const allowedToolsKits = json_config.external_plugins
+        ? createAllowedToollkits(json_config.external_plugins)
+        : null;
 
       const tools = allowedToolsKits
         ? [...allowedTools, ...allowedToolsKits]

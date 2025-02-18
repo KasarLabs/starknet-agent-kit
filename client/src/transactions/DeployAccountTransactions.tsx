@@ -11,7 +11,7 @@ export const handleDeployTransactions = async (
 ): Promise<string> => {
   try {
     if (!public_key || !private_key || !contractaddress) {
-      throw new Error('Invalid Credidentials');
+      throw new Error('Invalid CREDENTIALS');
     }
     const deploy_input = `Deploy ${wallet_type} Account publickey: ${public_key} private key: ${private_key} address: ${contractaddress}`;
 

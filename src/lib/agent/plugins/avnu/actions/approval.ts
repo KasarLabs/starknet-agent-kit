@@ -2,9 +2,23 @@ import { Account, uint256, CallData } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../../core/token/abis/erc20Abi';
 
+/**
+ * Service handling token approvals on Starknet
+ * @class ApprovalService
+ */
 export class ApprovalService {
+  /**
+   * Creates an instance of ApprovalService
+   * @param {StarknetAgentInterface} agent - The Starknet agent interface for blockchain interactions
+   */
   constructor(private agent: StarknetAgentInterface) {}
 
+  /**
+   * Safely stringifies objects containing BigInt values
+   * @private
+   * @param {unknown} obj - Object to stringify
+   * @returns {string} JSON string with BigInt values converted to strings
+   */
   private safeStringify(obj: unknown): string {
     return JSON.stringify(
       obj,
@@ -13,6 +27,15 @@ export class ApprovalService {
     );
   }
 
+  /**
+   * Checks current token allowance and approves additional amount if necessary
+   * @param {Account} account - The Starknet account performing the approval
+   * @param {string} tokenAddress - The address of the token contract
+   * @param {string} spenderAddress - The address being approved to spend tokens
+   * @param {string} amount - The amount to approve
+   * @throws {Error} If approval transaction fails
+   * @returns {Promise<void>}
+   */
   async checkAndApproveToken(
     account: Account,
     tokenAddress: string,
@@ -86,16 +109,5 @@ export class ApprovalService {
         `Failed to approve token: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
-  }
-
-  async approveToken(/* ... */) {
-    const provider = this.agent.getProvider();
-    const credentials = this.agent.getAccountCredentials();
-    const account = new Account(
-      provider,
-      credentials.accountPublicKey,
-      credentials.accountPrivateKey
-    );
-    // ... rest of the method
   }
 }

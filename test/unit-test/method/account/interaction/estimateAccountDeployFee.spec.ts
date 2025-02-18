@@ -1,5 +1,5 @@
-import { estimateAccountDeployFee } from 'src/lib/agent/plugins/core/account/estimateAccountDeployFee';
-import * as C from '../../../../utils/constant';
+import { estimateAccountDeployFee } from 'src/lib/agent/plugins/core/account/actions/estimateAccountDeployFee';
+import * as C from '../../../utils/constant';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();

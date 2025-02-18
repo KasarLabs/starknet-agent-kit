@@ -1,6 +1,5 @@
 import z from 'zod';
 
-
 /**
  * Zod schema for validating account details.
  * @type {z.ZodObject<{

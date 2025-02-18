@@ -12,7 +12,6 @@ import { DeployOZAccount } from '../../../openzeppelin/actions/deployAccount';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { accountDetailsSchema } from '../schema/index';
 
-
 export const registerAccountTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'create_new_braavos_account',
@@ -93,5 +92,4 @@ export const registerAccountTools = () => {
     schema: accountDetailsSchema,
     execute: DeployBraavosAccount,
   });
-
 };

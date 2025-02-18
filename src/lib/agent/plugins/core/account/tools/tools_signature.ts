@@ -17,57 +17,50 @@ export const registerSignatureToolsAccount = () => {
       'create argentx account return the privateKey/publicKey/contractAddress',
     execute: CreateAXAccountSignature,
   }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_open_zeppelin_account',
-    description:
-      'create open_zeppelin/OZ account return the privateKey/publicKey/contractAddress',
-    execute: CreateOZAccountSignature,
-  }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_okx_account',
-    description:
-      'create okx account return the privateKey/publicKey/contractAddress',
-    execute: CreateOKXAccountSignature,
-  }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_braavos_account',
-    description:
-      'create braavos account return the privateKey/publicKey/contractAddress',
-    execute: CreateBraavosAccountSignature,
-  }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_argent_account',
-    description:
-      'deploy argent account return the privateKey/publicKey/contractAddress',
-    schema: accountDetailsSchema,
-    execute: DeployAXAccountSignature,
-  }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_openzeppelin_account',
-    description:
-      'deploy open_zeppelin account return the privateKey/publicKey/contractAddress',
-    schema: accountDetailsSchema,
-    execute: DeployOZAccountSignature,
-  }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_okx_account',
-    description:
-      'deploy okx account return the privateKey/publicKey/contractAddress',
-    schema: accountDetailsSchema,
-    execute: DeployOKXAccountSignature,
-  }),
-
-  StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_braavos_account',
-    description:
-      'deploy braavos account return the privateKey/publicKey/contractAddress',
-    schema: accountDetailsSchema,
-    execute: DeployBraavosAccountSignature,
-  })
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'create_open_zeppelin_account',
+      description:
+        'create open_zeppelin/OZ account return the privateKey/publicKey/contractAddress',
+      execute: CreateOZAccountSignature,
+    }),
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'create_okx_account',
+      description:
+        'create okx account return the privateKey/publicKey/contractAddress',
+      execute: CreateOKXAccountSignature,
+    }),
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'create_braavos_account',
+      description:
+        'create braavos account return the privateKey/publicKey/contractAddress',
+      execute: CreateBraavosAccountSignature,
+    }),
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'deploy_argent_account',
+      description:
+        'deploy argent account return the privateKey/publicKey/contractAddress',
+      schema: accountDetailsSchema,
+      execute: DeployAXAccountSignature,
+    }),
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'deploy_openzeppelin_account',
+      description:
+        'deploy open_zeppelin account return the privateKey/publicKey/contractAddress',
+      schema: accountDetailsSchema,
+      execute: DeployOZAccountSignature,
+    }),
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'deploy_okx_account',
+      description:
+        'deploy okx account return the privateKey/publicKey/contractAddress',
+      schema: accountDetailsSchema,
+      execute: DeployOKXAccountSignature,
+    }),
+    StarknetSignatureToolRegistry.RegisterSignatureTools({
+      name: 'deploy_braavos_account',
+      description:
+        'deploy braavos account return the privateKey/publicKey/contractAddress',
+      schema: accountDetailsSchema,
+      execute: DeployBraavosAccountSignature,
+    });
 };

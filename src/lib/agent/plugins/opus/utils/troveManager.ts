@@ -237,6 +237,9 @@ export class TroveManager {
     assetBalanceInput: AssetBalanceInput
   ): Promise<AssetBalance> {
     const collateralAddress = tokenAddresses[assetBalanceInput.symbol];
+    if (collateralAddress === undefined) {
+      throw new Error(`Unknown token symbol ${assetBalanceInput.symbol}`);
+    }
     if (!this.yangs.includes(num.toBigInt(collateralAddress))) {
       throw new Error(`${collateralAddress} is not a valid collateral`);
     }
@@ -302,6 +305,7 @@ export class TroveManager {
     agent: StarknetAgentInterface
   ): Promise<OpenTroveResult> {
     await this.initialize();
+    console.log("enter");
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,

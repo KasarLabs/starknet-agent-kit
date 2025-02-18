@@ -124,14 +124,13 @@ main () {
 			read -p "Do you want to overwrite it? (y/N) " -n 1 -r
 		fi
 		echo
+    
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
 			echo "$HTTP_BODY" > "$CONFIG_FILE"
 		fi
 	else
 		echo "$HTTP_BODY" > "$CONFIG_FILE"
 	fi
-
-
 
 	success "Configuration has been successfully saved to $CONFIG_FILE."
 	info "Changing to installation directory..."
@@ -146,6 +145,7 @@ main () {
 
 	info "Starting the agent..."
 	pnpm run curl --agent=$AGENT_NAME.agent.json
+
 }
 
 main "$@" || exit 1

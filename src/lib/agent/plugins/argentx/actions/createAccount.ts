@@ -1,5 +1,5 @@
 import { RpcProvider } from 'starknet';
-import { ARGENTX_CLASSHASH } from '../constant/contract';
+import { argentx_classhash } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 
 /**
@@ -13,7 +13,7 @@ export const CreateAXAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
     const accountDetails =
-      await accountManager.createAccount(ARGENTX_CLASSHASH);
+      await accountManager.createAccount(argentx_classhash);
 
     return JSON.stringify({
       status: 'success',
@@ -43,9 +43,9 @@ export const CreateAXAccountSignature = async () => {
 
     const accountManager = new AccountManager(provider);
     const accountDetails =
-      await accountManager.createAccount(ARGENTX_CLASSHASH);
+      await accountManager.createAccount(argentx_classhash);
     const suggestedMaxFee = await accountManager.estimateAccountDeployFee(
-      ARGENTX_CLASSHASH,
+      argentx_classhash,
       accountDetails
     );
     const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;

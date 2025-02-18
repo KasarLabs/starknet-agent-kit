@@ -74,7 +74,7 @@ export class AccountManager implements BaseUtilityClass {
     accountDetails: AccountDetails
   ): Promise<bigint> {
     try {
-      const version = constants.TRANSACTION_VERSION.V1;
+      const version = '0x1';
       const nonce = constants.ZERO;
       const chainId = await this.provider.getChainId();
 
@@ -124,7 +124,7 @@ export class AccountManager implements BaseUtilityClass {
     maxFee?: BigNumberish
   ): Promise<TransactionResult> {
     try {
-      const version = constants.TRANSACTION_VERSION.V1;
+      const version = '0x1';
       const nonce = constants.ZERO;
       const chainId = await this.provider.getChainId();
 
@@ -198,7 +198,7 @@ export class AccountManager implements BaseUtilityClass {
       classHash: this.proxyClassHash,
       constructorCalldata,
       salt: publicKey,
-      version: constants.TRANSACTION_VERSION.V1,
+      version: '0x1',
       maxFee,
       chainId,
       nonce,

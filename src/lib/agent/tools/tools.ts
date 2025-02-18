@@ -25,8 +25,10 @@ import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
+  // DeployArgentAccountSchema,
   getStorageAtSchema,
   swapSchema,
+  // DeployOZAccountSchema,
   blockIdSchema,
   transactionHashSchema,
   blockIdAndContractAddressSchema,
@@ -69,6 +71,7 @@ import { isMemecoin } from '../plugins/unruggable/actions/isMemecoin';
 import { getLockedLiquidity } from '../plugins/unruggable/actions/getLockedLiquidity';
 import { launchOnEkubo } from '../plugins/unruggable/actions/launchOnEkubo';
 import { RpcProvider } from 'starknet';
+import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { createMemecoin } from '../plugins/unruggable/actions/createMemecoin';
@@ -113,6 +116,7 @@ export interface StarknetAgentInterface {
     signature: string;
   };
   getProvider: () => RpcProvider;
+  accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;
@@ -183,44 +187,40 @@ export const registerTools = () => {
   // Register account-related tools
   StarknetToolRegistry.registerTool({
     name: 'createNewOpenzeppelinAccount',
-    description:
-      'Create a new Open Zeppelin/OZ account and returns privateKey/publicKey/contractAddress',
+    description: 'Create a new Open Zeppelin account and return the privateKey/publicKey/contractAddress',
     execute: CreateOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'createNewArgentxAccount',
-    description:
-      'Creates a new Argentx/AX account and returns privateKey/publicKey/contractAddress without deploying it',
+    name: 'createNewArgentAccount',
+    description: 'Creates a new Argent account and return the privateKey/publicKey/contractAddress',
     execute: CreateAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'createNewOkxAccount',
-    description:
-      'Create a new OKX account and returns privateKey/publicKey/contractAddress',
+    description: 'Create a new OKX account and return the privateKey/publicKey/contractAddress',
     execute: CreateOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'createNewBraavosAccount',
-    description:
-      'Create a new Braavos account and returns privateKey/publicKey/contractAddress',
+    description: 'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
     execute: CreateBraavosAccount,
   });
 
   StarknetToolRegistry.registerTool({
     name: 'deployExistingOpenzeppelinAccount',
     description:
-      'Deploy an existing Open Zeppelin/OZ Account return the deploy transaction address',
+      'Deploy an existing Open Zeppelin Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deployExistingArgentxAccount',
+    name: 'deployExistingArgentAccount',
     description:
-      'Deploy an existing Argentx/AX Account return the deploy transaction address',
+      'Deploy an existing Argentx Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployAXAccount,
   });
@@ -228,7 +228,7 @@ export const registerTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'deployExistingOkxAccount',
     description:
-      'Deploy an existing OKX Account return the deploy transaction address',
+      'Deploy an existing OKX Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployOKXAccount,
   });
@@ -236,7 +236,7 @@ export const registerTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'deployExistingBraavosAccount',
     description:
-      'Deploy an existing Braavos Account return the deploy transaction address',
+      'Deploy an existing Braavos Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
     execute: DeployBraavosAccount,
   });

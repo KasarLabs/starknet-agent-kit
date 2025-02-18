@@ -1,4 +1,4 @@
-export const OZ_CLASSHASH =
+export const oz_classhash =
   '0x061dac032f228abef9c6626f995015233097ae253a7f72d68552db02f2971b8f';
 
 export const DEFAULT_GUARDIAN = '0x0';

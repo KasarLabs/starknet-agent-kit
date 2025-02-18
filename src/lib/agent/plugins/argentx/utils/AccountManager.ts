@@ -22,11 +22,7 @@ import {
  * @implements {BaseUtilityClass}
  */
 export class AccountManager implements BaseUtilityClass {
-  constructor(public provider: any) {
-    if (provider) {
-      provider.config.skipVersionCheck = true;
-    }
-  }
+  constructor(public provider: any) {}
 
   /**
    * Creates a new account instance with generated keys.

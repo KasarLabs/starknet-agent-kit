@@ -1,6 +1,6 @@
 import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { ARGENTX_CLASSHASH } from '../constant/contract';
+import { argentx_classhash } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 import { AccountDetails } from '../../core/account/types/accounts';
 import { z } from 'zod';
@@ -23,7 +23,10 @@ export const DeployAXAccount = async (
     const provider = agent.getProvider();
 
     const accountManager = new AccountManager(provider);
-    const tx = await accountManager.deployAccount(ARGENTX_CLASSHASH, params);
+    const tx = await accountManager.deployAccount(argentx_classhash, params);
+
+    console.log('✅ AX wallet deployed at:', tx.contractAddress);
+    console.log('✅ Transaction hash:', tx.transactionHash);
 
     return JSON.stringify({
       status: 'success',
@@ -54,7 +57,10 @@ export const DeployAXAccountSignature = async (
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const accountManager = new AccountManager(provider);
-    const tx = await accountManager.deployAccount(ARGENTX_CLASSHASH, params);
+    const tx = await accountManager.deployAccount(argentx_classhash, params);
+
+    console.log('✅ AX wallet deployed at:', tx.contractAddress);
+    console.log('✅ Transaction hash:', tx.transactionHash);
 
     return JSON.stringify({
       status: 'success',

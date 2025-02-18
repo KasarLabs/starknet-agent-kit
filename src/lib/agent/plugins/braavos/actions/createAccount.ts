@@ -1,8 +1,8 @@
 import { RpcProvider } from 'starknet';
 import {
-  BRAAVOS_INITIAL_CLASSHASH,
-  BRAVOS_PROXY_CLASSHASH,
-  BRAAVOS_ACCOUNT_CLASSHASH,
+  braavos_initial_classhash,
+  braavos_proxy_classhash,
+  braavos_account_classhash,
 } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 
@@ -18,9 +18,9 @@ export const CreateBraavosAccount = async () => {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
     const accountManager = new AccountManager(
       provider,
-      BRAAVOS_INITIAL_CLASSHASH,
-      BRAVOS_PROXY_CLASSHASH,
-      BRAAVOS_ACCOUNT_CLASSHASH
+      braavos_initial_classhash,
+      braavos_proxy_classhash,
+      braavos_account_classhash
     );
 
     const accountDetails = await accountManager.createAccount();
@@ -53,9 +53,9 @@ export const CreateBraavosAccountSignature = async () => {
 
     const accountManager = new AccountManager(
       provider,
-      BRAAVOS_INITIAL_CLASSHASH,
-      BRAVOS_PROXY_CLASSHASH,
-      BRAAVOS_ACCOUNT_CLASSHASH
+      braavos_initial_classhash,
+      braavos_proxy_classhash,
+      braavos_account_classhash
     );
 
     const accountDetails = await accountManager.createAccount();

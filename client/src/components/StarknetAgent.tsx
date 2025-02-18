@@ -8,7 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import MarkdownIt from 'markdown-it';
-import { WalletAccount } from 'starknet';
+import {
+  // contractClassResponseToLegacyCompiledContract,
+  WalletAccount,
+} from 'starknet';
 import { connectWallet } from '@/app/wallet/wallet';
 import { AiOutlineSignature, AiFillSignature } from 'react-icons/ai';
 import {
@@ -321,6 +324,7 @@ const StarknetAgent = () => {
         result.transaction_type === 'CREATE_ACCOUNT' &&
         result.status === 'success'
       ) {
+        console.log('HERE');
         const account_details = result as ACCOUNT;
         if (!account_details) {
           throw new Error('Account not set');
@@ -354,8 +358,9 @@ const StarknetAgent = () => {
         result.transaction_type != 'READ' &&
         result.transaction_type != 'CREATE_ACCOUNT'
       ) {
+        // to check
         throw new Error(
-          'Invalid transaction type. Expected INVOKE, READ, or CREATE_ACCOUNT'
+          'The transactions has to be an INVOKE or DeployAccount transaction'
         );
       }
     } catch (error) {

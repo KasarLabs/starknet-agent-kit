@@ -1,6 +1,7 @@
 import { setupTestEnvironment } from '../utils/helpers';
 import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from '../../src/lib/agent/tools/tools';
+import { AccountManager } from 'src/lib/agent/plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
 import { Limit } from 'src/lib/agent/limit';
@@ -30,6 +31,7 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
       signature: '',
     }),
     getProvider: () => provider,
+    accountManager: new AccountManager(provider),
     transactionMonitor: new TransactionMonitor(provider),
     contractInteractor: new ContractInteractor(provider),
     getLimit: () => token_limit,
@@ -59,6 +61,7 @@ export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
       signature: '',
     }),
     getProvider: () => provider,
+    accountManager: new AccountManager(provider),
     transactionMonitor: new TransactionMonitor(provider),
     contractInteractor: new ContractInteractor(provider),
     getLimit: () => token_limit,

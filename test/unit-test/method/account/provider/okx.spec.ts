@@ -14,9 +14,6 @@ describe('OKX Account Creation and Deployment', () => {
 
   it('should create a new account and save details', async () => {
     if (process.env.RUN_DEPLOYMENT_TEST) {
-      console.log(
-        'Creation test skipped. Set RUN_DEPLOYMENT_TEST=false to run it'
-      );
       return;
     }
 
@@ -34,12 +31,18 @@ describe('OKX Account Creation and Deployment', () => {
     expect(data.publicKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.privateKey).toMatch(/^0x[a-fA-F0-9]+$/);
     expect(data.contractAddress).toMatch(/^0x[a-fA-F0-9]+$/);
-  }, 30000); // 30 seconds timeout
+
+    console.log('\n=== DÉTAILS DU COMPTE ===');
+    console.log('Adresse:', data.contractAddress);
+    console.log('Clé publique:', data.publicKey);
+    console.log('Clé privée:', data.privateKey);
+    console.log('\nFrais de déploiement estimés:', data.deployFee.overall_fee);
+  }, 30000); // Timeout de 30 secondes
 
   it('should deploy the account', async () => {
     if (!process.env.RUN_DEPLOYMENT_TEST) {
       console.log(
-        'Deployment test skipped. Set RUN_DEPLOYMENT_TEST=true to run it'
+        "Test de déploiement ignoré. Définissez RUN_DEPLOYMENT_TEST=true pour l'exécuter"
       );
       return;
     }
@@ -50,16 +53,17 @@ describe('OKX Account Creation and Deployment', () => {
       privateKey: process.env.PRIVATEKEY as string,
     };
 
+    console.log('\nDéploiement du compte...');
     const result = await DeployOKXAccountSignature(accountDetails);
 
     const deployResult = JSON.parse(result);
     expect(deployResult.status).toBe('success');
 
     if (deployResult.status === 'success') {
-      console.log('Account deployed successfully!');
-      console.log('Transaction hash:', deployResult.transactionHash);
+      console.log('Compte déployé avec succès!');
+      console.log('Hash de transaction:', deployResult.transactionHash);
     } else {
-      console.error('Deployment failed:', deployResult.error);
+      console.error('Échec du déploiement:', deployResult.error);
     }
-  }, 30000); // 30 seconds timeout
+  }, 300000); // Timeout de 5 minutes pour le déploiement
 });

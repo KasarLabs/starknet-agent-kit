@@ -17,7 +17,7 @@ describe('verifyProofService', () => {
 
   describe('With perfect match inputs', () => {});
   it('Should return an url to atlantic dashboard with query id', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {
@@ -35,7 +35,7 @@ describe('verifyProofService', () => {
   });
   describe('With no filename input', () => {});
   it('Invalid Type', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {
@@ -52,7 +52,7 @@ describe('verifyProofService', () => {
     });
   });
   it('Invalid filename', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {
@@ -86,7 +86,7 @@ describe('verifyProofService', () => {
     });
   });
   it('invalid upload path', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR = './invalid/path';
     const getProofParam: VerifierParam = {
       filename: 'recursive_proof.json',
@@ -102,7 +102,7 @@ describe('verifyProofService', () => {
     });
   });
   it('Invalide memory verification', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: VerifierParam = {

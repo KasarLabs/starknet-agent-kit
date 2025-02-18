@@ -16,7 +16,7 @@ describe('getProofService', () => {
   });
   describe('With perfect match inputs', () => {});
   it('Should return an url to atlantic dashboard with query id', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: AtlanticParam = {
@@ -33,7 +33,7 @@ describe('getProofService', () => {
   });
   describe('With no filename input', () => {});
   it('Invalid type', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: AtlanticParam = {
@@ -49,7 +49,7 @@ describe('getProofService', () => {
     });
   });
   it('Invalid filename', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR =
       './test/unit-test/method/infra/atlantic/uploads/';
     const getProofParam: AtlanticParam = {
@@ -81,7 +81,7 @@ describe('getProofService', () => {
     });
   });
   it('Invalid path upload dir', async () => {
-    process.env.ATLANTIC_API_KEY = 'd31d91bc-0e0d-47c3-8cd5-7cd676b90f88';
+    process.env.ATLANTIC_API_KEY = '';
     process.env.PATH_UPLOAD_DIR = './test/infra/atlantic/invalid/';
     const getProofParam: AtlanticParam = {
       filename: 'Pie.zip',

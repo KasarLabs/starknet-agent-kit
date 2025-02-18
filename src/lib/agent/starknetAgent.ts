@@ -15,7 +15,9 @@ import {
 } from './plugins/twitter/interfaces';
 import { JsonConfig } from './jsonConfig';
 import { AgentConfig } from './agent';
-import { json } from 'stream/consumers';
+import { TelegramInterface } from './plugins/telegram/interfaces';
+import TelegramBot from 'node-telegram-bot-api';
+
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
   aiModel: string;
@@ -38,6 +40,7 @@ export class StarknetAgent implements IAgent {
   private readonly agentReactExecutor: AgentConfig | undefined;
   private twitterAccoutManager: TwitterInterface = {};
   private readonly agentMemory: boolean;
+  private telegramAccountManager: TelegramInterface = {};
 
   public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
@@ -95,6 +98,45 @@ export class StarknetAgent implements IAgent {
     }
     if (config.aiModel !== 'ollama' && !config.aiProviderApiKey) {
       throw new Error('AI Provider API key is required');
+    }
+  }
+
+  public async initializeTelegramManager(): Promise<void> {
+    try {
+      const bot_token = process.env.TELEGRAM_BOT_TOKEN;
+      if (!bot_token) {
+        throw new Error(`TELEGRAM_BOT_TOKEN is not set in your .env`);
+      }
+      const public_url = process.env.TELEGRAM_PUBLIC_URL;
+      if (!public_url) {
+        throw new Error(`TELEGRAM_PUBLIC_URL is not set in your .env`);
+      }
+      const bot_port: number = parseInt(
+        process.env.TELEGRAM_BOT_PORT as string,
+        10
+      );
+      if (isNaN(bot_port)) {
+        throw new Error('TELEGRAM_BOT_PORT must be a valid number');
+      }
+
+      const bot = new TelegramBot(bot_token, {
+        webHook: { port: bot_port },
+      });
+      if (!bot) {
+        throw new Error(`Error trying to set your bot`);
+      }
+
+      const TelegramInterfaces: TelegramInterface = {
+        bot_token: bot_token,
+        public_url: public_url,
+        bot_port: bot_port,
+        bot: bot,
+      };
+
+      this.telegramAccountManager = TelegramInterfaces;
+    } catch (error) {
+      console.log(error);
+      return;
     }
   }
 
@@ -224,6 +266,14 @@ export class StarknetAgent implements IAgent {
     return this.twitterAccoutManager;
   }
 
+  getTelegramManager(): TelegramInterface {
+    if (!this.telegramAccountManager) {
+      throw new Error(
+        'Telegram manager not initialized. Call initializeTwitterManager() first'
+      );
+    }
+    return this.telegramAccountManager;
+  }
   async validateRequest(request: string): Promise<boolean> {
     return Boolean(request && typeof request === 'string');
   }

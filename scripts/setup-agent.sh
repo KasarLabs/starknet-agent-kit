@@ -124,13 +124,11 @@ main () {
 			read -p "Do you want to overwrite it? (y/N) " -n 1 -r
 		fi
 		echo
-		if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-			echo -e "${RED}Setup cancelled.${NC}"
-			exit 1
+    
+		if [[ $REPLY =~ ^[Yy]$ ]]; then
+			echo "$HTTP_BODY" > "$CONFIG_FILE"
 		fi
 	fi
-
-	echo "$HTTP_BODY" > "$CONFIG_FILE"
 
 	success "Configuration has been successfully saved to $CONFIG_FILE."
 	info "Changing to installation directory..."
@@ -144,7 +142,8 @@ main () {
 	success "Dependencies installed successfully."
 
 	info "Starting the agent..."
-	pnpm run local --agent=$CONFIG_FILE
+	pnpm run curl --agent=$AGENT_NAME.agent.json
+
 }
 
 main "$@" || exit 1

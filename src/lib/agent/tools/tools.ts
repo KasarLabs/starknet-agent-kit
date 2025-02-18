@@ -25,10 +25,8 @@ import { getClassHashAt } from '../plugins/core/rpc/getClassHash';
 import {
   getOwnBalanceSchema,
   getBalanceSchema,
-  // DeployArgentAccountSchema,
   getStorageAtSchema,
   swapSchema,
-  // DeployOZAccountSchema,
   blockIdSchema,
   transactionHashSchema,
   blockIdAndContractAddressSchema,

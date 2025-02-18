@@ -45,7 +45,6 @@ describe('OKX Account Creation and Deployment', () => {
       privateKey: process.env.PRIVATEKEY as string,
     };
 
-    console.log('\nDéploiement du compte...');
     const result = await DeployOKXAccountSignature(accountDetails);
 
     const deployResult = JSON.parse(result);

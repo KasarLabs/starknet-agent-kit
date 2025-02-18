@@ -85,33 +85,6 @@ export class AccountManager implements BaseUtilityClass {
     }
   }
 
-  // async getAccountBalance(address: string): Promise<string> {
-  //   try {
-  //     const balance = await this.provider.getBalance(address);
-  //     return balance.toString();
-  //   } catch (error) {
-  //     throw new Error(`Failed to get account balance: ${error.message}`);
-  //   }
-  // }
-
-  // async getNonce(address: string): Promise<string> {
-  //   try {
-  //     const nonce = await this.provider.getNonceForAddress(address);
-  //     return nonce.toString();
-  //   } catch (error) {
-  //     throw new Error(`Failed to get nonce: ${error.message}`);
-  //   }
-  // }
-
-  // async isAccountDeployed(address: string): Promise<boolean> {
-  //   try {
-  //     const code = await this.provider.getClassAt(address);
-  //     return code !== null;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
-
   /**
    * Estimates account deployment fee.
    * @async

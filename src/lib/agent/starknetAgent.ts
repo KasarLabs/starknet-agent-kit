@@ -28,6 +28,7 @@ export interface StarknetAgentConfig {
   agentMode: string;
   agentconfig?: JsonConfig;
 }
+import chalk from 'chalk';
 
 export class StarknetAgent implements IAgent {
   private readonly provider: RpcProvider;
@@ -276,7 +277,7 @@ export class StarknetAgent implements IAgent {
         },
         this.agentReactExecutor.agentConfig
       );
-      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
+      console.log(`${chalk.green('\nAgent')} : ${aiMessage.messages[aiMessage.messages.length - 1].content}`);
       await new Promise((resolve) =>
         setTimeout(resolve, this.agentReactExecutor.json_config.interval)
       );

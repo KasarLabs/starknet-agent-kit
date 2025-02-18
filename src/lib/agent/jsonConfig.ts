@@ -1,5 +1,4 @@
 import { SystemMessage } from '@langchain/core/messages';
-import { num } from 'starknet';
 
 export interface Token {
   symbol: string;

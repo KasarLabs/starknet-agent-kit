@@ -5,7 +5,7 @@ import { StarknetAgent } from './lib/agent/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
 import { load_json_config } from './lib/agent/jsonConfig';
-import yargs, { string } from 'yargs';
+import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';
 import path from 'path';

@@ -8,18 +8,14 @@ import { load_json_config } from './lib/agent/jsonConfig';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import path from 'path';
-const tty = require('tty');
 
 config();
 
 const fs = require('fs');
-
 const ttyFd = fs.openSync('/dev/tty', 'r+');
 
 const ttyRead = fs.createReadStream(null, { fd: ttyFd });
-const ttyWrite = fs.createWriteStream(null, { fd: ttyFd });
 
-// Utiliser process.stdout pour l'output
 const prompt = inquirer.createPromptModule({
   input: ttyRead,
   output: process.stdout,
@@ -235,3 +231,6 @@ LocalRun().catch((error) => {
   );
   process.exit(1);
 });
+
+
+

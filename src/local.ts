@@ -14,7 +14,7 @@ config();
 
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
-    .option('AGENT', {
+    .option('agent', {
       alias: 'a',
       describe: 'Your config agent file name',
       type: 'string',
@@ -23,7 +23,7 @@ const load_command = async (): Promise<string> => {
     .strict()
     .parse();
 
-  return argv['AGENT'];
+  return argv['agent'];
 };
 
 const clearScreen = () => {
@@ -107,8 +107,6 @@ const validateEnvVars = async () => {
           },
         },
       ]);
-
-      // Utiliser promisify pour convertir appendFile en version Promise
       await new Promise((resolve, reject) => {
         fs.appendFile('.env', `\n${missing}=${prompt}\n`, (err) => {
           if (err) reject(new Error('Error when trying to write on .env file'));

@@ -1,7 +1,7 @@
 import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { oz_classhash } from '../constant/contract';
-import { AccountManager } from '../../core/account/utils/AccountManager';
+import { OZ_CLASSHASH } from '../constant/contract';
+import { AccountManager } from '../utils/AccountManager';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 
@@ -22,10 +22,7 @@ export const DeployOZAccount = async (
     const provider = agent.getProvider();
 
     const accountManager = new AccountManager(provider);
-    const tx = await accountManager.deployAccount(oz_classhash, params);
-
-    console.log('✅ Openzeppelin wallet deployed at:', tx.contractAddress);
-    console.log('✅ Transaction hash:', tx.transactionHash);
+    const tx = await accountManager.deployAccount(OZ_CLASSHASH, params);
 
     return JSON.stringify({
       status: 'success',
@@ -56,10 +53,7 @@ export const DeployOZAccountSignature = async (
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const accountManager = new AccountManager(provider);
-    const tx = await accountManager.deployAccount(oz_classhash, params);
-
-    console.log('✅ Openzeppelin wallet deployed at:', tx.contractAddress);
-    console.log('✅ Transaction hash:', tx.transactionHash);
+    const tx = await accountManager.deployAccount(OZ_CLASSHASH, params);
 
     return JSON.stringify({
       status: 'success',

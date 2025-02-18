@@ -1,6 +1,6 @@
 import { RpcProvider } from 'starknet';
-import { okx_classhash } from '../constant/contract';
-import { AccountManager } from '../../core/account/utils/AccountManager';
+import { OKX_CLASSHASH } from '../constant/contract';
+import { AccountManager } from '../utils/AccountManager';
 
 /**
  * Creates a new OKX account.
@@ -12,7 +12,7 @@ import { AccountManager } from '../../core/account/utils/AccountManager';
 export const CreateOKXAccount = async () => {
   try {
     const accountManager = new AccountManager(undefined);
-    const accountDetails = await accountManager.createAccount(okx_classhash);
+    const accountDetails = await accountManager.createAccount(OKX_CLASSHASH);
 
     return JSON.stringify({
       status: 'success',
@@ -41,9 +41,9 @@ export const CreateOKXAccountSignature = async () => {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const accountManager = new AccountManager(provider);
-    const accountDetails = await accountManager.createAccount(okx_classhash);
+    const accountDetails = await accountManager.createAccount(OKX_CLASSHASH);
     const suggestedMaxFee = await accountManager.estimateAccountDeployFee(
-      okx_classhash,
+      OKX_CLASSHASH,
       accountDetails
     );
     const maxFee = suggestedMaxFee.suggestedMaxFee * 2n;

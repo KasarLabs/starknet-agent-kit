@@ -1,23 +1,28 @@
 import { promises as fs } from 'fs';
+import { placePixelParam, placeStencilParam } from '../schema';
+import { placePixel, placePixelSignature } from './placePixel';
+import { getFilename } from '../utils/getFilename';
 
-export const placeStencil = async () => {
-  console.log('placeStencil');
+export const placeStencil = async (param: placeStencilParam) => {
   try {
-    const filename = 'image2.png';
+    const startPos: { x: number; y: number } = { x: param.xPos, y: param.yPos };
+    const canvasId = param.canvasId;
+
+    const filename = param.filename;
     if (!filename) {
       throw new Error('No filename found.');
     }
+    const fullName = await getFilename(filename);
 
     let buffer;
     try {
-      buffer = await fs.readFile(`./uploads/${filename}`);
+      buffer = await fs.readFile(fullName);
     } catch (error) {
       throw new Error(error.message);
     }
 
     const formData = new FormData();
     const file = new File([buffer], filename);
-
     formData.append('image', file);
     const response = await fetch(`https://api.art-peace.net/add-stencil-img`, {
       method: 'POST',
@@ -26,22 +31,30 @@ export const placeStencil = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const json = await response.json();
     const imgHash = json.result;
-    console.log(imgHash);
+
     const response2 = await fetch(
-      `https://api.art-peace.net/get-stencil-pixel-data?hash=000cf017dd0b4e888ea888d72a0a856bc6e52328110f5e214f7fd0392ad18ba0`
+      `https://api.art-peace.net/get-stencil-pixel-data?hash=${imgHash}`
     );
     if (!response2.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const response2Data = await response2.json();
-    console.log(response2Data);
-    const pixelsColorIds = response2Data.data.pixelData;
-    const stencilWidth = response2Data.data.width;
-    const stencilHeight = response2Data.data.height;
-    console.log(pixelsColorIds, stencilHeight, stencilWidth);
+
+    const pixelsColorIds: number[] = response2Data.data.pixelData;
+    const stencilWidth: number = response2Data.data.width;
+
+    let pos = { x: startPos.x - 1, y: startPos.y };
+    const allData: placePixelParam[] = pixelsColorIds.map((pixelId) => {
+      if (pos.x === startPos.x + stencilWidth - 1)
+        pos = { x: startPos.x, y: pos.y + 1 };
+      else pos = { x: pos.x + 1, y: pos.y };
+      const color: string = pixelId.toString();
+      return { canvasId, xPos: pos.x, yPos: pos.y, color };
+    });
+
+    return await placePixelSignature({ params: allData });
   } catch (error) {
     return JSON.stringify({
       status: 'error',

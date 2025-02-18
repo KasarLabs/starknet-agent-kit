@@ -110,7 +110,8 @@ export class Checker {
       const isHex = this.hexColors.indexOf(cleanColor);
       if (isHex != -1) return `${isHex}`;
 
-      if (parseInt(color) === 0) return `1`;
+      const numColor = parseInt(color);
+      if (numColor < 255 && numColor <= this.hexColors.length) return color;
 
       const index: number = this.colors.indexOf(cleanColor);
       if (index === -1)

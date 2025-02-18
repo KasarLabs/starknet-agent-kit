@@ -17,6 +17,7 @@ import { registerFibrousTools } from '../plugins/fibrous/tools';
 import { register } from 'module';
 import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
+import { registerArtpeaceTools } from '../plugins/artpeace/tools';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -105,6 +106,8 @@ export const registerTools = () => {
   registerFibrousTools();
 
   registerTelegramTools();
+
+  registerArtpeaceTools();
 };
 
 registerTools();

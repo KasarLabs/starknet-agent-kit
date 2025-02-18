@@ -86,6 +86,8 @@ export const placePixelSignature = async (input: {
 
     const results = [];
     for (const param of params) {
+      console.log(typeof param.color, param.color);
+      if (param.color === '255') continue;
       const { position, color } = await ArtpeaceHelper.validateAndFillDefaults(
         param,
         checker

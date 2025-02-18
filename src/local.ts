@@ -7,14 +7,13 @@ import { config } from 'dotenv';
 import { load_json_config } from './lib/agent/jsonConfig';
 import yargs, { string } from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import * as fs from 'fs';
-import path from 'path';
-
 config();
+
+// Utilisation
 
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
-    .option('agent', {
+    .option('AGENT', {
       alias: 'a',
       describe: 'Your config agent file name',
       type: 'string',
@@ -23,7 +22,7 @@ const load_command = async (): Promise<string> => {
     .strict()
     .parse();
 
-  return argv['agent'];
+  return argv['AGENT'];
 };
 
 const clearScreen = () => {
@@ -66,24 +65,7 @@ const createBox = (
   return result;
 };
 
-function reloadEnvVars() {
-  Object.keys(process.env).forEach((key) => {
-    delete process.env[key];
-  });
-
-  const result = config({
-    path: path.resolve(process.cwd(), '.env'),
-    override: true,
-  });
-
-  if (result.error) {
-    throw new Error('Failed to reload .env file');
-  }
-
-  return result.parsed;
-}
-
-const validateEnvVars = async () => {
+const validateEnvVars = () => {
   const required = [
     'STARKNET_RPC_URL',
     'STARKNET_PRIVATE_KEY',
@@ -91,33 +73,9 @@ const validateEnvVars = async () => {
     'AI_MODEL',
     'AI_PROVIDER_API_KEY',
   ];
-  const missings = required.filter((key) => !process.env[key]);
-  if (missings.length > 0) {
-    console.error(`Missing environment variables:\n${missings.join('\n')}`);
-    for (const missing of missings) {
-      const { prompt } = await inquirer.prompt([
-        {
-          type: 'input',
-          name: 'prompt',
-          message: chalk.redBright(`Enter the value of ${missing}:`),
-          validate: (value: string) => {
-            const trimmed = value.trim();
-            if (!trimmed) return 'Please enter a valid message';
-            return true;
-          },
-        },
-      ]);
-
-      await new Promise((resolve, reject) => {
-        fs.appendFile('.env', `\n${missing}=${prompt}\n`, (err) => {
-          if (err) reject(new Error('Error when trying to write on .env file'));
-          resolve(null);
-        });
-      });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-    reloadEnvVars();
-    await validateEnvVars();
+  const missing = required.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(`Missing environment variables:\n${missing.join('\n')}`);
   }
 };
 
@@ -151,8 +109,7 @@ const LocalRun = async () => {
   const spinner = createSpinner('Initializing Starknet Agent').start();
 
   try {
-    spinner.stop();
-    await validateEnvVars();
+    validateEnvVars();
     spinner.success({ text: 'Agent initialized successfully' });
     const agent_config = load_json_config(agent_config_name);
     if (mode === 'agent') {
@@ -188,6 +145,7 @@ const LocalRun = async () => {
             agentMode: 'agent',
             agentconfig: agent_config,
           });
+          agent.initializeTwitterManager();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -209,6 +167,8 @@ const LocalRun = async () => {
         agentMode: 'auto',
         agentconfig: agent_config,
       });
+
+      agent.initializeTwitterManager();
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
 

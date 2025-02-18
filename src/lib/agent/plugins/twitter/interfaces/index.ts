@@ -40,4 +40,5 @@ export interface TwitterScraperConfig {
 export interface TwitterInterface {
   twitter_scraper?: TwitterScraperConfig;
   twitter_api?: TwitterApiConfig;
+  twitter_auth_mode: 'CREDENTIALS' | 'API';
 }

@@ -29,7 +29,7 @@ const systemMessage = new SystemMessage(`
     - Use bullet points for clarity
     - No lengthy apologies or explanations
   `);
-export const createAgent = (
+export const createAgent = async (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
@@ -82,7 +82,7 @@ export const createAgent = (
       console.log('Character config loaded successfully');
       console.log('JSON config loaded successfully');
 
-      const allowedTools = createAllowedTools(
+      const allowedTools = await createAllowedTools(
         starknetAgent,
         json_config.internal_plugins
       );
@@ -94,7 +94,7 @@ export const createAgent = (
       const tools = allowedToolsKits
         ? [...allowedTools, ...allowedToolsKits]
         : allowedTools;
-
+      console.log(tools.length);
       const agent = createReactAgent({
         llm: modelSelected,
         tools,

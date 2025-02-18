@@ -14,8 +14,7 @@ import {
   TwitterScraperConfig,
 } from './plugins/twitter/interfaces';
 import { JsonConfig } from './jsonConfig';
-import { TelegramInterface } from './plugins/telegram/interfaces';
-import TelegramBot from 'node-telegram-bot-api';
+import { PluginManager } from './tools/tools';
 
 export interface StarknetAgentConfig {
   aiProviderApiKey: string;
@@ -35,11 +34,10 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly agentReactExecutor: any;
-  private twitterAccoutManager: TwitterInterface = {};
-  private telegramAccountManager: TelegramInterface = {};
+  private agentReactExecutor: any;
 
   public readonly accountManager: AccountManager;
+  public readonly plugins_manager: PluginManager = {};
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
@@ -67,22 +65,24 @@ export class StarknetAgent implements IAgent {
     this.contractInteractor = new ContractInteractor(this.provider);
 
     // Create agent executor with tools
+  }
+
+  public async createAgentReactExecutor() {
     if (this.agentMode === 'auto') {
-      this.agentReactExecutor = createAutonomousAgent(this, {
+      this.agentReactExecutor = await createAutonomousAgent(this, {
         aiModel: this.aiModel,
         apiKey: this.aiProviderApiKey,
-        aiProvider: config.aiProvider,
+        aiProvider: this.config.aiProvider,
       });
     }
     if (this.agentMode === 'agent') {
-      this.agentReactExecutor = createAgent(this, {
+      this.agentReactExecutor = await createAgent(this, {
         aiModel: this.aiModel,
         apiKey: this.aiProviderApiKey,
-        aiProvider: config.aiProvider,
+        aiProvider: this.config.aiProvider,
       });
     }
   }
-
   private validateConfig(config: StarknetAgentConfig) {
     if (!config.accountPrivateKey) {
       throw new Error(
@@ -94,118 +94,6 @@ export class StarknetAgent implements IAgent {
     }
   }
 
-  public async initializeTelegramManager(): Promise<void> {
-    try {
-      const bot_token = process.env.TELEGRAM_BOT_TOKEN;
-      if (!bot_token) {
-        throw new Error(`TELEGRAM_BOT_TOKEN is not set in your .env`);
-      }
-      const public_url = process.env.TELEGRAM_PUBLIC_URL;
-      if (!public_url) {
-        throw new Error(`TELEGRAM_PUBLIC_URL is not set in your .env`);
-      }
-      const bot_port: number = parseInt(
-        process.env.TELEGRAM_BOT_PORT as string,
-        10
-      );
-      if (isNaN(bot_port)) {
-        throw new Error('TELEGRAM_BOT_PORT must be a valid number');
-      }
-
-      const bot = new TelegramBot(bot_token, {
-        webHook: { port: bot_port },
-      });
-      if (!bot) {
-        throw new Error(`Error trying to set your bot`);
-      }
-
-      const TelegramInterfaces: TelegramInterface = {
-        bot_token: bot_token,
-        public_url: public_url,
-        bot_port: bot_port,
-        bot: bot,
-      };
-
-      this.telegramAccountManager = TelegramInterfaces;
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  }
-
-  public async initializeTwitterManager(): Promise<void> {
-    const auth_mode = process.env.TWITTER_AUTH_MODE;
-    try {
-      if (auth_mode === 'CREDENTIALS') {
-        const username = process.env.TWITTER_USERNAME;
-        const password = process.env.TWITTER_PASSWORD;
-        const email = process.env.TWITTER_EMAIL;
-
-        if (!username || !password) {
-          throw new Error(
-            'Error when try to initializeTwitterManager in CREDENTIALS twitter_auth_mode check your .env'
-          );
-        }
-        const user_client = new Scraper();
-
-        await user_client.login(username, password, email);
-        const account = await user_client.me();
-        if (!account) {
-          throw new Error('Impossible to get your twitter account information');
-        }
-        const userClient: TwitterScraperConfig = {
-          twitter_client: user_client,
-          twitter_id: account?.userId as string,
-          twitter_username: account?.username as string,
-        };
-        this.twitterAccoutManager.twitter_scraper = userClient;
-      } else if (auth_mode === 'API') {
-        const twitter_api = process.env.TWITTER_API;
-        const twitter_api_secret = process.env.TWITTER_API_SECRET;
-        const twitter_access_token = process.env.TWITTER_ACCESS_TOKEN;
-        const twitter_access_token_secret =
-          process.env.TWITTER_ACCESS_TOKEN_SECRET;
-
-        if (
-          !twitter_api ||
-          !twitter_api_secret ||
-          !twitter_access_token ||
-          !twitter_access_token_secret
-        ) {
-          throw new Error(
-            'Error when try to initializeTwitterManager in API twitter_auth_mode check your .env'
-          );
-        }
-
-        const userClient = new TwitterApi({
-          appKey: twitter_api,
-          appSecret: twitter_api_secret,
-          accessToken: twitter_access_token,
-          accessSecret: twitter_access_token_secret,
-        });
-        if (!userClient) {
-          throw new Error(
-            'Error when trying to createn you Twitter API Account check your API Twitter CREDENTIALS'
-          );
-        }
-
-        const apiConfig: TwitterApiConfig = {
-          twitter_api: twitter_api,
-          twitter_api_secret: twitter_api_secret,
-          twitter_access_token: twitter_access_token,
-          twitter_access_token_secret: twitter_access_token_secret,
-          twitter_api_client: userClient,
-        };
-
-        this.twitterAccoutManager.twitter_api = apiConfig;
-      } else {
-        return;
-      }
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  }
   getAccountCredentials() {
     return {
       accountPrivateKey: this.accountPrivateKey,
@@ -243,27 +131,6 @@ export class StarknetAgent implements IAgent {
     return this.token_limit;
   }
 
-  getTwitterAuthMode(): 'API' | 'CREDENTIALS' | undefined {
-    return process.env.TWITTER_AUTH_MODE as 'API' | 'CREDENTIALS' | undefined;
-  }
-
-  getTwitterManager(): TwitterInterface {
-    if (!this.twitterAccoutManager) {
-      throw new Error(
-        'Twitter manager not initialized. Call initializeTwitterManager() first'
-      );
-    }
-    return this.twitterAccoutManager;
-  }
-
-  getTelegramManager(): TelegramInterface {
-    if (!this.telegramAccountManager) {
-      throw new Error(
-        'Telegram manager not initialized. Call initializeTwitterManager() first'
-      );
-    }
-    return this.telegramAccountManager;
-  }
   async validateRequest(request: string): Promise<boolean> {
     return Boolean(request && typeof request === 'string');
   }

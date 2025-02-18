@@ -2,8 +2,8 @@ import TelegramBot from 'node-telegram-bot-api';
 import express, { Express, Request, Response, Application } from 'express';
 import { StarknetAgentInterface } from '../../../tools/tools';
 import { getTelegramMessageUpdateFromConversationParams } from 'src/lib/agent/plugins/telegram/schema';
-import { TelegramServerConstant } from 'src/lib/agent/plugins/telegram/types/';
-
+import { TelegramServerConstant } from 'src/lib/agent/plugins/telegram/constant';
+import { getTelegramManager } from '../tools';
 /**
  * Manage a Telegram Bot server.
  * this class provides :
@@ -221,7 +221,10 @@ export const telegram_get_messages_from_conversation = async (
   params: getTelegramMessageUpdateFromConversationParams
 ) => {
   try {
-    const bot_config = agent.getTelegramManager();
+    const bot_config = getTelegramManager(agent);
+    if (!bot_config) {
+      throw new Error('Telegram manager is not set');
+    }
     if (
       !bot_config.bot_token ||
       !bot_config.bot_port ||

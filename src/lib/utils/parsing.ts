@@ -1,4 +1,12 @@
 import { Provider } from 'starknet';
+
+export const PluginsNeedEnvValue = [
+  'twitter',
+  'telegram',
+  'discord',
+  'coingecko',
+];
+
 export const checkFormatStarknetAddress = (address: string): boolean => {
   // Check format of starknet address and return true if it is correct
   if (!address) {
@@ -15,7 +23,7 @@ export const checkFormatStarknetAddress = (address: string): boolean => {
   return true;
 };
 
-export const checkStarknetRpcUrl = async(rpc: string): Promise<boolean> => {
+export const checkStarknetRpcUrl = async (rpc: string): Promise<boolean> => {
   const provider = new Provider({ nodeUrl: rpc });
   if (!provider) {
     return false;

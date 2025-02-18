@@ -22,11 +22,19 @@ export const getLastUserTweet = async (
 ) => {
   try {
     console.log('GetLastUserTweet');
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     if (!twitter_client) {
       throw new Error('twitter_client is undefined');
     }
@@ -64,11 +72,19 @@ export const getLastTweetsOptions = async (
 ) => {
   try {
     console.log('GetLastTweetsOptions');
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     const collectedTweets: TweetType[] = [];
 
     if (!twitter_client) {
@@ -109,11 +125,19 @@ export const getOwnTwitterAccountInfo = async (
 ) => {
   try {
     console.log('getOwnTwitterAccountInfo');
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     if (!twitter_client) {
       throw new Error('twitter_client is undefined');
     }
@@ -146,11 +170,19 @@ export const getLastTweetsFromUser = async (
 ) => {
   console.log('getLastTweetsFromUser');
   try {
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     if (!twitter_client) {
       throw new Error('twitter_client is undefined');
     }
@@ -192,11 +224,19 @@ export const getLastTweetsAndRepliesFromUser = async (
 ) => {
   try {
     console.log('getLastTweetsAndRepliesFromUser');
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     if (!twitter_client) {
       throw new Error('twitter_client is undefined');
     }
@@ -239,11 +279,19 @@ export const getTwitterUserIdFromUsername = async (
 ) => {
   try {
     console.log('getTwitterUserIdFromUsername');
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     if (!twitter_client) {
       throw new Error('twitter_client is undefined');
     }
@@ -274,11 +322,19 @@ export const getTwitterProfileFromUsername = async (
 ) => {
   try {
     console.log('geTwitterUserIdFromUsername');
-    if (agent.getTwitterAuthMode() != 'CREDENTIALS') {
+    if (!agent.plugins_manager.twitter_manager) {
+      throw new Error('Twitter Manager is not set');
+    }
+
+    const twitter_auth_mode =
+      agent.plugins_manager.twitter_manager.twitter_auth_mode;
+    if (twitter_auth_mode != 'CREDENTIALS') {
       throw new Error('You need to be in CREDENTIALS twitter_auth_mode');
     }
+
     const twitter_client =
-      agent.getTwitterManager().twitter_scraper?.twitter_client;
+      agent.plugins_manager.twitter_manager.twitter_scraper?.twitter_client;
+
     if (!twitter_client) {
       throw new Error('twitter_client is undefined');
     }

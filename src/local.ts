@@ -167,7 +167,6 @@ const validateEnvVars = async () => {
                   return 'Please enter a valid message';
                 }
             }
-
             return true;
           },
         },
@@ -251,6 +250,7 @@ const LocalRun = async () => {
             agentMode: 'agent',
             agentconfig: agent_config,
           });
+          await agent.createAgentReactExecutor();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -274,7 +274,6 @@ const LocalRun = async () => {
       });
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();
-      agent.initializeTwitterManager();
       try {
         await agent.execute_autonomous();
         autoSpinner.success({ text: 'Autonomous execution completed' });

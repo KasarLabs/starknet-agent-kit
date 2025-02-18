@@ -9,7 +9,7 @@ import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
 
-export const createAutonomousAgent = (
+export const createAutonomousAgent = async (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
@@ -64,7 +64,7 @@ export const createAutonomousAgent = (
       console.log('JSON config loaded successfully');
 
       const allowedTools = json_config.internal_plugins
-        ? createAllowedTools(starknetAgent, json_config.internal_plugins)
+        ? await createAllowedTools(starknetAgent, json_config.internal_plugins)
         : createTools(starknetAgent);
 
       const allowedToolsKits = json_config.external_plugins

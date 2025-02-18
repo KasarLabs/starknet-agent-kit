@@ -6,3 +6,9 @@ export const TelegramServerConstant = {
   HTTP_STATUS_OK: 200,
   HTTP_STATUS_ERROR: 500,
 } as const;
+
+export const TelegramEnvField: string[] = [
+  'TELEGRAM_BOT_TOKEN',
+  'TELEGRAM_PUBLIC_URL',
+  'TELEGRAM_BOT_PORT',
+];

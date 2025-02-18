@@ -14,10 +14,14 @@ import { registerTokenTools } from '../plugins/core/token/tools';
 import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
-import { register } from 'module';
 import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
+import { agent } from 'supertest';
 
+export interface PluginManager {
+  telegram_manager?: TelegramInterface;
+  twitter_manager?: TwitterInterface;
+}
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
     accountPublicKey: string;
@@ -35,10 +39,8 @@ export interface StarknetAgentInterface {
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
   getLimit: () => Limit;
-  getTwitterAuthMode: () => 'API' | 'CREDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;
-  getTwitterManager: () => TwitterInterface;
-  getTelegramManager: () => TelegramInterface;
+  plugins_manager: PluginManager;
 }
 
 export interface StarknetTool<P = any> {
@@ -47,7 +49,11 @@ export interface StarknetTool<P = any> {
   description: string;
   schema?: object;
   responseFormat?: string;
-  execute: (agent: StarknetAgentInterface, params: P) => Promise<unknown>;
+  execute: (
+    agent: StarknetAgentInterface,
+    params: P,
+    plugins_manager?: any
+  ) => Promise<unknown>;
 }
 
 export class StarknetToolRegistry {
@@ -67,17 +73,12 @@ export class StarknetToolRegistry {
     );
   }
 
-  static createAllowedTools(
+  static async createAllowedTools (
     agent: StarknetAgentInterface,
     allowed_tools: string[]
   ) {
-    const filteredTools = this.tools.filter((tool) =>
-      allowed_tools.includes(tool.name)
-    );
-    let tools = this.tools.filter((tool) =>
-      allowed_tools.includes(tool.plugins)
-    );
-    return tools.map(({ name, description, schema, execute }) =>
+    await registerTools(agent, allowed_tools);
+    return this.tools.map(({ name, description, schema, execute }) =>
       tool(async (params: any) => execute(agent, params), {
         name,
         description,
@@ -87,34 +88,38 @@ export class StarknetToolRegistry {
   }
 }
 
-export const registerTools = () => {
-  registerAccountTools();
+export const initializeTools = (agent: StarknetAgentInterface) => {};
 
-  registerAvnuTools();
+export const registerTools = async (
+  agent: StarknetAgentInterface,
+  allowed_tools: string[]
+) => {
+  allowed_tools.includes('account') && registerAccountTools();
 
-  registerTokenTools();
+  allowed_tools.includes('avnu') && registerAvnuTools();
 
-  registerRPCTools();
+  allowed_tools.includes('token') && registerTokenTools();
 
-  registerTransactionTools();
+  allowed_tools.includes('rpc') && registerRPCTools();
 
-  registerUnraggableTools();
+  allowed_tools.includes('transaction') && registerTransactionTools();
 
-  registerTwitterTools();
+  allowed_tools.includes('unraggable') && registerUnraggableTools();
 
-  registerFibrousTools();
+  allowed_tools.includes('twitter') && await registerTwitterTools(agent);
 
-  registerTelegramTools();
+  allowed_tools.includes('fibrous') && registerFibrousTools();
+
+  allowed_tools.includes('telegram') && registerTelegramTools(agent);
 };
 
-registerTools();
 // Initialize tools
 
 export const createTools = (agent: StarknetAgentInterface) => {
   return StarknetToolRegistry.createTools(agent);
 };
 
-export const createAllowedTools = (
+export const createAllowedTools = async (
   agent: StarknetAgentInterface,
   allowed_tools: string[]
 ) => {

@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 
 export const placeStencil = async () => {
+  console.log("placeStencil")
   try {
       const filename = "image2.png";
     if (!filename) {
@@ -33,7 +34,6 @@ export const placeStencil = async () => {
     }
 
     const json = await response.json();
-    console.log(json)
     const imgHash = json.result;
     console.log(imgHash);
     const response2 = await fetch(`https://api.art-peace.net/get-stencil-pixel-data?hash=000cf017dd0b4e888ea888d72a0a856bc6e52328110f5e214f7fd0392ad18ba0`);

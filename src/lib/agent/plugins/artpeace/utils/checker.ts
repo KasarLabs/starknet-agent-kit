@@ -24,6 +24,7 @@ export class Checker {
   async checkWorld(): Promise<number> {
     try {
       let id: number;
+      console.log(this.param);
       if (typeof this.param === 'string') {
         const response = await fetch(
           `https://api.art-peace.net/get-world-id?worldName=${this.param}`

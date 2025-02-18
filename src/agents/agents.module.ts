@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AgentService } from './services/agent.service';
-import { AgentsController } from './agents.controller';
 import { ConfigModule } from '../config/config.module';
 import { WalletController } from './wallet.controller';
 import { WalletService } from './services/wallet.service';
@@ -25,7 +24,7 @@ import { APP_GUARD } from '@nestjs/core';
       useClass: ThrottlerGuard,
     },
   ],
-  controllers: [AgentsController, WalletController],
-  exports: [AgentService, WalletService],
+  controllers: [WalletController],
+  exports: [WalletService],
 })
 export class AgentsModule {}

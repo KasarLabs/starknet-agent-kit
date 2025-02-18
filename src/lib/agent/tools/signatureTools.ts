@@ -1,6 +1,4 @@
 import { tool } from '@langchain/core/tools';
-import { registerSignatureToolsAccount } from '../plugins/core/account/tools/tools_signature';
-import { registerSignatureToolsToken } from '../plugins/core/token/tools/tools_signature';
 import { registerSignatureArtpeaceTools } from '../plugins/artpeace/tools/signatureTools';
 
 interface SignatureTool<P = any> {
@@ -31,8 +29,6 @@ export class StarknetSignatureToolRegistry {
 }
 
 export const RegisterSignatureTools = () => {
-  registerSignatureToolsToken();
-  registerSignatureToolsAccount();
   registerSignatureArtpeaceTools();
 };
 

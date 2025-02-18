@@ -300,7 +300,10 @@ export class StarknetAgent implements IAgent {
         `Can't use execute call data with agent_mod : ${this.agentMode}`
       );
     }
+    const start = Date.now();
     const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
+    const end = Date.now();
+    console.log(end - start);
     try {
       const parsedResult = JSON.parse(
         aiMessage.messages[aiMessage.messages.length - 2].content

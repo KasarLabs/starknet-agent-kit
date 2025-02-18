@@ -127,6 +127,8 @@ main () {
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
 			echo "$HTTP_BODY" > "$CONFIG_FILE"
 		fi
+	else
+		echo "$HTTP_BODY" > "$CONFIG_FILE"
 	fi
 
 

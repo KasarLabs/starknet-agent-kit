@@ -96,7 +96,7 @@ export class FileTypeGuard implements CanActivate {
       if (error instanceof ForbiddenException) {
         throw error;
       }
-      throw new ForbiddenException('Erreur lors du traitement du fichier');
+      throw new ForbiddenException('File processing error');
     }
   }
 

@@ -21,7 +21,6 @@ const prompt = inquirer.createPromptModule({
   output: process.stdout,
 });
 
-
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))
     .option('agent', {
@@ -119,10 +118,15 @@ const validateEnvVars = async () => {
       ]);
 
       await new Promise((resolve, reject) => {
-        fs.appendFile('.env', `\n${missing}=${prompt_value}\n`, (err : Error) => {
-          if (err) reject(new Error('Error when trying to write on .env file'));
-          resolve(null);
-        });
+        fs.appendFile(
+          '.env',
+          `\n${missing}=${prompt_value}\n`,
+          (err: Error) => {
+            if (err)
+              reject(new Error('Error when trying to write on .env file'));
+            resolve(null);
+          }
+        );
       });
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -140,8 +144,8 @@ const LocalRun = async () => {
       type: 'input',
       name: 'mode',
       message: chalk.blue('Select operation mode (agent/auto):'),
-      validate: input => ['agent', 'auto'].includes(input)
-    }  
+      validate: (input) => ['agent', 'auto'].includes(input),
+    },
   ]);
 
   clearScreen();
@@ -231,6 +235,3 @@ LocalRun().catch((error) => {
   );
   process.exit(1);
 });
-
-
-

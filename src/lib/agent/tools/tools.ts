@@ -186,31 +186,31 @@ export const registerTools = () => {
 
   // Register account-related tools
   StarknetToolRegistry.registerTool({
-    name: 'createNewOpenzeppelinAccount',
+    name: 'create_new_openzeppelin_account',
     description: 'Create a new Open Zeppelin account and return the privateKey/publicKey/contractAddress',
     execute: CreateOZAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'createNewArgentAccount',
-    description: 'Creates a new Argent account and return the privateKey/publicKey/contractAddress',
+    name: 'create_new_argentx_account',
+    description: 'Creates a new ArgentX account and return the privateKey/publicKey/contractAddress',
     execute: CreateAXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'createNewOkxAccount',
+    name: 'create_new_okx_account',
     description: 'Create a new OKX account and return the privateKey/publicKey/contractAddress',
     execute: CreateOKXAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'createNewBraavosAccount',
+    name: 'create_new_braavos_account',
     description: 'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
     execute: CreateBraavosAccount,
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deployExistingOpenzeppelinAccount',
+    name: 'deploy_existing_openzeppelin_account',
     description:
       'Deploy an existing Open Zeppelin Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
@@ -218,7 +218,7 @@ export const registerTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deployExistingArgentAccount',
+    name: 'deploy_existing_argentx_account',
     description:
       'Deploy an existing Argentx Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
@@ -226,7 +226,7 @@ export const registerTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deployExistingOkxAccount',
+    name: 'deploy_existing_okx_account',
     description:
       'Deploy an existing OKX Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,
@@ -234,7 +234,7 @@ export const registerTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deployExistingBraavosAccount',
+    name: 'deploy_existing_braavos_account',
     description:
       'Deploy an existing Braavos Account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,

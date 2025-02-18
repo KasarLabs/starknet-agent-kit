@@ -95,7 +95,7 @@ export const RegisterSignatureTools = () => [
   }),
 
   StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'deploy_open_zeppelin_account',
+    name: 'deploy_openzeppelin_account',
     description:
       'deploy open_zeppelin account return the privateKey/publicKey/contractAddress',
     schema: accountDetailsSchema,

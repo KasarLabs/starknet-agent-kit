@@ -304,7 +304,6 @@ export class TroveManager {
     agent: StarknetAgentInterface
   ): Promise<OpenTroveResult> {
     await this.initialize();
-    console.log('enter');
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,

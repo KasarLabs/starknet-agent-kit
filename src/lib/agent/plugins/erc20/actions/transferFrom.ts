@@ -83,10 +83,12 @@ export const transfer_from_signature = async (input: {
   try {
     const params = input.params;
 
+    console.log('Transfer_from params:', params);
     if (!Array.isArray(params)) {
       throw new Error('params is not an Array');
     }
 
+    console.log('HERE2');
     const results = await Promise.all(
       params.map(async (payload) => {
         const tokenAddress = tokenAddresses[payload.symbol];
@@ -112,7 +114,8 @@ export const transfer_from_signature = async (input: {
             calldata: [
               payload.fromAddress,
               payload.toAddress,
-              amountUint256
+              amountUint256.low,
+              amountUint256.high
             ],
           },
         };

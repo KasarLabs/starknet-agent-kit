@@ -1,4 +1,4 @@
-import { Contract } from 'starknet';
+import { Contract, RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { formatBalance, validateTokenAddress } from '../utils/token';

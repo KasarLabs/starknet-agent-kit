@@ -111,7 +111,6 @@ main () {
 	fi
 
 	CONFIG_FILE="$AGENT_CONFIG_DIR/$AGENT_NAME.agent.json"
-	echo "CONFIG FILE : $CONFIG_FILE"
 
 	if [ -f "$CONFIG_FILE" ]; then
 		info "A configuration file for '$AGENT_NAME' already exists."
@@ -124,13 +123,13 @@ main () {
 			read -p "Do you want to overwrite it? (y/N) " -n 1 -r
 		fi
 		echo
-		if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-			echo -e "${RED}Setup cancelled.${NC}"
-			exit 1
-		fi
-	fi
 
-	echo "$HTTP_BODY" > "$CONFIG_FILE"
+		if [[ $REPLY =~ ^[Yy]$ ]]; then
+			echo "$HTTP_BODY" > "$CONFIG_FILE"
+		fi
+	else
+		echo "$HTTP_BODY" > "$CONFIG_FILE"
+	fi
 
 	success "Configuration has been successfully saved to $CONFIG_FILE."
 	info "Changing to installation directory..."
@@ -144,7 +143,8 @@ main () {
 	success "Dependencies installed successfully."
 
 	info "Starting the agent..."
-	pnpm run local --agent=$CONFIG_FILE
+	pnpm run local --agent=$AGENT_NAME.agent.json < /dev/tty
+
 }
 
 main "$@" || exit 1

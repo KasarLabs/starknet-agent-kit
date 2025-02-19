@@ -1,4 +1,4 @@
-import StarknetToolRegistry from 'src/lib/agent/tools/tools';
+import { StarknetToolRegistry } from 'src/lib/agent/tools/tools';
 import {
   borrowTroveSchema,
   collateralActionSchema,

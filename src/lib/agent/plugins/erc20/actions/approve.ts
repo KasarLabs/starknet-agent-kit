@@ -11,16 +11,23 @@ import { tokenAddresses } from '../constant/erc20';
 import { z } from 'zod';
 import { approveSchema, approveSignatureSchema } from '../schemas/schema';
 
+/**
+ * Approves token spending
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {ApproveParams} params - Approval parameters
+ * @returns {Promise<string>} JSON string with transaction result
+ * @throws {Error} If approval fails
+ */
 export const approve = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof approveSchema>
 ): Promise<string> => {
   try {
-    if (!params?.symbol) {
+    if (!params?.assetSymbol) {
       throw new Error('Asset symbol is required');
     }
     
-    const symbol = params.symbol.toUpperCase();
+    const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
     const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
@@ -38,10 +45,10 @@ export const approve = async (
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
     
-    console.log('Approving', params.amount, 'tokens for', params.spender_address);
+    console.log('Approving', params.amount, 'tokens for', params.spenderAddress);
     
     const { transaction_hash } = await contract.approve(
-      params.spender_address,
+      params.spenderAddress,
       amountUint256,
     );
     
@@ -50,8 +57,8 @@ export const approve = async (
     return JSON.stringify({
       status: 'success',
       amount: params.amount,
-      symbol: params.symbol,
-      spender_address: params.spender_address,
+      symbol: params.assetSymbol,
+      spender_address: params.spenderAddress,
       transactionHash: transaction_hash,
     });
     
@@ -70,7 +77,7 @@ export const approve = async (
 /**
  * Generates approve signature for batch approvals
  * @param {Object} input - Approve input
- * @param {ApprovePayloadSchema[]} input.params - Array of approve parameters
+ * @param {ApproveParams[]} input.params - Array of approve parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
 export const approve_signature = async (input: {
@@ -85,7 +92,7 @@ export const approve_signature = async (input: {
 
     const results = await Promise.all(
       params.map(async (payload) => {
-        const symbol = payload.symbol.toUpperCase();
+        const symbol = payload.assetSymbol.toUpperCase();
         const tokenAddress = tokenAddresses[symbol];
         if (!tokenAddress) {
           return {
@@ -107,7 +114,7 @@ export const approve_signature = async (input: {
             contractAddress: tokenAddress,
             entrypoint: 'approve',
             calldata: [
-              payload.spender_address,
+              payload.spenderAddress,
               amountUint256.low,
               amountUint256.high,
             ],

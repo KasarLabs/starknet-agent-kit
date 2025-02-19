@@ -7,8 +7,6 @@ import { getAllowanceSchema, getMyGivenAllowanceSchema, getAllowanceGivenToMeSch
 
 /**
  * Gets the amount of tokens that a spender is allowed to spend on behalf of an owner.
- * @async
- * @function getAllowance
  * @param {StarknetAgentInterface} agent - The Starknet agent interface
  * @param {AllowanceParams} params - The owner, spender and token addresses
  * @returns {Promise<string>} JSON string with allowance amount
@@ -49,6 +47,13 @@ export const getAllowance = async (
   }
 };
 
+/**
+ * Gets allowances granted by the current user
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {MyGivenAllowanceParams} params - The spender and token addresses
+ * @returns {Promise<string>} JSON string with allowance amount
+ * @throws {Error} If operation fails
+ */
 export const getMyGivenAllowance = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof getMyGivenAllowanceSchema>
@@ -85,6 +90,13 @@ export const getMyGivenAllowance = async (
   }
 };
 
+/**
+ * Gets allowances granted to the current user
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {AllowanceGivenToMeParams} params - The owner and token addresses
+ * @returns {Promise<string>} JSON string with allowance amount
+ * @throws {Error} If operation fails
+ */
 export const getAllowanceGivenToMe = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof getAllowanceGivenToMeSchema>

@@ -6,12 +6,19 @@ import { formatBalance, validateTokenAddress } from '../utils/token';
 import { z } from 'zod';
 import { getBalanceSchema, getOwnBalanceSchema } from '../schemas/schema';
 
+/**
+ * Gets own token balance
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {OwnBalanceParams} params - Balance parameters
+ * @returns {Promise<string>} JSON string with balance amount
+ * @throws {Error} If operation fails
+ */
 export const getOwnBalance = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof getOwnBalanceSchema>
 ): Promise<string> => {
   try {
-    if (!params?.symbol) {
+    if (!params?.assetSymbol) {
       throw new Error('Symbol parameter is required');
     }
 
@@ -26,7 +33,7 @@ export const getOwnBalance = async (
     }
 
     const account = new Account(provider, accountAddress, accountPrivateKey);
-    const tokenAddress = validateTokenAddress(params.symbol);
+    const tokenAddress = validateTokenAddress(params.assetSymbol);
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
     const balanceResponse = await tokenContract.balanceOf(account.address);
@@ -37,7 +44,7 @@ export const getOwnBalance = async (
       throw new Error('No balance value received from contract');
     }
 
-    const formattedBalance = formatBalance(balanceValue, params.symbol);
+    const formattedBalance = formatBalance(balanceValue, params.assetSymbol);
 
     return JSON.stringify({
       status: 'success',
@@ -51,6 +58,13 @@ export const getOwnBalance = async (
   }
 };
 
+/**
+ * Gets token balance for an address
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {BalanceParams} params - Balance parameters
+ * @returns {Promise<string>} JSON string with balance amount
+ * @throws {Error} If operation fails
+ */
 export const getBalance = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof getBalanceSchema>
@@ -99,6 +113,12 @@ export const getBalance = async (
   }
 };
 
+/**
+ * Generates balance check signature
+ * @param {BalanceParams} params - Balance parameters
+ * @returns {Promise<string>} JSON string with balance amount
+ * @throws {Error} If operation fails
+ */
 export const getBalanceSignature = async (
   params: z.infer<typeof getBalanceSchema>
 ): Promise<string> => {

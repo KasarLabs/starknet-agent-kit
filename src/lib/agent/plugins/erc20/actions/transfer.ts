@@ -29,19 +29,20 @@ interface TransferResult {
 
 /**
  * Transfers ERC20 tokens on Starknet
- * @payload agent The agent performing the transfer
- * @payload params transfer payloadeters including recipient, amount, and token symbol
- * @returns Result of the transfer operation
+ * @param {StarknetAgentInterface} agent - The Starknet agent interface
+ * @param {TransferParams} params - Transfer parameters
+ * @returns {Promise<string>} JSON string with transaction result
+ * @throws {Error} If transfer fails
  */
 export const transfer = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof transferSchema>
 ): Promise<string> => {
   try {
-    if (!params?.symbol) {
+    if (!params?.assetSymbol) {
       throw new Error('Asset symbol is required');
     }
-    const symbol = params.symbol.toUpperCase();
+    const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
@@ -60,7 +61,7 @@ export const transfer = async (
       contractAddress: tokenAddress,
       entrypoint: 'transfer',
       calldata: [
-        params.recipient_address,
+        params.recipientAddress,
         amountUint256.low,
         amountUint256.high,
       ],
@@ -77,7 +78,7 @@ export const transfer = async (
       status: 'success',
       amount: params.amount,
       symbol: symbol,
-      recipients_address: params.recipient_address,
+      recipients_address: params.recipientAddress,
       transaction_hash: result.transaction_hash,
     };
 
@@ -98,7 +99,7 @@ export const transfer = async (
 /**
  * Generates transfer signature for batch transfers
  * @param {Object} input - Transfer input
- * @param {TransferPlayloadSchema[]} input.params - Array of transfer parameters
+ * @param {TransferParams[]} input.params - Array of transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
 export const transfer_signature = async (input: {
@@ -115,7 +116,7 @@ export const transfer_signature = async (input: {
 
     const results = await Promise.all(
       params.map(async (payload) => {
-        const symbol = payload.symbol.toUpperCase();
+        const symbol = payload.assetSymbol.toUpperCase();
         const tokenAddress = tokenAddresses[symbol];
         if (!tokenAddress) {
           return {
@@ -136,7 +137,7 @@ export const transfer_signature = async (input: {
             contractAddress: tokenAddress,
             entrypoint: 'transfer',
             calldata: [
-              payload.recipient_address,
+              payload.recipientAddress,
               amountUint256.low,
               amountUint256.high,
             ],

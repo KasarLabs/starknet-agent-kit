@@ -10,8 +10,6 @@ import { transferFromSchema, transferFromSignatureSchema } from '../schemas/sche
 
 /**
  * Transfers tokens from one address to another using an allowance.
- * @async
- * @function transferFrom
  * @param {StarknetAgentInterface} agent - The Starknet agent interface
  * @param {TransferFromParams} params - Transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
@@ -22,10 +20,10 @@ export const transfer_from = async (
   params: z.infer<typeof transferFromSchema>
 ): Promise<string> => {
   try {
-    if (!params?.symbol) {
+    if (!params?.assetSymbol) {
       throw new Error('Asset symbol is required');
     }
-    const symbol = params.symbol.toUpperCase();
+    const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
@@ -90,7 +88,7 @@ export const transfer_from_signature = async (input: {
 
     const results = await Promise.all(
       params.map(async (payload) => {
-        const symbol = payload.symbol.toUpperCase();
+        const symbol = payload.assetSymbol.toUpperCase();
         const tokenAddress = tokenAddresses[symbol];
         if (!tokenAddress) {
           return {

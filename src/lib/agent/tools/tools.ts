@@ -106,6 +106,7 @@ export const registerTools = () => {
   registerFibrousTools();
 
   registerOpusTools();
+
   registerTelegramTools();
 };
 

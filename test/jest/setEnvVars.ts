@@ -1,17 +1,18 @@
 import { setupTestEnvironment } from '../utils/helpers';
 import { RpcProvider } from 'starknet';
-import { StarknetAgentInterface } from '../../src/lib/agent/tools/tools';
-import { AccountManager } from 'src/lib/agent/plugins/core/account/utils/AccountManager';
-import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
-import { Limit } from 'src/lib/agent/limit';
-import { TwitterInterface } from 'src/lib/agent/plugins/Twitter/interface/twitter-interface';
+import { StarknetAgentInterface } from '../../agent/lib/agent/tools/tools';
+import { TransactionMonitor } from 'plugins/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from 'plugins/core/contract/utils/ContractInteractor';
+import { Limit } from 'agent/lib/agent/limit';
+import { TwitterInterface } from 'plugins/twitter/interfaces';
+import { TelegramInterface } from 'plugins/telegram/interfaces';
 
 setupTestEnvironment();
 
 export const createMockStarknetAgent = (): StarknetAgentInterface => {
   const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
   const twitter_interface: TwitterInterface = {};
+  const telegram_interface: TelegramInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;
   const token_limit: Limit = {};
@@ -31,19 +32,20 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
       signature: '',
     }),
     getProvider: () => provider,
-    accountManager: new AccountManager(provider),
     transactionMonitor: new TransactionMonitor(provider),
     contractInteractor: new ContractInteractor(provider),
     getLimit: () => token_limit,
     getTwitterAuthMode: () => twitter_auth_mode,
     getAgentConfig: () => json_config,
     getTwitterManager: () => twitter_interface,
+    getTelegramManager: () => telegram_interface,
   };
 };
 
 export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
   const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
   const twitter_interface: TwitterInterface = {};
+  const telegram_interface: TelegramInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;
   const token_limit: Limit = {};
@@ -61,12 +63,12 @@ export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
       signature: '',
     }),
     getProvider: () => provider,
-    accountManager: new AccountManager(provider),
     transactionMonitor: new TransactionMonitor(provider),
     contractInteractor: new ContractInteractor(provider),
     getLimit: () => token_limit,
     getTwitterAuthMode: () => twitter_auth_mode,
     getAgentConfig: () => json_config,
     getTwitterManager: () => twitter_interface,
+    getTelegramManager: () => telegram_interface,
   };
 };

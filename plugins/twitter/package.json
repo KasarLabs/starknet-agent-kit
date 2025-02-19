@@ -1,0 +1,8 @@
+{
+    "name" : "@starknet-agent-kit/twitter",
+    "version" : "0.0.10",
+    "dependencies" : {
+        "twitter-api-v2" : "^1.19.1",
+        "agent-twitter-client": "^0.0.18"
+    }
+}

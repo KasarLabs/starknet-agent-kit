@@ -1,0 +1,6 @@
+{
+    "name" : "@starknet-agent-kit/unruggable",
+    "version" : "0.0.10",
+    "dependencies" : {
+    }
+}

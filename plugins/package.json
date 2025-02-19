@@ -1,0 +1,8 @@
+{
+    "name": "@starknet-agent-kit/plugins",
+    "version": "0.0.10",
+    "dependencies": {
+        "@starknet-agent-kit/twitter": "workspace:*",
+        "@starknet-agent-kit/telegram": "workspace:*"
+      }
+}

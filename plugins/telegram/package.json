@@ -1,0 +1,7 @@
+{
+    "name" : "@starknet-agent-kit/telegram",
+    "version" : "0.0.10",
+    "dependencies" : {
+        "node-telegram-bot-api": "^0.66.0"
+    }
+}

@@ -1,4 +1,4 @@
-import { getOwnBalance } from 'src/lib/agent/plugins/core/token/actions/getBalances';
+import { getOwnBalance } from 'plugins/core/token/actions/getBalances';
 import * as C from '../../../utils/constant';
 import {
   createMockInvalidStarknetAgent,

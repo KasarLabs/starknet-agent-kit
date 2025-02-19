@@ -19,7 +19,7 @@ The Starknet Agent Kit is organized with the following structure:
 ```
 .
 ├── client/                # Frontend application
-├── src/                   # Backend source code
+├── agent/                   # Backend source code
 │   ├── agents/            # Agent system implementation
 │   ├── common/            # Shared utilities and error handling
 │   ├── config/            # Configuration management
@@ -108,10 +108,10 @@ pnpm dev
 
 ### Adding a New Protocol Integration
 
-1. Create a new directory under `src/lib/agent/plugins/`:
+1. Create a new directory under `plugins/`:
 
 ```
-src/lib/agent/plugins/your-protocol/
+plugins/your-protocol/
 ├── abis/         # Protocol-specific ABIs
 ├── actions/      # Protocol actions
 ├── utils/        # Utility functions

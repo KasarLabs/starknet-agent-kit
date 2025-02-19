@@ -21,7 +21,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "src/*": ["src/*"]
+      "agent/*": ["./agent/*"],
+      "plugins/*": ["./plugins/*"],
     }
   }
 }

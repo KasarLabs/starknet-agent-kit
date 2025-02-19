@@ -1,0 +1,46 @@
+{
+  "name": "@starknet-agent-kit/agent",
+  "version": "0.0.10",
+  "dependencies": {
+    "@langchain/anthropic": "^0.3.11",
+    "@langchain/community": "^0.3.28",
+    "@langchain/core": "^0.3.37",
+    "@langchain/google-genai": "^0.1.6",
+    "@langchain/langgraph": "^0.2.44",
+    "@langchain/ollama": "^0.1.4",
+    "@langchain/openai": "^0.3.17",
+    "@nestjs/common": "^11.0.7",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.7",
+    "@nestjs/platform-fastify": "^11.0.7",
+    "@nestjs/schedule": "^5.0.1",
+    "@nestjs/throttler": "^6.4.0",
+    "@anthropic-ai/sdk": "^0.36.3",
+    "@fastify/multipart": "^9.0.3",
+    "starknet": "^6.11.0",
+    "fibrous-router-sdk": "^0.4.3",
+    "node-telegram-bot-api": "^0.66.0",
+    "twitter-api-v2": "^1.19.1",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "express": "^4.21.2",
+    "fastify": "^5.2.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "zod": "^3.24.1",
+    "inquirer": "^12.4.1",
+    "langchain": "^0.3.10",
+    "nanospinner": "^1.2.2"
+  },
+  "scripts": {
+    "local": "ts-node -r tsconfig-paths/register local.ts",
+    "build": "rm -rf dist && nest build",
+    "clean": "rm -rf dist node_modules",
+    "dev": "nest start --watch",
+    "start": "node dist/main",
+    "test": "jest --passWithNoTests"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

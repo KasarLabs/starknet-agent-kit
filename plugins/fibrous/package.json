@@ -1,0 +1,7 @@
+{
+    "name" : "@starknet-agent-kit/fibrous",
+    "version" : "0.0.10",
+    "dependencies" : {
+        "fibrous-router-sdk": "^0.4.3"
+    }
+}

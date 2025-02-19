@@ -12,9 +12,9 @@ module.exports = {
   },
   moduleNameMapper: {
     '^dist/lib/utils/constants/constant$':
-      '<rootDir>/src/lib/utils/constants/constant',
-    '^dist/(.*)$': '<rootDir>/src/$1',
-    '^src/(.*)$': '<rootDir>/src/$1',
+      '<rootDir>/agent/lib/utils/constants/constant',
+    '^dist/(.*)$': '<rootDir>/agent/$1',
+    '^agent/(.*)$': '<rootDir>/agent/$1',
     '^test/(.*)$': '<rootDir>/test/$1',
   },
 };

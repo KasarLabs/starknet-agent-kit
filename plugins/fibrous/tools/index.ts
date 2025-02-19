@@ -1,0 +1,35 @@
+import {
+  StarknetAgentInterface,
+  StarknetToolRegistry,
+} from 'agent/lib/agent/tools/tools';
+import { swapSchema } from '../schema';
+import { swapTokensFibrous } from '../actions/swap';
+import { batchSwapSchema, routeSchema } from '../schema';
+import { batchSwapTokens } from '../actions/batchSwap';
+import { getRouteFibrous } from '../actions/fetchRoute';
+
+export const registerTools = (agent: StarknetAgentInterface) => {
+  StarknetToolRegistry.registerTool({
+    name: 'swap',
+    plugins: 'fibrous',
+    description: 'Swap a token for another token',
+    schema: swapSchema,
+    execute: swapTokensFibrous,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'batch_swap',
+    plugins: 'fibrous',
+    description: 'Swap multiple tokens for another token',
+    schema: batchSwapSchema,
+    execute: batchSwapTokens,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'route',
+    plugins: 'fibrous',
+    description: 'Get a specific route for swapping tokens',
+    schema: routeSchema,
+    execute: getRouteFibrous,
+  });
+};

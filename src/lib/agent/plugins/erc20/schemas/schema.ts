@@ -2,7 +2,6 @@ import { z } from "zod";
 
 // Get Allowance Schema
 export const getAllowanceSchema = z.object({
-  ownerAddress: z.string().describe("The address of the token owner"),
   spenderAddress: z.string().describe("The address of the account allowed to spend the tokens"),
   assetSymbol: z.string().describe("The symbol of the token (e.g., 'ETH', 'USDC')")
 });

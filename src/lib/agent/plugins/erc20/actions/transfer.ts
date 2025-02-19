@@ -8,16 +8,9 @@ import {
   handleLimitTokenTransfer
  } from '../utils/token';
 import { DECIMALS } from '../types/types';
+import { z } from 'zod';
+import { transferSchema, transferSignatureSchema } from '../schemas/schema';
 
-/**
- * Configuration interface for transfer operations
- * @interface transferparams
- */
-export interface transferParams {
-  recipient_address: string;
-  amount: string;
-  symbol:string;
-}
 
 /**
  * Result interface for transfer operations
@@ -42,7 +35,7 @@ interface TransferResult {
  */
 export const transfer = async (
   agent: StarknetAgentInterface,
-  params: transferParams
+  params: z.infer<typeof transferSchema>
 ): Promise<string> => {
   try {
     if (!params?.symbol) {
@@ -100,15 +93,6 @@ export const transfer = async (
   }
 };
 
-/**
- * Schema for transfer payload parameters
- * @type {Object}
- */
-export type TransferPlayloadSchema = {
-  symbol: string;
-  recipient_address: string;
-  amount: string;
-};
 
 /**
  * Generates transfer signature for batch transfers
@@ -117,7 +101,7 @@ export type TransferPlayloadSchema = {
  * @returns {Promise<string>} JSON string with transaction result
  */
 export const transfer_signature = async (input: {
-  params: TransferPlayloadSchema[];
+  params: z.infer<typeof transferSignatureSchema>;
 }): Promise<any> => {
   try {
     const params = input.params;

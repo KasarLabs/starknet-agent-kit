@@ -15,6 +15,7 @@ export const formatBalance = (
   symbol: string
 ): string => {
   try {
+    console.log("rawBalance11111", rawBalance);
     const balanceStr =
       typeof rawBalance === 'bigint'
         ? rawBalance.toString()

@@ -2,33 +2,35 @@ import { Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { validateTokenAddress, formatBalance } from '../utils/token';
+import { z } from 'zod';
+import { getTotalSupplySchema } from '../schemas/schema';
 
 /**
  * Gets the total supply of an ERC20 token.
  * @async
  * @function getTotalSupply
  * @param {StarknetAgentInterface} agent - The Starknet agent interface
- * @param {string} assetSymbol - The ERC20 token contract address
+ * @param {string} symbol - The ERC20 token contract address
  * @returns {Promise<string>} JSON string with total supply
  * @throws {Error} If operation fails
  */
 export const getTotalSupply = async (
   agent: StarknetAgentInterface,
-  assetSymbol: string
+  symbol: z.infer<typeof getTotalSupplySchema>
 ): Promise<string> => {
   try {
-    if (!assetSymbol ) {
+    if (!symbol) {
       throw new Error('Both asset symbol and account address are required');
     }
     
-    const tokenAddress = validateTokenAddress(assetSymbol);
+    const tokenAddress = validateTokenAddress(symbol);
     console.log('tokenAddress', tokenAddress);
     
     const provider = agent.getProvider();
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
     const totalSupply = await tokenContract.total_supply();
 
-    const formattedSupply = formatBalance(totalSupply, assetSymbol);
+    const formattedSupply = formatBalance(totalSupply, symbol);
     console.log('formattedSupply', formattedSupply);
     console.log(typeof formattedSupply);
 

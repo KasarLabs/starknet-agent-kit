@@ -4,13 +4,9 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { validateTokenAddress, formatTokenAmount } from '../utils/token';
 import { DECIMALS } from '../types/types';
+import { z } from 'zod';
+import { transferFromSchema, transferFromSignatureSchema } from '../schemas/schema';
 
-export interface TransferFromParams {
-  fromAddress: string;
-  toAddress: string;
-  amount: string;
-  symbol: string;
-}
 
 /**
  * Transfers tokens from one address to another using an allowance.
@@ -23,7 +19,7 @@ export interface TransferFromParams {
  */
 export const transfer_from = async (
   agent: StarknetAgentInterface,
-  params: TransferFromParams
+  params: z.infer<typeof transferFromSchema>
 ): Promise<string> => {
   try {
     if (!params?.symbol) {
@@ -43,9 +39,17 @@ export const transfer_from = async (
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
 
+    
     const contract = new Contract(ERC20_ABI, tokenAddress, provider);
     contract.connect(account);
 
+    const balanceResponse = await contract.balanceOf(params.fromAddress);
+    console.log('Source account balance:', balanceResponse);
+
+    const allowanceResponse = await contract.allowance(params.fromAddress, credentials.accountPublicKey);
+    console.log('Current allowance:', allowanceResponse);
+
+    console.log('Transferring', params.amount, 'tokens from', params.fromAddress, 'to', params.toAddress);
     const { transaction_hash } = await contract.transferFrom(
       params.fromAddress,
       params.toAddress,
@@ -74,7 +78,7 @@ export const transfer_from = async (
  * @returns {Promise<string>} JSON string with transaction result
  */
 export const transfer_from_signature = async (input: {
-  params: TransferFromParams[];
+  params: z.infer<typeof transferFromSignatureSchema>;
 }): Promise<any> => {
   try {
     const params = input.params;

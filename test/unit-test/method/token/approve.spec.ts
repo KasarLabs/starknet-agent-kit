@@ -12,8 +12,8 @@ describe('Approve token spending', () => {
       // Arrange
       const params = {
         spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-        amount: '0.0000001',
-        symbol: 'ETH' as string,
+        amount: '1.0',
+        symbol: 'STRK' as string,
       };
 
       // Act

@@ -8,17 +8,12 @@ import {
  } from '../utils/token';
 import { DECIMALS } from '../types/types';
 import { tokenAddresses } from '../constant/erc20';
-
-
-export interface ApproveParams {
-  spender_address: string;
-  amount: string;
-  symbol: string;
-}
+import { z } from 'zod';
+import { approveSchema, approveSignatureSchema } from '../schemas/schema';
 
 export const approve = async (
   agent: StarknetAgentInterface,
-  params: ApproveParams
+  params: z.infer<typeof approveSchema>
 ): Promise<string> => {
   try {
     if (!params?.symbol) {
@@ -43,16 +38,14 @@ export const approve = async (
     const amountUint256 = uint256.bnToUint256(formattedAmount);
     
     console.log('Approving', params.amount, 'tokens for', params.spender_address);
-    console.log('Amount in token units:', amountUint256);
     
-    // Execute approve with proper options for Argent
     const { transaction_hash } = await contract.approve(
       params.spender_address,
       amountUint256,
     );
     
     await provider.waitForTransaction(transaction_hash);
-    
+
     return JSON.stringify({
       status: 'success',
       amount: params.amount,
@@ -74,23 +67,13 @@ export const approve = async (
 
 
 /**
- * Schema for approve payload parameters
- * @type {Object}
- */
-export type ApprovePayloadSchema = {
-  symbol: string;
-  spender_address: string;
-  amount: string;
-};
-
-/**
  * Generates approve signature for batch approvals
  * @param {Object} input - Approve input
  * @param {ApprovePayloadSchema[]} input.params - Array of approve parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
 export const approve_signature = async (input: {
-  params: ApprovePayloadSchema[];
+  params: z.infer<typeof approveSignatureSchema>;
 }): Promise<any> => {
   try {
     const params = input.params;

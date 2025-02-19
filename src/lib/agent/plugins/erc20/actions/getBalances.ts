@@ -3,10 +3,12 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { GetBalanceParams, GetOwnBalanceParams } from '../types/balance';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { formatBalance, validateTokenAddress } from '../utils/token';
+import { z } from 'zod';
+import { getBalanceSchema, getOwnBalanceSchema } from '../schemas/schema';
 
 export const getOwnBalance = async (
   agent: StarknetAgentInterface,
-  params: GetOwnBalanceParams
+  params: z.infer<typeof getOwnBalanceSchema>
 ): Promise<string> => {
   try {
     if (!params?.symbol) {
@@ -51,7 +53,7 @@ export const getOwnBalance = async (
 
 export const getBalance = async (
   agent: StarknetAgentInterface,
-  params: GetBalanceParams
+  params: z.infer<typeof getBalanceSchema>
 ): Promise<string> => {
   try {
     if (!params?.assetSymbol || !params?.accountAddress) {
@@ -97,40 +99,40 @@ export const getBalance = async (
   }
 };
 
-export const getBalanceSignature = async (
-  params: GetBalanceParams
-): Promise<string> => {
-  try {
-    if (!params?.assetSymbol || !params?.accountAddress) {
-      console.log('params', params);
-      throw new Error('Both asset symbol and account address are required');
-    }
+// export const getBalanceSignature = async (
+//   params: z.infer<typeof getBalanceSchema>
+// ): Promise<string> => {
+//   try {
+//     if (!params?.assetSymbol || !params?.accountAddress) {
+//       console.log('params', params);
+//       throw new Error('Both asset symbol and account address are required');
+//     }
 
-    const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
+//     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
-    const tokenAddress = validateTokenAddress(params.assetSymbol);
-    const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
+//     const tokenAddress = validateTokenAddress(params.assetSymbol);
+//     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
-    const balanceResponse = await tokenContract.balanceOf(
-      params.accountAddress
-    );
+//     const balanceResponse = await tokenContract.balanceOf(
+//       params.accountAddress
+//     );
 
-    if (!balanceResponse || typeof balanceResponse !== 'bigint') {
-      throw new Error('Invalid balance response format from contract');
-    }
+//     if (!balanceResponse || typeof balanceResponse !== 'bigint') {
+//       throw new Error('Invalid balance response format from contract');
+//     }
 
-    const formattedBalance = formatBalance(balanceResponse, params.assetSymbol);
-    return JSON.stringify({
-      status: 'success',
-      transaction_type: 'READ',
-      balance: formattedBalance,
-    });
-  } catch (error) {
-    console.error('Error in getBalance:', error);
-    return JSON.stringify({
-      status: 'failure',
-      error: error instanceof Error ? error.message : 'Unknown error',
-      details: error instanceof Error ? error.stack : undefined,
-    });
-  }
-};
+//     const formattedBalance = formatBalance(balanceResponse, params.assetSymbol);
+//     return JSON.stringify({
+//       status: 'success',
+//       transaction_type: 'READ',
+//       balance: formattedBalance,
+//     });
+//   } catch (error) {
+//     console.error('Error in getBalance:', error);
+//     return JSON.stringify({
+//       status: 'failure',
+//       error: error instanceof Error ? error.message : 'Unknown error',
+//       details: error instanceof Error ? error.stack : undefined,
+//     });
+//   }
+// };

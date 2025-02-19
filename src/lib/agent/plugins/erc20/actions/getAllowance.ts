@@ -2,12 +2,8 @@ import { Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { formatBalance, validateTokenAddress } from '../utils/token';
-
-export interface AllowanceParams {
-  ownerAddress: string;
-  spenderAddress: string;
-  assetSymbol: string;
-}
+import { z } from 'zod';
+import { getAllowanceSchema } from '../schemas/schema';
 
 /**
  * Gets the amount of tokens that a spender is allowed to spend on behalf of an owner.
@@ -20,27 +16,27 @@ export interface AllowanceParams {
  */
 export const getAllowance = async (
   agent: StarknetAgentInterface,
-  params: AllowanceParams
+  params: z.infer<typeof getAllowanceSchema>
 ): Promise<string> => {
   try {
-    if (!params?.assetSymbol || !params?.ownerAddress) {
+    if (!params?.assetSymbol) {
       console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
-    
+
     const tokenAddress = validateTokenAddress(params.assetSymbol);
-    console.log('tokenAddress', tokenAddress);
     
     const provider = agent.getProvider();
+    const ownerAddress = agent.getAccountCredentials().accountPublicKey;
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
-    const allowanceResponse = await tokenContract.allowance(params.ownerAddress, params.spenderAddress);
+    const allowanceResponse = await tokenContract.allowance(ownerAddress, params.spenderAddress);
 
     const formattedAllowance = formatBalance(allowanceResponse, params.assetSymbol);
 
     return JSON.stringify({
       status: 'success',
-      owner: params.ownerAddress,
+      owner: ownerAddress,
       spender: params.spenderAddress,
       allowance: formattedAllowance,
     });

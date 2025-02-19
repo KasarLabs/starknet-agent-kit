@@ -11,9 +11,9 @@ describe('Approve token spending', () => {
     it('should approve spender to spend tokens', async () => {
       // Arrange
       const params = {
-        spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '0.0000001',
-        assetSymbol: 'ETH' as string,
+        symbol: 'ETH' as string,
       };
 
       // Act
@@ -28,59 +28,59 @@ describe('Approve token spending', () => {
     });
   });
 
-  // describe('With wrong input', () => {
-  //   it('should fail with invalid spender address', async () => {
-  //     // Arrange
-  //     const params = {
-  //       spenderAddress: 'invalid_address',
-  //       amount: '1.0',
-  //       tokenAddress: process.env.ETH_ADDRESS as string,
-  //     };
+  describe('With wrong input', () => {
+    it('should fail with invalid spender address', async () => {
+      // Arrange
+      const params = {
+        spender_address: 'invalid_address',
+        amount: '1.0',
+        symbol: 'ETH' as string,
+      };
 
-  //     // Act
-  //     const result = await approve(agent, params);
-  //     const parsed = JSON.parse(result);
+      // Act
+      const result = await approve(agent, params);
+      const parsed = JSON.parse(result);
 
-  //     // Assert
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure',
-  //     });
-  //   });
+      // Assert
+      expect(parsed).toMatchObject({
+        status: 'failure',
+      });
+    });
 
-  //   it('should fail with invalid amount format', async () => {
-  //     // Arrange
-  //     const params = {
-  //       spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       amount: 'WRONG_AMOUNT',
-  //       tokenAddress: process.env.ETH_ADDRESS as string,
-  //     };
+    it('should fail with invalid amount format', async () => {
+      // Arrange
+      const params = {
+        spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        amount: 'WRONG_AMOUNT',
+        symbol: 'ETH' as string,
+      };
 
-  //     // Act
-  //     const result = await approve(agent, params);
-  //     const parsed = JSON.parse(result);
+      // Act
+      const result = await approve(agent, params);
+      const parsed = JSON.parse(result);
 
-  //     // Assert
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure',
-  //     });
-  //   });
+      // Assert
+      expect(parsed).toMatchObject({
+        status: 'failure',
+      });
+    });
 
-  //   it('should fail with invalid token address', async () => {
-  //     // Arrange
-  //     const params = {
-  //       spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       amount: '1.0',
-  //       tokenAddress: 'invalid_address',
-  //     };
+    it('should fail with invalid token symbol', async () => {
+      // Arrange
+      const params = {
+        spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        amount: '1.0',
+        symbol: 'PPPPP'
+      };
 
-  //     // Act
-  //     const result = await approve(agent, params);
-  //     const parsed = JSON.parse(result);
+      // Act
+      const result = await approve(agent, params);
+      const parsed = JSON.parse(result);
 
-  //     // Assert
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure',
-  //     });
-  //   });
-  // });
+      // Assert
+      expect(parsed).toMatchObject({
+        status: 'failure',
+      });
+    });
+  });
 }); 

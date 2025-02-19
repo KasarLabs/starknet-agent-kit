@@ -1,4 +1,8 @@
 import { tokenAddresses } from '../constant/erc20';
+import { DECIMALS } from '../types/types';
+import { BigNumberish, uint256 } from 'starknet';
+import { Token } from 'src/lib/agent/limit';
+
 
 export const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
@@ -48,4 +52,47 @@ export const validateTokenAddress = (symbol: string): string => {
     );
   }
   return tokenAddress;
+};
+
+/**
+ * Formats amount to the correct decimal places for the token
+ * @payload amount The amount as a string (e.g., "0.0001")
+ * @payload decimals Number of decimal places
+ * @returns Formatted amount as a string
+ */
+export const formatTokenAmount = (amount: string, decimals: number): string => {
+  const [whole, fraction = ''] = amount.split('.');
+  const paddedFraction = fraction.padEnd(decimals, '0');
+  return whole + paddedFraction;
+};
+
+/**
+ * Checks if transfer amount is within limits
+ * @param {BigNumberish} amount - Transfer amount
+ * @param {string} symbol - Token symbol
+ * @param {Token[]} limit - Array of token limits
+ */
+export const handleLimitTokenTransfer = (
+  amount: BigNumberish,
+  symbol: string,
+  limit: Token[]
+) => {
+  const index = limit.findIndex(
+    (token) => token.symbol.toUpperCase() === symbol.toUpperCase()
+  );
+  if (index === -1) {
+    console.log(`Not limit find for token : ${symbol}`);
+    return;
+  }
+
+  const decimals =
+    DECIMALS[limit[index].symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+  const formattedAmount = formatTokenAmount(limit[index].amount, decimals);
+  const amountUint256 = uint256.bnToUint256(formattedAmount);
+  if (BigInt(amount) > BigInt(amountUint256.low)) {
+    throw new Error(
+      `Error your limit token exceed the transaction amount.\n Transaction amount : ${amount} \n Transacion limit amount ${limit[index].amount}`
+    );
+  }
+  console.log('Limit Token : ', amountUint256.low, amount);
 };

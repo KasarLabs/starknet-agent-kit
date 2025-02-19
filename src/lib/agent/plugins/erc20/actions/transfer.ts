@@ -1,17 +1,19 @@
 import { Account, BigNumberish, uint256 } from 'starknet';
 import { tokenAddresses } from '../constant/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { AddAgentLimit, Limit } from 'src/lib/agent/limit';
-import { Token } from 'src/lib/agent/limit';
-import { Contract } from 'starknet';
-import { ERC20_ABI } from '../abis/erc20Abi';
-import { RpcProvider } from 'starknet';
+import { AddAgentLimit } from 'src/lib/agent/limit';
+import { 
+  validateTokenAddress,
+  formatTokenAmount,
+  handleLimitTokenTransfer
+ } from '../utils/token';
+import { DECIMALS } from '../types/types';
 
 /**
  * Configuration interface for transfer operations
- * @interface transferPayloads
+ * @interface transferparams
  */
-export interface transferPayloads {
+export interface transferParams {
   recipient_address: string;
   amount: string;
   symbol:string;
@@ -31,72 +33,22 @@ interface TransferResult {
   step?: string;
 }
 
-/**
- * Formats token amount with correct decimals
- * @param {string} amount - Amount to format
- * @param {number} decimals - Number of decimals
- * @returns {string} Formatted amount
- */
-const DECIMALS = {
-  USDC: 6,
-  USDT: 6,
-  DEFAULT: 18,
-};
-
-/**
- * Formats amount to the correct decimal places for the token
- * @payload amount The amount as a string (e.g., "0.0001")
- * @payload decimals Number of decimal places
- * @returns Formatted amount as a string
- */
-const formatTokenAmount = (amount: string, decimals: number): string => {
-  const [whole, fraction = ''] = amount.split('.');
-  const paddedFraction = fraction.padEnd(decimals, '0');
-  return whole + paddedFraction;
-};
-
-/**
- * Checks if transfer amount is within limits
- * @param {BigNumberish} amount - Transfer amount
- * @param {string} symbol - Token symbol
- * @param {Token[]} limit - Array of token limits
- */
-const handleLimitTokenTransfer = (
-  amount: BigNumberish,
-  symbol: string,
-  limit: Token[]
-) => {
-  const index = limit.findIndex(
-    (token) => token.symbol.toUpperCase() === symbol.toUpperCase()
-  );
-  if (index === -1) {
-    console.log(`Not limit find for token : ${symbol}`);
-    return;
-  }
-
-  const decimals =
-    DECIMALS[limit[index].symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-  const formattedAmount = formatTokenAmount(limit[index].amount, decimals);
-  const amountUint256 = uint256.bnToUint256(formattedAmount);
-  if (BigInt(amount) > BigInt(amountUint256.low)) {
-    throw new Error(
-      `Error your limit token exceed the transaction amount.\n Transaction amount : ${amount} \n Transacion limit amount ${limit[index].amount}`
-    );
-  }
-  console.log('Limit Token : ', amountUint256.low, amount);
-};
 
 /**
  * Transfers ERC20 tokens on Starknet
  * @payload agent The agent performing the transfer
- * @payload payloads transfer payloadeters including recipient, amount, and token symbol
+ * @payload params transfer payloadeters including recipient, amount, and token symbol
  * @returns Result of the transfer operation
  */
 export const transfer = async (
   agent: StarknetAgentInterface,
-  payloads: transferPayloads
+  params: transferParams
 ): Promise<string> => {
   try {
+    if (!params?.symbol) {
+      throw new Error('Asset symbol is required');
+    }
+    const tokenAddress = validateTokenAddress(params.symbol);
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
@@ -106,34 +58,15 @@ export const transfer = async (
       credentials.accountPrivateKey
     );
 
-    const limit = agent.getLimit();
-
-    if (limit.transfer_limit) {
-      console.log(
-        `Welcome to transfer limit interface your limit is set to : \n ${limit.transfer_limit[0].symbol} amount ${limit.transfer_limit[0].amount}`
-      );
-    }
-    const tokenAddress = tokenAddresses[payloads.symbol];
-    if (!tokenAddress) {
-      throw new Error(`Token ${payloads.symbol} not supported`);
-    }
-
-    const decimals =
-      DECIMALS[payloads.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(payloads.amount, decimals);
+    const decimals = DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
-    if (Array.isArray(limit.transfer_limit)) {
-      handleLimitTokenTransfer(
-        amountUint256.low,
-        payloads.symbol,
-        limit.transfer_limit
-      );
-    }
+    
     const result = await account.execute({
       contractAddress: tokenAddress,
       entrypoint: 'transfer',
       calldata: [
-        payloads.recipient_address,
+        params.recipient_address,
         amountUint256.low,
         amountUint256.high,
       ],
@@ -148,9 +81,9 @@ export const transfer = async (
 
     const transferResult: TransferResult = {
       status: 'success',
-      amount: payloads.amount,
-      symbol: payloads.symbol,
-      recipients_address: payloads.recipient_address,
+      amount: params.amount,
+      symbol: params.symbol,
+      recipients_address: params.recipient_address,
       transaction_hash: result.transaction_hash,
     };
 
@@ -163,9 +96,7 @@ export const transfer = async (
       error: error instanceof Error ? error.message : 'Unknown error',
       step: 'transfer execution',
     };
-
-    const result = JSON.stringify(transferResult);
-    return result;
+    return JSON.stringify(transferResult);
   }
 };
 
@@ -179,72 +110,72 @@ export type TransferPlayloadSchema = {
   amount: string;
 };
 
-// /**
-//  * Generates transfer signature for batch transfers
-//  * @param {Object} input - Transfer input
-//  * @param {TransferPlayloadSchema[]} input.payloads - Array of transfer parameters
-//  * @returns {Promise<string>} JSON string with transaction result
-//  */
-// export const transfer_signature = async (input: {
-//   payloads: TransferPlayloadSchema[];
-// }): Promise<any> => {
-//   try {
-//     const payloads = input.payloads;
+/**
+ * Generates transfer signature for batch transfers
+ * @param {Object} input - Transfer input
+ * @param {TransferPlayloadSchema[]} input.params - Array of transfer parameters
+ * @returns {Promise<string>} JSON string with transaction result
+ */
+export const transfer_signature = async (input: {
+  params: TransferPlayloadSchema[];
+}): Promise<any> => {
+  try {
+    const params = input.params;
 
-//     if (!Array.isArray(payloads)) {
-//       throw new Error('Payloads is not an Array');
-//     }
+    if (!Array.isArray(params)) {
+      throw new Error('params is not an Array');
+    }
 
-//     const limit = AddAgentLimit();
+    const limit = AddAgentLimit();
 
-//     const results = await Promise.all(
-//       payloads.map(async (payload) => {
-//         const tokenAddress = tokenAddresses[payload.symbol];
-//         if (!tokenAddress) {
-//           return {
-//             status: 'error',
-//             error: {
-//               code: 'TOKEN_NOT_SUPPORTED',
-//               message: `Token ${payload.symbol} not supported`,
-//             },
-//           };
-//         }
-//         const decimals =
-//           DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-//         const formattedAmount = formatTokenAmount(payload.amount, decimals);
-//         const amountUint256 = uint256.bnToUint256(formattedAmount);
-//         if (Array.isArray(limit.transfer_limit)) {
-//           handleLimitTokenTransfer(
-//             amountUint256.low,
-//             payload.symbol,
-//             limit.transfer_limit
-//           );
-//         }
+    const results = await Promise.all(
+      params.map(async (payload) => {
+        const tokenAddress = tokenAddresses[payload.symbol];
+        if (!tokenAddress) {
+          return {
+            status: 'error',
+            error: {
+              code: 'TOKEN_NOT_SUPPORTED',
+              message: `Token ${payload.symbol} not supported`,
+            },
+          };
+        }
+        const decimals =
+          DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+        const formattedAmount = formatTokenAmount(payload.amount, decimals);
+        const amountUint256 = uint256.bnToUint256(formattedAmount);
+        if (Array.isArray(limit.transfer_limit)) {
+          handleLimitTokenTransfer(
+            amountUint256.low,
+            payload.symbol,
+            limit.transfer_limit
+          );
+        }
 
-//         return {
-//           status: 'success',
-//           transactions: {
-//             contractAddress: tokenAddress,
-//             entrypoint: 'transfer',
-//             calldata: [
-//               payload.recipient_address,
-//               amountUint256.low,
-//               amountUint256.high,
-//             ],
-//           },
-//         };
-//       })
-//     );
-//     console.log('Results :', results);
-//     return JSON.stringify({ transaction_type: 'INVOKE', results });
-//   } catch (error) {
-//     console.error('Transfer call data failure:', error);
-//     return {
-//       status: 'error',
-//       error: {
-//         code: 'TRANSFER_CALL_DATA_ERROR',
-//         message: error.message || 'Failed to generate transfer call data',
-//       },
-//     };
-//   }
-// };
+        return {
+          status: 'success',
+          transactions: {
+            contractAddress: tokenAddress,
+            entrypoint: 'transfer',
+            calldata: [
+              payload.recipient_address,
+              amountUint256.low,
+              amountUint256.high,
+            ],
+          },
+        };
+      })
+    );
+    console.log('Results :', results);
+    return JSON.stringify({ transaction_type: 'INVOKE', results });
+  } catch (error) {
+    console.error('Transfer call data failure:', error);
+    return {
+      status: 'error',
+      error: {
+        code: 'TRANSFER_CALL_DATA_ERROR',
+        message: error.message || 'Failed to generate transfer call data',
+      },
+    };
+  }
+};

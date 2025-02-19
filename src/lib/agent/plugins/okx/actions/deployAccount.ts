@@ -19,7 +19,6 @@ export const DeployOKXAccount = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {
   try {
-    console.log('Deploying OKX Account called!!!');
     const provider = agent.getProvider();
 
     const accountManager = new AccountManager(provider);
@@ -51,7 +50,6 @@ export const DeployOKXAccountSignature = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {
   try {
-    console.log('Deploying OKX Account Signature called!!!');
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const accountManager = new AccountManager(provider);

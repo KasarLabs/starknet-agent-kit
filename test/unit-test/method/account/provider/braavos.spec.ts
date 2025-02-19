@@ -46,7 +46,7 @@ describe('Braavos Account Creation and Deployment', () => {
     const result = await DeployBraavosAccountSignature(accountDetails);
 
     const deployResult = JSON.parse(result);
-    // expect(deployResult.status).toBe('success');
+    expect(deployResult.status).toBe('success');
 
     if (deployResult.status === 'success') {
       console.log('Deployed successfully!');

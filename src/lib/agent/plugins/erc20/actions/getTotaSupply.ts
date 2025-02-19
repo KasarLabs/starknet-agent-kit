@@ -23,6 +23,7 @@ export const getTotalSupply = async (
       throw new Error('Both asset symbol and account address are required');
     }
     
+    symbol = symbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
     console.log('tokenAddress', tokenAddress);
     

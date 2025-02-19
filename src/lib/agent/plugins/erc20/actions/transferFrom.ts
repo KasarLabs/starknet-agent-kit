@@ -25,7 +25,8 @@ export const transfer_from = async (
     if (!params?.symbol) {
       throw new Error('Asset symbol is required');
     }
-    const tokenAddress = validateTokenAddress(params.symbol);
+    const symbol = params.symbol.toUpperCase();
+    const tokenAddress = validateTokenAddress(symbol);
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
@@ -35,7 +36,7 @@ export const transfer_from = async (
       credentials.accountPrivateKey
     );
 
-    const decimals = DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
 
@@ -83,26 +84,25 @@ export const transfer_from_signature = async (input: {
   try {
     const params = input.params;
 
-    console.log('Transfer_from params:', params);
     if (!Array.isArray(params)) {
       throw new Error('params is not an Array');
     }
 
-    console.log('HERE2');
     const results = await Promise.all(
       params.map(async (payload) => {
-        const tokenAddress = tokenAddresses[payload.symbol];
+        const symbol = payload.symbol.toUpperCase();
+        const tokenAddress = tokenAddresses[symbol];
         if (!tokenAddress) {
           return {
             status: 'error',
             error: {
               code: 'TOKEN_NOT_SUPPORTED',
-              message: `Token ${payload.symbol} not supported`,
+              message: `Token ${symbol} not supported`,
             },
           };
         }
         
-        const decimals = DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+        const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
         const formattedAmount = formatTokenAmount(payload.amount, decimals);
         const amountUint256 = uint256.bnToUint256(formattedAmount);
 

@@ -3,7 +3,6 @@ import { DECIMALS } from '../types/types';
 import { BigNumberish, uint256 } from 'starknet';
 import { Token } from 'src/lib/agent/limit';
 
-
 export const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
   const decimals = stablecoinSymbols.includes(symbol.toUpperCase()) ? 6 : 18;
@@ -15,7 +14,6 @@ export const formatBalance = (
   symbol: string
 ): string => {
   try {
-    console.log("rawBalance11111", rawBalance);
     const balanceStr =
       typeof rawBalance === 'bigint'
         ? rawBalance.toString()

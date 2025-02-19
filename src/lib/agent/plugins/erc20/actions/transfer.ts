@@ -41,7 +41,8 @@ export const transfer = async (
     if (!params?.symbol) {
       throw new Error('Asset symbol is required');
     }
-    const tokenAddress = validateTokenAddress(params.symbol);
+    const symbol = params.symbol.toUpperCase();
+    const tokenAddress = validateTokenAddress(symbol);
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
@@ -51,7 +52,7 @@ export const transfer = async (
       credentials.accountPrivateKey
     );
 
-    const decimals = DECIMALS[params.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
     
@@ -75,7 +76,7 @@ export const transfer = async (
     const transferResult: TransferResult = {
       status: 'success',
       amount: params.amount,
-      symbol: params.symbol,
+      symbol: symbol,
       recipients_address: params.recipient_address,
       transaction_hash: result.transaction_hash,
     };
@@ -114,27 +115,20 @@ export const transfer_signature = async (input: {
 
     const results = await Promise.all(
       params.map(async (payload) => {
-        const tokenAddress = tokenAddresses[payload.symbol];
+        const symbol = payload.symbol.toUpperCase();
+        const tokenAddress = tokenAddresses[symbol];
         if (!tokenAddress) {
           return {
             status: 'error',
             error: {
               code: 'TOKEN_NOT_SUPPORTED',
-              message: `Token ${payload.symbol} not supported`,
+              message: `Token ${symbol} not supported`,
             },
           };
         }
-        const decimals =
-          DECIMALS[payload.symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+        const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
         const formattedAmount = formatTokenAmount(payload.amount, decimals);
         const amountUint256 = uint256.bnToUint256(formattedAmount);
-        if (Array.isArray(limit.transfer_limit)) {
-          handleLimitTokenTransfer(
-            amountUint256.low,
-            payload.symbol,
-            limit.transfer_limit
-          );
-        }
 
         return {
           status: 'success',

@@ -108,9 +108,10 @@ export const getBalanceSignature = async (
       throw new Error('Both asset symbol and account address are required');
     }
 
+    const symbol = params.assetSymbol.toUpperCase();
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
-    const tokenAddress = validateTokenAddress(params.assetSymbol);
+    const tokenAddress = validateTokenAddress(symbol);
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
     const balanceResponse = await tokenContract.balanceOf(
@@ -121,7 +122,7 @@ export const getBalanceSignature = async (
       throw new Error('Invalid balance response format from contract');
     }
 
-    const formattedBalance = formatBalance(balanceResponse, params.assetSymbol);
+    const formattedBalance = formatBalance(balanceResponse, symbol);
     return JSON.stringify({
       status: 'success',
       transaction_type: 'READ',

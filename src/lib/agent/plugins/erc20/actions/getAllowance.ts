@@ -24,7 +24,8 @@ export const getAllowance = async (
       throw new Error('Both asset symbol and account address are required');
     }
 
-    const tokenAddress = validateTokenAddress(params.assetSymbol);
+    const symbol = params.assetSymbol.toUpperCase();
+    const tokenAddress = validateTokenAddress(symbol);
     
     const provider = agent.getProvider();
     const ownerAddress = agent.getAccountCredentials().accountPublicKey;
@@ -32,7 +33,7 @@ export const getAllowance = async (
 
     const allowanceResponse = await tokenContract.allowance(ownerAddress, params.spenderAddress);
 
-    const formattedAllowance = formatBalance(allowanceResponse, params.assetSymbol);
+    const formattedAllowance = formatBalance(allowanceResponse, symbol);
 
     return JSON.stringify({
       status: 'success',

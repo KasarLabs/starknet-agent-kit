@@ -10,18 +10,15 @@ export const openTrove = async (
 
   try {
     const troveManager = createTroveManager(agent, accountAddress);
-    const result = await troveManager.openTroveTransaction(
-      params,
-      agent
-    );
+    const result = await troveManager.openTroveTransaction(params, agent);
     return JSON.stringify({
-      status: "success",
+      status: 'success',
       data: result,
     });
   } catch (error) {
     return JSON.stringify({
-      status: "error",
-      error: error instanceof Error ? error.message : "Unknown error",
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

@@ -4,9 +4,9 @@ import {
   Call,
   Contract,
   GetTransactionReceiptResponse,
-} from "starknet";
-import { formatUnits, parseUnits } from "ethers";
-import { StarknetAgentInterface } from "src/lib/agent/tools/tools";
+} from 'starknet';
+import { formatUnits, parseUnits } from 'ethers';
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import {
   BorrowTroveResult,
   DepositTroveResult,
@@ -16,7 +16,7 @@ import {
   OpenTroveResult,
   RepayTroveResult,
   WithdrawTroveResult,
-} from "../interfaces";
+} from '../interfaces';
 import {
   AssetBalance,
   AssetBalanceInput,
@@ -33,20 +33,19 @@ import {
   troveOpenedEventSchema,
   wadSchema,
   WithdrawTroveParams,
-} from "../schemas";
+} from '../schemas';
 import {
   getAbbotContract,
   getErc20Contract,
   getSentinelContract,
   getShrineContract,
-} from "./contracts";
-import { tokenAddresses } from "../../core/token/constants/erc20";
+} from './contracts';
+import { tokenAddresses } from '../../core/token/constants/erc20';
 
 const FORGE_FEE_PAID_EVENT_IDENTIFIER =
-  "opus::core::shrine::shrine::ForgeFeePaid";
+  'opus::core::shrine::shrine::ForgeFeePaid';
 
-const TROVE_OPENED_EVENT_IDENTIFIER =
-  "opus::core::abbot::abbot::TroveOpened";
+const TROVE_OPENED_EVENT_IDENTIFIER = 'opus::core::abbot::abbot::TroveOpened';
 
 /**
  * Manages trove operations including creation, borrowing, repayment, and health monitoring
@@ -94,20 +93,20 @@ export class TroveManager {
         return troveId.toString();
       });
       const getUserTrovesResult: GetUserTrovesResult = {
-        status: "success",
+        status: 'success',
         troves: formattedTroves,
       };
 
       return getUserTrovesResult;
     } catch (error) {
-      console.error("Detailed get user troves error:", error);
+      console.error('Detailed get user troves error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
+        status: 'failure',
       };
     }
   }
@@ -125,20 +124,20 @@ export class TroveManager {
       );
       const borrowFeePct = formatUnits(borrowFee.data!.value, 16);
       const getBorrowFeeResult: GetBorrowFeeResult = {
-        status: "success",
+        status: 'success',
         borrow_fee: `${borrowFeePct}%`,
       };
 
       return getBorrowFeeResult;
     } catch (error) {
-      console.error("Detailed get borrow fee error:", error);
+      console.error('Detailed get borrow fee error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
+        status: 'failure',
       };
     }
   }
@@ -158,7 +157,7 @@ export class TroveManager {
         await this.shrine.get_trove_health(params.troveId)
       );
       const getTroveHealthResult: GetTroveHealthResult = {
-        status: "success",
+        status: 'success',
         debt: troveHealth.data?.debt.formatted,
         value: troveHealth.data?.value.formatted,
         ltv: troveHealth.data?.ltv.formatted,
@@ -167,14 +166,14 @@ export class TroveManager {
 
       return getTroveHealthResult;
     } catch (error) {
-      console.error("Detailed get trove health error:", error);
+      console.error('Detailed get trove health error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
+        status: 'failure',
       };
     }
   }
@@ -305,7 +304,7 @@ export class TroveManager {
     agent: StarknetAgentInterface
   ): Promise<OpenTroveResult> {
     await this.initialize();
-    console.log("enter");
+    console.log('enter');
     try {
       const account = new Account(
         this.agent.contractInteractor.provider,
@@ -354,7 +353,7 @@ export class TroveManager {
       }
 
       const openTroveResult: OpenTroveResult = {
-        status: "success",
+        status: 'success',
         trove_id: troveId,
         borrow_fee: borrowFeePaid,
         borrow_fee_pct: borrowFeePct,
@@ -363,15 +362,15 @@ export class TroveManager {
 
       return openTroveResult;
     } catch (error) {
-      console.error("Detailed open trove error:", error);
+      console.error('Detailed open trove error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -426,7 +425,7 @@ export class TroveManager {
       }
 
       const depositResult: DepositTroveResult = {
-        status: "success",
+        status: 'success',
         trove_id: params.troveId.toString(),
         before_value: beforeHealth.data?.value.formatted,
         after_value: afterHealth?.data?.value.formatted,
@@ -437,15 +436,15 @@ export class TroveManager {
 
       return depositResult;
     } catch (error) {
-      console.error("Detailed deposit error:", error);
+      console.error('Detailed deposit error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -498,7 +497,7 @@ export class TroveManager {
       }
 
       const withdrawResult: WithdrawTroveResult = {
-        status: "success",
+        status: 'success',
         trove_id: params.troveId.toString(),
         before_value: beforeHealth.data?.value.formatted,
         after_value: afterHealth?.data?.value.formatted,
@@ -509,15 +508,15 @@ export class TroveManager {
 
       return withdrawResult;
     } catch (error) {
-      console.error("Detailed withdraw error:", error);
+      console.error('Detailed withdraw error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -577,7 +576,7 @@ export class TroveManager {
       }
 
       const borrowResult: BorrowTroveResult = {
-        status: "success",
+        status: 'success',
         trove_id: params.troveId.toString(),
         amount: borrowAmount.toString(),
         borrow_fee: borrowFeePaid,
@@ -591,15 +590,15 @@ export class TroveManager {
 
       return borrowResult;
     } catch (error) {
-      console.error("Detailed borrow error:", error);
+      console.error('Detailed borrow error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -651,7 +650,7 @@ export class TroveManager {
       }
 
       const repayResult: RepayTroveResult = {
-        status: "success",
+        status: 'success',
         trove_id: params.troveId.toString(),
         amount: repayAmount.toString(),
         before_debt: beforeHealth.data?.debt.formatted,
@@ -663,15 +662,15 @@ export class TroveManager {
 
       return repayResult;
     } catch (error) {
-      console.error("Detailed repay error:", error);
+      console.error('Detailed repay error:', error);
       if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
       return {
-        status: "failure",
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: 'failure',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -689,7 +688,7 @@ export const createTroveManager = (
   walletAddress?: string
 ): TroveManager => {
   if (!walletAddress) {
-    throw new Error("Wallet address not configured");
+    throw new Error('Wallet address not configured');
   }
 
   const service = new TroveManager(agent, walletAddress);

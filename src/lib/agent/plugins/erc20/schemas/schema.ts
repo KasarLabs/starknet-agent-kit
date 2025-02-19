@@ -59,19 +59,16 @@ export const transferFromSchema = z.object({
 /**
  * Schema for batch transfer-from operations
  * @typedef {Object} TransferFromSignatureSchema
- * @property {Array<Object>} params - Array of transfer parameters
- * @property {string} params[].fromAddress - The address to transfer tokens from
- * @property {string} params[].toAddress - The address to transfer tokens to
- * @property {string} params[].amount - The amount of tokens to transfer
- * @property {string} params[].assetSymbol - The symbol of the token to transfer
+ * @property {string} fromAddress - The address to transfer tokens from
+ * @property {string} toAddress - The address to transfer tokens to
+ * @property {string} amount - The amount of tokens to transfer
+ * @property {string} assetSymbol - The symbol of the token to transfer
  */
 export const transferFromSignatureSchema = z.object({
-    params: z.array(z.object({
-        fromAddress: z.string().describe("The address to transfer tokens from"),
-        toAddress: z.string().describe("The address to transfer tokens to"),
-        amount: z.string().describe("The amount of tokens to transfer"),
-        assetSymbol: z.string().describe("The symbol of the token to transfer")
-    }))
+    fromAddress: z.string().describe("The address to transfer tokens from"),
+    toAddress: z.string().describe("The address to transfer tokens to"),
+    amount: z.string().describe("The amount of tokens to transfer"),
+    assetSymbol: z.string().describe("The symbol of the token to transfer")
 });
 
 /**
@@ -121,17 +118,14 @@ export const approveSchema = z.object({
 /**
  * Schema for batch approval operations
  * @typedef {Object} ApproveSignatureSchema
- * @property {Array<Object>} params - Array of approval parameters
- * @property {string} params[].spenderAddress - The address being approved to spend tokens
- * @property {string} params[].amount - The amount of tokens being approved
- * @property {string} params[].assetSymbol - The symbol of the token being approved
+ * @property {string} spenderAddress - The address being approved to spend tokens
+ * @property {string} amount - The amount of tokens being approved
+ * @property {string} assetSymbol - The symbol of the token being approved
  */
 export const approveSignatureSchema = z.object({
-    params: z.array(z.object({
-        spenderAddress: z.string().describe("The address being approved to spend tokens"),
-        amount: z.string().describe("The amount of tokens being approved"),
-        assetSymbol: z.string().describe("The symbol of the token being approved")
-    }))
+    spenderAddress: z.string().describe("The address being approved to spend tokens"),
+    amount: z.string().describe("The amount of tokens being approved"),
+    assetSymbol: z.string().describe("The symbol of the token being approved")
 });
 
 /**
@@ -150,15 +144,12 @@ export const transferSchema = z.object({
 /**
  * Schema for batch transfer operations
  * @typedef {Object} TransferSignatureSchema
- * @property {Array<Object>} params - Array of transfer parameters
- * @property {string} params[].recipientAddress - The address to receive the tokens
- * @property {string} params[].amount - The amount of tokens to transfer
- * @property {string} params[].assetSymbol - The symbol of the token to transfer
+ * @property {string} recipientAddress - The address to receive the tokens
+ * @property {string} amount - The amount of tokens to transfer
+ * @property {string} assetSymbol - The symbol of the token to transfer
  */
 export const transferSignatureSchema = z.object({
-    params: z.array(z.object({
-        recipientAddress: z.string().describe("The address to receive the tokens"),
-        amount: z.string().describe("The amount of tokens to transfer"),
-        assetSymbol: z.string().describe("The symbol of the token to transfer")
-    }))
+    recipientAddress: z.string().describe("The address to receive the tokens"),
+    amount: z.string().describe("The amount of tokens to transfer"),
+    assetSymbol: z.string().describe("The symbol of the token to transfer")
 });

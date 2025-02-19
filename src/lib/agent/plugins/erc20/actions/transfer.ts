@@ -99,54 +99,42 @@ export const transfer = async (
 /**
  * Generates transfer signature for batch transfers
  * @param {Object} input - Transfer input
- * @param {TransferParams[]} input.params - Array of transfer parameters
+ * @param {TransferParams} input.params - Array of transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const transfer_signature = async (input: {
-  params: z.infer<typeof transferSignatureSchema>;
-}): Promise<any> => {
+export const transfer_signature = async (params: z.infer<typeof transferSignatureSchema>): Promise<any> => {
   try {
-    const params = input.params;
-
-    if (!Array.isArray(params)) {
-      throw new Error('params is not an Array');
+    const symbol = params.assetSymbol.toUpperCase();
+    const tokenAddress = tokenAddresses[symbol];
+    if (!tokenAddress) {
+      return {
+        status: 'error',
+        error: {
+          code: 'TOKEN_NOT_SUPPORTED',
+          message: `Token ${symbol} not supported`,
+        },
+      };
     }
 
-    const limit = AddAgentLimit();
+    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const formattedAmount = formatTokenAmount(params.amount, decimals);
+    const amountUint256 = uint256.bnToUint256(formattedAmount);
 
-    const results = await Promise.all(
-      params.map(async (payload) => {
-        const symbol = payload.assetSymbol.toUpperCase();
-        const tokenAddress = tokenAddresses[symbol];
-        if (!tokenAddress) {
-          return {
-            status: 'error',
-            error: {
-              code: 'TOKEN_NOT_SUPPORTED',
-              message: `Token ${symbol} not supported`,
-            },
-          };
-        }
-        const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-        const formattedAmount = formatTokenAmount(payload.amount, decimals);
-        const amountUint256 = uint256.bnToUint256(formattedAmount);
+    const result = {
+      status: 'success',
+      transactions: {
+        contractAddress: tokenAddress,
+        entrypoint: 'transfer',
+        calldata: [
+          params.recipientAddress,
+          amountUint256.low,
+          amountUint256.high,
+        ],
+      },
+    };
 
-        return {
-          status: 'success',
-          transactions: {
-            contractAddress: tokenAddress,
-            entrypoint: 'transfer',
-            calldata: [
-              payload.recipientAddress,
-              amountUint256.low,
-              amountUint256.high,
-            ],
-          },
-        };
-      })
-    );
-    console.log('Results :', results);
-    return JSON.stringify({ transaction_type: 'INVOKE', results });
+    console.log('Result:', result);
+    return JSON.stringify({ transaction_type: 'INVOKE', result });
   } catch (error) {
     console.error('Transfer call data failure:', error);
     return {

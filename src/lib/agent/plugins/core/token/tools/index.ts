@@ -22,7 +22,6 @@ import { getMyGivenAllowance } from '../../../erc20/actions/getAllowance';
 import { getAllowanceGivenToMe } from '../../../erc20/actions/getAllowance';
 
 export const registerTokenTools = () => {
-  // Register getAllowance tool
   StarknetToolRegistry.registerTool({
     name: 'get_allowance',
     plugins: 'token',
@@ -47,7 +46,6 @@ export const registerTokenTools = () => {
     execute: getAllowanceGivenToMe,
   });
 
-  // Register getTotalSupply tool
   StarknetToolRegistry.registerTool({
     name: 'get_total_supply',
     plugins: 'token',
@@ -56,7 +54,6 @@ export const registerTokenTools = () => {
     execute: getTotalSupply,
   });
 
-  // Register transferFrom tool
   StarknetToolRegistry.registerTool({
     name: 'transfer_from',
     plugins: 'token',
@@ -65,7 +62,6 @@ export const registerTokenTools = () => {
     execute: transfer_from,
   });
 
-  // Register getBalance tool
   StarknetToolRegistry.registerTool({
     name: 'get_balance',
     plugins: 'token',
@@ -74,7 +70,6 @@ export const registerTokenTools = () => {
     execute: getBalance,
   });
 
-  // Register getOwnBalance tool
   StarknetToolRegistry.registerTool({
     name: 'get_own_balance',
     plugins: 'token',
@@ -83,7 +78,6 @@ export const registerTokenTools = () => {
     execute: getOwnBalance,
   });
 
-  // Register approve tool
   StarknetToolRegistry.registerTool({
     name: 'approve',
     plugins: 'token',
@@ -92,7 +86,6 @@ export const registerTokenTools = () => {
     execute: approve,
   });
 
-  // Register transfer tool
   StarknetToolRegistry.registerTool({
     name: 'transfer',
     plugins: 'token',

@@ -80,51 +80,39 @@ export const approve = async (
  * @param {ApproveParams[]} input.params - Array of approve parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const approve_signature = async (input: {
-  params: z.infer<typeof approveSignatureSchema>;
-}): Promise<any> => {
+export const approve_signature = async (params: z.infer<typeof approveSignatureSchema>): Promise<any> => {
   try {
-    const params = input.params;
-
-    if (!Array.isArray(params)) {
-      throw new Error('params is not an Array');
+    const symbol = params.assetSymbol.toUpperCase();
+    const tokenAddress = tokenAddresses[symbol];
+    if (!tokenAddress) {
+      return {
+        status: 'error',
+        error: {
+          code: 'TOKEN_NOT_SUPPORTED',
+          message: `Token ${symbol} not supported`,
+        },
+      };
     }
 
-    const results = await Promise.all(
-      params.map(async (payload) => {
-        const symbol = payload.assetSymbol.toUpperCase();
-        const tokenAddress = tokenAddresses[symbol];
-        if (!tokenAddress) {
-          return {
-            status: 'error',
-            error: {
-              code: 'TOKEN_NOT_SUPPORTED',
-              message: `Token ${symbol} not supported`,
-            },
-          };
-        }
+    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const formattedAmount = formatTokenAmount(params.amount, decimals);
+    const amountUint256 = uint256.bnToUint256(formattedAmount);
 
-        const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-        const formattedAmount = formatTokenAmount(payload.amount, decimals);
-        const amountUint256 = uint256.bnToUint256(formattedAmount);
+    const result = {
+      status: 'success',
+      transactions: {
+        contractAddress: tokenAddress,
+        entrypoint: 'approve',
+        calldata: [
+          params.spenderAddress,
+          amountUint256.low,
+          amountUint256.high,
+        ],
+      },
+    };
 
-        return {
-          status: 'success',
-          transactions: {
-            contractAddress: tokenAddress,
-            entrypoint: 'approve',
-            calldata: [
-              payload.spenderAddress,
-              amountUint256.low,
-              amountUint256.high,
-            ],
-          },
-        };
-      })
-    );
-
-    console.log('Results:', results);
-    return JSON.stringify({ transaction_type: 'INVOKE', results });
+    console.log('Result:', result);
+    return JSON.stringify({ transaction_type: 'INVOKE', result });
   } catch (error) {
     console.error('Approve call data failure:', error);
     return {

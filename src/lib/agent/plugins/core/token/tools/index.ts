@@ -7,7 +7,9 @@ import {
   getBalanceSchema,
   getOwnBalanceSchema,
   approveSchema,
-  transferSchema
+  transferSchema,
+  getMyGivenAllowanceSchema,
+  getAllowanceGivenToMeSchema
 } from '../../../erc20/schemas/schema';
 
 import { getAllowance } from '../../../erc20/actions/getAllowance';
@@ -16,15 +18,33 @@ import { transfer_from } from '../../../erc20/actions/transferFrom';
 import { getBalance, getOwnBalance } from '../../../erc20/actions/getBalances';
 import { approve } from '../../../erc20/actions/approve';
 import { transfer } from '../../../erc20/actions/transfer';
+import { getMyGivenAllowance } from '../../../erc20/actions/getAllowance';
+import { getAllowanceGivenToMe } from '../../../erc20/actions/getAllowance';
 
 export const registerTokenTools = () => {
   // Register getAllowance tool
   StarknetToolRegistry.registerTool({
     name: 'get_allowance',
     plugins: 'token',
-    description: 'Get the amount of tokens that a spender is allowed to spend on behalf of an owner',
+    description: 'Get the amount of tokens that a spender is allowed to spend on behalf of an owner. Requires the token symbol (e.g., ETH, USDC), the owner address and the spender address.',
     schema: getAllowanceSchema,
     execute: getAllowance,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_my_given_allowance',
+    plugins: 'token',
+    description: 'Get the amount of tokens that a spender is allowed to spend on your behalf. Requires the token symbol (e.g., ETH, USDC) and the spender address.',
+    schema: getMyGivenAllowanceSchema,
+    execute: getMyGivenAllowance,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_allowance_given_to_me',
+    plugins: 'token',
+    description: 'Get the amount of tokens that a you are allowed to spend on the behalf of an owner. Requires the token symbol (e.g., ETH, USDC) and the owner address.',
+    schema: getAllowanceGivenToMeSchema,
+    execute: getAllowanceGivenToMe,
   });
 
   // Register getTotalSupply tool

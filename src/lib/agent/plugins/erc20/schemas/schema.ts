@@ -2,9 +2,22 @@ import { z } from "zod";
 
 // Get Allowance Schema
 export const getAllowanceSchema = z.object({
+  ownerAddress: z.string().describe("The address of the account owner of the tokens"),
   spenderAddress: z.string().describe("The address of the account allowed to spend the tokens"),
   assetSymbol: z.string().describe("The symbol of the token (e.g., 'ETH', 'USDC')")
 });
+
+// Get Own Allowance Schema
+export const getMyGivenAllowanceSchema = z.object({
+    spenderAddress: z.string().describe("The address of the account allowed to spend the tokens"),
+    assetSymbol: z.string().describe("The symbol of the token (e.g., 'ETH', 'USDC')")
+  });
+
+  // Get Own Allowance Schema
+export const getAllowanceGivenToMeSchema = z.object({
+    ownerAddress: z.string().describe("The address of the account allowed to spend the tokens"),
+    assetSymbol: z.string().describe("The symbol of the token (e.g., 'ETH', 'USDC')")
+  });
 
 // Get Total Supply Schema
 export const getTotalSupplySchema = z.string().describe("The symbol of the token to get the total supply for");

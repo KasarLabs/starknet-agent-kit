@@ -35,7 +35,7 @@ export interface WalletApiResponse {
     /** Call data */
     calldata: string[];
   };
-  /** Additional data */ 
+  /** Additional data */
   additional_data?: {
     /** Asset symbol */
     assetSymbol: string;

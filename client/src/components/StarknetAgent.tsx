@@ -362,9 +362,9 @@ const StarknetAgent = () => {
           text: JSON.stringify({
             tx,
             transaction_hash: transaction_hash,
-            additional_data: info ? info : undefined
+            additional_data: info ? info : undefined,
           }),
-        }
+        };
         typeResponse(res);
       } else if (result.transaction_type === 'READ') {
         typeResponse({

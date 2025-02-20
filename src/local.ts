@@ -5,7 +5,8 @@ import { StarknetAgent } from './lib/agent/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
 import { load_json_config } from './lib/agent/jsonConfig';
-import yargs, { string } from 'yargs';
+import { createBox } from './lib/agent/formatting';
+import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';
 import path from 'path';
@@ -39,31 +40,26 @@ const logo = `${chalk.cyan(`
                                                    |___/                             
 `)}`;
 
-const createBox = (
-  content: unknown,
-  options: { title?: string; isError?: boolean } = {}
-) => {
-  const { title = '', isError = false } = options;
-  const contentStr = String(content);
-  const color = isError ? chalk.red : chalk.cyan;
-  const width = process.stdout.columns > 100 ? 100 : process.stdout.columns - 4;
-  const topBorder = '╭' + '─'.repeat(width - 2) + '╮';
-  const bottomBorder = '╰' + '─'.repeat(width - 2) + '╯';
+const getTerminalWidth = (): number => {
+  return Math.min(process.stdout.columns || 80, 100);
+};
 
-  let result = '\n';
-  if (title) {
-    result += `${color('┌' + '─'.repeat(title.length + 2) + '┐')}\n`;
-    result += `${color('│')} ${title} ${color('│')}\n`;
-  }
-  result += color(topBorder) + '\n';
-  result +=
-    color('│') +
-    ' ' +
-    contentStr +
-    ' '.repeat(Math.max(0, width - contentStr.length - 3)) +
-    '\n';
-  result += color(bottomBorder) + '\n';
-  return result;
+const wrapText = (text: string, maxWidth: number): string[] => {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = '';
+
+  words.forEach(word => {
+    if ((currentLine + ' ' + word).length <= maxWidth) {
+      currentLine += (currentLine ? ' ' : '') + word;
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  });
+  
+  if (currentLine) lines.push(currentLine);
+  return lines;
 };
 
 function reloadEnvVars() {
@@ -93,7 +89,11 @@ const validateEnvVars = async () => {
   ];
   const missings = required.filter((key) => !process.env[key]);
   if (missings.length > 0) {
-    console.error(`Missing environment variables:\n${missings.join('\n')}`);
+    console.error(createBox(missings.join('\n'), {
+      title: 'Missing Environment Variables',
+      isError: true
+    }));
+
     for (const missing of missings) {
       const { prompt } = await inquirer.prompt([
         {
@@ -124,7 +124,8 @@ const validateEnvVars = async () => {
 const LocalRun = async () => {
   clearScreen();
   console.log(logo);
-  console.log(createBox('Welcome to Starknet-Agent-Kit'));
+  console.log(createBox('Welcome to Starknet-Agent-Kit', 'For more informations, visit our documentation at https://docs.starkagent.ai'));
+  
   const agent_config_name = await load_command();
   const { mode } = await inquirer.prompt([
     {
@@ -155,6 +156,7 @@ const LocalRun = async () => {
     await validateEnvVars();
     spinner.success({ text: 'Agent initialized successfully' });
     const agent_config = load_json_config(agent_config_name);
+    
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
@@ -191,10 +193,26 @@ const LocalRun = async () => {
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
-          console.log(createBox(airesponse, { title: 'Agent' }));
-        } catch (error) {
+          // Si la réponse est un objet JSON, on s'assure qu'elle est bien formatée
+          const formatAgentResponse = (response: string) => {
+            if (typeof response !== 'string') return response;
+            
+            return response.split('\n').map(line => {
+              if (line.includes('•')) {
+                return `  ${line.trim()}`; // Add proper indentation for bullet points
+              }
+              return line;
+            });
+          };
+          
+          if (typeof airesponse === 'string') {
+            console.log(createBox('Agent Response', formatAgentResponse(airesponse)));
+          } else {
+            console.error('Invalid response type');
+          }
+                } catch (error) {
           executionSpinner.error({ text: 'Error processing request' });
-          console.error(createBox(error.message, { isError: true }));
+          console.log(createBox('Error', error.message, { isError: true }));
         }
       }
     } else if (mode === 'auto') {
@@ -209,26 +227,27 @@ const LocalRun = async () => {
         agentMode: 'auto',
         agentconfig: agent_config,
       });
-      console.log(chalk.dim('\nStarting autonomous session...\n'));
-      const autoSpinner = createSpinner('Running autonomous mode').start();
+      
+      console.log(chalk.dim('\nStarting interactive session...\n'));
+      const autoSpinner = createSpinner('Running autonomous mode\n').start();
 
       try {
         await agent.execute_autonomous();
         autoSpinner.success({ text: 'Autonomous execution completed' });
       } catch (error) {
         autoSpinner.error({ text: 'Error in autonomous mode' });
-        console.error(createBox(error.message, { isError: true }));
+        console.error(createBox(error.message, { title: 'Error', isError: true }));
       }
     }
   } catch (error) {
     spinner.error({ text: 'Failed to initialize agent' });
-    console.error(createBox(error.message, { isError: true }));
+    console.error(createBox(error.message, { title: 'Fatal Error', isError: true }));
   }
 };
 
 LocalRun().catch((error) => {
   console.error(
-    createBox(error.message, { isError: true, title: 'Fatal Error' })
+    createBox(error.message, { title: 'Fatal Error', isError: true })
   );
   process.exit(1);
 });

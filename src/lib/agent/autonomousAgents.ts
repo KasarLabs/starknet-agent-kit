@@ -60,9 +60,6 @@ export const createAutonomousAgent = (
   try {
     const json_config = starknetAgent.getAgentConfig();
     if (json_config) {
-      console.log('Character config loaded successfully');
-      console.log('JSON config loaded successfully');
-
       const allowedTools = json_config.internal_plugins
         ? createAllowedTools(starknetAgent, json_config.internal_plugins)
         : createTools(starknetAgent);

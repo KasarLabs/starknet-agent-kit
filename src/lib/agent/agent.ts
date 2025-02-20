@@ -79,9 +79,6 @@ export const createAgent = (
     const modelSelected = model();
     const json_config = starknetAgent.getAgentConfig();
     if (json_config) {
-      console.log('Character config loaded successfully');
-      console.log('JSON config loaded successfully');
-
       const allowedTools = createAllowedTools(
         starknetAgent,
         json_config.internal_plugins

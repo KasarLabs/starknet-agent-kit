@@ -8,15 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@avnu/avnu-sdk':
-        specifier: ^3.0.0
-        version: 3.0.0(ethers@6.13.5)(moment@2.30.1)(qs@6.14.0)(starknet@6.23.1(encoding@0.1.13))
       '@fastify/multipart':
         specifier: ^9.0.3
         version: 9.0.3
-      '@types/node-telegram-bot-api':
-        specifier: ^0.64.7
-        version: 0.64.7
       add:
         specifier: ^2.0.6
         version: 2.0.6
@@ -305,6 +299,8 @@ importers:
         specifier: ^3.4.1
         version: 3.4.17(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.7.3))
 
+  plugins/core: {}
+
   plugins/fibrous:
     dependencies:
       fibrous-router-sdk:
@@ -313,6 +309,9 @@ importers:
 
   plugins/telegram:
     dependencies:
+      '@types/node-telegram-bot-api':
+        specifier: ^0.64.7
+        version: 0.64.7
       node-telegram-bot-api:
         specifier: ^0.66.0
         version: 0.66.0(request@2.88.2)
@@ -366,15 +365,6 @@ packages:
 
   '@anthropic-ai/sdk@0.36.3':
     resolution: {integrity: sha512-+c0mMLxL/17yFZ4P5+U6bTWiCSFZUKJddrv01ud2aFBWnTPLdRncYV76D3q1tqfnL7aCnhRtykFnoCFzvr4U3Q==}
-
-  '@avnu/avnu-sdk@3.0.0':
-    resolution: {integrity: sha512-BqqazrXDKn5RE1anyl9Ba+Kd/4VaKNsdKTl0ryTfXhMIYp+R4dXMaLD40emfXd+25kxM00xPKiZOiGHl2ntG5g==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      ethers: ^6.13.0
-      moment: ^2.30.1
-      qs: ^6.13.0
-      starknet: ^6.11.0
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -5450,9 +5440,6 @@ packages:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
 
-  moment@2.30.1:
-    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
-
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
@@ -7515,13 +7502,6 @@ snapshots:
       node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
-
-  '@avnu/avnu-sdk@3.0.0(ethers@6.13.5)(moment@2.30.1)(qs@6.14.0)(starknet@6.23.1(encoding@0.1.13))':
-    dependencies:
-      ethers: 6.13.5
-      moment: 2.30.1
-      qs: 6.14.0
-      starknet: 6.23.1(encoding@0.1.13)
 
   '@babel/code-frame@7.26.2':
     dependencies:
@@ -13388,8 +13368,6 @@ snapshots:
       obliterator: 2.0.5
 
   modify-values@1.0.1: {}
-
-  moment@2.30.1: {}
 
   ms@2.0.0: {}
 

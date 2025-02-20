@@ -4,5 +4,8 @@
     "dependencies" : {
         "twitter-api-v2" : "^1.19.1",
         "agent-twitter-client": "^0.0.18"
+    },
+    "scripts": {
+        "clean": "rm -rf node_modules"
     }
 }

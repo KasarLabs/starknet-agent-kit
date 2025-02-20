@@ -2,5 +2,8 @@
     "name" : "@starknet-agent-kit/vesu",
     "version" : "0.0.10",
     "dependencies" : {
+    },
+    "scripts": {
+        "clean": "rm -rf node_modules"
     }
 }

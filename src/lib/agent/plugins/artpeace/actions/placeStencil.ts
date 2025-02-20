@@ -2,6 +2,9 @@ import { promises as fs } from 'fs';
 import { placePixelParam, placeStencilParam } from '../schema';
 import { placePixel, placePixelSignature } from './placePixel';
 import { getFilename } from '../utils/getFilename';
+import { StorageSingleton } from 'src/common/storage/storage.service';
+
+const storage = StorageSingleton.getInstance();
 
 export const placeStencil = async (param: placeStencilParam) => {
   try {
@@ -54,7 +57,12 @@ export const placeStencil = async (param: placeStencilParam) => {
       return { canvasId, xPos: pos.x, yPos: pos.y, color };
     });
 
-    return await placePixelSignature({ params: allData });
+    const result = await placePixelSignature({ params: allData })
+
+    return JSON.stringify({
+      status: "success",
+      storageId: storage.store(result)
+    });
   } catch (error) {
     return JSON.stringify({
       status: 'error',

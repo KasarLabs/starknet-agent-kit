@@ -16,6 +16,10 @@ import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { StorageSingleton } from 'src/common/storage/storage.service';
+import { getFilename } from 'src/lib/agent/plugins/artpeace/utils/getFilename';
+
+const storage = StorageSingleton.getInstance();
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -41,10 +45,17 @@ export class WalletController implements OnModuleInit {
 
   @Post('request')
   async handleUserCalldataRequest(@Body() userRequest: AgentRequestDTO) {
-    return await this.walletService.handleUserCalldataRequest(
+    const result = await this.walletService.handleUserCalldataRequest(
       this.agent,
       userRequest
     );
+    if (result.status === "success" && result.storageId) 
+    {
+      console.log(result);
+      const data = await JSON.parse(storage.retrieve(result.storageId));
+      return {status: result.status, transaction_type: 'INVOKE',  results: data.results}
+    }
+    return result;
   }
 
   @Post('output')
@@ -71,7 +82,8 @@ export class WalletController implements OnModuleInit {
     if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
     const filePath = `${path}${filename.filename}`;
-    const normalizedPath = path.normalize();
+    const fullPath = await getFilename(filename.filename);
+    const normalizedPath = fullPath.normalize();
 
     try {
       await fs.access(normalizedPath);
@@ -80,7 +92,7 @@ export class WalletController implements OnModuleInit {
     }
 
     try {
-      await fs.unlink(filePath);
+      await fs.unlink(fullPath);
       logger.debug({ message: `File ${filename.filename} has been deleted` });
       return { status: 'success', data: 'The file has been deleted.' };
     } catch (error) {

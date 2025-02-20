@@ -13,21 +13,21 @@ import { transfer_from_signature } from '../../../erc20/actions/transferFrom';
 export const registerSignatureToolsToken = () => {
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'transfer_from',
-    description: 'Generate transfer from transactions',
+    description: 'Return transfer_from json transaction',
     schema: transferFromSignatureSchema,
     execute: transfer_from_signature,
   });
 
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'approve',
-    description: 'Generate approve transactions',
+    description: 'Return approve json transaction',
     schema: approveSignatureSchema,
     execute: approve_signature,
   });
 
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'transfer',
-    description: 'Generate transfer transactions',
+    description: 'Return transfer json transaction',
     schema: transferSignatureSchema,
     execute: transfer_signature,
   });

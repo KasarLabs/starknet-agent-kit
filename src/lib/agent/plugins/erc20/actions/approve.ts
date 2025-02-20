@@ -69,7 +69,7 @@ export const approve = async (
  * @param {ApproveParams[]} input.params - Array of approve parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const approve_signature = async (
+export const approveSignature = async (
   params: z.infer<typeof approveSignatureSchema>
 ): Promise<any> => {
   try {

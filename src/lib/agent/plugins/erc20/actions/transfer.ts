@@ -70,7 +70,7 @@ export const transfer = async (
  * @param {TransferParams} input.params - Array of transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const transfer_signature = async (
+export const transferSignature = async (
   params: z.infer<typeof transferSignatureSchema>
 ): Promise<any> => {
   try {

@@ -15,7 +15,7 @@ import {
  * @returns {Promise<string>} JSON string with transaction result
  * @throws {Error} If transfer fails
  */
-export const transfer_from = async (
+export const transferFrom = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof transferFromSchema>
 ): Promise<string> => {
@@ -70,7 +70,7 @@ export const transfer_from = async (
  * @param {TransferFromParams} params - Array of transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const transfer_from_signature = async (
+export const transferFromSignature = async (
   params: z.infer<typeof transferFromSignatureSchema>
 ): Promise<any> => {
   try {

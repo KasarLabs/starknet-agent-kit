@@ -14,7 +14,7 @@ import {
 
 import { getAllowance } from '../../../erc20/actions/getAllowance';
 import { getTotalSupply } from '../../../erc20/actions/getTotaSupply';
-import { transfer_from } from '../../../erc20/actions/transferFrom';
+import { transferFrom } from '../../../erc20/actions/transferFrom';
 import { getBalance, getOwnBalance } from '../../../erc20/actions/getBalances';
 import { approve } from '../../../erc20/actions/approve';
 import { transfer } from '../../../erc20/actions/transfer';
@@ -63,7 +63,7 @@ export const registerTokenTools = () => {
     description:
       'Transfer tokens from one address to another using an allowance',
     schema: transferFromSchema,
-    execute: transfer_from,
+    execute: transferFrom,
   });
 
   StarknetToolRegistry.registerTool({

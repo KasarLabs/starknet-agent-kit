@@ -4,7 +4,6 @@ import { RpcProvider } from 'starknet';
 import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
 import { createAutonomousAgent } from './autonomousAgents';
-import { AddAgentLimit, Limit } from './limit';
 import { Scraper } from 'agent-twitter-client';
 import { TwitterApi } from 'twitter-api-v2';
 import {
@@ -42,7 +41,6 @@ export class StarknetAgent implements IAgent {
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
   public readonly agentMode: string;
-  public readonly token_limit: Limit;
   public readonly agentconfig?: JsonConfig | undefined;
 
   constructor(private readonly config: StarknetAgentConfig) {
@@ -56,8 +54,6 @@ export class StarknetAgent implements IAgent {
     this.signature = config.signature;
     this.agentMode = config.agentMode;
     this.agentconfig = config.agentconfig;
-
-    this.token_limit = AddAgentLimit();
 
     // Initialize managers
     this.transactionMonitor = new TransactionMonitor(this.provider);
@@ -234,10 +230,6 @@ export class StarknetAgent implements IAgent {
   }
   getProvider(): RpcProvider {
     return this.provider;
-  }
-
-  getLimit(): Limit {
-    return this.token_limit;
   }
 
   getTwitterAuthMode(): 'API' | 'CREDENTIALS' | undefined {

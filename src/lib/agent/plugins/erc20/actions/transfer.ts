@@ -1,9 +1,10 @@
-import { Account } from 'starknet';
+import { Account, constants, Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { validateAndFormatParams } from '../utils/token';
+import { validateAndFormatParams, executeV3Transaction } from '../utils/token';
 import { z } from 'zod';
 import { transferSchema, transferSignatureSchema } from '../schemas/schema';
 import { TransferResult } from '../types/types';
+import { ERC20_ABI } from '../abis/erc20Abi';
 
 /**
  * Transfers ERC20 tokens on Starknet
@@ -30,30 +31,36 @@ export const transfer = async (
     const account = new Account(
       provider,
       credentials.accountPublicKey,
-      credentials.accountPrivateKey
+      credentials.accountPrivateKey,
+      undefined,
+      constants.TRANSACTION_VERSION.V3
     );
 
-    const result = await account.execute({
-      contractAddress: validatedParams.tokenAddress,
-      entrypoint: 'transfer',
-      calldata: [
-        recipientAddress,
-        validatedParams.formattedAmountUint256.low,
-        validatedParams.formattedAmountUint256.high,
-      ],
+    const contract = new Contract(
+      ERC20_ABI,
+      validatedParams.tokenAddress,
+      provider
+    );
+    contract.connect(account);
+
+    const calldata = contract.populate('transfer', [
+      recipientAddress,
+      validatedParams.formattedAmountUint256.low,
+      validatedParams.formattedAmountUint256.high,
+    ]);
+
+    const txH = await executeV3Transaction({
+      call: calldata,
+      account: account,
     });
 
-    await provider.waitForTransaction(result.transaction_hash);
-
-    const transferResult: TransferResult = {
+    return JSON.stringify({
       status: 'success',
       amount: params.amount,
       symbol: validatedParams.formattedSymbol,
       recipients_address: params.recipientAddress,
-      transaction_hash: result.transaction_hash,
-    };
-
-    return JSON.stringify(transferResult);
+      transaction_hash: txH,
+    });
   } catch (error) {
     const transferResult: TransferResult = {
       status: 'failure',

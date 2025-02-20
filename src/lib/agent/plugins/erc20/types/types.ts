@@ -1,10 +1,7 @@
-import { Uint256 } from 'starknet';
+import { Uint256, Call, Account } from 'starknet';
 
 /**
- * Formats token amount with correct decimals
- * @param {string} amount - Amount to format
- * @param {number} decimals - Number of decimals
- * @returns {string} Formatted amount
+ * Token decimals configuration
  */
 export const DECIMALS = {
   USDC: 6,
@@ -13,8 +10,14 @@ export const DECIMALS = {
 };
 
 /**
- * Result interface for transfer operations
- * @interface TransferResult
+ * Transfer operation result
+ * @property {('success'|'failure')} status
+ * @property {string} [amount]
+ * @property {string} [symbol]
+ * @property {string} [recipients_address]
+ * @property {string} [transaction_hash]
+ * @property {string} [error]
+ * @property {string} [step]
  */
 export interface TransferResult {
   status: 'success' | 'failure';
@@ -27,12 +30,25 @@ export interface TransferResult {
 }
 
 /**
- * Parameters validation result
- * @interface ParamsValidationResult
+ * Validated parameters for token operations
+ * @property {string} formattedSymbol
+ * @property {string} formattedAddress
+ * @property {string} tokenAddress
+ * @property {Uint256} formattedAmountUint256
  */
 export interface ParamsValidationResult {
   formattedSymbol: string;
   formattedAddress: string;
   tokenAddress: string;
   formattedAmountUint256: Uint256;
+}
+
+/**
+ * V3 transaction execution arguments
+ * @property {Call} call
+ * @property {Account} account
+ */
+export interface ExecuteV3Args {
+  call: Call;
+  account: Account;
 }

@@ -1,7 +1,7 @@
-import { Account, Contract } from 'starknet';
+import { Account, Contract, constants } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
-import { validateAndFormatParams } from '../utils/token';
+import { validateAndFormatParams, executeV3Transaction } from '../utils/token';
 import { z } from 'zod';
 import { approveSchema, approveSignatureSchema } from '../schemas/schema';
 
@@ -30,7 +30,9 @@ export const approve = async (
     const account = new Account(
       provider,
       accountCredentials.accountPublicKey,
-      accountCredentials.accountPrivateKey
+      accountCredentials.accountPrivateKey,
+      undefined,
+      constants.TRANSACTION_VERSION.V3
     );
 
     const contract = new Contract(
@@ -40,19 +42,22 @@ export const approve = async (
     );
     contract.connect(account);
 
-    const { transaction_hash } = await contract.approve(
+    const calldata = contract.populate('approve', [
       spenderAddress,
-      validatedParams.formattedAmountUint256
-    );
+      validatedParams.formattedAmountUint256,
+    ]);
 
-    await provider.waitForTransaction(transaction_hash);
+    const txH = await executeV3Transaction({
+      call: calldata,
+      account: account,
+    });
 
     return JSON.stringify({
       status: 'success',
       amount: params.amount,
       symbol: validatedParams.formattedSymbol,
       spender_address: spenderAddress,
-      transactionHash: transaction_hash,
+      transactionHash: txH,
     });
   } catch (error) {
     return JSON.stringify({

@@ -1,7 +1,12 @@
-import { Account, Contract, validateAndParseAddress } from 'starknet';
+import {
+  Account,
+  Contract,
+  validateAndParseAddress,
+  constants,
+} from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
-import { validateAndFormatParams } from '../utils/token';
+import { validateAndFormatParams, executeV3Transaction } from '../utils/token';
 import { z } from 'zod';
 import {
   transferFromSchema,
@@ -34,7 +39,9 @@ export const transferFrom = async (
     const account = new Account(
       provider,
       credentials.accountPublicKey,
-      credentials.accountPrivateKey
+      credentials.accountPrivateKey,
+      undefined,
+      constants.TRANSACTION_VERSION.V3
     );
 
     const contract = new Contract(
@@ -42,19 +49,23 @@ export const transferFrom = async (
       validatedParams.tokenAddress,
       provider
     );
+
     contract.connect(account);
 
-    const { transaction_hash } = await contract.transferFrom(
+    const calldata = contract.populate('transfer_from', [
       fromAddress,
       toAddress,
-      validatedParams.formattedAmountUint256
-    );
+      validatedParams.formattedAmountUint256,
+    ]);
 
-    await provider.waitForTransaction(transaction_hash);
+    const txH = await executeV3Transaction({
+      call: calldata,
+      account: account,
+    });
 
     return JSON.stringify({
       status: 'success',
-      transactionHash: transaction_hash,
+      transactionHash: txH,
     });
   } catch (error) {
     return JSON.stringify({

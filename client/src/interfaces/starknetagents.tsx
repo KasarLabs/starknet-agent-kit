@@ -18,6 +18,8 @@ export interface TransactionResponse {
   transaction_type: 'INVOKE';
   /** Transaction results */
   results: WalletApiResponse[];
+  /** Additional data */
+  additional_data?: any;
 }
 
 /**

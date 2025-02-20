@@ -6,7 +6,7 @@ import { placeStencil } from '../actions/placeStencil';
 export const registerSignatureArtpeaceTools = () => {
   StarknetSignatureToolRegistry.RegisterSignatureTools({
     name: 'place_pixel',
-    description: 'Places a pixel, all parameters are optional',
+    description: 'Places one or multiple pixels on the canvas. All parameters are optional',
     schema: placePixelSchema,
     execute: placePixelSignature,
   }),

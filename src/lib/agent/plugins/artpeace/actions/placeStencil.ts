@@ -3,6 +3,7 @@ import { placePixelParam, placeStencilParam } from '../schema';
 import { placePixel, placePixelSignature } from './placePixel';
 import { getFilename } from '../utils/getFilename';
 import { StorageSingleton } from 'src/common/storage/storage.service';
+import { NotFoundException } from '@nestjs/common';
 
 const storage = StorageSingleton.getInstance();
 
@@ -13,7 +14,7 @@ export const placeStencil = async (param: placeStencilParam) => {
 
     const filename = param.filename;
     if (!filename) {
-      throw new Error('No filename found.');
+      throw new NotFoundException('No filename found.');
     }
     const fullName = await getFilename(filename);
 
@@ -21,7 +22,7 @@ export const placeStencil = async (param: placeStencilParam) => {
     try {
       buffer = await fs.readFile(fullName);
     } catch (error) {
-      throw new Error(error.message);
+      throw new NotFoundException(`File not found : ${filename}`);
     }
 
     const formData = new FormData();

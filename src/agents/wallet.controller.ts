@@ -106,9 +106,9 @@ export class WalletController implements OnModuleInit {
       });
       switch (error.code) {
         case 'ENOENT':
-          throw new NotFoundException(`File not found : ${filePath}`); // HttpException(404)
+          throw new NotFoundException(`File not found : ${filename.filename}`); // HttpException(404)
         case 'EACCES':
-          throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
+          throw new Error(`Insufficient permits for ${filename.filename}`); // HttpException(403)
         default:
           throw new Error(`Deletion error : ${error.message}`); // throw personalised error
       }

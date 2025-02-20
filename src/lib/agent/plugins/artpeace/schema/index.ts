@@ -18,8 +18,6 @@ export const placePixelParamSchema = z.object({
     .describe('The position on y axe of the pixel'),
   color: z
     .string()
-    .optional()
-    .default('0')
     .describe('The color of the pixel by name or by hexadecimal'),
 });
 
@@ -42,5 +40,12 @@ export const placeStencilSchema = z.object({
   filename: z.string().describe('The name of the to convert in stencil'),
 });
 
+export const getColorsSchema = z.object({
+  canvasId: z
+    .union([z.number(), z.string()])
+    .describe('The id or the unique name of the world to dispose the pixel'),
+})
+
 export type placePixelParam = z.infer<typeof placePixelParamSchema>;
 export type placeStencilParam = z.infer<typeof placeStencilSchema>;
+export type getColorsParam = z.infer<typeof getColorsSchema>;

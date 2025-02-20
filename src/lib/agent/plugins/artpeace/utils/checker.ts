@@ -29,7 +29,7 @@ export class Checker {
           `https://api.art-peace.net/get-world-id?worldName=${this.param}`
         );
         if (!response.ok)
-          throw new Error(`HTTP Error status: ${response.status}`);
+          throw new Error(`Error during get world id fetch: HTTP Error status: ${response.status}`);
 
         const data = await response.json();
         id = data.data;
@@ -39,7 +39,7 @@ export class Checker {
         `https://api.art-peace.net/get-world?worldId=${id}`
       );
       if (!response.ok)
-        throw new Error(`HTTP Error status: ${response.status}`);
+        throw new Error(`Error during get-world fetch: HTTP Error status: ${response.status}`);
 
       const data = await response.json();
       this.world = data.data;
@@ -83,15 +83,16 @@ export class Checker {
         `https://api.art-peace.net/get-worlds-colors?worldId=${this.world.worldId}`
       );
       if (!response.ok) {
-        throw new Error(`HTTP Error status: ${response.status}`);
+        throw new Error(`Error during get world colors fetch: HTTP Error status: ${response.status}`);
       }
       const data = await response.json();
-      const allHexColor: string[] = data.data;
-      this.hexColors = allHexColor;
-      const allColor: string[] = allHexColor.map((cleanColor) =>
+      const allHexColors: string[] = data.data;
+      this.hexColors = allHexColors;
+      const allColors: string[] = allHexColors.map((cleanColor) =>
         ColorAnalyzer.analyzeColor(cleanColor)
       );
-      this.colors = allColor;
+      this.colors = allColors;
+      return {ascii: allColors, hex: allHexColors};
     } catch (error) {
       throw new Error(error.message);
     }

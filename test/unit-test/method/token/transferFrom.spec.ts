@@ -1,6 +1,6 @@
 import { Mock } from 'node:test';
 import { approve } from 'src/lib/agent/plugins/erc20/actions/approve';
-import { transfer_from } from 'src/lib/agent/plugins/erc20/actions/transferFrom';
+import { transferFrom } from 'src/lib/agent/plugins/erc20/actions/transferFrom';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 import { setupTestEnvironment } from 'test/utils/helpers';
 import { StarknetAgentInterface } from '../../../../src/lib/agent/tools/tools';
@@ -43,7 +43,7 @@ describe('TransferFrom with prior approval', () => {
         assetSymbol: 'STRK',
       };
 
-      const transferResult = await transfer_from(agent, transferParams);
+      const transferResult = await transferFrom(agent, transferParams);
       const parsedTransfer = JSON.parse(transferResult);
 
       expect(parsedTransfer).toMatchObject({
@@ -62,7 +62,7 @@ describe('TransferFrom with prior approval', () => {
         assetSymbol: 'STRK',
       };
 
-      const result = await transfer_from(agent, transferParams);
+      const result = await transferFrom(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
@@ -78,7 +78,7 @@ describe('TransferFrom with prior approval', () => {
         assetSymbol: 'STRK',
       };
 
-      const result = await transfer_from(agent, transferParams);
+      const result = await transferFrom(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
@@ -96,7 +96,7 @@ describe('TransferFrom with prior approval', () => {
         assetSymbol: 'STRK',
       };
 
-      const result = await transfer_from(agent, transferParams);
+      const result = await transferFrom(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
@@ -112,7 +112,7 @@ describe('TransferFrom with prior approval', () => {
         assetSymbol: 'INVALID_TOKEN',
       };
 
-      const result = await transfer_from(agent, transferParams);
+      const result = await transferFrom(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
@@ -128,7 +128,7 @@ describe('TransferFrom with prior approval', () => {
         assetSymbol: 'STRK',
       };
 
-      const result = await transfer_from(agent, transferParams);
+      const result = await transferFrom(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({

@@ -49,7 +49,7 @@ const wrapText = (text: string, maxWidth: number): string[] => {
   const lines: string[] = [];
   let currentLine = '';
 
-  words.forEach(word => {
+  words.forEach((word) => {
     if ((currentLine + ' ' + word).length <= maxWidth) {
       currentLine += (currentLine ? ' ' : '') + word;
     } else {
@@ -57,7 +57,7 @@ const wrapText = (text: string, maxWidth: number): string[] => {
       currentLine = word;
     }
   });
-  
+
   if (currentLine) lines.push(currentLine);
   return lines;
 };
@@ -89,10 +89,12 @@ const validateEnvVars = async () => {
   ];
   const missings = required.filter((key) => !process.env[key]);
   if (missings.length > 0) {
-    console.error(createBox(missings.join('\n'), {
-      title: 'Missing Environment Variables',
-      isError: true
-    }));
+    console.error(
+      createBox(missings.join('\n'), {
+        title: 'Missing Environment Variables',
+        isError: true,
+      })
+    );
 
     for (const missing of missings) {
       const { prompt } = await inquirer.prompt([
@@ -124,8 +126,13 @@ const validateEnvVars = async () => {
 const LocalRun = async () => {
   clearScreen();
   console.log(logo);
-  console.log(createBox('Welcome to Starknet-Agent-Kit', 'For more informations, visit our documentation at https://docs.starkagent.ai'));
-  
+  console.log(
+    createBox(
+      'Welcome to Starknet-Agent-Kit',
+      'For more informations, visit our documentation at https://docs.starkagent.ai'
+    )
+  );
+
   const agent_config_name = await load_command();
   const { mode } = await inquirer.prompt([
     {
@@ -156,7 +163,7 @@ const LocalRun = async () => {
     await validateEnvVars();
     spinner.success({ text: 'Agent initialized successfully' });
     const agent_config = load_json_config(agent_config_name);
-    
+
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
@@ -193,24 +200,25 @@ const LocalRun = async () => {
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
-          // Si la réponse est un objet JSON, on s'assure qu'elle est bien formatée
           const formatAgentResponse = (response: string) => {
             if (typeof response !== 'string') return response;
-            
-            return response.split('\n').map(line => {
+
+            return response.split('\n').map((line) => {
               if (line.includes('•')) {
-                return `  ${line.trim()}`; // Add proper indentation for bullet points
+                return `  ${line.trim()}`;
               }
               return line;
             });
           };
-          
+
           if (typeof airesponse === 'string') {
-            console.log(createBox('Agent Response', formatAgentResponse(airesponse)));
+            console.log(
+              createBox('Agent Response', formatAgentResponse(airesponse))
+            );
           } else {
             console.error('Invalid response type');
           }
-                } catch (error) {
+        } catch (error) {
           executionSpinner.error({ text: 'Error processing request' });
           console.log(createBox('Error', error.message, { isError: true }));
         }
@@ -227,7 +235,7 @@ const LocalRun = async () => {
         agentMode: 'auto',
         agentconfig: agent_config,
       });
-      
+
       console.log(chalk.dim('\nStarting interactive session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode\n').start();
 
@@ -236,12 +244,16 @@ const LocalRun = async () => {
         autoSpinner.success({ text: 'Autonomous execution completed' });
       } catch (error) {
         autoSpinner.error({ text: 'Error in autonomous mode' });
-        console.error(createBox(error.message, { title: 'Error', isError: true }));
+        console.error(
+          createBox(error.message, { title: 'Error', isError: true })
+        );
       }
     }
   } catch (error) {
     spinner.error({ text: 'Failed to initialize agent' });
-    console.error(createBox(error.message, { title: 'Fatal Error', isError: true }));
+    console.error(
+      createBox(error.message, { title: 'Fatal Error', isError: true })
+    );
   }
 };
 

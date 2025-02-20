@@ -9,7 +9,7 @@ export const wrapText = (text: string, maxWidth: number): string[] => {
   const lines: string[] = [];
   let currentLine = '';
 
-  words.forEach(word => {
+  words.forEach((word) => {
     if ((currentLine + ' ' + word).length <= maxWidth) {
       currentLine += (currentLine ? ' ' : '') + word;
     } else {
@@ -17,7 +17,7 @@ export const wrapText = (text: string, maxWidth: number): string[] => {
       currentLine = word;
     }
   });
-  
+
   if (currentLine) lines.push(currentLine);
   return lines;
 };
@@ -41,15 +41,16 @@ export const createBox = (
   const terminalWidth = getTerminalWidth();
   const contentWidth = terminalWidth - 6;
   const horizontalLine = '─'.repeat(terminalWidth - 2);
-  
+
   let result = '\n';
   result += color(`╭${horizontalLine}╮\n`);
-  
-  // Title section
-  result += color('│') + chalk.yellow(` ${title}`.padEnd(terminalWidth - 2)) + color('│\n');
+
+  result +=
+    color('│') +
+    chalk.yellow(` ${title}`.padEnd(terminalWidth - 2)) +
+    color('│\n');
   result += color(`├${horizontalLine}┤\n`);
 
-  // Process content based on type
   let lines: string[];
   if (Array.isArray(content)) {
     lines = content;
@@ -57,20 +58,20 @@ export const createBox = (
     lines = formatJsonContent(content);
   }
 
-  // Add each line with proper padding
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const wrappedLines = wrapText(line, contentWidth);
-    wrappedLines.forEach(wrappedLine => {
-      result += color('│') + 
-                chalk.white(` ${wrappedLine}`.padEnd(terminalWidth - 2)) + 
-                color('│\n');
+    wrappedLines.forEach((wrappedLine) => {
+      result +=
+        color('│') +
+        chalk.white(` ${wrappedLine}`.padEnd(terminalWidth - 2)) +
+        color('│\n');
     });
   });
-  
+
   result += color(`╰${horizontalLine}╯\n`);
   return result;
 };
 
 export const formatSection = (items: string[]): string[] => {
-  return items.map(item => `  • ${item.trim()}`);
+  return items.map((item) => `  • ${item.trim()}`);
 };

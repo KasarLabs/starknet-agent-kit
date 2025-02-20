@@ -18,8 +18,6 @@ export interface TransactionResponse {
   transaction_type: 'INVOKE';
   /** Transaction results */
   results: WalletApiResponse[];
-  /** Additional data */
-  additional_data?: any;
 }
 
 /**
@@ -36,5 +34,16 @@ export interface WalletApiResponse {
     entrypoint: string;
     /** Call data */
     calldata: string[];
+  };
+  /** Additional data */ 
+  additional_data?: {
+    /** Asset symbol */
+    assetSymbol: string;
+    /** Asset amount */
+    amount: string;
+    /** Recipient address */
+    recipientAddress?: string;
+    /** Spender address */
+    spenderAddress?: string;
   };
 }

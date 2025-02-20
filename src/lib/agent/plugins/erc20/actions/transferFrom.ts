@@ -98,8 +98,8 @@ export const transferFromSignature = async (
       additional_data: {
         symbol: params.assetSymbol,
         amount: params.amount,
-        fromAddress: fromAddress,
-        toAddress: toAddress,
+        spenderAddress: fromAddress,
+        recipientAddress: toAddress,
       },
     };
     return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });

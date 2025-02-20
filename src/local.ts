@@ -5,7 +5,7 @@ import { StarknetAgent } from './lib/agent/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
 import { load_json_config } from './lib/agent/jsonConfig';
-import yargs, { string } from 'yargs';
+import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';
 import path from 'path';
@@ -107,7 +107,6 @@ const validateEnvVars = async () => {
           },
         },
       ]);
-
       await new Promise((resolve, reject) => {
         fs.appendFile('.env', `\n${missing}=${prompt}\n`, (err) => {
           if (err) reject(new Error('Error when trying to write on .env file'));
@@ -187,6 +186,7 @@ const LocalRun = async () => {
             signature: 'key',
             agentMode: 'agent',
             agentconfig: agent_config,
+            agentMemory: false,
           });
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
@@ -208,6 +208,7 @@ const LocalRun = async () => {
         signature: 'key',
         agentMode: 'auto',
         agentconfig: agent_config,
+        agentMemory: true,
       });
       console.log(chalk.dim('\nStarting autonomous session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode').start();

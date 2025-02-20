@@ -42,23 +42,14 @@ pnpm install
 Create a `.env` file:
 
 ```env
-# Starknet configuration (mandatory)
-STARKNET_PUBLIC_ADDRESS="YOUR_STARKNET_PUBLIC_ADDRESS"
-STARKNET_PRIVATE_KEY="YOUR_STARKNET_PRIVATE_KEY"
-STARKNET_RPC_URL="YOUR_STARKNET_RPC_URL"
-
-# AI Provider configuration (mandatory)
-AI_PROVIDER_API_KEY="YOUR_AI_PROVIDER_API_KEY"
-AI_MODEL="YOUR_AI_MODEL"
-AI_PROVIDER="YOUR_AI_PROVIDER"
-
-# NestJS server configuration
-SERVER_API_KEY="YOUR_SERVER_API_KEY"
-SERVER_PORT="YOUR_SERVER_PORT"
-
-# Agent additional configuration
-DISCORD_BOT_TOKEN?="YOUR_DISCORD_BOT_TOKEN"
-DISCORD_CHANNEL_ID?="YOUR_DISCORD_CHANNEL_ID"
+# Required Configuration
+PRIVATE_KEY="your_wallet_private_key"
+PUBLIC_ADDRESS="your_wallet_address"
+RPC_URL="your_rpc_endpoint"
+AI_PROVIDER_API_KEY="your_ai_api_key"
+AI_PROVIDER="anthropic"  # or "openai", "gemini", "ollama"
+AI_MODEL="claude-3-5-sonnet-latest"  # or your chosen model
+API_KEY="your_api_key_for_endpoints"
 ```
 
 ## Usage
@@ -98,13 +89,15 @@ pnpm run local
 import { StarknetAgent } from 'starknet-agent-kit';
 
 const agent = new StarknetAgent({
-  provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
-  accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
-  accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
+  provider: new RpcProvider({ nodeUrl: process.env.RPC_URL }),
+  accountPrivateKey: process.env.PRIVATE_KEY,
+  accountPublicKey: process.env.PUBLIC_ADDRESS,
   aiModel: process.env.AI_MODEL,
   aiProvider: process.env.AI_PROVIDER,
   aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
   signature: 'key',
+  agentMode: 'agent',
+  agentMemory: true,
 });
 
 const response = await agent.execute("What's my ETH balance?");

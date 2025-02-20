@@ -13,6 +13,7 @@ import {
   TwitterScraperConfig,
 } from './plugins/twitter/interfaces';
 import { JsonConfig } from './jsonConfig';
+import { AgentConfig } from './agent';
 import { TelegramInterface } from './plugins/telegram/interfaces';
 import TelegramBot from 'node-telegram-bot-api';
 
@@ -25,6 +26,7 @@ export interface StarknetAgentConfig {
   accountPrivateKey: string;
   signature: string;
   agentMode: string;
+  agentMemory: boolean;
   agentconfig?: JsonConfig;
 }
 
@@ -34,8 +36,9 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly agentReactExecutor: any;
+  private readonly agentReactExecutor: AgentConfig | undefined;
   private twitterAccoutManager: TwitterInterface = {};
+  private readonly agentMemory: boolean;
   private telegramAccountManager: TelegramInterface = {};
 
   public readonly transactionMonitor: TransactionMonitor;
@@ -56,6 +59,7 @@ export class StarknetAgent implements IAgent {
     this.signature = config.signature;
     this.agentMode = config.agentMode;
     this.agentconfig = config.agentconfig;
+    this.agentMemory = config.agentMemory;
 
     this.token_limit = AddAgentLimit();
 
@@ -77,6 +81,9 @@ export class StarknetAgent implements IAgent {
         apiKey: this.aiProviderApiKey,
         aiProvider: config.aiProvider,
       });
+    }
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
     }
   }
 
@@ -228,14 +235,17 @@ export class StarknetAgent implements IAgent {
       agentMode: this.agentMode,
     };
   }
-
+  getAgentMemory() {
+    return {
+      agentMemory: this.agentMemory,
+    };
+  }
   getAgentConfig(): JsonConfig | undefined {
     return this.agentconfig;
   }
   getProvider(): RpcProvider {
     return this.provider;
   }
-
   getLimit(): Limit {
     return this.token_limit;
   }
@@ -266,6 +276,14 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute_autonomous(): Promise<unknown> {
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
+    }
+    if (this.agentMode != 'auto') {
+      throw new Error(
+        `Error : impossible to use execute_automous function with agent mode : ${this.agentMode}.`
+      );
+    }
     while (-1) {
       const aiMessage = await this.agentReactExecutor.agent.invoke(
         {
@@ -275,29 +293,58 @@ export class StarknetAgent implements IAgent {
       );
       console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
       await new Promise((resolve) =>
-        setTimeout(resolve, this.agentReactExecutor.json_config.interval)
+        setTimeout(resolve, this.agentReactExecutor?.json_config?.interval)
       );
     }
+
     return;
   }
 
   async execute(input: string): Promise<unknown> {
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
+    }
     if (this.agentMode != 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentMode}`
+        `Error : impossible to use execute function with agent mode : ${this.agentMode}.`
       );
     }
-    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
+    let aiMessage;
+    if (this.agentMemory === true) {
+      console.log(this.agentReactExecutor.agentConfig);
+      aiMessage = await this.agentReactExecutor.agent.invoke(
+        { messages: input },
+        this.agentReactExecutor.agentConfig
+      );
+    } else {
+      aiMessage = await this.agentReactExecutor.agent.invoke({
+        messages: input,
+      });
+    }
     return aiMessage.messages[aiMessage.messages.length - 1].content;
   }
 
   async execute_call_data(input: string): Promise<unknown> {
+    if (this.agentReactExecutor === undefined) {
+      throw new Error(`Error : agentReactExecutor is undefined`);
+    }
     if (this.agentMode != 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentMode}`
+        `Error : impossible to use execute_call_data function with agent mode : ${this.agentMode}.`
       );
     }
-    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
+
+    let aiMessage;
+    if (this.agentMemory === true) {
+      aiMessage = await this.agentReactExecutor.agent.invoke(
+        { messages: input },
+        this.agentReactExecutor.agentConfig
+      );
+    } else {
+      aiMessage = await this.agentReactExecutor.agent.invoke({
+        messages: input,
+      });
+    }
     try {
       const parsedResult = JSON.parse(
         aiMessage.messages[aiMessage.messages.length - 2].content

@@ -37,6 +37,9 @@ export interface StarknetAgentInterface {
   getTwitterAuthMode: () => 'API' | 'CREDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;
   getTwitterManager: () => TwitterInterface;
+  getAgentMemory: () => {
+    agentMemory: boolean;
+  };
   getTelegramManager: () => TelegramInterface;
 }
 

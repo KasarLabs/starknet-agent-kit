@@ -8,6 +8,8 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
+import { AgentConfig } from './agent';
+import { Agent } from 'http';
 
 export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
@@ -87,7 +89,12 @@ export const createAutonomousAgent = (
         messageModifier: json_config.prompt,
       });
 
-      return { agent, agentConfig, json_config };
+      const result: AgentConfig = {
+        agent,
+        agentConfig,
+        json_config,
+      };
+      return result;
     }
   } catch (error) {
     console.error(

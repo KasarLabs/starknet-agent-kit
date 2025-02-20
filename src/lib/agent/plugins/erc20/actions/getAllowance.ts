@@ -21,8 +21,6 @@ export const getAllowance = async (
       console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
-
-    
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
     
@@ -31,13 +29,11 @@ export const getAllowance = async (
 
     const allowanceResponse = await tokenContract.allowance(params.ownerAddress, params.spenderAddress);
 
-    const formattedAllowance = formatBalance(allowanceResponse, symbol);
-
     return JSON.stringify({
       status: 'success',
       owner: params.ownerAddress,
       spender: params.spenderAddress,
-      allowance: formattedAllowance,
+      allowance: formatBalance(allowanceResponse, symbol),
     });
   } catch (error) {
     console.log('Error in getAllowance:', error);
@@ -74,13 +70,11 @@ export const getMyGivenAllowance = async (
 
     const allowanceResponse = await tokenContract.allowance(ownerAddress, params.spenderAddress);
 
-    const formattedAllowance = formatBalance(allowanceResponse, symbol);
-
     return JSON.stringify({
       status: 'success',
       owner: ownerAddress,
       spender: params.spenderAddress,
-      allowance: formattedAllowance,
+      allowance: formatBalance(allowanceResponse, symbol),
     });
   } catch (error) {
     console.log('Error in getMyGivenAllowance:', error);
@@ -117,13 +111,11 @@ export const getAllowanceGivenToMe = async (
 
     const allowanceResponse = await tokenContract.allowance(params.ownerAddress, spenderAddress);
 
-    const formattedAllowance = formatBalance(allowanceResponse, symbol);
-
     return JSON.stringify({
       status: 'success',
       owner: params.ownerAddress,
       spender: spenderAddress,
-      allowance: formattedAllowance,
+      allowance: formatBalance(allowanceResponse, symbol),
     });
   } catch (error) {
     console.log('Error in getAllowanceGivenToMe:', error);

@@ -1,7 +1,8 @@
+import { validateAndParseAddress } from 'starknet';
 import { tokenAddresses } from '../constant/erc20';
 import { DECIMALS } from '../types/types';
-import { BigNumberish, uint256 } from 'starknet';
-import { Token } from 'src/lib/agent/limit';
+import { uint256, Uint256 } from 'starknet';
+import { ParamsValidationResult } from '../interface/interface';
 
 export const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
@@ -65,33 +66,52 @@ export const formatTokenAmount = (amount: string, decimals: number): string => {
   return whole + paddedFraction;
 };
 
-/**
- * Checks if transfer amount is within limits
- * @param {BigNumberish} amount - Transfer amount
- * @param {string} symbol - Token symbol
- * @param {Token[]} limit - Array of token limits
- */
-export const handleLimitTokenTransfer = (
-  amount: BigNumberish,
-  symbol: string,
-  limit: Token[]
-) => {
-  const index = limit.findIndex(
-    (token) => token.symbol.toUpperCase() === symbol.toUpperCase()
-  );
-  if (index === -1) {
-    console.log(`Not limit find for token : ${symbol}`);
-    return;
-  }
 
-  const decimals =
-    DECIMALS[limit[index].symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-  const formattedAmount = formatTokenAmount(limit[index].amount, decimals);
-  const amountUint256 = uint256.bnToUint256(formattedAmount);
-  if (BigInt(amount) > BigInt(amountUint256.low)) {
-    throw new Error(
-      `Error your limit token exceed the transaction amount.\n Transaction amount : ${amount} \n Transacion limit amount ${limit[index].amount}`
-    );
+
+/**
+ * Validates and formats input parameters with strict validation
+ * @param symbol - Token symbol
+ * @param address - Starknet address
+ * @param amount - Token amount
+ * @returns Formatted parameters
+ * @throws Error if validation fails
+ */
+export const validateAndFormatParams = (
+  symbol: string,
+  address: string,
+  amount: string,
+): ParamsValidationResult => {
+  try {
+    if (!symbol) {
+      throw new Error('Asset symbol is required');
+    }
+    const formattedSymbol = symbol.toUpperCase();
+    
+    const tokenAddress = validateTokenAddress(formattedSymbol);
+    if (!tokenAddress) {
+      throw new Error(`Token ${formattedSymbol} not supported`);
+    }
+
+    if (!address) {
+      throw new Error('Address is required');
+    }
+    const formattedAddress = validateAndParseAddress(address);
+
+    if (!amount) {
+      throw new Error('Amount is required');
+    }
+    const decimals = DECIMALS[formattedSymbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const formattedAmount = formatTokenAmount(amount, decimals);
+    const formattedAmountUint256 = uint256.bnToUint256(formattedAmount);
+
+    return {
+      formattedSymbol,
+      formattedAddress,
+      formattedAmountUint256,
+      tokenAddress
+    };
+  } catch (error) {
+    throw new Error(`Parameter validation failed: ${error.message}`);
   }
-  console.log('Limit Token : ', amountUint256.low, amount);
 };
+

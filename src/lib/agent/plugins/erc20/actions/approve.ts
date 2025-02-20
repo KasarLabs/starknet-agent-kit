@@ -1,13 +1,7 @@
 import { Account, Contract, uint256, validateAndParseAddress } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
-import { 
-  validateTokenAddress,
-  formatTokenAmount,
-  handleLimitTokenTransfer
- } from '../utils/token';
-import { DECIMALS } from '../types/types';
-import { tokenAddresses } from '../constant/erc20';
+import { validateAndFormatParams } from '../utils/token';
 import { z } from 'zod';
 import { approveSchema, approveSignatureSchema } from '../schemas/schema';
 
@@ -23,13 +17,13 @@ export const approve = async (
   params: z.infer<typeof approveSchema>
 ): Promise<string> => {
   try {
-    if (!params?.assetSymbol) {
-      throw new Error('Asset symbol is required');
-    }
-    
-    const symbol = params.assetSymbol.toUpperCase();
-    const tokenAddress = validateTokenAddress(symbol);
-    const spenderAddress = validateAndParseAddress(params.spenderAddress);
+    const validatedParams = validateAndFormatParams(
+      params.assetSymbol,
+      params.spenderAddress,
+      params.amount
+    );
+
+    const spenderAddress = validatedParams.formattedAddress;
     const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
   
@@ -39,16 +33,12 @@ export const approve = async (
       accountCredentials.accountPrivateKey, 
     );
     
-    const contract = new Contract(ERC20_ABI, tokenAddress, provider);
+    const contract = new Contract(ERC20_ABI, validatedParams.tokenAddress, provider);
     contract.connect(account);
-    
-    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
     
     const { transaction_hash } = await contract.approve(
       spenderAddress,
-      amountUint256,
+      validatedParams.formattedAmountUint256,
     );
     
     await provider.waitForTransaction(transaction_hash);
@@ -56,7 +46,7 @@ export const approve = async (
     return JSON.stringify({
       status: 'success',
       amount: params.amount,
-      symbol: symbol,
+      symbol: validatedParams.formattedSymbol,
       spender_address: spenderAddress,
       transactionHash: transaction_hash,
     });
@@ -80,37 +70,28 @@ export const approve = async (
  */
 export const approve_signature = async (params: z.infer<typeof approveSignatureSchema>): Promise<any> => {
   try {
-    const spenderAddress = validateAndParseAddress(params.spenderAddress);
-    const symbol = params.assetSymbol.toUpperCase();
-    const tokenAddress = tokenAddresses[symbol];
-    if (!tokenAddress) {
-      return {
-        status: 'error',
-        error: {
-          code: 'TOKEN_NOT_SUPPORTED',
-          message: `Token ${symbol} not supported`,
-        },
-      };
-    }
+    const validatedParams = validateAndFormatParams(
+      params.assetSymbol,
+      params.spenderAddress,
+      params.amount
+    );
 
-    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
+    const spenderAddress = validatedParams.formattedAddress;
 
     const result = {
       status: 'success',
       transactions: {
-        contractAddress: tokenAddress,
+        contractAddress: validatedParams.tokenAddress,
         entrypoint: 'approve',
         calldata: [
           spenderAddress,
-          amountUint256.low,
-          amountUint256.high,
+          validatedParams.formattedAmountUint256.low,
+          validatedParams.formattedAmountUint256.high,
         ],
       },
     };
 
-    return JSON.stringify({ transaction_type: 'INVOKE', result });
+    return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });
   } catch (error) {
     console.error('Approve call data failure:', error);
     return {

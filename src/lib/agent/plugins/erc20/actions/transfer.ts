@@ -5,7 +5,7 @@ import { AddAgentLimit } from 'src/lib/agent/limit';
 import { 
   validateTokenAddress,
   formatTokenAmount,
-  handleLimitTokenTransfer
+  validateAndFormatParams
  } from '../utils/token';
 import { DECIMALS } from '../types/types';
 import { z } from 'zod';
@@ -39,11 +39,13 @@ export const transfer = async (
   params: z.infer<typeof transferSchema>
 ): Promise<string> => {
   try {
-    if (!params?.assetSymbol) {
-      throw new Error('Asset symbol is required');
-    }
-    const symbol = params.assetSymbol.toUpperCase();
-    const tokenAddress = validateTokenAddress(symbol);
+    const validatedParams = validateAndFormatParams(
+      params.assetSymbol,
+      params.recipientAddress,
+      params.amount
+    );
+
+    const recipientAddress = validatedParams.formattedAddress;
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
@@ -52,32 +54,23 @@ export const transfer = async (
       credentials.accountPublicKey,
       credentials.accountPrivateKey
     );
-
-    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
     
     const result = await account.execute({
-      contractAddress: tokenAddress,
+      contractAddress: validatedParams.tokenAddress,
       entrypoint: 'transfer',
       calldata: [
-        params.recipientAddress,
-        amountUint256.low,
-        amountUint256.high,
+        recipientAddress,
+        validatedParams.formattedAmountUint256.low,
+        validatedParams.formattedAmountUint256.high,
       ],
     });
-
-    console.log(
-      'transfer initiated. Transaction hash:',
-      result.transaction_hash
-    );
 
     await provider.waitForTransaction(result.transaction_hash);
 
     const transferResult: TransferResult = {
       status: 'success',
       amount: params.amount,
-      symbol: symbol,
+      symbol: validatedParams.formattedSymbol,
       recipients_address: params.recipientAddress,
       transaction_hash: result.transaction_hash,
     };
@@ -104,37 +97,28 @@ export const transfer = async (
  */
 export const transfer_signature = async (params: z.infer<typeof transferSignatureSchema>): Promise<any> => {
   try {
-    const symbol = params.assetSymbol.toUpperCase();
-    const tokenAddress = tokenAddresses[symbol];
-    if (!tokenAddress) {
-      return {
-        status: 'error',
-        error: {
-          code: 'TOKEN_NOT_SUPPORTED',
-          message: `Token ${symbol} not supported`,
-        },
-      };
-    }
+    const validatedParams = validateAndFormatParams(
+      params.assetSymbol,
+      params.recipientAddress,
+      params.amount
+    );
 
-    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
+    const recipientAddress = validatedParams.formattedAddress;
 
     const result = {
       status: 'success',
       transactions: {
-        contractAddress: tokenAddress,
+        contractAddress: validatedParams.tokenAddress,
         entrypoint: 'transfer',
         calldata: [
-          params.recipientAddress,
-          amountUint256.low,
-          amountUint256.high,
+          recipientAddress,
+          validatedParams.formattedAmountUint256.low,
+          validatedParams.formattedAmountUint256.high,
         ],
       },
     };
 
-    console.log('Result:', result);
-    return JSON.stringify({ transaction_type: 'INVOKE', result });
+    return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });
   } catch (error) {
     console.error('Transfer call data failure:', error);
     return {

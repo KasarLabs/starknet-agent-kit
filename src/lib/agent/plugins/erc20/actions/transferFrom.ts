@@ -1,8 +1,8 @@
-import { Account, Contract, uint256 } from 'starknet';
+import { Account, Contract, uint256, validateAndParseAddress } from 'starknet';
 import { tokenAddresses } from '../constant/erc20';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
-import { validateTokenAddress, formatTokenAmount } from '../utils/token';
+import { validateTokenAddress, formatTokenAmount, validateAndFormatParams } from '../utils/token';
 import { DECIMALS } from '../types/types';
 import { z } from 'zod';
 import { transferFromSchema, transferFromSignatureSchema } from '../schemas/schema';
@@ -20,11 +20,14 @@ export const transfer_from = async (
   params: z.infer<typeof transferFromSchema>
 ): Promise<string> => {
   try {
-    if (!params?.assetSymbol) {
-      throw new Error('Asset symbol is required');
-    }
-    const symbol = params.assetSymbol.toUpperCase();
-    const tokenAddress = validateTokenAddress(symbol);
+    const validatedParams = validateAndFormatParams(
+      params.assetSymbol,
+      params.fromAddress,
+      params.amount
+    );
+  
+    const fromAddress = validatedParams.formattedAddress;
+    const toAddress = validateAndParseAddress(params.toAddress);
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
@@ -33,26 +36,21 @@ export const transfer_from = async (
       credentials.accountPublicKey,
       credentials.accountPrivateKey
     );
-
-    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
-
     
-    const contract = new Contract(ERC20_ABI, tokenAddress, provider);
+    const contract = new Contract(ERC20_ABI, validatedParams.tokenAddress, provider);
     contract.connect(account);
 
-    const balanceResponse = await contract.balanceOf(params.fromAddress);
+    const balanceResponse = await contract.balanceOf(fromAddress);
     console.log('Source account balance:', balanceResponse);
 
-    const allowanceResponse = await contract.allowance(params.fromAddress, credentials.accountPublicKey);
+    const allowanceResponse = await contract.allowance(fromAddress, credentials.accountPublicKey);
     console.log('Current allowance:', allowanceResponse);
 
-    console.log('Transferring', params.amount, 'tokens from', params.fromAddress, 'to', params.toAddress);
+    console.log('Transferring', params.amount, 'tokens from', fromAddress, 'to', toAddress);
     const { transaction_hash } = await contract.transferFrom(
-      params.fromAddress,
-      params.toAddress,
-      amountUint256
+      fromAddress,
+      toAddress,
+      validatedParams.formattedAmountUint256
     );
 
     await provider.waitForTransaction(transaction_hash);
@@ -78,38 +76,31 @@ export const transfer_from = async (
  */
 export const transfer_from_signature = async (params: z.infer<typeof transferFromSignatureSchema>): Promise<any> => {
   try {
-    const symbol = params.assetSymbol.toUpperCase();
-    const tokenAddress = tokenAddresses[symbol];
-    if (!tokenAddress) {
-      return {
-        status: 'error',
-        error: {
-          code: 'TOKEN_NOT_SUPPORTED',
-          message: `Token ${symbol} not supported`,
-        },
-      };
-    }
-    
-    const decimals = DECIMALS[symbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
-    const formattedAmount = formatTokenAmount(params.amount, decimals);
-    const amountUint256 = uint256.bnToUint256(formattedAmount);
+    const validatedParams = validateAndFormatParams(
+      params.assetSymbol,
+      params.fromAddress,
+      params.amount
+    );
+
+    const fromAddress = validatedParams.formattedAddress;
+    const toAddress = validateAndParseAddress(params.toAddress);
 
     const result = {
       status: 'success',
       transactions: {
-        contractAddress: tokenAddress,
+        contractAddress: validatedParams.tokenAddress,
         entrypoint: 'transfer_from',
         calldata: [
-          params.fromAddress,
-          params.toAddress,
-          amountUint256.low,
-          amountUint256.high
+          fromAddress,
+          toAddress,
+          validatedParams.formattedAmountUint256.low,
+          validatedParams.formattedAmountUint256.high
         ],
       },
     };
 
     console.log('Result:', result);
-    return JSON.stringify({ transaction_type: 'INVOKE', result });
+    return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });
   } catch (error) {
     console.error('Transfer_from call data failure:', error);
     return {

@@ -33,6 +33,7 @@ export interface StarknetAgentInterface {
   getProvider: () => RpcProvider;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
+  getNetwork: () => string;
   getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;

@@ -1,8 +1,8 @@
 import { LaunchOnEkuboParams } from '../schema/';
 import { FACTORY_ABI } from '../abis/unruggableFactory';
-import { FACTORY_ADDRESS } from '../constants';
 import { Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { getNetworkFactoryAddress } from '../utils/helper';
 
 /**
  * Launches a memecoin on the Ekubo DEX with concentrated liquidity.
@@ -64,8 +64,11 @@ export const launchOnEkubo = async (
   try {
     const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
-
-    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
+    const contract = new Contract(
+      FACTORY_ABI,
+      getNetworkFactoryAddress(agent),
+      provider
+    );
 
     const launchParams = params.launchParams;
     const ekuboParams = params.ekuboParams;

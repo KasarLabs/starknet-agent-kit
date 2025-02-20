@@ -29,9 +29,11 @@ export class AgentsController implements OnModuleInit {
     private readonly config: ConfigurationService
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
+    const network = await this.config.starknet.network;
     this.agent = new StarknetAgent({
       provider: this.config.starknet.provider,
+      network: network,
       accountPrivateKey: this.config.starknet.privateKey,
       accountPublicKey: this.config.starknet.publicKey,
       aiModel: this.config.ai.model,

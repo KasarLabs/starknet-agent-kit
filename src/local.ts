@@ -179,6 +179,9 @@ const LocalRun = async () => {
             provider: new RpcProvider({
               nodeUrl: process.env.STARKNET_RPC_URL,
             }),
+            network: await new RpcProvider({
+              nodeUrl: process.env.STARKNET_RPC_URL,
+            }).getChainId(),
             accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
             accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
             aiModel: process.env.AI_MODEL,
@@ -200,6 +203,9 @@ const LocalRun = async () => {
     } else if (mode === 'auto') {
       const agent = new StarknetAgent({
         provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
+        network: await new RpcProvider({
+          nodeUrl: process.env.STARKNET_RPC_URL,
+        }).getChainId(),
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
         accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
         aiModel: process.env.AI_MODEL,

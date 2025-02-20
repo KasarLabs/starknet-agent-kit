@@ -2,7 +2,7 @@ import { ContractAddressParams } from '../schema';
 import { Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { FACTORY_ABI } from '../abis/unruggableFactory';
-import { FACTORY_ADDRESS } from '../constants';
+import { getNetworkFactoryAddress } from '../utils/helper';
 
 /**
  * Checks if a given contract address is a memecoin created by the Unruggable Factory.
@@ -52,7 +52,11 @@ export const isMemecoin = async (
 ): Promise<string> => {
   try {
     const provider = agent.getProvider();
-    const contract = new Contract(FACTORY_ABI, FACTORY_ADDRESS, provider);
+    const contract = new Contract(
+      FACTORY_ABI,
+      getNetworkFactoryAddress(agent),
+      provider
+    );
     const result = await contract.is_memecoin(params.contractAddress);
 
     return JSON.stringify({

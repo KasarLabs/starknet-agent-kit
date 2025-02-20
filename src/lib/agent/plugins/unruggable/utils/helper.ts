@@ -1,5 +1,5 @@
 import { Account, CallData, RawArgs, Uint256 } from 'starknet';
-import { FACTORY_ADDRESS } from '../constants';
+import { FACTORY_ADDRESS_MAINNET, FACTORY_ADDRESS_TESTNET } from '../constants';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { RpcProvider } from 'starknet';
 
@@ -39,7 +39,7 @@ export const execute = async (
   );
 
   return await account.execute({
-    contractAddress: FACTORY_ADDRESS,
+    contractAddress: getNetworkFactoryAddress(agent),
     entrypoint: method,
     calldata: CallData.compile(calldata),
   });
@@ -72,3 +72,10 @@ export const execute = async (
  */
 export const decimalsScale = (decimals: number) =>
   `1${Array(decimals).fill('0').join('')}`;
+
+export const getNetworkFactoryAddress = (agent: StarknetAgentInterface) => {
+  const network = agent.getNetwork();
+  return network === '0x534e5f4d41494e'
+    ? FACTORY_ADDRESS_MAINNET
+    : FACTORY_ADDRESS_TESTNET;
+};

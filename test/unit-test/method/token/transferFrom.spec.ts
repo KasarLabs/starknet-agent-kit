@@ -1,25 +1,46 @@
+import { Mock } from 'node:test';
 import { approve } from 'src/lib/agent/plugins/erc20/actions/approve';
 import { transfer_from } from 'src/lib/agent/plugins/erc20/actions/transferFrom';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 import { setupTestEnvironment } from 'test/utils/helpers';
-import { Contract } from 'starknet';
-import { ERC20_ABI } from 'src/lib/agent/plugins/erc20/abis/erc20Abi';
-import { validateTokenAddress } from 'src/lib/agent/plugins/erc20/utils/token';
-
-const agent = createMockStarknetAgent();
-setupTestEnvironment();
+import { StarknetAgentInterface } from '../../../../src/lib/agent/tools/tools';
 
 describe('TransferFrom with prior approval', () => {
-  describe('Success scenarios', () => {
-    it('should successfully approve and transfer tokens', async () => {
-      // First: Approve tokens
+  const approvalAmount = '1.0';
+  let agent: StarknetAgentInterface;
+  let approverAgent: StarknetAgentInterface;
 
-      // Then: Transfer the approved tokens
+  beforeEach(async () => {
+    setupTestEnvironment();
+    
+    approverAgent = createMockStarknetAgent();
+    approverAgent.getAccountCredentials = () => ({
+      accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+      accountPrivateKey: process.env.STARKNET_PRIVATE_KEY_2 as string,
+    });
+
+    const approveParams = {
+      spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
+      amount: approvalAmount,
+      assetSymbol: 'STRK'
+    };
+
+    await approve(approverAgent, approveParams);
+
+    agent = createMockStarknetAgent();
+    agent.getAccountCredentials = () => ({
+      accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
+      accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
+    });
+  });
+
+  describe('Success scenarios', () => {
+    it('should successfully transfer tokens within approved amount', async () => {
       const transferParams = {
-        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
-        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-        amount: '0.3', // Less than approved amount
-        symbol: 'STRK'
+        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string, 
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string, 
+        amount: '0.3',
+        assetSymbol: 'STRK'
       };
 
       const transferResult = await transfer_from(agent, transferParams);
@@ -32,135 +53,87 @@ describe('TransferFrom with prior approval', () => {
     });
   });
 
-  // describe('Failure scenarios', () => {
-  //   it('should fail when trying to transfer more than approved amount', async () => {
-  //     // First: Approve a small amount
-  //     const approveParams = {
-  //       spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       amount: '0.1',
-  //       symbol: 'ETH'
-  //     };
+  describe('Failure scenarios', () => {
+    it('should fail when trying to transfer more than approved amount', async () => {
+      const transferParams = {
+        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
+        amount: '2.0', 
+        assetSymbol: 'STRK'
+      };
 
-  //     await approve(agent, approveParams);
+      const result = await transfer_from(agent, transferParams);
+      const parsed = JSON.parse(result);
 
-  //     // Then: Try to transfer more than approved
-  //     const transferParams = {
-  //       fromAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
-  //       toAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       amount: '1.0', // More than approved amount
-  //       symbol: 'ETH'
-  //     };
+      expect(parsed).toMatchObject({
+        status: 'failure'
+      });
+    });
 
-  //     const result = await transfer_from(agent, transferParams);
-  //     const parsed = JSON.parse(result);
+    it('should fail when trying to transfer from an address that did not approve', async () => {
+      const transferParams = {
+        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
+        amount: '0.5',
+        assetSymbol: 'STRK'
+      };
 
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure'
-  //     });
-  //   });
+      const result = await transfer_from(agent, transferParams);
+      const parsed = JSON.parse(result);
 
-  //   it('should fail when trying to transfer without prior approval', async () => {
-  //     const transferParams = {
-  //       fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
-  //       amount: '1.0',
-  //       symbol: 'ETH'
-  //     };
+      expect(parsed).toMatchObject({
+        status: 'failure'
+      });
+    });
+  });
 
-  //     const result = await transfer_from(agent, transferParams);
-  //     const parsed = JSON.parse(result);
+  describe('Input validation', () => {
+    it('should fail with invalid from address', async () => {
+      const transferParams = {
+        fromAddress: 'invalid_address',
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
+        amount: '0.5',
+        assetSymbol: 'STRK'
+      };
 
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure'
-  //     });
-  //   });
-  // });
+      const result = await transfer_from(agent, transferParams);
+      const parsed = JSON.parse(result);
 
-  // describe('Input validation', () => {
-  //   it('should fail with invalid from address after approval', async () => {
-  //     // First: Approve tokens
-  //     const approveParams = {
-  //       spender_address: process.env.STARKNET_PUBLIC_ADDRESS as string,
-  //       amount: '1.0',
-  //       symbol: 'ETH'
-  //     };
+      expect(parsed).toMatchObject({
+        status: 'failure'
+      });
+    });
 
-  //     await approve(agent, approveParams);
+    it('should fail with invalid token symbol', async () => {
+      const transferParams = {
+        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
+        amount: '0.5',
+        assetSymbol: 'INVALID_TOKEN'
+      };
 
-  //     // Then: Try transfer with invalid from address
-  //     const transferParams = {
-  //       fromAddress: 'invalid_address',
-  //       toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
-  //       amount: '0.5',
-  //       symbol: 'ETH'
-  //     };
+      const result = await transfer_from(agent, transferParams);
+      const parsed = JSON.parse(result);
 
-  //     const result = await transfer_from(agent, transferParams);
-  //     const parsed = JSON.parse(result);
+      expect(parsed).toMatchObject({
+        status: 'failure'
+      });
+    });
 
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure'
-  //     });
-  //   });
+    it('should fail with invalid amount format', async () => {
+      const transferParams = {
+        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
+        amount: 'invalid_amount',
+        assetSymbol: 'STRK'
+      };
 
-  //   it('should fail with invalid token symbol', async () => {
-  //     const transferParams = {
-  //       fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
-  //       amount: '0.5',
-  //       symbol: 'INVALID_TOKEN'
-  //     };
+      const result = await transfer_from(agent, transferParams);
+      const parsed = JSON.parse(result);
 
-  //     const result = await transfer_from(agent, transferParams);
-  //     const parsed = JSON.parse(result);
-
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure'
-  //     });
-  //   });
-
-  //   it('should fail with invalid amount format', async () => {
-  //     const transferParams = {
-  //       fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
-  //       amount: 'invalid_amount',
-  //       symbol: 'ETH'
-  //     };
-
-  //     const result = await transfer_from(agent, transferParams);
-  //     const parsed = JSON.parse(result);
-
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure'
-  //     });
-  //   });
-  // });
-
-  // describe('Edge cases', () => {
-  //   it('should fail when transferring to same address as from', async () => {
-  //     // First: Approve tokens
-  //     const approveParams = {
-  //       spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       amount: '1.0',
-  //       symbol: 'ETH'
-  //     };
-
-  //     await approve(agent, approveParams);
-
-  //     // Then: Try self-transfer
-  //     const transferParams = {
-  //       fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       toAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-  //       amount: '0.5',
-  //       symbol: 'ETH'
-  //     };
-
-  //     const result = await transfer_from(agent, transferParams);
-  //     const parsed = JSON.parse(result);
-
-  //     expect(parsed).toMatchObject({
-  //       status: 'failure'
-  //     });
-  //   });
-  // });
+      expect(parsed).toMatchObject({
+        status: 'failure'
+      });
+    });
+  });
 });

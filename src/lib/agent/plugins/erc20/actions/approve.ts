@@ -1,4 +1,4 @@
-import { Account, Contract, uint256 } from 'starknet';
+import { Account, Contract, uint256, validateAndParseAddress } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { 
@@ -29,9 +29,10 @@ export const approve = async (
     
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
+    const spenderAddress = validateAndParseAddress(params.spenderAddress);
     const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
-    
+  
     const account = new Account(
       provider,
       accountCredentials.accountPublicKey,
@@ -45,10 +46,8 @@ export const approve = async (
     const formattedAmount = formatTokenAmount(params.amount, decimals);
     const amountUint256 = uint256.bnToUint256(formattedAmount);
     
-    console.log('Approving', params.amount, 'tokens for', params.spenderAddress);
-    
     const { transaction_hash } = await contract.approve(
-      params.spenderAddress,
+      spenderAddress,
       amountUint256,
     );
     
@@ -57,14 +56,13 @@ export const approve = async (
     return JSON.stringify({
       status: 'success',
       amount: params.amount,
-      symbol: params.assetSymbol,
-      spender_address: params.spenderAddress,
+      symbol: symbol,
+      spender_address: spenderAddress,
       transactionHash: transaction_hash,
     });
     
   } catch (error) {
     console.log('Error in approve:', error);
-    
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -82,6 +80,7 @@ export const approve = async (
  */
 export const approve_signature = async (params: z.infer<typeof approveSignatureSchema>): Promise<any> => {
   try {
+    const spenderAddress = validateAndParseAddress(params.spenderAddress);
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = tokenAddresses[symbol];
     if (!tokenAddress) {
@@ -104,14 +103,13 @@ export const approve_signature = async (params: z.infer<typeof approveSignatureS
         contractAddress: tokenAddress,
         entrypoint: 'approve',
         calldata: [
-          params.spenderAddress,
+          spenderAddress,
           amountUint256.low,
           amountUint256.high,
         ],
       },
     };
 
-    console.log('Result:', result);
     return JSON.stringify({ transaction_type: 'INVOKE', result });
   } catch (error) {
     console.error('Approve call data failure:', error);

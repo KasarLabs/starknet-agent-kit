@@ -11,7 +11,7 @@ import { TelegramInterface } from 'src/lib/agent/plugins/telegram/interfaces';
 setupTestEnvironment();
 
 export const createMockStarknetAgent = (): StarknetAgentInterface => {
-  const provider = new RpcProvider({ nodeUrl: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b' });
+  const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
   const twitter_interface = {};
   const telegram_interface : TelegramInterface = {};
   const json_config = undefined;
@@ -20,10 +20,8 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
 
   return {
     getAccountCredentials: () => ({
-      accountPublicKey:
-        '',
-      accountPrivateKey:
-        '',
+      accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
+      accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
     }),
     getModelCredentials: () => ({
       aiModel: '',

@@ -11,9 +11,9 @@ describe('Approve token spending', () => {
     it('should approve spender to spend tokens', async () => {
       // Arrange
       const params = {
-        spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '1.0',
-        symbol: 'STRK' as string,
+        assetSymbol: 'STRK' as string,
       };
 
       // Act
@@ -30,54 +30,45 @@ describe('Approve token spending', () => {
 
   describe('With wrong input', () => {
     it('should fail with invalid spender address', async () => {
-      // Arrange
       const params = {
-        spender_address: 'invalid_address',
+        spenderAddress: 'invalid_address',
         amount: '1.0',
-        symbol: 'ETH' as string,
+        assetSymbol: 'ETH' as string,
       };
 
-      // Act
       const result = await approve(agent, params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed).toMatchObject({
         status: 'failure',
       });
     });
 
     it('should fail with invalid amount format', async () => {
-      // Arrange
       const params = {
-        spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: 'WRONG_AMOUNT',
-        symbol: 'ETH' as string,
+        assetSymbol: 'ETH' as string,
       };
 
-      // Act
       const result = await approve(agent, params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed).toMatchObject({
         status: 'failure',
       });
     });
 
-    it('should fail with invalid token symbol', async () => {
-      // Arrange
+    it('should fail with invalid token assetSymbol', async () => {
       const params = {
-        spender_address: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '1.0',
-        symbol: 'PPPPP'
+        assetSymbol: 'PPPPP'
       };
 
-      // Act
       const result = await approve(agent, params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed).toMatchObject({
         status: 'failure',
       });

@@ -22,6 +22,7 @@ export const getAllowance = async (
       throw new Error('Both asset symbol and account address are required');
     }
 
+    
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
     

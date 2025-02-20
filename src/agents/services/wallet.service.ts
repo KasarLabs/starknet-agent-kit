@@ -42,7 +42,7 @@ export class WalletService implements IWalletService {
        For the format response : 
        -  Very important You only send me back the response without any explication
        -  If its a success add ✅ if its a failure add ❌ at the start
-       -  If you got a transaction_hash do https://starkscan.co/tx/{transaction_hash}
+       -  If you got a transaction_hash, display it in last and do https://starkscan.co/tx/{transaction_hash} 
 
        example you receive "{\\"status\\":\\"success\\",\\"transaction_type\\":\\"READ\\",\\"balance\\":\\"0.001217909843430357\\"}"\n' you return 'Your Read Transaction is succesful you balance is 0.00121.
        This is your the data you need to parse :${userRequest.request}`;

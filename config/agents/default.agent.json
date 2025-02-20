@@ -20,6 +20,6 @@
   "interval": 30,
   "chat_id": "test",
 
-  "external_plugins": ["discord"],
-  "internal_plugins": ["rpc"]
+  "external_plugins": [],
+  "internal_plugins": []
 }

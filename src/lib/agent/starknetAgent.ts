@@ -1,7 +1,6 @@
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from './plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
 import { createAutonomousAgent } from './autonomousAgents';
@@ -39,7 +38,6 @@ export class StarknetAgent implements IAgent {
   private twitterAccoutManager: TwitterInterface = {};
   private telegramAccountManager: TelegramInterface = {};
 
-  public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
@@ -62,7 +60,6 @@ export class StarknetAgent implements IAgent {
     this.token_limit = AddAgentLimit();
 
     // Initialize managers
-    this.accountManager = new AccountManager(this.provider);
     this.transactionMonitor = new TransactionMonitor(this.provider);
     this.contractInteractor = new ContractInteractor(this.provider);
 

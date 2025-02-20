@@ -9,10 +9,9 @@ import { ProviderInterface } from 'starknet';
  * @property {boolean} deployStatus - Whether the account has been deployed
  */
 export interface AccountDetails {
-  address: string;
+  contractAddress: string;
   publicKey: string;
   privateKey: string;
-  deployStatus: boolean;
 }
 
 /**
@@ -24,6 +23,7 @@ export interface AccountDetails {
 export interface TransactionResult {
   status: 'success' | 'failure';
   transactionHash?: string;
+  contractAddress?: string;
   error?: string;
 }
 
@@ -118,3 +118,25 @@ export type AiConfig = {
   aiModel: string;
   aiProvider: string;
 };
+
+/**
+ * Response format for account creation operations
+ * @property {('success'|'failure')} status - Status of the operation
+ * @property {string} wallet - Type of wallet (Braavos, OKX, etc.)
+ * @property {string} publicKey - The account's public key
+ * @property {string} privateKey - The account's private key
+ * @property {string} contractAddress - The account's contract address
+ * @property {string} [error] - Error message if operation failed
+ * @property {string} [message] - Formatted message for display
+ */
+export interface AccountResponse {
+  status: 'success' | 'failure';
+  wallet: string;
+  publicKey?: string;
+  privateKey?: string;
+  contractAddress?: string;
+  error?: string;
+  message?: string;
+  deployFee?: string;
+  transaction_type?: string;
+}

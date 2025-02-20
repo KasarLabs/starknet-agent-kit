@@ -4,7 +4,6 @@ import { DECIMALS } from '../types/types';
 import { uint256 } from 'starknet';
 import { ParamsValidationResult } from '../types/types';
 
-
 /**
  * Returns the number of decimals for a token
  * @param symbol - Token symbol
@@ -83,8 +82,6 @@ export const formatTokenAmount = (amount: string, decimals: number): string => {
   return whole + paddedFraction;
 };
 
-
-
 /**
  * Validates and formats input parameters with strict validation
  * @param symbol - Token symbol
@@ -96,14 +93,14 @@ export const formatTokenAmount = (amount: string, decimals: number): string => {
 export const validateAndFormatParams = (
   symbol: string,
   address: string,
-  amount: string,
+  amount: string
 ): ParamsValidationResult => {
   try {
     if (!symbol) {
       throw new Error('Asset symbol is required');
     }
     const formattedSymbol = symbol.toUpperCase();
-    
+
     const tokenAddress = validateTokenAddress(formattedSymbol);
     if (!tokenAddress) {
       throw new Error(`Token ${formattedSymbol} not supported`);
@@ -117,7 +114,8 @@ export const validateAndFormatParams = (
     if (!amount) {
       throw new Error('Amount is required');
     }
-    const decimals = DECIMALS[formattedSymbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
+    const decimals =
+      DECIMALS[formattedSymbol as keyof typeof DECIMALS] || DECIMALS.DEFAULT;
     const formattedAmount = formatTokenAmount(amount, decimals);
     const formattedAmountUint256 = uint256.bnToUint256(formattedAmount);
 
@@ -125,10 +123,9 @@ export const validateAndFormatParams = (
       formattedSymbol,
       formattedAddress,
       formattedAmountUint256,
-      tokenAddress
+      tokenAddress,
     };
   } catch (error) {
     throw new Error(`Parameter validation failed: ${error.message}`);
   }
 };
-

@@ -7,11 +7,11 @@ import { Uint256 } from 'starknet';
  * @returns {string} Formatted amount
  */
 export const DECIMALS = {
-    USDC: 6,
-    USDT: 6,
-    DEFAULT: 18,
-  };
-  
+  USDC: 6,
+  USDT: 6,
+  DEFAULT: 18,
+};
+
 /**
  * Result interface for transfer operations
  * @interface TransferResult
@@ -26,14 +26,13 @@ export interface TransferResult {
   step?: string;
 }
 
-
 /**
  * Parameters validation result
  * @interface ParamsValidationResult
  */
 export interface ParamsValidationResult {
-    formattedSymbol: string;
-    formattedAddress: string;
-    tokenAddress: string;
-    formattedAmountUint256: Uint256;
+  formattedSymbol: string;
+  formattedAddress: string;
+  tokenAddress: string;
+  formattedAmountUint256: Uint256;
 }

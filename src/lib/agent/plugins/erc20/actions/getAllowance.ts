@@ -3,7 +3,11 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { formatBalance, validateTokenAddress } from '../utils/token';
 import { z } from 'zod';
-import { getAllowanceSchema, getMyGivenAllowanceSchema, getAllowanceGivenToMeSchema } from '../schemas/schema';
+import {
+  getAllowanceSchema,
+  getMyGivenAllowanceSchema,
+  getAllowanceGivenToMeSchema,
+} from '../schemas/schema';
 
 /**
  * Gets the amount of tokens that a spender is allowed to spend on behalf of an owner.
@@ -22,11 +26,14 @@ export const getAllowance = async (
     }
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
-    
+
     const provider = agent.getProvider();
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
-    const allowanceResponse = await tokenContract.allowance(params.ownerAddress, params.spenderAddress);
+    const allowanceResponse = await tokenContract.allowance(
+      params.ownerAddress,
+      params.spenderAddress
+    );
 
     return JSON.stringify({
       status: 'success',
@@ -60,12 +67,15 @@ export const getMyGivenAllowance = async (
 
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
-    
+
     const provider = agent.getProvider();
     const ownerAddress = agent.getAccountCredentials().accountPublicKey;
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
-    const allowanceResponse = await tokenContract.allowance(ownerAddress, params.spenderAddress);
+    const allowanceResponse = await tokenContract.allowance(
+      ownerAddress,
+      params.spenderAddress
+    );
 
     return JSON.stringify({
       status: 'success',
@@ -99,12 +109,15 @@ export const getAllowanceGivenToMe = async (
 
     const symbol = params.assetSymbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
-    
+
     const provider = agent.getProvider();
     const spenderAddress = agent.getAccountCredentials().accountPublicKey;
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
 
-    const allowanceResponse = await tokenContract.allowance(params.ownerAddress, spenderAddress);
+    const allowanceResponse = await tokenContract.allowance(
+      params.ownerAddress,
+      spenderAddress
+    );
 
     return JSON.stringify({
       status: 'success',

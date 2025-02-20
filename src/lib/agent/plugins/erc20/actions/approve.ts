@@ -26,21 +26,25 @@ export const approve = async (
     const spenderAddress = validatedParams.formattedAddress;
     const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
-  
+
     const account = new Account(
       provider,
       accountCredentials.accountPublicKey,
-      accountCredentials.accountPrivateKey, 
+      accountCredentials.accountPrivateKey
     );
-    
-    const contract = new Contract(ERC20_ABI, validatedParams.tokenAddress, provider);
+
+    const contract = new Contract(
+      ERC20_ABI,
+      validatedParams.tokenAddress,
+      provider
+    );
     contract.connect(account);
-    
+
     const { transaction_hash } = await contract.approve(
       spenderAddress,
-      validatedParams.formattedAmountUint256,
+      validatedParams.formattedAmountUint256
     );
-    
+
     await provider.waitForTransaction(transaction_hash);
 
     return JSON.stringify({
@@ -50,7 +54,6 @@ export const approve = async (
       spender_address: spenderAddress,
       transactionHash: transaction_hash,
     });
-    
   } catch (error) {
     return JSON.stringify({
       status: 'failure',
@@ -60,14 +63,15 @@ export const approve = async (
   }
 };
 
-
 /**
  * Generates approve signature for batch approvals
  * @param {Object} input - Approve input
  * @param {ApproveParams[]} input.params - Array of approve parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const approve_signature = async (params: z.infer<typeof approveSignatureSchema>): Promise<any> => {
+export const approve_signature = async (
+  params: z.infer<typeof approveSignatureSchema>
+): Promise<any> => {
   try {
     const validatedParams = validateAndFormatParams(
       params.assetSymbol,

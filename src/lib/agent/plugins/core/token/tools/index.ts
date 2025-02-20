@@ -9,7 +9,7 @@ import {
   approveSchema,
   transferSchema,
   getMyGivenAllowanceSchema,
-  getAllowanceGivenToMeSchema
+  getAllowanceGivenToMeSchema,
 } from '../../../erc20/schemas/schema';
 
 import { getAllowance } from '../../../erc20/actions/getAllowance';
@@ -25,7 +25,8 @@ export const registerTokenTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'get_allowance',
     plugins: 'token',
-    description: 'Get the amount of tokens that a spender is allowed to spend on behalf of an owner. Requires the token symbol (e.g., ETH, USDC), the owner address and the spender address.',
+    description:
+      'Get the amount of tokens that a spender is allowed to spend on behalf of an owner. Requires the token symbol (e.g., ETH, USDC), the owner address and the spender address.',
     schema: getAllowanceSchema,
     execute: getAllowance,
   });
@@ -33,7 +34,8 @@ export const registerTokenTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'get_my_given_allowance',
     plugins: 'token',
-    description: 'Get the amount of tokens that a spender is allowed to spend on your behalf. Requires the token symbol (e.g., ETH, USDC) and the spender address.',
+    description:
+      'Get the amount of tokens that a spender is allowed to spend on your behalf. Requires the token symbol (e.g., ETH, USDC) and the spender address.',
     schema: getMyGivenAllowanceSchema,
     execute: getMyGivenAllowance,
   });
@@ -41,7 +43,8 @@ export const registerTokenTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'get_allowance_given_to_me',
     plugins: 'token',
-    description: 'Get the amount of tokens that a you are allowed to spend on the behalf of an owner. Requires the token symbol (e.g., ETH, USDC) and the owner address.',
+    description:
+      'Get the amount of tokens that a you are allowed to spend on the behalf of an owner. Requires the token symbol (e.g., ETH, USDC) and the owner address.',
     schema: getAllowanceGivenToMeSchema,
     execute: getAllowanceGivenToMe,
   });
@@ -57,7 +60,8 @@ export const registerTokenTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'transfer_from',
     plugins: 'token',
-    description: 'Transfer tokens from one address to another using an allowance',
+    description:
+      'Transfer tokens from one address to another using an allowance',
     schema: transferFromSchema,
     execute: transfer_from,
   });

@@ -20,10 +20,10 @@ export const getTotalSupply = async (
     if (!symbol) {
       throw new Error('Both asset symbol and account address are required');
     }
-    
+
     symbol = symbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
-    
+
     const provider = agent.getProvider();
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
     const totalSupply = await tokenContract.total_supply();

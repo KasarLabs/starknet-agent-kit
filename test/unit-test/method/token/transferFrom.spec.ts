@@ -12,7 +12,7 @@ describe('TransferFrom with prior approval', () => {
 
   beforeEach(async () => {
     setupTestEnvironment();
-    
+
     approverAgent = createMockStarknetAgent();
     approverAgent.getAccountCredentials = () => ({
       accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
@@ -22,7 +22,7 @@ describe('TransferFrom with prior approval', () => {
     const approveParams = {
       spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
       amount: approvalAmount,
-      assetSymbol: 'STRK'
+      assetSymbol: 'STRK',
     };
 
     await approve(approverAgent, approveParams);
@@ -37,10 +37,10 @@ describe('TransferFrom with prior approval', () => {
   describe('Success scenarios', () => {
     it('should successfully transfer tokens within approved amount', async () => {
       const transferParams = {
-        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string, 
-        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string, 
+        fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
+        toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
         amount: '0.3',
-        assetSymbol: 'STRK'
+        assetSymbol: 'STRK',
       };
 
       const transferResult = await transfer_from(agent, transferParams);
@@ -48,7 +48,7 @@ describe('TransferFrom with prior approval', () => {
 
       expect(parsedTransfer).toMatchObject({
         status: 'success',
-        transactionHash: expect.any(String)
+        transactionHash: expect.any(String),
       });
     });
   });
@@ -58,15 +58,15 @@ describe('TransferFrom with prior approval', () => {
       const transferParams = {
         fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
-        amount: '2.0', 
-        assetSymbol: 'STRK'
+        amount: '2.0',
+        assetSymbol: 'STRK',
       };
 
       const result = await transfer_from(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
-        status: 'failure'
+        status: 'failure',
       });
     });
 
@@ -75,14 +75,14 @@ describe('TransferFrom with prior approval', () => {
         fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         amount: '0.5',
-        assetSymbol: 'STRK'
+        assetSymbol: 'STRK',
       };
 
       const result = await transfer_from(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
-        status: 'failure'
+        status: 'failure',
       });
     });
   });
@@ -93,14 +93,14 @@ describe('TransferFrom with prior approval', () => {
         fromAddress: 'invalid_address',
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
         amount: '0.5',
-        assetSymbol: 'STRK'
+        assetSymbol: 'STRK',
       };
 
       const result = await transfer_from(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
-        status: 'failure'
+        status: 'failure',
       });
     });
 
@@ -109,14 +109,14 @@ describe('TransferFrom with prior approval', () => {
         fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
         amount: '0.5',
-        assetSymbol: 'INVALID_TOKEN'
+        assetSymbol: 'INVALID_TOKEN',
       };
 
       const result = await transfer_from(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
-        status: 'failure'
+        status: 'failure',
       });
     });
 
@@ -125,14 +125,14 @@ describe('TransferFrom with prior approval', () => {
         fromAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS_3 as string,
         amount: 'invalid_amount',
-        assetSymbol: 'STRK'
+        assetSymbol: 'STRK',
       };
 
       const result = await transfer_from(agent, transferParams);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
-        status: 'failure'
+        status: 'failure',
       });
     });
   });

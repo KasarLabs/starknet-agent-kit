@@ -3,8 +3,10 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { validateAndFormatParams } from '../utils/token';
 import { z } from 'zod';
-import { transferFromSchema, transferFromSignatureSchema } from '../schemas/schema';
-
+import {
+  transferFromSchema,
+  transferFromSignatureSchema,
+} from '../schemas/schema';
 
 /**
  * Transfers tokens from one address to another using an allowance.
@@ -23,7 +25,7 @@ export const transfer_from = async (
       params.fromAddress,
       params.amount
     );
-  
+
     const fromAddress = validatedParams.formattedAddress;
     const toAddress = validateAndParseAddress(params.toAddress);
     const credentials = agent.getAccountCredentials();
@@ -34,8 +36,12 @@ export const transfer_from = async (
       credentials.accountPublicKey,
       credentials.accountPrivateKey
     );
-    
-    const contract = new Contract(ERC20_ABI, validatedParams.tokenAddress, provider);
+
+    const contract = new Contract(
+      ERC20_ABI,
+      validatedParams.tokenAddress,
+      provider
+    );
     contract.connect(account);
 
     const { transaction_hash } = await contract.transferFrom(
@@ -64,7 +70,9 @@ export const transfer_from = async (
  * @param {TransferFromParams} params - Array of transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const transfer_from_signature = async (params: z.infer<typeof transferFromSignatureSchema>): Promise<any> => {
+export const transfer_from_signature = async (
+  params: z.infer<typeof transferFromSignatureSchema>
+): Promise<any> => {
   try {
     const validatedParams = validateAndFormatParams(
       params.assetSymbol,
@@ -84,7 +92,7 @@ export const transfer_from_signature = async (params: z.infer<typeof transferFro
           fromAddress,
           toAddress,
           validatedParams.formattedAmountUint256.low,
-          validatedParams.formattedAmountUint256.high
+          validatedParams.formattedAmountUint256.high,
         ],
       },
     };

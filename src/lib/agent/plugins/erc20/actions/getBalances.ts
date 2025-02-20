@@ -74,7 +74,7 @@ export const getBalance = async (
     }
 
     const tokenAddress = validateTokenAddress(params.assetSymbol);
-    
+
     const provider = agent.getProvider();
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
     const balanceResponse = await tokenContract.balanceOf(

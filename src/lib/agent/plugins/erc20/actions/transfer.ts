@@ -1,8 +1,6 @@
 import { Account } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { 
-  validateAndFormatParams
- } from '../utils/token';
+import { validateAndFormatParams } from '../utils/token';
 import { z } from 'zod';
 import { transferSchema, transferSignatureSchema } from '../schemas/schema';
 import { TransferResult } from '../types/types';
@@ -34,7 +32,7 @@ export const transfer = async (
       credentials.accountPublicKey,
       credentials.accountPrivateKey
     );
-    
+
     const result = await account.execute({
       contractAddress: validatedParams.tokenAddress,
       entrypoint: 'transfer',
@@ -66,14 +64,15 @@ export const transfer = async (
   }
 };
 
-
 /**
  * Generates transfer signature for batch transfers
  * @param {Object} input - Transfer input
  * @param {TransferParams} input.params - Array of transfer parameters
  * @returns {Promise<string>} JSON string with transaction result
  */
-export const transfer_signature = async (params: z.infer<typeof transferSignatureSchema>): Promise<any> => {
+export const transfer_signature = async (
+  params: z.infer<typeof transferSignatureSchema>
+): Promise<any> => {
   try {
     const validatedParams = validateAndFormatParams(
       params.assetSymbol,

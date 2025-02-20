@@ -13,7 +13,7 @@ setupTestEnvironment();
 export const createMockStarknetAgent = (): StarknetAgentInterface => {
   const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
   const twitter_interface = {};
-  const telegram_interface : TelegramInterface = {};
+  const telegram_interface: TelegramInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;
   const token_limit: Limit = {};
@@ -45,7 +45,7 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
 export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
   const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
   const twitter_interface = {};
-  const telegram_interface : TelegramInterface = {};
+  const telegram_interface: TelegramInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;
   const token_limit: Limit = {};

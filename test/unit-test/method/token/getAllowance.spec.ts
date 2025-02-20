@@ -23,7 +23,7 @@ describe('Get allowance', () => {
         status: 'success',
         transactionHash: expect.any(String),
       });
-      
+
       const params2 = {
         ownerAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
@@ -108,4 +108,4 @@ describe('Get allowance', () => {
       });
     });
   });
-}); 
+});

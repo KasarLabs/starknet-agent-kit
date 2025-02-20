@@ -33,4 +33,4 @@ describe('Get total supply', () => {
       });
     });
   });
-}); 
+});

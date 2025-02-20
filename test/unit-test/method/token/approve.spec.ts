@@ -60,7 +60,7 @@ describe('Approve token spending', () => {
       const params = {
         spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '1.0',
-        assetSymbol: 'PPPPP'
+        assetSymbol: 'PPPPP',
       };
 
       const result = await approve(agent, params);
@@ -71,4 +71,4 @@ describe('Approve token spending', () => {
       });
     });
   });
-}); 
+});

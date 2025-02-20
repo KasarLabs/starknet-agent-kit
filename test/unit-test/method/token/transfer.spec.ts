@@ -12,7 +12,7 @@ describe('Transfer token', () => {
       const params = {
         recipientAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '0.01',
-        assetSymbol:'STRK',
+        assetSymbol: 'STRK',
       };
 
       const result = await transfer(agent, params);

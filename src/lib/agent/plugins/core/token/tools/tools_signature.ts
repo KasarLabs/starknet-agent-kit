@@ -1,6 +1,6 @@
 import { StarknetSignatureToolRegistry } from 'src/lib/agent/tools/signatureTools';
 
-import { 
+import {
   transferFromSignatureSchema,
   approveSignatureSchema,
   transferSignatureSchema,
@@ -9,7 +9,6 @@ import {
 import { transfer_signature } from '../../../erc20/actions/transfer';
 import { approve_signature } from '../../../erc20/actions/approve';
 import { transfer_from_signature } from '../../../erc20/actions/transferFrom';
-
 
 export const registerSignatureToolsToken = () => {
   StarknetSignatureToolRegistry.RegisterSignatureTools({

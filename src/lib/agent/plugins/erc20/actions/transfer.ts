@@ -93,6 +93,11 @@ export const transferSignature = async (
           validatedParams.formattedAmountUint256.high,
         ],
       },
+      additional_data: {
+        symbol: params.assetSymbol,
+        amount: params.amount,
+        recipientAddress: recipientAddress,
+      },
     };
 
     return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });

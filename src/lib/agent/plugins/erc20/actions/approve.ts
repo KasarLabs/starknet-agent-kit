@@ -92,6 +92,11 @@ export const approveSignature = async (
           validatedParams.formattedAmountUint256.high,
         ],
       },
+      additional_data: {
+        symbol: params.assetSymbol,
+        amount: params.amount,
+        spenderAddress: spenderAddress,
+      },
     };
 
     return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });

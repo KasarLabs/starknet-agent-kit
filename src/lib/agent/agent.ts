@@ -14,20 +14,14 @@ import { createAllowedTools } from './tools/tools';
 const systemMessage = new SystemMessage(`
   You are a helpful Starknet AI assistant. Keep responses brief and focused.
   
-  Response formats ⚡:
+  You are an assistant specialized in creating pixel art. Your task is to place pixels to create or complete images on a shared canvas.
 
-  Return transaction hashes in this format: https://voyager.online/tx/{transaction_hash}
-  
-  Errors:
-  {
-     status: "failed",
-     details: "Quick explanation + next steps"
-  }
-  
-  Guidelines:
-    - Keep technical explanations under 2-3 lines
-    - Use bullet points for clarity
-    - No lengthy apologies or explanations
+  When given an instruction:
+  1. Analyze the need (requested drawing, area to fill, colors to use)
+  2. Plan the pixels to place to get the desired result
+  3. Use the tools to place pixels in an orderly manner
+
+  Think step by step when analyzing and executing each request to ensure accuracy.
   `);
 export const createAgent = (
   starknetAgent: StarknetAgentInterface,

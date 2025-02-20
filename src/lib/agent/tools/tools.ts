@@ -13,6 +13,7 @@ import { registerTokenTools } from '../plugins/core/token/tools';
 import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
+import { registerOpusTools } from '../plugins/opus/tools';
 import { register } from 'module';
 import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
@@ -101,6 +102,8 @@ export const registerTools = () => {
   registerTwitterTools();
 
   registerFibrousTools();
+
+  registerOpusTools();
 
   registerTelegramTools();
 };

@@ -2,14 +2,26 @@ import { validateAndParseAddress } from 'starknet';
 import { tokenAddresses } from '../constant/erc20';
 import { DECIMALS } from '../types/types';
 import { uint256 } from 'starknet';
-import { ParamsValidationResult } from '../interface/interface';
+import { ParamsValidationResult } from '../types/types';
 
+
+/**
+ * Returns the number of decimals for a token
+ * @param symbol - Token symbol
+ * @returns Number of decimals
+ */
 export const getTokenDecimals = (symbol: string): number => {
   const stablecoinSymbols = ['USDC', 'USDT'];
   const decimals = stablecoinSymbols.includes(symbol.toUpperCase()) ? 6 : 18;
   return decimals;
 };
 
+/**
+ * Formats a balance string to the correct decimal places
+ * @param rawBalance - Raw balance as a string, number or bigint
+ * @param symbol - Token symbol
+ * @returns Formatted balance as a string
+ */
 export const formatBalance = (
   rawBalance: bigint | string | number,
   symbol: string
@@ -43,6 +55,12 @@ export const formatBalance = (
   }
 };
 
+/**
+ * Validates and formats an address
+ * @param address - Starknet address
+ * @returns Formatted address
+ * @throws Error if validation fails
+ */
 export const validateTokenAddress = (symbol: string): string => {
   const tokenAddress = tokenAddresses[symbol];
   if (!tokenAddress) {

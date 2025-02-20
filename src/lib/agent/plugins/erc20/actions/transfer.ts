@@ -5,22 +5,7 @@ import {
  } from '../utils/token';
 import { z } from 'zod';
 import { transferSchema, transferSignatureSchema } from '../schemas/schema';
-
-
-/**
- * Result interface for transfer operations
- * @interface TransferResult
- */
-interface TransferResult {
-  status: 'success' | 'failure';
-  amount?: string;
-  symbol?: string;
-  recipients_address?: string;
-  transaction_hash?: string;
-  error?: string;
-  step?: string;
-}
-
+import { TransferResult } from '../types/types';
 
 /**
  * Transfers ERC20 tokens on Starknet

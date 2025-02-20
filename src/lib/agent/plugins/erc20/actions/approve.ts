@@ -1,4 +1,4 @@
-import { Account, Contract, uint256, validateAndParseAddress } from 'starknet';
+import { Account, Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { validateAndFormatParams } from '../utils/token';
@@ -52,7 +52,6 @@ export const approve = async (
     });
     
   } catch (error) {
-    console.log('Error in approve:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -93,7 +92,6 @@ export const approve_signature = async (params: z.infer<typeof approveSignatureS
 
     return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });
   } catch (error) {
-    console.error('Approve call data failure:', error);
     return {
       status: 'error',
       error: {

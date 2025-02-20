@@ -5,4 +5,4 @@ export interface ParamsValidationResult {
     formattedAddress: string;
     tokenAddress: string;
     formattedAmountUint256: Uint256;
-  }
+}

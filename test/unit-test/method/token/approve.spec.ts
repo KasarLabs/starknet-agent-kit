@@ -9,18 +9,15 @@ setupTestEnvironment();
 describe('Approve token spending', () => {
   describe('With perfect match inputs', () => {
     it('should approve spender to spend tokens', async () => {
-      // Arrange
       const params = {
         spenderAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         amount: '1.0',
         assetSymbol: 'STRK' as string,
       };
 
-      // Act
       const result = await approve(agent, params);
       const parsed = JSON.parse(result);
 
-      // Assert
       expect(parsed).toMatchObject({
         status: 'success',
         transactionHash: expect.any(String),

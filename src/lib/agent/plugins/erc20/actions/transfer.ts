@@ -1,13 +1,8 @@
-import { Account, BigNumberish, uint256 } from 'starknet';
-import { tokenAddresses } from '../constant/erc20';
+import { Account } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { AddAgentLimit } from 'src/lib/agent/limit';
 import { 
-  validateTokenAddress,
-  formatTokenAmount,
   validateAndFormatParams
  } from '../utils/token';
-import { DECIMALS } from '../types/types';
 import { z } from 'zod';
 import { transferSchema, transferSignatureSchema } from '../schemas/schema';
 
@@ -77,8 +72,6 @@ export const transfer = async (
 
     return JSON.stringify(transferResult);
   } catch (error) {
-    console.error('transfer failed:', error);
-
     const transferResult: TransferResult = {
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -120,7 +113,6 @@ export const transfer_signature = async (params: z.infer<typeof transferSignatur
 
     return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });
   } catch (error) {
-    console.error('Transfer call data failure:', error);
     return {
       status: 'error',
       error: {

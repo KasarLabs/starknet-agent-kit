@@ -17,8 +17,6 @@ interface EnvConfig {
 export const loadTestConfig = (): EnvConfig => {
   const config: EnvConfig = {
     STARKNET_RPC_URL: 'http://127.0.0.1:5050',
-    // STARKNET_RPC_URL: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b',
-    // STARKNET_RPC_URL: 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Xj-rCxxzGcBnS3HwqOnBqO8TMa8NRGky',
     accounts: {
       account1: {
         privateKey:

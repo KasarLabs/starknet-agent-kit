@@ -1,9 +1,7 @@
-import { Account, Contract, uint256, validateAndParseAddress } from 'starknet';
-import { tokenAddresses } from '../constant/erc20';
+import { Account, Contract, validateAndParseAddress } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
-import { validateTokenAddress, formatTokenAmount, validateAndFormatParams } from '../utils/token';
-import { DECIMALS } from '../types/types';
+import { validateAndFormatParams } from '../utils/token';
 import { z } from 'zod';
 import { transferFromSchema, transferFromSignatureSchema } from '../schemas/schema';
 
@@ -40,13 +38,6 @@ export const transfer_from = async (
     const contract = new Contract(ERC20_ABI, validatedParams.tokenAddress, provider);
     contract.connect(account);
 
-    const balanceResponse = await contract.balanceOf(fromAddress);
-    console.log('Source account balance:', balanceResponse);
-
-    const allowanceResponse = await contract.allowance(fromAddress, credentials.accountPublicKey);
-    console.log('Current allowance:', allowanceResponse);
-
-    console.log('Transferring', params.amount, 'tokens from', fromAddress, 'to', toAddress);
     const { transaction_hash } = await contract.transferFrom(
       fromAddress,
       toAddress,
@@ -60,7 +51,6 @@ export const transfer_from = async (
       transactionHash: transaction_hash,
     });
   } catch (error) {
-    console.log('Error in transferFrom:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -98,11 +88,8 @@ export const transfer_from_signature = async (params: z.infer<typeof transferFro
         ],
       },
     };
-
-    console.log('Result:', result);
     return JSON.stringify({ transaction_type: 'INVOKE', results: [result] });
   } catch (error) {
-    console.error('Transfer_from call data failure:', error);
     return {
       status: 'error',
       error: {

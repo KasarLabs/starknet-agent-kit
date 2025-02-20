@@ -1,4 +1,4 @@
-import { Contract, Account } from 'starknet';
+import { Contract } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { formatBalance, validateTokenAddress } from '../utils/token';
@@ -18,7 +18,6 @@ export const getAllowance = async (
 ): Promise<string> => {
   try {
     if (!params?.assetSymbol) {
-      console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
     const symbol = params.assetSymbol.toUpperCase();
@@ -36,7 +35,6 @@ export const getAllowance = async (
       allowance: formatBalance(allowanceResponse, symbol),
     });
   } catch (error) {
-    console.log('Error in getAllowance:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -57,7 +55,6 @@ export const getMyGivenAllowance = async (
 ): Promise<string> => {
   try {
     if (!params?.assetSymbol) {
-      console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
 
@@ -77,7 +74,6 @@ export const getMyGivenAllowance = async (
       allowance: formatBalance(allowanceResponse, symbol),
     });
   } catch (error) {
-    console.log('Error in getMyGivenAllowance:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -98,7 +94,6 @@ export const getAllowanceGivenToMe = async (
 ): Promise<string> => {
   try {
     if (!params?.assetSymbol) {
-      console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
 
@@ -118,7 +113,6 @@ export const getAllowanceGivenToMe = async (
       allowance: formatBalance(allowanceResponse, symbol),
     });
   } catch (error) {
-    console.log('Error in getAllowanceGivenToMe:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',

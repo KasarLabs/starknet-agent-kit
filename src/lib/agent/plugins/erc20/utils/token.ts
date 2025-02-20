@@ -1,7 +1,7 @@
 import { validateAndParseAddress } from 'starknet';
 import { tokenAddresses } from '../constant/erc20';
 import { DECIMALS } from '../types/types';
-import { uint256, Uint256 } from 'starknet';
+import { uint256 } from 'starknet';
 import { ParamsValidationResult } from '../interface/interface';
 
 export const getTokenDecimals = (symbol: string): number => {
@@ -39,7 +39,6 @@ export const formatBalance = (
 
     return formattedBalance;
   } catch (error) {
-    console.log('Error formatting balance:', error);
     return '0';
   }
 };

@@ -23,22 +23,18 @@ export const getTotalSupply = async (
     
     symbol = symbol.toUpperCase();
     const tokenAddress = validateTokenAddress(symbol);
-    console.log('tokenAddress', tokenAddress);
     
     const provider = agent.getProvider();
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
     const totalSupply = await tokenContract.total_supply();
 
     const formattedSupply = formatBalance(totalSupply, symbol);
-    console.log('formattedSupply', formattedSupply);
-    console.log(typeof formattedSupply);
 
     return JSON.stringify({
       status: 'success',
       totalSupply: formattedSupply,
     });
   } catch (error) {
-    console.log('Error in getTotalSupply:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',

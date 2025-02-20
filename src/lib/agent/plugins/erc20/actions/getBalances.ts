@@ -1,6 +1,5 @@
-import { Account, Contract, RpcProvider, transaction } from 'starknet';
+import { Account, Contract, RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { GetBalanceParams, GetOwnBalanceParams } from '../types/balance';
 import { ERC20_ABI } from '../abis/erc20Abi';
 import { formatBalance, validateTokenAddress } from '../utils/token';
 import { z } from 'zod';
@@ -71,12 +70,10 @@ export const getBalance = async (
 ): Promise<string> => {
   try {
     if (!params?.assetSymbol || !params?.accountAddress) {
-      console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
 
     const tokenAddress = validateTokenAddress(params.assetSymbol);
-    console.log('tokenAddress', tokenAddress);
     
     const provider = agent.getProvider();
     const tokenContract = new Contract(ERC20_ABI, tokenAddress, provider);
@@ -84,28 +81,23 @@ export const getBalance = async (
       params.accountAddress
     );
 
-    console.log('balanceResponse', balanceResponse);
     if (!balanceResponse && typeof balanceResponse !== 'object') {
       console.log('here');
       throw new Error('Invalid balance response format from contract');
     }
 
-    console.log(typeof balanceResponse);
     const balanceValue =
       typeof balanceResponse === 'object' && 'balance' in balanceResponse
         ? balanceResponse.balance
         : balanceResponse;
 
     const formattedBalance = formatBalance(balanceValue, params.assetSymbol);
-    console.log('formattedBalance', formattedBalance);
-    console.log(typeof formattedBalance);
 
     return JSON.stringify({
       status: 'success',
       balance: formattedBalance,
     });
   } catch (error) {
-    console.log('Error in getBalance:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -124,7 +116,6 @@ export const getBalanceSignature = async (
 ): Promise<string> => {
   try {
     if (!params?.assetSymbol || !params?.accountAddress) {
-      console.log('params', params);
       throw new Error('Both asset symbol and account address are required');
     }
 
@@ -149,7 +140,6 @@ export const getBalanceSignature = async (
       balance: formattedBalance,
     });
   } catch (error) {
-    console.error('Error in getBalance:', error);
     return JSON.stringify({
       status: 'failure',
       error: error instanceof Error ? error.message : 'Unknown error',

@@ -14,6 +14,7 @@ import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
 import { registerOpusTools } from '../plugins/opus/tools';
 import { register } from 'module';
+import { registerAtlanticTools } from '../plugins/atlantic/tools';
 import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
 import { registerArtpeaceTools } from '../plugins/artpeace/tools';
@@ -101,6 +102,8 @@ export const registerTools = () => {
   registerTwitterTools();
 
   registerFibrousTools();
+
+  registerAtlanticTools();
 
   registerOpusTools();
 

@@ -458,7 +458,6 @@ const StarknetAgent = () => {
           throw new Error(errorText);
         }
       }
-
       const response = await fetch('/api/key/request', {
         method: 'POST',
         headers: {

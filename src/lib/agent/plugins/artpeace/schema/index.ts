@@ -31,16 +31,4 @@ export const placePixelSchema = z.object({
     ),
 });
 
-export const placeStencilSchema = z.object({
-  canvasId: z
-    .union([z.number(), z.string()])
-    .optional()
-    .default(0)
-    .describe('The id or the unique name of the world to dispose the pixel'),
-  xPos: z.number().describe('The position on x axe of the first pixel'),
-  yPos: z.number().describe('The position on y axe of the first pixel'),
-  filename: z.string().describe('The name of the to convert in stencil'),
-});
-
 export type placePixelParam = z.infer<typeof placePixelParamSchema>;
-export type placeStencilParam = z.infer<typeof placeStencilSchema>;

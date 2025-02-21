@@ -1,7 +1,7 @@
 import {
   getBalanceSignatureSchema,
   transferSignatureschema,
-  StarknetSignatureToolRegistry
+  StarknetSignatureToolRegistry,
 } from '@starknet-agent-kit/agent';
 import { transfer_signature } from '../actions/transfer';
 import { getBalanceSignature } from '../actions/getBalances';

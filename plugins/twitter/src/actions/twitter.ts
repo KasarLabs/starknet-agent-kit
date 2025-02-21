@@ -1,4 +1,4 @@
-import { StarknetAgentInterface } from "@starknet-agent-kit/agent";
+import { StarknetAgentInterface } from '@starknet-agent-kit/agent';
 import {
   createAndPostTwitterThreadParams,
   creatTwitterPostParams,

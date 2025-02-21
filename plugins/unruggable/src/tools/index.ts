@@ -1,4 +1,7 @@
-import { StarknetAgentInterface, StarknetToolRegistry } from '@starknet-agent-kit/agent';
+import {
+  StarknetAgentInterface,
+  StarknetToolRegistry,
+} from '@starknet-agent-kit/agent';
 import {
   contractAddressSchema,
   launchOnEkuboSchema,
@@ -9,7 +12,7 @@ import { isMemecoin } from '../actions/isMemecoin';
 import { createMemecoin } from '../actions/createMemecoin';
 import { launchOnEkubo } from '../actions/launchOnEkubo';
 
-export const registerUnraggableTools = (agent : StarknetAgentInterface) => {
+export const registerUnraggableTools = (agent: StarknetAgentInterface) => {
   StarknetToolRegistry.registerTool({
     name: 'is_memecoin',
     plugins: 'unruggable',

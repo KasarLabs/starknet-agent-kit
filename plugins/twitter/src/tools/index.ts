@@ -210,4 +210,3 @@ export const registerTools = async (agent: StarknetAgentInterface) => {
     execute: getOwnTwitterAccountInfo,
   });
 };
-

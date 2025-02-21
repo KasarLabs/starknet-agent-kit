@@ -10,11 +10,13 @@ import { hideBin } from 'yargs/helpers';
 
 import { load_json_config } from './lib/agent/jsonConfig';
 import { StarknetAgent } from './lib/agent/starknetAgent';
-import { checkFormatStarknetAddress, checkStarknetRpcUrl } from './lib/utils/parsing';
+import {
+  checkFormatStarknetAddress,
+  checkStarknetRpcUrl,
+} from './lib/utils/parsing';
 
 // Charge l'env de la racine
 dotenv.config({ path: join(__dirname, '../.env') });
-
 
 const load_command = async (): Promise<string> => {
   const argv = await yargs(hideBin(process.argv))

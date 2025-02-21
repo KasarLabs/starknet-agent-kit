@@ -9,7 +9,10 @@ import {
   CairoOptionVariant,
   CairoCustomEnum,
 } from 'starknet';
-import { argentx_classhash, oz_classhash } from '../../contract/constants/contract';
+import {
+  argentx_classhash,
+  oz_classhash,
+} from '../../contract/constants/contract';
 
 export const CreateOZAccount = async () => {
   try {

@@ -99,7 +99,9 @@ export const registerTools = async (
         ) {
           tool = 'core/' + tool;
         }
-        const imported_tool = await import(`@starknet-agent-kit/${tool}/src/tools/index`);
+        const imported_tool = await import(
+          `@starknet-agent-kit/${tool}/src/tools/index`
+        );
         if (typeof imported_tool.registerTools !== 'function') {
           throw new Error('Tool does not have a registerTools function');
         }
@@ -113,21 +115,21 @@ export const registerTools = async (
   }
 };
 
-  // allowed_tools.includes('avnu') && registerAvnuTools();
+// allowed_tools.includes('avnu') && registerAvnuTools();
 
-  // allowed_tools.includes('token') && registerTokenTools();
+// allowed_tools.includes('token') && registerTokenTools();
 
-  // allowed_tools.includes('rpc') && registerRPCTools();
+// allowed_tools.includes('rpc') && registerRPCTools();
 
-  // allowed_tools.includes('transaction') && registerTransactionTools();
+// allowed_tools.includes('transaction') && registerTransactionTools();
 
-  // allowed_tools.includes('unraggable') && registerUnraggableTools();
+// allowed_tools.includes('unraggable') && registerUnraggableTools();
 
-  // allowed_tools.includes('twitter') && (await registerTwitterTools(agent));
+// allowed_tools.includes('twitter') && (await registerTwitterTools(agent));
 
-  // allowed_tools.includes('fibrous') && registerFibrousTools();
+// allowed_tools.includes('fibrous') && registerFibrousTools();
 
-  // allowed_tools.includes('telegram') && registerTelegramTools(agent);
+// allowed_tools.includes('telegram') && registerTelegramTools(agent);
 
 // Initialize tools
 

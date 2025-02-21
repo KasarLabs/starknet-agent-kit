@@ -7,7 +7,7 @@ import {
   getTwitterUserIdFromUsernameParams,
 } from '../schema/index';
 import { StarknetAgentInterface } from '@starknet-agent-kit/agent';
-import { TweetType } from '../types/twitter_types'; 
+import { TweetType } from '../types/twitter_types';
 
 /**
  * Retrieves the latest tweet from a specified user

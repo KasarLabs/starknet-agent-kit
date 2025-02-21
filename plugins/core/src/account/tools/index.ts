@@ -1,4 +1,7 @@
-import { StarknetAgentInterface, StarknetToolRegistry } from '@starknet-agent-kit/agent';
+import {
+  StarknetAgentInterface,
+  StarknetToolRegistry,
+} from '@starknet-agent-kit/agent';
 import { CreateArgentAccount, CreateOZAccount } from '../actions/createAccount';
 import { DeployArgentAccount, DeployOZAccount } from '../actions/deployAccount';
 import { DeployArgentAccountSchema, DeployOZAccountSchema } from '../schema';
@@ -34,4 +37,3 @@ export const registerTools = (agent: StarknetAgentInterface) => {
     execute: DeployArgentAccount,
   });
 };
-

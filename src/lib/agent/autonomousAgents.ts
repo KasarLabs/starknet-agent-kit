@@ -13,7 +13,7 @@ export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
-  const createModel = () => {
+  const model = (() => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
         if (!aiConfig.apiKey) {
@@ -53,46 +53,49 @@ export const createAutonomousAgent = (
       default:
         throw new Error(`Unsupported AI provider: ${aiConfig.aiProvider}`);
     }
-  };
-
-  const model = createModel();
+  })();
 
   try {
     const json_config = starknetAgent.getAgentConfig();
-    if (json_config) {
-      console.log('Character config loaded successfully');
-      console.log('JSON config loaded successfully');
 
-      const allowedTools = json_config.internal_plugins
-        ? createAllowedTools(starknetAgent, json_config.internal_plugins)
-        : createTools(starknetAgent);
-
-      const allowedToolsKits = json_config.external_plugins
-        ? createAllowedToollkits(json_config.external_plugins)
-        : null;
-
-      const tools = allowedToolsKits
-        ? [...allowedTools, ...allowedToolsKits]
-        : allowedTools;
-
-      const memory = new MemorySaver();
-      const agentConfig = {
-        configurable: { thread_id: json_config.chat_id },
-      };
-
-      const agent = createReactAgent({
-        llm: model,
-        tools: tools,
-        checkpointSaver: memory,
-        messageModifier: json_config.prompt,
-      });
-
-      return { agent, agentConfig, json_config };
+    if (!json_config) {
+      throw new Error('Agent configuration is required');
     }
+
+    const allowedTools = createAllowedTools(
+      starknetAgent,
+      json_config.internal_plugins
+    );
+
+    const allowedToolsKits = json_config.external_plugins
+      ? createAllowedToollkits(json_config.external_plugins)
+      : null;
+
+    const tools = allowedToolsKits
+      ? [...allowedTools, ...allowedToolsKits]
+      : allowedTools;
+
+    const memory = new MemorySaver();
+
+    const agent = createReactAgent({
+      llm: model,
+      tools: tools,
+      checkpointSaver: memory,
+      messageModifier: json_config.prompt,
+    });
+
+    return {
+      agent,
+      agentConfig: {
+        configurable: { thread_id: json_config.chat_id },
+      },
+      json_config,
+    };
   } catch (error) {
     console.error(
-      `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`
+      `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
     );
     console.error('Failed to load or parse JSON config:', error);
+    throw error; // Re-throw to handle upstream
   }
 };

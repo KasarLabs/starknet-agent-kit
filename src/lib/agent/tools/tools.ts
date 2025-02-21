@@ -1,10 +1,8 @@
 import { tool } from '@langchain/core/tools';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from '../plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { TwitterInterface } from '../plugins/twitter/interfaces';
-import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
 import { registerTwitterTools } from '../plugins/twitter/tools';
 import { registerUnraggableTools } from '../plugins/unruggable/tools';
@@ -14,6 +12,7 @@ import { registerTokenTools } from '../plugins/core/token/tools';
 import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
+import { registerOpusTools } from '../plugins/opus/tools';
 import { register } from 'module';
 import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
@@ -32,10 +31,8 @@ export interface StarknetAgentInterface {
     signature: string;
   };
   getProvider: () => RpcProvider;
-  accountManager: AccountManager;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
-  getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;
   getTwitterManager: () => TwitterInterface;
@@ -104,6 +101,8 @@ export const registerTools = () => {
   registerTwitterTools();
 
   registerFibrousTools();
+
+  registerOpusTools();
 
   registerTelegramTools();
 

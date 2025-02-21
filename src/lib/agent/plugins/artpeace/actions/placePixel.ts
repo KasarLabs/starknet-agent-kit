@@ -77,7 +77,6 @@ export const placePixelSignature = async (input: {
   params: placePixelParam[];
 }) => {
   try {
-    const start = Date.now();
     const { params } = input;
     const checker = new Checker(params[0].canvasId);
     const id = await checker.checkWorld();
@@ -86,7 +85,6 @@ export const placePixelSignature = async (input: {
 
     const results = [];
     for (const param of params) {
-      console.log(typeof param.color, param.color);
       if (param.color === '255') continue;
       const { position, color } = await ArtpeaceHelper.validateAndFillDefaults(
         param,
@@ -110,14 +108,8 @@ export const placePixelSignature = async (input: {
         },
       });
     }
-    results.map((call, index) => {
-      console.log(`${index}: `, call.transactions.transactions.calldata);
-    });
-    const end = Date.now();
-    console.log(`place_pixel time: ${end - start}ms`);
     return JSON.stringify({ transaction_type: 'INVOKE', results });
   } catch (error) {
-    console.log(error);
     return JSON.stringify({
       status: 'error',
       error: {

@@ -24,7 +24,6 @@ export class Checker {
   async checkWorld(): Promise<number> {
     try {
       let id: number;
-      console.log(this.param);
       if (typeof this.param === 'string') {
         const response = await fetch(
           `https://api.art-peace.net/get-world-id?worldName=${this.param}`
@@ -78,13 +77,21 @@ export class Checker {
     }
   }
 
+  /**
+   * Fetches and processes the color palette for the current world.
+   *
+   * @returns {Promise<void>}
+   * @throws {Error} If the API request fails or returns a non-OK status
+   */
   async getColors() {
     try {
       const response = await fetch(
         `https://api.art-peace.net/get-worlds-colors?worldId=${this.world.worldId}`
       );
       if (!response.ok) {
-        throw new Error(`HTTP Error status: ${response.status}`);
+        throw new Error(
+          `Error during get world colors fetch: HTTP Error status: ${response.status}`
+        );
       }
       const data = await response.json();
       const allHexColor: string[] = data.data;
@@ -129,6 +136,13 @@ export class Checker {
     }
   }
 
+  /**
+   * Retrieves the dimensions of the world.
+   *
+   * @returns {Object} An object containing the world dimensions
+   * @returns {number} returns.width - The width of the world
+   * @returns {number} returns.height - The height of the world
+   */
   getWorldSize(): { width: number; height: number } {
     return {
       width: this.world.width,

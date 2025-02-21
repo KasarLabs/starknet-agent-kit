@@ -1,8 +1,24 @@
 import { promises as fs } from 'fs';
 import { placePixelParam, placeStencilParam } from '../schema';
-import { placePixel, placePixelSignature } from './placePixel';
+import { placePixelSignature } from './placePixel';
 import { getFilename } from '../utils/getFilename';
+import { StorageSingleton } from 'src/common/storage/storage.service';
 
+const storage = StorageSingleton.getInstance();
+
+/**
+ * Places a stencil image on the canvas by converting it to pixels.
+ *
+ * @param {Object} param - Parameters for placing the stencil
+ * @param {number} param.xPos - The initial X position where the stencil will be placed
+ * @param {number} param.yPos - The initial Y position where the stencil will be placed
+ * @param {string} param.canvasId - The target canvas identifier
+ * @param {string} param.filename - The name of the stencil file to place
+ *
+ * @returns {Promise<string>} A JSON string containing:
+ *   - On success: { status: "success", storageId: string }
+ *   - On error: { status: "error", error: { code: string, message: string } }
+ */
 export const placeStencil = async (param: placeStencilParam) => {
   try {
     const startPos: { x: number; y: number } = { x: param.xPos, y: param.yPos };
@@ -54,7 +70,12 @@ export const placeStencil = async (param: placeStencilParam) => {
       return { canvasId, xPos: pos.x, yPos: pos.y, color };
     });
 
-    return await placePixelSignature({ params: allData });
+    const result = await placePixelSignature({ params: allData });
+
+    return JSON.stringify({
+      status: 'success',
+      storageId: storage.store(result),
+    });
   } catch (error) {
     return JSON.stringify({
       status: 'error',

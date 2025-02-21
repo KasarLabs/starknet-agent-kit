@@ -1,7 +1,7 @@
 {
   "version": "0.0.10",
   "npmClient": "pnpm",
-  "packages": ["agent","packages/*","client", "plugins"],
+  "packages": ["agent","starknet-agent-kit","client", "plugins/*"],
   "command": {
     "bootstrap": {
       "npmClientArgs": ["--no-package-lock"],

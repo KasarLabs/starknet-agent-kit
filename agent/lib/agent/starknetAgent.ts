@@ -1,6 +1,6 @@
-import { AccountManager } from 'plugins/core/account/utils/AccountManager';
-import { ContractInteractor } from 'plugins/core/contract/utils/ContractInteractor';
-import { TransactionMonitor } from 'plugins/core/transaction/utils/TransactionMonitor';
+import { AccountManager } from '@starknet-agent-kit/core/src/account/utils/AccountManager';
+import { ContractInteractor } from '@starknet-agent-kit/core/src/contract/utils/ContractInteractor';
+import { TransactionMonitor } from '@starknet-agent-kit/core/src/transaction/utils/TransactionMonitor';
 import { RpcProvider } from 'starknet';
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import { createAgent } from './agent';

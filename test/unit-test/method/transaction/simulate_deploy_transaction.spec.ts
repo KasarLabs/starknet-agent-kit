@@ -1,4 +1,4 @@
-import { simulateDeployTransaction } from 'plugins/core/transaction/simulateTransaction';
+import { simulateDeployTransaction } from '@starknet-agent-kit/core/transaction/simulateTransaction';
 import * as C from '../../../utils/constant';
 import {
   createMockInvalidStarknetAgent,

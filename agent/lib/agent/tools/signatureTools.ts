@@ -1,6 +1,6 @@
 import { tool } from '@langchain/core/tools';
-import { registerSignatureToolsAccount } from 'plugins/core/account/tools/tools_signature';
-import { registerSignatureToolsToken } from 'plugins/core/token/tools/tools_signature';
+import { registerSignatureToolsAccount } from '@starknet-agent-kit/core/src/account/tools/tools_signature';
+import { registerSignatureToolsToken } from '@starknet-agent-kit/core/src/token/tools/tools_signature';
 
 interface SignatureTool<P = any> {
   name: string;

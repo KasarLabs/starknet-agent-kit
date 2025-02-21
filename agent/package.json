@@ -1,7 +1,15 @@
 {
   "name": "@starknet-agent-kit/agent",
   "version": "0.0.10",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "dependencies": {
+    "@starknet-agent-kit/twitter": "workspace:*",
+    "@starknet-agent-kit/telegram": "workspace:*",
+    "@starknet-agent-kit/vesu": "workspace:*",
+    "@starknet-agent-kit/unruggable": "workspace:*",
+    "@starknet-agent-kit/core": "workspace:*",
+    "@starknet-agent-kit/fibrous": "workspace:*",
     "@langchain/anthropic": "^0.3.11",
     "@langchain/community": "^0.3.28",
     "@langchain/core": "^0.3.37",
@@ -34,8 +42,10 @@
   },
   "scripts": {
     "local": "ts-node -r tsconfig-paths/register local.ts",
-    "build": "rm -rf dist && nest build",
-    "clean": "rm -rf dist node_modules",
+    "build": "tsc",
+    "clean": "rm -rf node_modules",
+    "clean:dist": "rm -rf dist",
+    "clean:all" : "pnpm clean && pnpm clean:dist",
     "dev": "nest start --watch",
     "start": "node dist/main",
     "test": "jest --passWithNoTests"

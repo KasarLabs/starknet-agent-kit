@@ -19,10 +19,14 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "esModuleInterop": true,
-    "paths": {
-      "agent/*": ["./agent/*"],
-      "plugins/*": ["./plugins/*"],
-    }
-  }
+    "esModuleInterop": true
+  },
+  "include": ["agent/**/*", "plugins/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "client",
+    "**/node_modules/*",
+    "**/*.spec.ts"
+  ]
 }

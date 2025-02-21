@@ -1,11 +1,16 @@
 {
     "name" : "@starknet-agent-kit/fibrous",
-    "version" : "0.0.10",
+      "version" : "0.0.10",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "dependencies" : {
         "fibrous-router-sdk": "^0.4.3"
         
     },
     "scripts": {
-        "clean": "rm -rf node_modules"
+        "build": "tsc",
+        "clean": "rm -rf node_modules",
+        "clean:dist": "rm -rf dist",
+        "clean:all" : "pnpm clean && pnpm clean:dist"
     }
 }

@@ -2,7 +2,7 @@
   "name": "starknet-agent-kit",
   "version": "0.0.10",
   "workspaces": [
-    "packages/*"
+    "starknet-agent-kit"
   ],
   "description": "A toolkit for creating AI agents that can interact with the Starknet blockchain",
   "author": "Kasar Labs",
@@ -26,15 +26,15 @@
     "LICENSE"
   ],
   "scripts": {
-  "clean": "rm -rf dist && rm -rf node_modules",
-    "clean:all": "pnpm clean && pnpm -r clean",
+    "clean": "rm -rf dist && rm -rf node_modules",
+    "clean:all": "pnpm clean && pnpm -r clean:all",
     "build:backend": "rm -rf dist && nest build",
     "clean:js": "rm -rf \"agent/**/*.js\"",
     "local" : "pnpm --filter \"agent\" local",
     "build:test": "pnpm clean:js && tsc -p tsconfig.build.json agent/local.ts --outDir ./dist",
     "build:frontend": "pnpm --filter \"client\" build",
     "build:lib": "tsc -p tsconfig.build.json",
-    "build": "pnpm build:backend && pnpm build:frontend",
+    "build": "lerna run build",
     "dev:backend": "nest start --watch",
     "dev:frontend": "pnpm --filter \"client\" dev",
     "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",

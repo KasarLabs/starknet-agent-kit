@@ -1,4 +1,4 @@
-import { transfer } from 'plugins/core/token/actions/transfer';
+import { transfer } from '@starknet-agent-kit/core/token/actions/transfer';
 import * as C from '../../../utils/constant';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 import { setupTestEnvironment } from 'test/utils/helpers';

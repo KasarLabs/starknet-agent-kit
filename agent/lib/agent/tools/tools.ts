@@ -1,12 +1,12 @@
 import { tool } from '@langchain/core/tools';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from 'plugins/core/account/utils/AccountManager';
-import { TransactionMonitor } from 'plugins/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from 'plugins/core/contract/utils/ContractInteractor';
-import { TwitterInterface } from 'plugins/twitter/interfaces';
+import { AccountManager } from '@starknet-agent-kit/core/src/account/utils/AccountManager';
+import { TransactionMonitor } from '@starknet-agent-kit/core/src/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from '@starknet-agent-kit/core/src/contract/utils/ContractInteractor';
+import { TwitterInterface } from '@starknet-agent-kit/twitter/src/interfaces';
 import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
-import { TelegramInterface } from 'plugins/telegram/interfaces';
+import { TelegramInterface } from '@starknet-agent-kit/telegram/src/interfaces';
 
 export interface PluginManager {
   telegram_manager?: TelegramInterface;
@@ -99,7 +99,7 @@ export const registerTools = async (
         ) {
           tool = 'core/' + tool;
         }
-        const imported_tool = await import(`plugins/${tool}/tools/index`);
+        const imported_tool = await import(`@starknet-agent-kit/${tool}/src/tools/index`);
         if (typeof imported_tool.registerTools !== 'function') {
           throw new Error('Tool does not have a registerTools function');
         }

@@ -1,4 +1,11 @@
 {
     "name" : "@starknet-agent-kit/core",
-    "version" : "0.0.10"
+    "version" : "0.0.10",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "clean": "rm -rf node_modules",
+        "clean:dist": "rm -rf dist",
+        "clean:all" : "pnpm clean && pnpm clean:dist"
+    }
 }

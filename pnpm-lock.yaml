@@ -186,6 +186,24 @@ importers:
       '@nestjs/throttler':
         specifier: ^6.4.0
         version: 6.4.0(@nestjs/common@11.0.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.10(@nestjs/common@11.0.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)
+      '@starknet-agent-kit/core':
+        specifier: workspace:*
+        version: link:../plugins/core
+      '@starknet-agent-kit/fibrous':
+        specifier: workspace:*
+        version: link:../plugins/fibrous
+      '@starknet-agent-kit/telegram':
+        specifier: workspace:*
+        version: link:../plugins/telegram
+      '@starknet-agent-kit/twitter':
+        specifier: workspace:*
+        version: link:../plugins/twitter
+      '@starknet-agent-kit/unruggable':
+        specifier: workspace:*
+        version: link:../plugins/unruggable
+      '@starknet-agent-kit/vesu':
+        specifier: workspace:*
+        version: link:../plugins/vesu
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1

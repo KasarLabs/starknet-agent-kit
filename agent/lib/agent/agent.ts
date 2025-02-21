@@ -1,11 +1,11 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { SystemMessage } from '@langchain/core/messages';
 import { createTools } from './tools/tools';
-import { AiConfig } from 'plugins/core/account/types/accounts.js';
+import { AiConfig } from '@starknet-agent-kit/core/src/account/types/accounts';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
-import { StarknetAgentInterface } from 'agent/lib/agent/tools/tools';
+import { StarknetAgentInterface } from '@starknet-agent-kit/agent';
 import { createSignatureTools } from './tools/signatureTools';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';

@@ -1,7 +1,7 @@
 import {
   CreateOZAccount,
   CreateArgentAccount,
-} from 'plugins/core/account/actions/createAccount';
+} from '@starknet-agent-kit/core/account/actions/createAccount';
 
 describe('Account -> CreateOZAccount', () => {
   describe('With perfect match inputs', () => {});

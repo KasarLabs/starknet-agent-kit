@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { StarknetAgentInterface } from 'agent/lib/agent/tools/tools';
+import { StarknetAgentInterface } from '@starknet-agent-kit/agent';
 
 export class CreateAgentDTO {
   @IsNotEmpty()

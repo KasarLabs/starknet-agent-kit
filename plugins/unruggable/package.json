@@ -1,9 +1,14 @@
 {
     "name" : "@starknet-agent-kit/unruggable",
     "version" : "0.0.10",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "dependencies" : {
     },
     "scripts": {
-        "clean": "rm -rf node_modules"
+        "build": "tsc",
+        "clean": "rm -rf node_modules",
+        "clean:dist": "rm -rf dist",
+        "clean:all" : "pnpm clean && pnpm clean:dist"
     }
 }

@@ -1,4 +1,4 @@
-import { getAddress } from 'plugins/account/getAddress';
+import { getAddress } from '@starknet-agent-kit/account/getAddress';
 import {
   createMockInvalidStarknetAgent,
   createMockStarknetAgent,

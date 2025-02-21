@@ -1,21 +1,21 @@
 import { StarknetSignatureToolRegistry } from 'src/lib/agent/tools/signatureTools';
 import { accountDetailsSchema } from '../schema/index';
 
-import { CreateAXAccountSignature } from '../../../argentx/actions/createAccount';
+import { CreateArgentAccountSignature } from '../../../argent/actions/createAccount';
 import { CreateOZAccountSignature } from '../../../openzeppelin/actions/createAccount';
 import { CreateOKXAccountSignature } from '../../../okx/actions/createAccount';
 import { CreateBraavosAccountSignature } from '../../../braavos/actions/createAccount';
-import { DeployAXAccountSignature } from '../../../argentx/actions/deployAccount';
+import { DeployArgentAccountSignature } from '../../../argent/actions/deployAccount';
 import { DeployOZAccountSignature } from '../../../openzeppelin/actions/deployAccount';
 import { DeployOKXAccountSignature } from '../../../okx/actions/deployAccount';
 import { DeployBraavosAccountSignature } from '../../../braavos/actions/deployAccount';
 
 export const registerSignatureToolsAccount = () => {
   StarknetSignatureToolRegistry.RegisterSignatureTools({
-    name: 'create_argentx_account',
+    name: 'create_argent_account',
     description:
-      'create argentx account return the privateKey/publicKey/contractAddress',
-    execute: CreateAXAccountSignature,
+      'create argent account return the privateKey/publicKey/contractAddress',
+    execute: CreateArgentAccountSignature,
   }),
     StarknetSignatureToolRegistry.RegisterSignatureTools({
       name: 'create_open_zeppelin_account',
@@ -40,7 +40,7 @@ export const registerSignatureToolsAccount = () => {
       description:
         'deploy argent account return the privateKey/publicKey/contractAddress',
       schema: accountDetailsSchema,
-      execute: DeployAXAccountSignature,
+      execute: DeployArgentAccountSignature,
     }),
     StarknetSignatureToolRegistry.RegisterSignatureTools({
       name: 'deploy_openzeppelin_account',

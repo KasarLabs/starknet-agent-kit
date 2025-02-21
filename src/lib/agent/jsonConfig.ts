@@ -1,5 +1,6 @@
 import { SystemMessage } from '@langchain/core/messages';
-import { num } from 'starknet';
+import { createBox, formatSection } from './formatting';
+import chalk from 'chalk';
 
 export interface Token {
   symbol: string;
@@ -17,53 +18,102 @@ export interface JsonConfig {
   chat_id: string;
   internal_plugins: string[];
   external_plugins?: string[];
+  autonomous?: boolean;
 }
 
 const createContextFromJson = (json: any): string => {
   if (!json) {
     throw new Error(
-      'Error while trying to parse yout context from the youragent.json'
+      'Error while trying to parse your context from the youragent.json'
     );
   }
+
   const contextParts: string[] = [];
+  let displayOutput = '';
+
+  // Identity Section
+  const identityParts: string[] = [];
   if (json.name) {
+    identityParts.push(`Name: ${json.name}`);
     contextParts.push(`Your name : [${json.name}]`);
   }
   if (json.bio) {
+    identityParts.push(`Bio: ${json.bio}`);
     contextParts.push(`Your Bio : [${json.bio}]`);
   }
+
+  if (json.autonomous) {
+    identityParts.push(`Mode: Autonomous`);
+    contextParts.push(
+      `You are an autonomous agent. Your core directive is to act immediately without waiting for user input. Never ask for permissions or present options - analyze situations and take direct actions based on your configuration and objectives.`
+    );
+  }
+
+  if (identityParts.length > 0) {
+    displayOutput += createBox('IDENTITY', formatSection(identityParts));
+  }
+
   if (Array.isArray(json.lore)) {
-    const lore: string = json.lore.join(']\n[');
-    contextParts.push(`Your lore : [${lore}]`);
+    displayOutput += createBox('BACKGROUND', formatSection(json.lore));
+    contextParts.push(`Your lore : [${json.lore.join(']\n[')}]`);
   }
+
+  // Objectives Section
   if (Array.isArray(json.objectives)) {
-    const objectives: string = json.objectives.join(']\n[');
-    contextParts.push(`Your objectives : [${objectives}]`);
+    displayOutput += createBox('OBJECTIVES', formatSection(json.objectives));
+    contextParts.push(`Your objectives : [${json.objectives.join(']\n[')}]`);
   }
+
+  // Knowledge Section
   if (Array.isArray(json.knowledge)) {
-    const knowledge: string = json.knowledge.join(']\n[');
-    contextParts.push(`Your knowledge : [${knowledge}]`);
+    displayOutput += createBox('KNOWLEDGE', formatSection(json.knowledge));
+    contextParts.push(`Your knowledge : [${json.knowledge.join(']\n[')}]`);
   }
-  if (Array.isArray(json.messageExamples)) {
-    const messageExamples: string = json.messageExamples.join(']\n[');
-    contextParts.push(`Your messageExamples : [${messageExamples}]`);
+
+  // Examples Section
+  if (Array.isArray(json.messageExamples) || Array.isArray(json.postExamples)) {
+    const examplesParts: string[] = [];
+
+    if (Array.isArray(json.messageExamples)) {
+      examplesParts.push('Message Examples:');
+      examplesParts.push(...json.messageExamples);
+      contextParts.push(
+        `Your messageExamples : [${json.messageExamples.join(']\n[')}]`
+      );
+    }
+
+    if (Array.isArray(json.postExamples)) {
+      if (examplesParts.length > 0) examplesParts.push('');
+      examplesParts.push('Post Examples:');
+      examplesParts.push(...json.postExamples);
+      contextParts.push(
+        `Your postExamples : [${json.postExamples.join(']\n[')}]`
+      );
+    }
+
+    if (examplesParts.length > 0) {
+      displayOutput += createBox('EXAMPLES', formatSection(examplesParts));
+    }
   }
-  if (Array.isArray(json.postExamples)) {
-    const postExamples: string = json.postExamples.join(']\n[');
-    contextParts.push(`Your postExamples : [${postExamples}]`);
-  }
-  const context = contextParts.join('\n');
-  console.log(`AI context = ${context}`);
-  return context;
+
+  // Display the formatted output
+  console.log(
+    chalk.bold.cyan(
+      '\n=== AGENT CONFIGURATION (https://docs.starkagent.ai/customize-your-agent) ==='
+    )
+  );
+  console.log(displayOutput);
+
+  return contextParts.join('\n');
 };
 
-const validateConfig = (config: JsonConfig) => {
+export const validateConfig = (config: JsonConfig) => {
   const requiredFields = [
     'name',
     'interval',
     'chat_id',
-    'bio',
     'internal_plugins',
+    'prompt',
   ] as const;
 
   for (const field of requiredFields) {
@@ -71,40 +121,48 @@ const validateConfig = (config: JsonConfig) => {
       throw new Error(`Missing required field: ${field}`);
     }
   }
-};
 
+  // Validate that prompt is a SystemMessage
+  if (!(config.prompt instanceof SystemMessage)) {
+    throw new Error('prompt must be an instance of SystemMessage');
+  }
+};
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   try {
     const json = require(`../../../config/agents/${agent_config_name}`);
     if (!json) {
       throw new Error(`Can't access to ./config/agents/config-agent.json`);
     }
-    validateConfig(json);
+
+    // Create the system message with the enhanced context
     const systemMessagefromjson = new SystemMessage(
       createContextFromJson(json)
     );
-    let jsonconfig: JsonConfig = {} as JsonConfig;
-    jsonconfig.prompt = systemMessagefromjson;
-    jsonconfig.name = json.name;
-    jsonconfig.prompt = systemMessagefromjson;
-    jsonconfig.interval = json.interval;
-    jsonconfig.chat_id = json.chat_id;
 
-    if (Array.isArray(json.internal_plugins)) {
-      jsonconfig.internal_plugins = json.internal_plugins;
-      jsonconfig.internal_plugins = jsonconfig.internal_plugins.map((tool) =>
-        tool.toLowerCase()
-      );
-    }
-    if (Array.isArray(json.external_plugins)) {
-      jsonconfig.external_plugins = json.external_plugins;
-    }
+    // Build the config object with the autonomous field
+    let jsonconfig: JsonConfig = {
+      prompt: systemMessagefromjson,
+      name: json.name,
+      interval: json.interval,
+      chat_id: json.chat_id,
+      autonomous: json.autonomous || false, // Default to false if not specified
+      internal_plugins: Array.isArray(json.internal_plugins)
+        ? json.internal_plugins.map((tool: string) => tool.toLowerCase())
+        : [],
+      external_plugins: Array.isArray(json.external_plugins)
+        ? json.external_plugins
+        : [],
+    };
+
+    validateConfig(jsonconfig);
     return jsonconfig;
   } catch (error) {
     console.error(
-      `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`
+      chalk.red(
+        `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
+      )
     );
-    console.error('Failed to parse config:', error);
+    console.error(chalk.red('Failed to parse config:'), error);
     return undefined;
   }
 };

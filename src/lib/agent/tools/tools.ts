@@ -3,7 +3,6 @@ import { RpcProvider } from 'starknet';
 import { TransactionMonitor } from '../plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from '../plugins/core/contract/utils/ContractInteractor';
 import { TwitterInterface } from '../plugins/twitter/interfaces';
-import { Limit } from '../limit';
 import { JsonConfig } from '../jsonConfig';
 import { registerTwitterTools } from '../plugins/twitter/tools';
 import { registerUnraggableTools } from '../plugins/unruggable/tools';
@@ -33,7 +32,6 @@ export interface StarknetAgentInterface {
   getProvider: () => RpcProvider;
   transactionMonitor: TransactionMonitor;
   contractInteractor: ContractInteractor;
-  getLimit: () => Limit;
   getTwitterAuthMode: () => 'API' | 'CREDENTIALS' | undefined;
   getAgentConfig: () => JsonConfig | undefined;
   getTwitterManager: () => TwitterInterface;

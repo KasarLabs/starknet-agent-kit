@@ -25,7 +25,8 @@
     "Understanding of plugin architecture and custom action development"
   ],
   "interval": 30000,
+  "autonomous": true,
   "chat_id": "sak_guide",
   "external_plugins": [],
-  "internal_plugins": ["token", "avnu", "argent"]
+  "internal_plugins": ["token", "avnu", "argent", "rpc"]
 }

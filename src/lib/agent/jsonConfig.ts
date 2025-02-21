@@ -18,6 +18,7 @@ export interface JsonConfig {
   chat_id: string;
   internal_plugins: string[];
   external_plugins?: string[];
+  autonomous?: boolean;
 }
 
 const createContextFromJson = (json: any): string => {
@@ -40,7 +41,16 @@ const createContextFromJson = (json: any): string => {
     identityParts.push(`Bio: ${json.bio}`);
     contextParts.push(`Your Bio : [${json.bio}]`);
   }
-  // Identity Section
+
+  // Add autonomous mode to identity if enabled
+  if (json.autonomous) {
+    identityParts.push(`Mode: Autonomous`);
+    contextParts.push(
+      `You are an autonomous agent. This means you can operate independently and make decisions on your own within your defined objectives and constraints.`
+    );
+  }
+
+  // Rest of the existing identity section code...
   if (identityParts.length > 0) {
     displayOutput += createBox('IDENTITY', formatSection(identityParts));
   }
@@ -100,13 +110,13 @@ const createContextFromJson = (json: any): string => {
   return contextParts.join('\n');
 };
 
-const validateConfig = (config: JsonConfig) => {
+export const validateConfig = (config: JsonConfig) => {
   const requiredFields = [
     'name',
     'interval',
     'chat_id',
-    'bio',
     'internal_plugins',
+    'prompt',
   ] as const;
 
   for (const field of requiredFields) {
@@ -114,33 +124,40 @@ const validateConfig = (config: JsonConfig) => {
       throw new Error(`Missing required field: ${field}`);
     }
   }
-};
 
+  // Validate that prompt is a SystemMessage
+  if (!(config.prompt instanceof SystemMessage)) {
+    throw new Error('prompt must be an instance of SystemMessage');
+  }
+};
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   try {
     const json = require(`../../../config/agents/${agent_config_name}`);
     if (!json) {
       throw new Error(`Can't access to ./config/agents/config-agent.json`);
     }
-    validateConfig(json);
+
+    // Create the system message with the enhanced context
     const systemMessagefromjson = new SystemMessage(
       createContextFromJson(json)
     );
 
-    let jsonconfig: JsonConfig = {} as JsonConfig;
-    jsonconfig.prompt = systemMessagefromjson;
-    jsonconfig.name = json.name;
-    jsonconfig.interval = json.interval;
-    jsonconfig.chat_id = json.chat_id;
+    // Build the config object with the autonomous field
+    let jsonconfig: JsonConfig = {
+      prompt: systemMessagefromjson,
+      name: json.name,
+      interval: json.interval,
+      chat_id: json.chat_id,
+      autonomous: json.autonomous || false, // Default to false if not specified
+      internal_plugins: Array.isArray(json.internal_plugins)
+        ? json.internal_plugins.map((tool: string) => tool.toLowerCase())
+        : [],
+      external_plugins: Array.isArray(json.external_plugins)
+        ? json.external_plugins
+        : [],
+    };
 
-    if (Array.isArray(json.internal_plugins)) {
-      jsonconfig.internal_plugins = json.internal_plugins.map((tool: string) =>
-        tool.toLowerCase()
-      );
-    }
-    if (Array.isArray(json.external_plugins)) {
-      jsonconfig.external_plugins = json.external_plugins;
-    }
+    validateConfig(jsonconfig);
     return jsonconfig;
   } catch (error) {
     console.error(

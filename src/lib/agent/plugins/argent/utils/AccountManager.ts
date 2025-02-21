@@ -16,8 +16,8 @@ import {
 } from '../types/accounts';
 
 /**
- * Manages Starknet account operations for ArgentX wallets, including creation, deployment, and fee estimation.
- * Uses Cairo custom enums for owner and guardian management specific to ArgentX implementation.
+ * Manages Starknet account operations for Argent wallets, including creation, deployment, and fee estimation.
+ * Uses Cairo custom enums for owner and guardian management specific to Argent implementation.
  * @class
  * @implements {BaseUtilityClass}
  */

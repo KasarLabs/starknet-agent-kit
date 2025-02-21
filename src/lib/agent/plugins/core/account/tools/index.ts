@@ -3,10 +3,10 @@ import { wrapAccountCreationResponse } from '../utils/accountTools';
 
 import { CreateBraavosAccount } from '../../../braavos/actions/createAccount';
 import { CreateOZAccount } from '../../../openzeppelin/actions/createAccount';
-import { CreateAXAccount } from '../../../argentx/actions/createAccount';
+import { CreateArgentAccount } from '../../../argent/actions/createAccount';
 import { CreateOKXAccount } from '../../../okx/actions/createAccount';
 import { DeployBraavosAccount } from '../../../braavos/actions/deployAccount';
-import { DeployAXAccount } from '../../../argentx/actions/deployAccount';
+import { DeployArgentAccount } from '../../../argent/actions/deployAccount';
 import { DeployOKXAccount } from '../../../okx/actions/deployAccount';
 import { DeployOZAccount } from '../../../openzeppelin/actions/deployAccount';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
@@ -36,12 +36,12 @@ export const registerAccountTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'create_new_argentx_account',
+    name: 'create_new_argent_account',
     description:
-      'Creates a new ArgentX account and return the privateKey/publicKey/contractAddress',
+      'Creates a new Argent account and return the privateKey/publicKey/contractAddress',
     plugins: 'account',
     execute: async (agent: StarknetAgentInterface) => {
-      const response = await CreateAXAccount();
+      const response = await CreateArgentAccount();
       return wrapAccountCreationResponse(response);
     },
   });
@@ -67,12 +67,12 @@ export const registerAccountTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'deploy_existing_argentx_account',
+    name: 'deploy_existing_argent_account',
     description:
-      'Deploy an existing Argentx Account return the privateKey/publicKey/contractAddress',
+      'Deploy an existing Argent Account return the privateKey/publicKey/contractAddress',
     plugins: 'account',
     schema: accountDetailsSchema,
-    execute: DeployAXAccount,
+    execute: DeployArgentAccount,
   });
 
   StarknetToolRegistry.registerTool({

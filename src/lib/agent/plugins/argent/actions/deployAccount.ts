@@ -1,20 +1,20 @@
 import { RpcProvider } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { ARGENTX_CLASSHASH } from '../constant/contract';
+import { ARGENT_CLASS_HASH } from '../constant/contract';
 import { AccountManager } from '../utils/AccountManager';
 import { z } from 'zod';
 import { accountDetailsSchema } from '../schemas/schema';
 
 /**
- * Deploys an ArgentX account using Starknet agent.
+ * Deploys an Argent account using Starknet agent.
  * @async
- * @function DeployAXAccount
+ * @function DeployArgentAccount
  * @param {StarknetAgentInterface} agent - The Starknet agent
  * @param {z.infer<typeof accountDetailsSchema>} params - Account details
  * @returns {Promise<string>} JSON string with deployment result
  * @throws {Error} If deployment fails
  */
-export const DeployAXAccount = async (
+export const DeployArgentAccount = async (
   agent: StarknetAgentInterface,
   params: z.infer<typeof accountDetailsSchema>
 ) => {
@@ -22,7 +22,7 @@ export const DeployAXAccount = async (
     const provider = agent.getProvider();
 
     const accountManager = new AccountManager(provider);
-    const tx = await accountManager.deployAccount(ARGENTX_CLASSHASH, params);
+    const tx = await accountManager.deployAccount(ARGENT_CLASS_HASH, params);
 
     return JSON.stringify({
       status: 'success',
@@ -39,21 +39,21 @@ export const DeployAXAccount = async (
 };
 
 /**
- * Deploys an ArgentX account using RPC.
+ * Deploys an Argent account using RPC.
  * @async
- * @function DeployAXAccountSignature
+ * @function DeployArgentAccountSignature
  * @param {z.infer<typeof accountDetailsSchema>} params - Account details
  * @returns {Promise<string>} JSON string with deployment result
  * @throws {Error} If deployment fails
  */
-export const DeployAXAccountSignature = async (
+export const DeployArgentAccountSignature = async (
   params: z.infer<typeof accountDetailsSchema>
 ) => {
   try {
     const provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
 
     const accountManager = new AccountManager(provider);
-    const tx = await accountManager.deployAccount(ARGENTX_CLASSHASH, params);
+    const tx = await accountManager.deployAccount(ARGENT_CLASS_HASH, params);
 
     return JSON.stringify({
       status: 'success',

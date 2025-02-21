@@ -91,7 +91,7 @@ export const createAgent = (
     return agent; // Return just the agent itself
   } catch (error) {
     console.error(
-      `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`
+      `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
     );
     console.error('Failed to load or parse JSON config:', error);
     throw error; // Re-throw to handle upstream

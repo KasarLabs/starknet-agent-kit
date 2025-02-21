@@ -159,7 +159,7 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   } catch (error) {
     console.error(
       chalk.red(
-        `⚠️ Ensure your environment variables are set correctly according to your agent.character.json file.`
+        `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
       )
     );
     console.error(chalk.red('Failed to parse config:'), error);

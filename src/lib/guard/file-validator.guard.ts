@@ -92,6 +92,7 @@ export class FileTypeGuard implements CanActivate {
       return true;
     } catch (error) {
       await this.cleanupFiles();
+      console.log(error);
 
       if (error instanceof ForbiddenException) {
         throw error;

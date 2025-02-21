@@ -315,7 +315,6 @@ const StarknetAgent = () => {
         body: JSON.stringify({ request: input }),
         credentials: 'include',
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

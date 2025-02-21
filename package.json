@@ -88,6 +88,7 @@
     "helmet": "^8.0.0",
     "inquirer": "^12.4.1",
     "langchain": "^0.3.10",
+    "multipart@latest": "link:fastify/multipart@latest",
     "nanospinner": "^1.2.2",
     "node-telegram-bot-api": "^0.66.0",
     "reflect-metadata": "^0.2.0",

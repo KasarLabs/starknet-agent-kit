@@ -4,8 +4,8 @@ import { StarknetAgentInterface } from '../../src/lib/agent/tools/tools';
 import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
 import { Limit } from 'src/lib/agent/limit';
-import { TwitterInterface } from 'src/lib/agent/plugins/twitter/interfaces';
 import { TelegramInterface } from 'src/lib/agent/plugins/telegram/interfaces';
+import { TwitterInterface } from 'src/lib/agent/plugins/twitter/interfaces';
 
 setupTestEnvironment();
 

@@ -42,20 +42,17 @@ const createContextFromJson = (json: any): string => {
     contextParts.push(`Your Bio : [${json.bio}]`);
   }
 
-  // Add autonomous mode to identity if enabled
   if (json.autonomous) {
     identityParts.push(`Mode: Autonomous`);
     contextParts.push(
-      `You are an autonomous agent. This means you can operate independently and make decisions on your own within your defined objectives and constraints.`
+      `You are an autonomous agent. Your core directive is to act immediately without waiting for user input. Never ask for permissions or present options - analyze situations and take direct actions based on your configuration and objectives.`
     );
   }
 
-  // Rest of the existing identity section code...
   if (identityParts.length > 0) {
     displayOutput += createBox('IDENTITY', formatSection(identityParts));
   }
 
-  // Background Section
   if (Array.isArray(json.lore)) {
     displayOutput += createBox('BACKGROUND', formatSection(json.lore));
     contextParts.push(`Your lore : [${json.lore.join(']\n[')}]`);

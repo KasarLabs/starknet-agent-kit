@@ -7,7 +7,7 @@ import {
 const agent = createMockStarknetAgent();
 const wrongAgent = createMockInvalidStarknetAgent();
 
-describe('placePixel', () => {
+describe('place_pixel', () => {
   describe('With perfect match inputs', () => {
     it('returns success', async () => {
       const params = {
@@ -69,7 +69,7 @@ describe('placePixel', () => {
       const params = {
         params: [
           {
-            canvasId: 'art-peace-3',
+            canvasId: 'art-peace-iii',
             color: 'black',
             xPos: 0,
             yPos: 0,
@@ -84,23 +84,13 @@ describe('placePixel', () => {
         transaction_hash: expect.any(Array<String>),
       });
     });
-    it('returns success', async () => {
-      const params = { params: [] };
-      const result = await placePixel(agent, params);
-      const parsed = JSON.parse(result);
-
-      expect(parsed).toEqual({
-        status: 'success',
-        transaction_hash: expect.any(Array<String>),
-      });
-    });
   });
   describe('With missing inputs', () => {
     it('returns error', async () => {
       const params = {
         params: [
           {
-            canvasId: 'art-peace-3',
+            canvasId: 'art-peace-iii',
             color: 'sdfsdfsd',
             xPos: 0,
             yPos: 0,

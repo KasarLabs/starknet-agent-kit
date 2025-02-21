@@ -29,8 +29,8 @@ export const placePixel = async (
     );
     const artpeaceContract = new Contract(artpeaceAbi, artpeaceAddr, provider);
     const checker = new Checker(params[0].canvasId);
-    const id = checker.checkWorld();
-    checker.getColors();
+    const id = await checker.checkWorld();
+    await checker.getColors();
 
     const txHash = [];
     for (const param of params) {

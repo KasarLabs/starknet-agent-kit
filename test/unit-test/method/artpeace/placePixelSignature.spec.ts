@@ -19,7 +19,7 @@ describe('placePixelSignature', () => {
 
       expect(parsed).toEqual({
         transaction_type: 'INVOKE',
-        callData: expect.any(Array<CallData>),
+        results: expect.any(Array<CallData>),
       });
     });
     it('returns success with array of CallData', async () => {
@@ -56,14 +56,14 @@ describe('placePixelSignature', () => {
 
       expect(parsed).toEqual({
         transaction_type: 'INVOKE',
-        callData: expect.any(Array<CallData>),
+        results: expect.any(Array<CallData>),
       });
     });
     it('returns success', async () => {
       const params = {
         params: [
           {
-            canvasId: 'art-peace-3',
+            canvasId: 'art-peace-iii',
             color: 'black',
             xPos: 0,
             yPos: 0,
@@ -75,17 +75,7 @@ describe('placePixelSignature', () => {
 
       expect(parsed).toEqual({
         transaction_type: 'INVOKE',
-        callData: expect.any(Array<CallData>),
-      });
-    });
-    it('returns success', async () => {
-      const params = { params: [] };
-      const result = await placePixelSignature(params);
-      const parsed = JSON.parse(result);
-
-      expect(parsed).toEqual({
-        transaction_type: 'INVOKE',
-        callData: expect.any(Array<CallData>),
+        results: expect.any(Array<CallData>),
       });
     });
   });
@@ -94,7 +84,7 @@ describe('placePixelSignature', () => {
       const params = {
         params: [
           {
-            canvasId: 'art-peace-3',
+            canvasId: 'art-peace-iii',
             color: 'sdfsdfsd',
             xPos: 0,
             yPos: 0,

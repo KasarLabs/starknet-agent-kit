@@ -1,5 +1,5 @@
 import { Account, Call } from 'starknet';
-import { StarknetAgentInterface } from '@starknet-agent-kit/agent';
+import { StarknetAgentInterface } from '@starknet-agent-kit/common';
 import { z } from 'zod';
 import { parseUnits } from 'ethers';
 import {

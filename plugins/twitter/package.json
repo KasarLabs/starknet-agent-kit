@@ -5,7 +5,9 @@
     "types": "dist/index.d.ts",
     "dependencies" : {
         "twitter-api-v2" : "^1.19.1",
-        "agent-twitter-client": "^0.0.18"
+        "agent-twitter-client": "^0.0.18",
+        "@starknet-agent-kit/common": "workspace:*"
+
     },
     "scripts": {
         "build": "tsc",

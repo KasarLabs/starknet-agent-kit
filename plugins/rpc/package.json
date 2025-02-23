@@ -1,0 +1,17 @@
+{
+    "name" : "@starknet-agent-kit/rpc",
+      "version" : "0.0.10",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "dependencies" : {
+        "starknet": "^6.11.0",
+        "@starknet-agent-kit/common": "workspace:*"
+
+    }, 
+    "scripts": {
+        "build": "tsc",
+        "clean": "rm -rf node_modules",
+        "clean:dist": "rm -rf dist",
+        "clean:all" : "pnpm clean && pnpm clean:dist"
+    }
+}

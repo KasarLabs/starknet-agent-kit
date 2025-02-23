@@ -1,5 +1,4 @@
 import { Account, Call } from 'starknet';
-
 import { ApprovalService } from './approval';
 import { StarknetAgentInterface } from '@starknet-agent-kit/agent';
 import { TokenService } from './fetchTokens';
@@ -139,7 +138,7 @@ export class BatchSwapService {
   private async monitorSwapStatus(txHash: string) {
     const receipt = await this.agent.transactionMonitor.waitForTransaction(
       txHash,
-      (status) => console.log('Swap status:', status)
+      (status : string) => console.log('Swap status:', status)
     );
 
     const events =

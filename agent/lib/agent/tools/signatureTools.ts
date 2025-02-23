@@ -1,6 +1,6 @@
 import { tool } from '@langchain/core/tools';
-import { registerSignatureToolsAccount } from '@starknet-agent-kit/core/src/account/tools/tools_signature';
-import { registerSignatureToolsToken } from '@starknet-agent-kit/core/src/token/tools/tools_signature';
+import { registerSignatureToolsAccount } from '@starknet-agent-kit/core/account/src/tools/tools_signature';
+// import { registerSignatureToolsToken } from '@starknet-agent-kit/core/src/token/tools/tools_signature';
 
 interface SignatureTool<P = any> {
   name: string;
@@ -30,7 +30,7 @@ export class StarknetSignatureToolRegistry {
 }
 
 export const RegisterSignatureTools = () => {
-  registerSignatureToolsToken();
+  // registerSignatureToolsToken();
   registerSignatureToolsAccount();
 };
 

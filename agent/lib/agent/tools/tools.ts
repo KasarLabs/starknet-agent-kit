@@ -1,37 +1,10 @@
 import { tool } from '@langchain/core/tools';
-import { RpcProvider } from 'starknet';
-import { AccountManager } from '@starknet-agent-kit/core/src/account/utils/AccountManager';
-import { TransactionMonitor } from '@starknet-agent-kit/core/src/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from '@starknet-agent-kit/core/src/contract/utils/ContractInteractor';
 import { TwitterInterface } from '@starknet-agent-kit/twitter/src/interfaces';
-import { Limit } from '../limit';
-import { JsonConfig } from '../jsonConfig';
 import { TelegramInterface } from '@starknet-agent-kit/telegram/src/interfaces';
-
+import { StarknetAgentInterface } from '@starknet-agent-kit/common';
 export interface PluginManager {
   telegram_manager?: TelegramInterface;
   twitter_manager?: TwitterInterface;
-}
-
-export interface StarknetAgentInterface {
-  getAccountCredentials: () => {
-    accountPublicKey: string;
-    accountPrivateKey: string;
-  };
-  getModelCredentials: () => {
-    aiModel: string;
-    aiProviderApiKey: string;
-  };
-  getSignature: () => {
-    signature: string;
-  };
-  getProvider: () => RpcProvider;
-  accountManager: AccountManager;
-  transactionMonitor: TransactionMonitor;
-  contractInteractor: ContractInteractor;
-  getLimit: () => Limit;
-  getAgentConfig: () => JsonConfig | undefined;
-  plugins_manager: PluginManager;
 }
 
 export interface StarknetTool<P = any> {
@@ -89,7 +62,7 @@ export const registerTools = async (
   try {
     await Promise.all(
       allowed_tools.map(async (tool) => {
-        console.log(`Registering tool: ${tool}`);
+        let imported_tool;
         if (
           tool === 'transaction' ||
           tool === 'account' ||
@@ -97,15 +70,21 @@ export const registerTools = async (
           tool === 'rpc' ||
           tool === 'token'
         ) {
-          tool = 'core/' + tool;
+          console.log( `@starknet-agent-kit/core/src/${tool}/tools/index`)
+          imported_tool = await import(
+            `@starknet-agent-kit/core/src/${tool}/tools/index`
+          );
         }
-        const imported_tool = await import(
+        
+        else {
+          imported_tool = await import(
           `@starknet-agent-kit/${tool}/src/tools/index`
         );
+      }
         if (typeof imported_tool.registerTools !== 'function') {
-          throw new Error('Tool does not have a registerTools function');
+          throw new Error(`Tool does not have a registerTools function ${tool}`);
         }
-        console.log('Registering tools');
+        console.log(`Registering tools ${tool}`);
         await imported_tool.registerTools(agent);
         return true; // Retourner le résultat
       })
@@ -134,6 +113,7 @@ export const registerTools = async (
 // Initialize tools
 
 export const createTools = (agent: StarknetAgentInterface) => {
+  
   return StarknetToolRegistry.createTools(agent);
 };
 

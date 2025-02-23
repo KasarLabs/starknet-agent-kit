@@ -2,7 +2,7 @@
   "name": "starknet-agent-kit",
   "version": "0.0.10",
   "workspaces": [
-    "starknet-agent-kit"
+    "packages/*"
   ],
   "description": "A toolkit for creating AI agents that can interact with the Starknet blockchain",
   "author": "Kasar Labs",

@@ -1,5 +1,5 @@
 packages:
   - 'agent'
   - 'client'
-  - "starknet-agent-kit"
+  - "packages/*"
   - "plugins/*"

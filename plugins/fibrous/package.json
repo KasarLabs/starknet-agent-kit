@@ -4,8 +4,9 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "dependencies" : {
-        "fibrous-router-sdk": "^0.4.3"
-        
+        "fibrous-router-sdk": "^0.4.3",
+        "@starknet-agent-kit/common": "workspace:*"
+
     },
     "scripts": {
         "build": "tsc",

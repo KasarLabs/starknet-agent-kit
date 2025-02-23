@@ -5,7 +5,8 @@
     "types": "dist/index.d.ts",
     "dependencies" : {
         "node-telegram-bot-api": "^0.66.0",
-        "@types/node-telegram-bot-api": "^0.64.7"
+        "@types/node-telegram-bot-api": "^0.64.7",
+        "@starknet-agent-kit/common": "workspace:*"
 
     },
     "scripts": {

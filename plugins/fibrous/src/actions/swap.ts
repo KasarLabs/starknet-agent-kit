@@ -130,7 +130,7 @@ export class SwapService {
   private async monitorSwapStatus(txHash: string) {
     const receipt = await this.agent.transactionMonitor.waitForTransaction(
       txHash,
-      (status) => console.log('Swap status:', status)
+      (status : string) => console.log('Swap status:', status)
     );
 
     const events =

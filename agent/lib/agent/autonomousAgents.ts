@@ -1,6 +1,6 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { createAllowedTools, createTools } from './tools/tools';
-import { AiConfig } from '@starknet-agent-kit/core/src/account/types/accounts.js';
+import { AiConfig } from './types';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';

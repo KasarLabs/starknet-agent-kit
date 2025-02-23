@@ -1,4 +1,4 @@
-import { placePixel } from 'src/lib/agent/plugins/artpeace/actions/placePixel';
+import { placePixel } from '../../../../server/agent/plugins/artpeace/actions/placePixel';
 import {
   createMockInvalidStarknetAgent,
   createMockStarknetAgent,

@@ -1,11 +1,11 @@
 import { setupTestEnvironment } from '../utils/helpers';
 import { RpcProvider } from 'starknet';
-import { StarknetAgentInterface } from '../../src/lib/agent/tools/tools';
-import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
-import { Limit } from 'src/lib/agent/limit';
-import { TelegramInterface } from 'src/lib/agent/plugins/telegram/interfaces';
-import { TwitterInterface } from 'src/lib/agent/plugins/twitter/interfaces';
+import { StarknetAgentInterface } from '../../server/agent/tools/tools';
+import { TransactionMonitor } from '../../server/agent/plugins/core/transaction/utils/TransactionMonitor';
+import { ContractInteractor } from '../../server/agent/plugins/core/contract/utils/ContractInteractor';
+import { Limit } from '../../server/agent/limit';
+import { TelegramInterface } from '../../server/agent/plugins/telegram/interfaces';
+import { TwitterInterface } from '../../server/agent/plugins/twitter/interfaces';
 
 setupTestEnvironment();
 

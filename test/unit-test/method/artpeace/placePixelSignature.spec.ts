@@ -1,4 +1,4 @@
-import { placePixelSignature } from 'src/lib/agent/plugins/artpeace/actions/placePixel';
+import { placePixelSignature } from '../../../../server/agent/plugins/artpeace/actions/placePixel';
 import { CallData } from 'starknet';
 
 describe('placePixelSignature', () => {

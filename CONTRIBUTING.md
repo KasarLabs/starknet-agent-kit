@@ -108,10 +108,10 @@ pnpm dev
 
 ### Adding a New Protocol Integration
 
-1. Create a new directory under `src/lib/agent/plugins/`:
+1. Create a new directory under `agents/agent/plugins/`:
 
 ```
-src/lib/agent/plugins/your-protocol/
+agents/agent/plugins/your-protocol/
 ├── abis/         # Protocol-specific ABIs
 ├── actions/      # Protocol actions
 ├── utils/        # Utility functions

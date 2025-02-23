@@ -1,7 +1,7 @@
-import { getBalance } from 'src/lib/agent/plugins/core/token/actions/getBalances';
+import { getBalance } from '../../../../server/agent/plugins/core/token/actions/getBalances';
 import { Contract } from 'starknet';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
-import { ERC20_ABI } from 'src/lib/agent/plugins/core/token/abis/erc20Abi';
+import { ERC20_ABI } from '../../../../server/agent/plugins/core/token/abis/erc20Abi';
 
 const agent = createMockStarknetAgent();
 

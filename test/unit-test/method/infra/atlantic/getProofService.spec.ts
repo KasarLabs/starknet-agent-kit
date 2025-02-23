@@ -1,5 +1,5 @@
-import { getProofService } from 'src/lib/agent/plugins/atlantic/actions/getProofService';
-import { AtlanticParam } from 'src/lib/agent/plugins/atlantic/types/Atlantic';
+import { getProofService } from '../../../../../server/agent/plugins/atlantic/actions/getProofService';
+import { AtlanticParam } from '../../../../../server/agent/plugins/atlantic/types/Atlantic';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();

@@ -96,6 +96,6 @@ export const createAutonomousAgent = (
       `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
     );
     console.error('Failed to load or parse JSON config:', error);
-    throw error; // Re-throw to handle upstream
+    throw error;
   }
 };

@@ -57,11 +57,9 @@ export class StarknetAgent implements IAgent {
     this.currentMode = config.agentMode;
     this.agentconfig = config.agentconfig;
 
-    // Initialize managers
     this.transactionMonitor = new TransactionMonitor(this.provider);
     this.contractInteractor = new ContractInteractor(this.provider);
 
-    // Initialize the agent executor
     this.initializeExecutor();
   }
 
@@ -278,14 +276,12 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute(input: string): Promise<unknown> {
-    // Handle mode switching commands
     if (input.toLowerCase().includes('switch to autonomous')) {
       return this.switchMode('auto');
     } else if (input.toLowerCase().includes('switch to interactive')) {
       return this.switchMode('agent');
     }
 
-    // Check current mode for execution
     if (this.currentMode !== 'agent') {
       throw new Error(`Can't use execute with agent_mode: ${this.currentMode}`);
     }

@@ -122,7 +122,6 @@ export const validateConfig = (config: JsonConfig) => {
     }
   }
 
-  // Validate that prompt is a SystemMessage
   if (!(config.prompt instanceof SystemMessage)) {
     throw new Error('prompt must be an instance of SystemMessage');
   }
@@ -134,7 +133,6 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
       throw new Error(`Can't access to ./config/agents/config-agent.json`);
     }
 
-    // Create the system message with the enhanced context
     const systemMessagefromjson = new SystemMessage(
       createContextFromJson(json)
     );
@@ -145,7 +143,7 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
       name: json.name,
       interval: json.interval,
       chat_id: json.chat_id,
-      autonomous: json.autonomous || false, // Default to false if not specified
+      autonomous: json.autonomous || false,
       internal_plugins: Array.isArray(json.internal_plugins)
         ? json.internal_plugins.map((tool: string) => tool.toLowerCase())
         : [],

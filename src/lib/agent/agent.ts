@@ -88,12 +88,12 @@ export const createAgent = (
       messageModifier: json_config.prompt,
     });
 
-    return agent; // Return just the agent itself
+    return agent;
   } catch (error) {
     console.error(
       `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
     );
     console.error('Failed to load or parse JSON config:', error);
-    throw error; // Re-throw to handle upstream
+    throw error;
   }
 };

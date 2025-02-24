@@ -126,6 +126,7 @@ export const validateConfig = (config: JsonConfig) => {
     throw new Error('prompt must be an instance of SystemMessage');
   }
 };
+
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   try {
     const json = require(`../../../config/agents/${agent_config_name}`);
@@ -137,7 +138,6 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
       createContextFromJson(json)
     );
 
-    // Build the config object with the autonomous field
     let jsonconfig: JsonConfig = {
       prompt: systemMessagefromjson,
       name: json.name,

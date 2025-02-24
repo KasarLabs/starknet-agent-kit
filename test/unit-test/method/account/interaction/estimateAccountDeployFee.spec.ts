@@ -8,6 +8,7 @@ describe('Estimate Account Deploy Fee', () => {
   describe('With perfect match inputs', () => {
     it('should estimate fees successfully with valid payload', async () => {
       // Arrange
+
       const params = {
         accountAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
         payloads: [

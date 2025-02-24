@@ -88,7 +88,7 @@ export const createAgent = (
       messageModifier: json_config.prompt,
     });
 
-    return agent;
+    return agent; // Return just the agent itself
   } catch (error) {
     console.error(
       `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`

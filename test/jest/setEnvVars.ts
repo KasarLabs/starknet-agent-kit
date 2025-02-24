@@ -4,14 +4,14 @@ import { StarknetAgentInterface } from '../../src/lib/agent/tools/tools';
 import { TransactionMonitor } from 'src/lib/agent/plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from 'src/lib/agent/plugins/core/contract/utils/ContractInteractor';
 import { Limit } from 'src/lib/agent/limit';
-import { TwitterInterface } from 'src/lib/agent/plugins/Twitter/interface/twitter-interface';
+// import { TwitterInterface } from 'src/lib/agent/plugins/Twitter/interface/twitter-interface';
 import { TelegramInterface } from 'src/lib/agent/plugins/telegram/interfaces';
 
 setupTestEnvironment();
 
 export const createMockStarknetAgent = (): StarknetAgentInterface => {
-  const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
-  const twitter_interface: TwitterInterface = {};
+  const provider = new RpcProvider({ nodeUrl: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b' });
+  const twitter_interface= {};
   const telegram_interface: TelegramInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;
@@ -20,9 +20,9 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
   return {
     getAccountCredentials: () => ({
       accountPublicKey:
-        '0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba',
+        '0x06889CE7127025749Ab8c2F63c4ba26f972b16530B9aCee3255e59055c0B8CFd',
       accountPrivateKey:
-        '0x00000000000000000000000000000000b137668388dbe9acdfa3bc734cc2c469',
+        'dddd',
     }),
     getModelCredentials: () => ({
       aiModel: '',
@@ -43,8 +43,8 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
 };
 
 export const createMockInvalidStarknetAgent = (): StarknetAgentInterface => {
-  const provider = new RpcProvider({ nodeUrl: 'http://127.0.0.1:5050' });
-  const twitter_interface: TwitterInterface = {};
+  const provider = new RpcProvider({ nodeUrl: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/twNPk5lDPh5t6m0WV6eoXdAD2VfIN0-b' });
+  const twitter_interface= {};
   const telegram_interface: TelegramInterface = {};
   const json_config = undefined;
   const twitter_auth_mode = undefined;

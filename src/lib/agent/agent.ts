@@ -4,6 +4,7 @@ import { AiConfig } from './plugins/core/account/types/accounts.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
+import { ChatDeepSeek } from '@langchain/deepseek';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { createSignatureTools } from './tools/signatureTools';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
@@ -18,39 +19,49 @@ export const createAgent = (
   const model = () => {
     switch (aiConfig.aiProvider) {
       case 'anthropic':
-        if (!aiConfig.apiKey) {
+        if (!aiConfig.aiProviderApiKey) {
           throw new Error(
             'Valid Anthropic api key is required https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key'
           );
         }
         return new ChatAnthropic({
           modelName: aiConfig.aiModel,
-          anthropicApiKey: aiConfig.apiKey,
+          anthropicApiKey: aiConfig.aiProviderApiKey,
         });
       case 'openai':
-        if (!aiConfig.apiKey) {
+        if (!aiConfig.aiProviderApiKey) {
           throw new Error(
             'Valid OpenAI api key is required https://platform.openai.com/api-keys'
           );
         }
         return new ChatOpenAI({
           modelName: aiConfig.aiModel,
-          apiKey: aiConfig.apiKey,
+          apiKey: aiConfig.aiProviderApiKey,
         });
       case 'gemini':
-        if (!aiConfig.apiKey) {
+        if (!aiConfig.aiProviderApiKey) {
           throw new Error(
             'Valid Gemini api key is required https://ai.google.dev/gemini-api/docs/api-key'
           );
         }
         return new ChatGoogleGenerativeAI({
           modelName: aiConfig.aiModel,
-          apiKey: aiConfig.apiKey,
+          apiKey: aiConfig.aiProviderApiKey,
           convertSystemMessageToHumanContent: true,
         });
       case 'ollama':
         return new ChatOllama({
           model: aiConfig.aiModel,
+        });
+      case 'deepseek':
+        if (!aiConfig.aiProviderApiKey) {
+          throw new Error(
+            'Valid DeepSeek api key is required https://api-docs.deepseek.com/'
+          );
+        }
+        return new ChatDeepSeek({
+          modelName: aiConfig.aiModel,
+          apiKey: aiConfig.aiProviderApiKey,
         });
       default:
         throw new Error(`Unsupported AI provider: ${aiConfig.aiProvider}`);

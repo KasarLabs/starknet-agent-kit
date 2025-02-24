@@ -66,6 +66,7 @@ const AI_PROVIDER_MODELS = {
     'codellama',
     'mistral-nemo',
   ],
+  deepseek: ['deepseek-chat', 'deepseek-reasoner'],
 };
 
 export const envSchema = z
@@ -116,11 +117,12 @@ export const envSchema = z
         z.literal('anthropic'),
         z.literal('ollama'),
         z.literal('gemini'),
+        z.literal('deepseek'),
       ],
       {
         errorMap: () => ({
           message:
-            'Invalid AI model provider. Must be one of: openai, anthropic, ollama, or gemini',
+            'Invalid AI model provider. Must be one of: openai, anthropic, ollama, gemini or deepseek.',
         }),
       }
     ),

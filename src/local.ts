@@ -33,12 +33,12 @@ const clearScreen = () => {
 };
 
 const logo = `${chalk.cyan(`
-  ____  _             _               _        _                    _     _  ___ _   
- / ___|| |_ __ _ _ __| | ___ __   ___| |_     / \\   __ _  ___ _ __ | |_  | |/ (_) |_ 
+  ____  _             _               _        _                    _     _  ___ _
+ / ___|| |_ __ _ _ __| | ___ __   ___| |_     / \\   __ _  ___ _ __ | |_  | |/ (_) |_
  \\___ \\| __/ _\` | '__| |/ / '_ \\ / _ \\ __|   / _ \\ / _\` |/ _ \\ '_ \\| __| | ' /| | __|
-  ___) | || (_| | |  |   <| | | |  __/ |_   / ___ \\ (_| |  __/ | | | |_  | . \\| | |_ 
+  ___) | || (_| | |  |   <| | | |  __/ |_   / ___ \\ (_| |  __/ | | | |_  | . \\| | |_
  |____/ \\__\\__,_|_|  |_|\\_\\_| |_|\\___|\\__| /_/   \\_\\__, |\\___|_| |_|\\__| |_|\\_\\_|\\__|
-                                                   |___/                             
+                                                   |___/
 `)}`;
 
 const getTerminalWidth = (): number => {
@@ -192,7 +192,7 @@ const LocalRun = async () => {
             accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
             accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
             aiModel: process.env.AI_MODEL,
-            aiProvider: 'anthropic',
+            aiProvider: process.env.AI_PROVIDER,
             aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
             signature: 'key',
             agentMode: 'agent',
@@ -230,7 +230,7 @@ const LocalRun = async () => {
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY,
         accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS,
         aiModel: process.env.AI_MODEL,
-        aiProvider: 'anthropic',
+        aiProvider: process.env.AI_PROVIDER,
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY,
         signature: 'key',
         agentMode: 'auto',

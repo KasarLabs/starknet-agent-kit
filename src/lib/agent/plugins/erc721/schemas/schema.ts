@@ -34,7 +34,7 @@ export const safeTransferFromSchema = z.object({
   toAddress: z.string().describe('The address to receive the token'),
   tokenId: z.string().describe('The ID of the token to transfer'),
   contractAddress: z.string().describe('The address of the NFT contract'),
-  data: z.string().optional().describe('Additional data with the transfer'),
+  data: z.array(z.string()).optional().describe('Additional data with the transfer'),
 });
 
 export const approveSchema = z.object({

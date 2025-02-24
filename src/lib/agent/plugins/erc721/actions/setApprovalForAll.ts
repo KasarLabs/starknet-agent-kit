@@ -32,7 +32,7 @@ export const setApprovalForAll = async (
 
     const { transaction_hash } = await contract.setApprovalForAll(
       operatorAddress,
-      params.approved ? 1 : 0
+      params.approved ? true : false
     );
 
     await provider.waitForTransaction(transaction_hash);

@@ -5,7 +5,7 @@ import { validateAddress } from 'src/lib/agent/plugins/erc721/utils/nft';
 
 const agent = createMockStarknetAgent();
 const wrong_agent = createMockInvalidStarknetAgent();
-const NFT_ADDRESS = '0x04165af38fe2ce3bf1ec84b90f38a491a949b6c7ec7373242806f82d348715da';
+const NFT_ADDRESS = '0x00ab5ac5f575da7abb70657a3ce4ef8cc4064b365d7d998c09d1e007c1e12921';
 
 describe('Approve Token', () => {
     describe('With perfect match inputs', () => {
@@ -37,9 +37,6 @@ describe('Approve Token', () => {
         };
         const getApprovedResult = await getApproved(agent, getApprovedParams);
         const parsedGetApproved = JSON.parse(getApprovedResult);
-  
-        // Assert - Verify the approved address matches
-        // Convert hex address to decimal for comparison
         const approvedAddressDecimal = BigInt(validateAddress(approvedAddress)).toString();
         
         expect(parsedGetApproved).toMatchObject({

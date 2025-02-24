@@ -22,7 +22,7 @@ export const createMockStarknetAgent = (): StarknetAgentInterface => {
       accountPublicKey:
         '0x06889CE7127025749Ab8c2F63c4ba26f972b16530B9aCee3255e59055c0B8CFd',
       accountPrivateKey:
-        'dddd',
+        '0x07167584593e32e17e2d3105c2e3aba97d341ac4e5843aca24fa2d77abebc915',
     }),
     getModelCredentials: () => ({
       aiModel: '',

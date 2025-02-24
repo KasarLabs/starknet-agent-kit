@@ -19,7 +19,7 @@ export const safeTransferFrom = async (
     const toAddress = validateAddress(params.toAddress);
     const tokenId = validateAndFormatTokenId(params.tokenId);
     const contractAddress = validateAddress(params.contractAddress);
-    const data = params.data || '0';
+    const data = params.data || ['0x0'];
 
     const credentials = agent.getAccountCredentials();
     const provider = agent.getProvider();

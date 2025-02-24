@@ -28,7 +28,7 @@ export const isApprovedForAll = async (
 
     return JSON.stringify({
       status: 'success',
-      isApproved: approvedResponse === 1,
+      isApproved: approvedResponse === true,
     });
   } catch (error) {
     return JSON.stringify({

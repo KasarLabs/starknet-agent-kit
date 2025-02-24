@@ -2,22 +2,22 @@ import { getApproved } from 'src/lib/agent/plugins/erc721/actions/getApproved';
 import { createMockStarknetAgent } from 'test/jest/setEnvVars';
 
 const agent = createMockStarknetAgent();
-const NFT_ADDRESS = '0x04165af38fe2ce3bf1ec84b90f38a491a949b6c7ec7373242806f82d348715da';
+const NFT_ADDRESS = '0x00ab5ac5f575da7abb70657a3ce4ef8cc4064b365d7d998c09d1e007c1e12921';
 
 describe('Get Approved Address for Token', () => {
   describe('With perfect match inputs', () => {
     it('should return approved address for valid token', async () => {
       const params = {
-        tokenId: '1',
+        tokenId: '40',
         contractAddress: NFT_ADDRESS
       };
-
+      const approvedAddress = process.env.STARKNET_PUBLIC_ADDRESS_2 as string;
       const result = await getApproved(agent, params);
       const parsed = JSON.parse(result);
 
       expect(parsed).toMatchObject({
         status: 'success',
-        approved: expect.any(String)
+        approved: '0'
       });
     });
   });

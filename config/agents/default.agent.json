@@ -28,5 +28,5 @@
   "autonomous": true,
   "chat_id": "sak_guide",
   "external_plugins": [],
-  "internal_plugins": ["token", "avnu", "argent", "rpc"]
+  "internal_plugins": ["argent","fibrous","telegram"]
 }

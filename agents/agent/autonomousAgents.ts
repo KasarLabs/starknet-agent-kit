@@ -1,15 +1,15 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { createAllowedTools, createTools } from './tools/tools';
-import { AiConfig } from './plugins/core/account/types/accounts.js';
+import { AiConfig } from  '../common';
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOllama } from '@langchain/ollama';
-import { StarknetAgentInterface } from 'agents/agent/tools/tools';
+import { StarknetAgentInterface } from './tools/tools';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
 
-export const createAutonomousAgent = (
+export const createAutonomousAgent = async(
   starknetAgent: StarknetAgentInterface,
   aiConfig: AiConfig
 ) => {
@@ -62,19 +62,19 @@ export const createAutonomousAgent = (
       throw new Error('Agent configuration is required');
     }
 
-    const allowedTools = createAllowedTools(
-      starknetAgent,
-      json_config.internal_plugins
-    );
+let tools;
+      const allowedTools = await createAllowedTools(
+        starknetAgent,
+        json_config.internal_plugins
+      );
 
-    const allowedToolsKits = json_config.external_plugins
-      ? createAllowedToollkits(json_config.external_plugins)
-      : null;
+      const allowedToolsKits = json_config.external_plugins
+        ? createAllowedToollkits(json_config.external_plugins)
+        : null;
 
-    const tools = allowedToolsKits
-      ? [...allowedTools, ...allowedToolsKits]
-      : allowedTools;
-
+      tools = allowedToolsKits
+        ? [...allowedTools, ...allowedToolsKits]
+        : allowedTools;
     const memory = new MemorySaver();
 
     const agent = createReactAgent({

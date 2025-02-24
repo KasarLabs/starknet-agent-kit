@@ -20,20 +20,5 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "paths": {
-      "@server/*": ["server/*"],
-      "@agents/*": ["agents/*"],
-      "@config/*": ["config/*"]
-    }
-  },
-  "include": [
-    "server/**/*",
-    "agents/**/*",
-    "config/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "client"
-  ]
+  }
 }

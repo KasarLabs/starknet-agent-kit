@@ -88,7 +88,7 @@ describe('TroveManager', () => {
     };
 
     // Mock the getShrineContract function
-    jest.mock('agents/agent/plugins/opus/utils/contracts', () => ({
+    jest.mock('@plugins/opus/utils/contracts', () => ({
       getShrineContract: jest.fn().mockReturnValue(mockShrine),
       getAbbotContract: jest.fn().mockReturnValue(mockAbbot),
       getSentinelContract: jest.fn().mockReturnValue(mockSentinel),

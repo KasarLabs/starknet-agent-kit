@@ -1,0 +1,27 @@
+{
+  "name": "@starknet-agent-kit/server",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pnpm clean:dist && nest build",
+    "clean": "rm -rf node_modules",
+    "clean:dist": "rm -rf dist",
+    "clean:all": "pnpm clean && pnpm clean:dist",
+    "dev": "nest start --watch",
+    "start": "node dist/main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "@starknet-agent-kit/agents": "workspace:*"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
+

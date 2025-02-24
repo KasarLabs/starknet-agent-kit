@@ -1,0 +1,34 @@
+{
+  "name": "@starknet-agent-kit/agents",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "clean": "rm -rf node_modules",
+    "clean:dist": "rm -rf dist",
+    "clean:all": "pnpm clean && pnpm clean:dist",
+    "local": "ts-node -r tsconfig-paths/register ./local.ts"
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "lodash": "^4.17.21",
+    "@starknet-agent-kit/server": "workspace:*",
+    "@starknet-agent-kit/argent": "workspace:*",
+    "@starknet-agent-kit/fibrous": "workspace:*",
+    "@starknet-agent-kit/avnu": "workspace:*",
+    "@starknet-agent-kit/vesu": "workspace:*",
+    "@starknet-agent-kit/twitter": "workspace:*",
+    "@starknet-agent-kit/telegram": "workspace:*",
+    "@starknet-agent-kit/artpeace": "workspace:*",
+    "@starknet-agent-kit/atlantic": "workspace:*",
+    "@starknet-agent-kit/opus": "workspace:*"
+
+  }
+}

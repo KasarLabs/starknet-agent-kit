@@ -229,6 +229,45 @@ importers:
         specifier: ^8.19.1
         version: 8.23.0(eslint@8.57.1)(typescript@5.7.3)
 
+  agents:
+    dependencies:
+      '@starknet-agent-kit/argent':
+        specifier: workspace:*
+        version: link:../plugins/argent
+      '@starknet-agent-kit/artpeace':
+        specifier: workspace:*
+        version: link:../plugins/artpeace
+      '@starknet-agent-kit/atlantic':
+        specifier: workspace:*
+        version: link:../plugins/atlantic
+      '@starknet-agent-kit/avnu':
+        specifier: workspace:*
+        version: link:../plugins/avnu
+      '@starknet-agent-kit/fibrous':
+        specifier: workspace:*
+        version: link:../plugins/fibrous
+      '@starknet-agent-kit/opus':
+        specifier: workspace:*
+        version: link:../plugins/opus
+      '@starknet-agent-kit/server':
+        specifier: workspace:*
+        version: link:../server
+      '@starknet-agent-kit/telegram':
+        specifier: workspace:*
+        version: link:../plugins/telegram
+      '@starknet-agent-kit/twitter':
+        specifier: workspace:*
+        version: link:../plugins/twitter
+      '@starknet-agent-kit/vesu':
+        specifier: workspace:*
+        version: link:../plugins/vesu
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+
   client:
     dependencies:
       '@radix-ui/react-select':
@@ -306,6 +345,102 @@ importers:
         version: 3.4.17(ts-node@10.9.2(@types/node@20.17.16)(typescript@5.7.3))
       typescript:
         specifier: ^5
+        version: 5.7.3
+
+  plugins/argent:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/artpeace:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/atlantic:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+      '@starknet-agent-kit/server':
+        specifier: workspace:*
+        version: link:../../server
+
+  plugins/avnu:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/braavos:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/core: {}
+
+  plugins/fibrous:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/okx:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/openzeppelin:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/opus:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/telegram:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/twitter:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/unruggable:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/vesu:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  server:
+    dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../agents
+      typescript:
+        specifier: ^5.7.3
         version: 5.7.3
 
 packages:

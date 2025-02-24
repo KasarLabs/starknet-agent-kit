@@ -1,8 +1,8 @@
-import { IAgent } from 'server/src/interfaces/agent.interface';
+import { IAgent } from '../common';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
-import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
+import { TransactionMonitor } from '../common';
+import { ContractInteractor } from '../common';
 import { createAutonomousAgent } from './autonomousAgents';
 import { Scraper } from 'agent-twitter-client';
 import { TwitterApi } from 'twitter-api-v2';
@@ -10,9 +10,9 @@ import {
   TwitterInterface,
   TwitterApiConfig,
   TwitterScraperConfig,
-} from './plugins/twitter/interfaces';
+} from '../common' 
 import { JsonConfig } from './jsonConfig';
-import { TelegramInterface } from './plugins/telegram/interfaces';
+import { TelegramInterface } from '../common';
 import TelegramBot from 'node-telegram-bot-api';
 
 export interface StarknetAgentConfig {
@@ -60,25 +60,24 @@ export class StarknetAgent implements IAgent {
     // Initialize managers
     this.transactionMonitor = new TransactionMonitor(this.provider);
     this.contractInteractor = new ContractInteractor(this.provider);
-
-    // Initialize the agent executor
-    this.initializeExecutor();
   }
 
-  private initializeExecutor() {
-    const config = {
-      aiModel: this.aiModel,
-      apiKey: this.aiProviderApiKey,
-      aiProvider: this.config.aiProvider,
-    };
-
-    if (this.currentMode === 'auto') {
-      this.agentReactExecutor = createAutonomousAgent(this, config);
-    } else if (this.currentMode === 'agent') {
-      this.agentReactExecutor = createAgent(this, config);
+  public async createAgentReactExecutor() {
+    if (this.agentMode === 'auto') {
+      this.agentReactExecutor = await createAutonomousAgent(this, {
+        aiModel: this.aiModel,
+        apiKey: this.aiProviderApiKey,
+        aiProvider: this.config.aiProvider,
+      });
+    }
+    if (this.agentMode === 'agent') {
+      this.agentReactExecutor = await createAgent(this, {
+        aiModel: this.aiModel,
+        apiKey: this.aiProviderApiKey,
+        aiProvider: this.config.aiProvider,
+      });
     }
   }
-
   private validateConfig(config: StarknetAgentConfig) {
     if (!config.accountPrivateKey) {
       throw new Error(
@@ -100,7 +99,7 @@ export class StarknetAgent implements IAgent {
     }
 
     this.currentMode = newMode;
-    this.initializeExecutor();
+    this.createAgentReactExecutor();
     return `Switched to ${newMode} mode`;
   }
 

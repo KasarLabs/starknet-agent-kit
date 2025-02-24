@@ -11,15 +11,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AgentRequestDTO } from './dto/agents';
-import { StarknetAgent } from 'agents';
+import { StarknetAgent } from '@starknet-agent-kit/agents';
 import { AgentService } from './services/agent.service';
 import { ConfigurationService } from '../config/configuration';
 import { AgentResponseInterceptor } from './interceptors/response';
 import { FileTypeGuard } from './guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import { getFilename } from 'agents/agent/plugins/atlantic/utils/getFilename';
-import { JsonConfig, load_json_config } from '@agents/agent/jsonConfig';
+import { JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
 
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
@@ -78,7 +77,7 @@ export class AgentsController implements OnModuleInit {
     const path = process.env.PATH_UPLOAD_DIR;
     if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
-    const fullPath = await getFilename(filename.filename);
+    const fullPath = "test";
     const normalizedPath = fullPath.normalize();
 
     try {

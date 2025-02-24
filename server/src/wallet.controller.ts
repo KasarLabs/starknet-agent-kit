@@ -8,15 +8,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { StarknetAgent } from 'agents';
+import { StarknetAgent } from '@starknet-agent-kit/agents';
 import { ConfigurationService } from '../config/configuration';
 import { WalletService } from './services/wallet.service';
 import { AgentRequestDTO } from './dto/agents';
 import { FileTypeGuard } from './guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import { getFilename } from 'agents/agent/plugins/atlantic/utils/getFilename';
-import { JsonConfig, load_json_config } from '@agents/agent/jsonConfig';
+import { JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -74,7 +73,7 @@ export class WalletController implements OnModuleInit {
     const path = process.env.PATH_UPLOAD_DIR;
     if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
-    const fullPath = await getFilename(filename.filename);
+    const fullPath = await "test"
     const normalizedPath = fullPath.normalize();
 
     try {

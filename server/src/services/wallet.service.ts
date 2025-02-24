@@ -8,6 +8,7 @@ import { IAgent } from '../interfaces/agent.interface';
 import { AgentRequestDTO } from '../dto/agents';
 import { IWalletService } from '../interfaces/wallet-service.inferface';
 import Anthropic from '@anthropic-ai/sdk';
+import { Model } from '@anthropic-ai/sdk/resources';
 
 @Injectable()
 export class WalletService implements IWalletService {
@@ -52,7 +53,7 @@ export class WalletService implements IWalletService {
       });
 
       const msg = await anthropic.messages.create({
-        model: process.env.AI_MODEL,
+        model: process.env.AI_MODEL as Model,
         max_tokens: 1024,
         messages: [{ role: 'user', content: request }],
       });

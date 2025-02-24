@@ -3,7 +3,7 @@
   "sourceRoot": "server",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "tsconfig.build.json",
+    "tsConfigPath": "./server/tsconfig.build.json",
     "deleteOutDir": true,
     "assets": ["**/*.proto"]
   }

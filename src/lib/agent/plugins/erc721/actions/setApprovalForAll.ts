@@ -1,7 +1,7 @@
-import { Account, Contract } from 'starknet';
+import { Account, Contract, constants } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC721_ABI } from '../abis/erc721Abi';
-import { validateAddress } from '../utils/nft';
+import { validateAddress, executeV3Transaction } from '../utils/nft';
 import { z } from 'zod';
 import { setApprovalForAllSchema } from '../schemas/schema';
 import { TransactionResult } from '../types/types';
@@ -18,30 +18,35 @@ export const setApprovalForAll = async (
     const operatorAddress = validateAddress(params.operatorAddress);
     const contractAddress = validateAddress(params.contractAddress);
 
-    const credentials = agent.getAccountCredentials();
+    const accountCredentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
     const account = new Account(
       provider,
-      credentials.accountPublicKey,
-      credentials.accountPrivateKey
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey,
+      undefined,
+      constants.TRANSACTION_VERSION.V3
     );
 
     const contract = new Contract(ERC721_ABI, contractAddress, provider);
     contract.connect(account);
 
-    const { transaction_hash } = await contract.setApprovalForAll(
+    const calldata = contract.populate('set_approval_for_all', [
       operatorAddress,
       params.approved ? true : false
-    );
+    ]);
 
-    await provider.waitForTransaction(transaction_hash);
+    const txH = await executeV3Transaction({
+      call: calldata,
+      account: account,
+    });
 
     const result: TransactionResult = {
       status: 'success',
       operator: operatorAddress,
       approved: params.approved,
-      transactionHash: transaction_hash,
+      transactionHash: txH,
     };
 
     return JSON.stringify(result);
@@ -73,7 +78,7 @@ export const setApprovalForAllSignature = async (
         entrypoint: 'setApprovalForAll',
         calldata: [
           operatorAddress,
-          params.approved ? 1 : 0
+          params.approved ? true : false
         ],
       },
     };

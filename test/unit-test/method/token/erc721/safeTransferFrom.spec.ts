@@ -13,7 +13,7 @@ describe('Safe Transfer From', () => {
       const params = {
         fromAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-        tokenId: '10',
+        tokenId: '14',
         contractAddress: NFT_ADDRESS,
         data: ["0x0"]
       };
@@ -24,7 +24,7 @@ describe('Safe Transfer From', () => {
       console.log(parsed);
       expect(parsed).toMatchObject({
         status: 'success',
-        tokenId: '10',
+        tokenId: '14',
         from: process.env.STARKNET_PUBLIC_ADDRESS as String,
         to: process.env.STARKNET_PUBLIC_ADDRESS_2 as String,
         transactionHash: expect.any(String)
@@ -35,7 +35,7 @@ describe('Safe Transfer From', () => {
       const params = {
         fromAddress: process.env.STARKNET_PUBLIC_ADDRESS as string,
         toAddress: process.env.STARKNET_PUBLIC_ADDRESS_2 as string,
-        tokenId: '11',
+        tokenId: '15',
         contractAddress: NFT_ADDRESS
       };
 
@@ -45,7 +45,7 @@ describe('Safe Transfer From', () => {
 
       expect(parsed).toMatchObject({
         status: 'success',
-        tokenId: '11',
+        tokenId: '15',
         from: expect.any(String),
         to: expect.any(String),
         transactionHash: expect.any(String)

@@ -14,31 +14,33 @@ describe('Approve Token', () => {
         const approvedAddress = process.env.STARKNET_PUBLIC_ADDRESS_2 as string;
         const params = {
           approvedAddress,
-          tokenId: '1',
+          tokenId: '20',
           contractAddress: NFT_ADDRESS
         };
   
         // Act - Approve the address
         const approveResult = await approve(agent, params);
         const parsedApprove = JSON.parse(approveResult);
-  
+        
+        console.log(parsedApprove);
         // Assert - Check approve transaction success
         expect(parsedApprove).toMatchObject({
           status: 'success',
-          tokenId: '1',
+          tokenId: '20',
           approved: true,
           transactionHash: expect.any(String)
         });
   
         // Act - Get approved address
         const getApprovedParams = {
-          tokenId: '1',
+          tokenId: '20',
           contractAddress: NFT_ADDRESS
         };
         const getApprovedResult = await getApproved(agent, getApprovedParams);
         const parsedGetApproved = JSON.parse(getApprovedResult);
         const approvedAddressDecimal = BigInt(validateAddress(approvedAddress)).toString();
-        
+
+        console.log(parsedGetApproved);
         expect(parsedGetApproved).toMatchObject({
           status: 'success',
           approved: approvedAddressDecimal

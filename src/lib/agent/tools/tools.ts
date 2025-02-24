@@ -14,9 +14,11 @@ import { registerAvnuTools } from '../plugins/avnu/tools';
 import { registerAccountTools } from '../plugins/core/account/tools/index';
 import { registerFibrousTools } from '../plugins/fibrous/tools';
 import { registerOpusTools } from '../plugins/opus/tools';
+import { registerERC721Tools } from '../plugins/erc721/tools/tools';
 import { register } from 'module';
 import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
+
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -106,6 +108,8 @@ export const registerTools = () => {
   registerOpusTools();
 
   registerTelegramTools();
+
+  registerERC721Tools();
 };
 
 registerTools();

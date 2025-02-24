@@ -11,7 +11,7 @@ describe('Get Approved Address for Token', () => {
         tokenId: '40',
         contractAddress: NFT_ADDRESS
       };
-      const approvedAddress = process.env.STARKNET_PUBLIC_ADDRESS_2 as string;
+
       const result = await getApproved(agent, params);
       const parsed = JSON.parse(result);
 

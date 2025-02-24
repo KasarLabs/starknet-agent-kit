@@ -24,6 +24,7 @@ export const simulateInvokeTransaction = async (
   params: SimulateInvokeTransactionParams
 ) => {
   try {
+    console.log('simulateInvokeTransaction');
     const provider = agent.getProvider();
     const accountCredentials = agent.getAccountCredentials();
     const accountAddress = accountCredentials?.accountPublicKey;

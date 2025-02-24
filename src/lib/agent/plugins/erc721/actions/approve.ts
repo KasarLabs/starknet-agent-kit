@@ -1,7 +1,7 @@
-import { Account, Contract } from 'starknet';
+import { Account, Contract, constants } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC721_ABI } from '../abis/erc721Abi';
-import { validateAddress, validateAndFormatTokenId } from '../utils/nft';
+import { validateAddress, validateAndFormatTokenId, executeV3Transaction } from '../utils/nft';
 import { z } from 'zod';
 import { approveSchema } from '../schemas/schema';
 import { TransactionResult } from '../types/types';
@@ -19,30 +19,39 @@ export const approve = async (
     const tokenId = validateAndFormatTokenId(params.tokenId);
     const contractAddress = validateAddress(params.contractAddress);
 
-    const credentials = agent.getAccountCredentials();
+    const accountCredentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
     const account = new Account(
       provider,
-      credentials.accountPublicKey,
-      credentials.accountPrivateKey
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey,
+      undefined,
+      constants.TRANSACTION_VERSION.V3
     );
 
-    const contract = new Contract(ERC721_ABI, contractAddress, provider);
+    const contract = new Contract(
+      ERC721_ABI, 
+      contractAddress, 
+      provider
+    );
     contract.connect(account);
 
-    const { transaction_hash } = await contract.approve(
+    const calldata = contract.populate('approve', [
       approvedAddress,
       tokenId
-    );
+    ]);
 
-    await provider.waitForTransaction(transaction_hash);
+    const txH = await executeV3Transaction({
+      call: calldata,
+      account: account,
+    });
 
     const result: TransactionResult = {
       status: 'success',
       tokenId: params.tokenId,
       approved: true,
-      transactionHash: transaction_hash,
+      transactionHash: txH,
     };
 
     return JSON.stringify(result);

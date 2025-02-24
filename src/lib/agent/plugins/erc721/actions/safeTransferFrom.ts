@@ -1,7 +1,7 @@
-import { Account, Contract } from 'starknet';
+import { Account, Contract, constants } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { ERC721_ABI } from '../abis/erc721Abi';
-import { validateAddress, validateAndFormatTokenId } from '../utils/nft';
+import { validateAddress, validateAndFormatTokenId, executeV3Transaction } from '../utils/nft';
 import { z } from 'zod';
 import { safeTransferFromSchema } from '../schemas/schema';
 import { TransactionResult } from '../types/types';
@@ -21,33 +21,38 @@ export const safeTransferFrom = async (
     const contractAddress = validateAddress(params.contractAddress);
     const data = params.data || ['0x0'];
 
-    const credentials = agent.getAccountCredentials();
+    const accountCredentials = agent.getAccountCredentials();
     const provider = agent.getProvider();
 
     const account = new Account(
       provider,
-      credentials.accountPublicKey,
-      credentials.accountPrivateKey
+      accountCredentials.accountPublicKey,
+      accountCredentials.accountPrivateKey,
+      undefined,
+      constants.TRANSACTION_VERSION.V3
     );
 
     const contract = new Contract(ERC721_ABI, contractAddress, provider);
     contract.connect(account);
 
-    const { transaction_hash } = await contract.safeTransferFrom(
+    const calldata = contract.populate('safe_transfer_from', [
       fromAddress,
       toAddress,
       tokenId,
       data
-    );
+    ]);
 
-    await provider.waitForTransaction(transaction_hash);
+    const txH = await executeV3Transaction({
+      call: calldata,
+      account: account,
+    });
 
     const result: TransactionResult = {
       status: 'success',
       tokenId: params.tokenId,
       from: fromAddress,
       to: toAddress,
-      transactionHash: transaction_hash,
+      transactionHash: txH,
     };
 
     return JSON.stringify(result);
@@ -73,7 +78,7 @@ export const safeTransferFromSignature = async (
     const toAddress = validateAddress(params.toAddress);
     const tokenId = validateAndFormatTokenId(params.tokenId);
     const contractAddress = validateAddress(params.contractAddress);
-    const data = params.data || '0';
+    const data = params.data || ['0x0'];
 
     const result = {
       status: 'success',

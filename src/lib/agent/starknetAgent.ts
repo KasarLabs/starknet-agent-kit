@@ -66,7 +66,7 @@ export class StarknetAgent implements IAgent {
   private initializeExecutor() {
     const config = {
       aiModel: this.aiModel,
-      apiKey: this.aiProviderApiKey,
+      aiProviderApiKey: this.aiProviderApiKey,
       aiProvider: this.config.aiProvider,
     };
 

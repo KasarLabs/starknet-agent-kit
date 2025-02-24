@@ -60,6 +60,7 @@
     "@langchain/anthropic": "^0.3.11",
     "@langchain/community": "^0.3.28",
     "@langchain/core": "^0.3.37",
+    "@langchain/deepseek": "^0.0.1",
     "@langchain/google-genai": "^0.1.6",
     "@langchain/langgraph": "^0.2.44",
     "@langchain/ollama": "^0.1.4",

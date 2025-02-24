@@ -20,5 +20,12 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "paths": {
+      "@config/*": ["config/*"],
+      "@plugins/*": ["plugins/*"],
+      "@server/*": ["server/*"],
+      "@client/*": ["client/*"],
+      "@agents/*": ["agents/*"]
+    }
   }
 }

@@ -4,7 +4,11 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@config/*": ["../config/*"],
+      "@plugins/*": ["../plugins/*"],
+      "@client/*": ["../client/*"],
+      "@agents/*": ["../agents/*"]
     }
   },
   "include": [
@@ -12,6 +16,7 @@
     "./config/**/*",
     "./index.ts",
     "./src/**/*", 
+    "./main.ts"
   ],  "exclude": [
     "node_modules", 
     "dist", 

@@ -5,7 +5,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@common/*": ["./common/*"]
+      "@common/*": ["./common/*"],
+      "@config/*": ["../config/*"],
+      "@plugins/*": ["../plugins/*"],
+      "@server/*": ["../server/*"],
+      "@client/*": ["../client/*"],
+      "@agents/*": ["../agents/*"]
     }
   },
   "include": [

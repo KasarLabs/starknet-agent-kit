@@ -1,7 +1,7 @@
 import { SystemMessage } from '@langchain/core/messages';
 import { createBox, formatSection } from './formatting';
 import chalk from 'chalk';
-
+import * as path from 'path';
 export interface Token {
   symbol: string;
   amount: number;
@@ -128,9 +128,14 @@ export const validateConfig = (config: JsonConfig) => {
   }
 };
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
-  console.log(agent_config_name);
   try {
-    const json = require(`../../config/agents/${agent_config_name}`);
+
+  // console.log('Chemin courant:', process.cwd());
+  // console.log('Chemin résolu pour @agents:', path.resolve('./agents/default.agent.json'));
+  // console.log('Chemin du module node:', path.resolve('../../'));
+  // console.log('Chemin du module caca:', path.resolve(`../config/agents/${agent_config_name}`));
+    // console.log("jkfjdklfd");
+    const json = require(path.resolve(`../config/agents/${agent_config_name}`));
     if (!json) {
       throw new Error(`Can't access to ./config/agents/config-agent.json`);
     }

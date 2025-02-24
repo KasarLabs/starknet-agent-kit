@@ -1,11 +1,9 @@
 import { IAgent } from '../../agents/interfaces/agent.interface';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
-import { AccountManager } from './plugins/core/account/utils/AccountManager';
 import { TransactionMonitor } from './plugins/core/transaction/utils/TransactionMonitor';
 import { ContractInteractor } from './plugins/core/contract/utils/ContractInteractor';
 import { createAutonomousAgent } from './autonomousAgents';
-import { AddAgentLimit, Limit } from './limit';
 import { Scraper } from 'agent-twitter-client';
 import { TwitterApi } from 'twitter-api-v2';
 import {
@@ -35,16 +33,15 @@ export class StarknetAgent implements IAgent {
   private readonly accountPublicKey: string;
   private readonly aiModel: string;
   private readonly aiProviderApiKey: string;
-  private readonly agentReactExecutor: any;
+  private agentReactExecutor: any;
+  private currentMode: string;
   private twitterAccoutManager: TwitterInterface = {};
   private telegramAccountManager: TelegramInterface = {};
 
-  public readonly accountManager: AccountManager;
   public readonly transactionMonitor: TransactionMonitor;
   public readonly contractInteractor: ContractInteractor;
   public readonly signature: string;
   public readonly agentMode: string;
-  public readonly token_limit: Limit;
   public readonly agentconfig?: JsonConfig | undefined;
 
   constructor(private readonly config: StarknetAgentConfig) {
@@ -57,29 +54,26 @@ export class StarknetAgent implements IAgent {
     this.aiProviderApiKey = config.aiProviderApiKey;
     this.signature = config.signature;
     this.agentMode = config.agentMode;
+    this.currentMode = config.agentMode;
     this.agentconfig = config.agentconfig;
 
-    this.token_limit = AddAgentLimit();
-
-    // Initialize managers
-    this.accountManager = new AccountManager(this.provider);
     this.transactionMonitor = new TransactionMonitor(this.provider);
     this.contractInteractor = new ContractInteractor(this.provider);
 
-    // Create agent executor with tools
-    if (this.agentMode === 'auto') {
-      this.agentReactExecutor = createAutonomousAgent(this, {
-        aiModel: this.aiModel,
-        apiKey: this.aiProviderApiKey,
-        aiProvider: config.aiProvider,
-      });
-    }
-    if (this.agentMode === 'agent') {
-      this.agentReactExecutor = createAgent(this, {
-        aiModel: this.aiModel,
-        apiKey: this.aiProviderApiKey,
-        aiProvider: config.aiProvider,
-      });
+    this.initializeExecutor();
+  }
+
+  private initializeExecutor() {
+    const config = {
+      aiModel: this.aiModel,
+      apiKey: this.aiProviderApiKey,
+      aiProvider: this.config.aiProvider,
+    };
+
+    if (this.currentMode === 'auto') {
+      this.agentReactExecutor = createAutonomousAgent(this, config);
+    } else if (this.currentMode === 'agent') {
+      this.agentReactExecutor = createAgent(this, config);
     }
   }
 
@@ -92,6 +86,20 @@ export class StarknetAgent implements IAgent {
     if (config.aiModel !== 'ollama' && !config.aiProviderApiKey) {
       throw new Error('AI Provider API key is required');
     }
+  }
+
+  private async switchMode(newMode: string): Promise<string> {
+    if (newMode === 'auto' && !this.agentconfig?.autonomous) {
+      return 'Cannot switch to autonomous mode - not enabled in configuration';
+    }
+
+    if (this.currentMode === newMode) {
+      return `Already in ${newMode} mode`;
+    }
+
+    this.currentMode = newMode;
+    this.initializeExecutor();
+    return `Switched to ${newMode} mode`;
   }
 
   public async initializeTelegramManager(): Promise<void> {
@@ -206,6 +214,7 @@ export class StarknetAgent implements IAgent {
       return;
     }
   }
+
   getAccountCredentials() {
     return {
       accountPrivateKey: this.accountPrivateKey,
@@ -228,19 +237,16 @@ export class StarknetAgent implements IAgent {
 
   getAgent() {
     return {
-      agentMode: this.agentMode,
+      agentMode: this.currentMode,
     };
   }
 
   getAgentConfig(): JsonConfig | undefined {
     return this.agentconfig;
   }
+
   getProvider(): RpcProvider {
     return this.provider;
-  }
-
-  getLimit(): Limit {
-    return this.token_limit;
   }
 
   getTwitterAuthMode(): 'API' | 'CREDENTIALS' | undefined {
@@ -264,40 +270,56 @@ export class StarknetAgent implements IAgent {
     }
     return this.telegramAccountManager;
   }
+
   async validateRequest(request: string): Promise<boolean> {
     return Boolean(request && typeof request === 'string');
   }
 
+  async execute(input: string): Promise<unknown> {
+    if (input.toLowerCase().includes('switch to autonomous')) {
+      return this.switchMode('auto');
+    } else if (input.toLowerCase().includes('switch to interactive')) {
+      return this.switchMode('agent');
+    }
+
+    if (this.currentMode !== 'agent') {
+      throw new Error(`Can't use execute with agent_mode: ${this.currentMode}`);
+    }
+
+    const result = await this.agentReactExecutor.invoke({
+      messages: input,
+    });
+
+    return result.messages[result.messages.length - 1].content;
+  }
+
   async execute_autonomous(): Promise<unknown> {
-    while (-1) {
-      const aiMessage = await this.agentReactExecutor.agent.invoke(
+    if (this.currentMode !== 'auto') {
+      throw new Error(
+        `Can't use execute_autonomous with agent_mode: ${this.currentMode}`
+      );
+    }
+
+    while (true) {
+      const result = await this.agentReactExecutor.agent.invoke(
         {
           messages: 'Choose what to do',
         },
         this.agentReactExecutor.agentConfig
       );
-      console.log(aiMessage.messages[aiMessage.messages.length - 1].content);
+
+      console.log(result.messages[result.messages.length - 1].content);
+
       await new Promise((resolve) =>
         setTimeout(resolve, this.agentReactExecutor.json_config.interval)
       );
     }
-    return;
-  }
-
-  async execute(input: string): Promise<unknown> {
-    if (this.agentMode != 'agent') {
-      throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentMode}`
-      );
-    }
-    const aiMessage = await this.agentReactExecutor.invoke({ messages: input });
-    return aiMessage.messages[aiMessage.messages.length - 1].content;
   }
 
   async execute_call_data(input: string): Promise<unknown> {
-    if (this.agentMode != 'agent') {
+    if (this.currentMode !== 'agent') {
       throw new Error(
-        `Can't use execute call data with agent_mod : ${this.agentMode}`
+        `Can't use execute call data with agent_mode: ${this.currentMode}`
       );
     }
     const aiMessage = await this.agentReactExecutor.invoke({ messages: input });

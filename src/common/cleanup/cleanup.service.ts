@@ -11,7 +11,7 @@ import * as path from 'path';
 @Injectable()
 export class CleanupService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(CleanupService.name);
-  private uploadDir: string;
+  private uploadDir: string = '';
   private readonly maxAge = 60 * 60 * 1000; // 1h
 
   @Cron(CronExpression.EVERY_HOUR)

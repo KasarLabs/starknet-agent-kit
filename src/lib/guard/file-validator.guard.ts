@@ -24,7 +24,7 @@ interface UploadedFile {
 
 @Injectable()
 export class FileTypeGuard implements CanActivate {
-  private readonly uploadDir = 'uploads';
+  private uploadDir = '';
   private readonly fileSignatures: FileSignature[] = [
     {
       mime: 'application/json',
@@ -51,6 +51,9 @@ export class FileTypeGuard implements CanActivate {
   constructor(private readonly allowedMimeTypes: string[] = []) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const path = process.env.PATH_UPLOAD_DIR;
+    if (typeof path === 'string') this.uploadDir = path;
+
     const request = context.switchToHttp().getRequest<FastifyRequest>();
 
     if (!request.isMultipart()) {
@@ -89,11 +92,12 @@ export class FileTypeGuard implements CanActivate {
       return true;
     } catch (error) {
       await this.cleanupFiles();
+      console.log(error);
 
       if (error instanceof ForbiddenException) {
         throw error;
       }
-      throw new ForbiddenException('Erreur lors du traitement du fichier');
+      throw new ForbiddenException('File processing error');
     }
   }
 

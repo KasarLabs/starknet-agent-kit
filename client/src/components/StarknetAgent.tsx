@@ -315,7 +315,6 @@ const StarknetAgent = () => {
         body: JSON.stringify({ request: input }),
         credentials: 'include',
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -378,8 +377,8 @@ const StarknetAgent = () => {
             '0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
           entrypoint: 'transfer',
           calldata: [
-            account_details.contractaddress,
-            account_details.deploy_fee,
+            account_details.contractAddress,
+            account_details.deployFee,
             '0x0',
           ],
         };
@@ -387,9 +386,9 @@ const StarknetAgent = () => {
           Wallet,
           tx,
           result.wallet,
-          account_details.public_key,
-          account_details.private_key,
-          account_details.contractaddress
+          account_details.publicKey,
+          account_details.privateKey,
+          account_details.contractAddress
         );
 
         typeResponse({
@@ -397,7 +396,11 @@ const StarknetAgent = () => {
           text: await deploy_account_response,
         });
       }
-      if (!tx && result.transaction_type != 'READ') {
+      if (
+        !tx &&
+        result.transaction_type != 'READ' &&
+        result.transaction_type != 'CREATE_ACCOUNT'
+      ) {
         throw new Error(
           'The transactions has to be an INVOKE or DeployAccount transaction'
         );
@@ -455,7 +458,6 @@ const StarknetAgent = () => {
           throw new Error(errorText);
         }
       }
-
       const response = await fetch('/api/key/request', {
         method: 'POST',
         headers: {

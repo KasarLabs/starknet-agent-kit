@@ -75,10 +75,10 @@ export const setApprovalForAllSignature = async (
       status: 'success',
       transactions: {
         contractAddress: contractAddress,
-        entrypoint: 'setApprovalForAll',
+        entrypoint: 'set_approval_for_all',
         calldata: [
           operatorAddress,
-          params.approved ? true : false
+          params.approved ? 1 : 0
         ],
       },
     };

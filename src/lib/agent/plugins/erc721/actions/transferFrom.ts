@@ -81,7 +81,7 @@ export const transferFromSignature = async (
         status: 'success',
         transactions: {
           contractAddress: contractAddress,
-          entrypoint: 'transferFrom',
+          entrypoint: 'transfer_from',
           calldata: [
             fromAddress,
             toAddress,

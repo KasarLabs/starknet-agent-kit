@@ -47,6 +47,7 @@ export const approve = async (
       account: account,
     });
 
+
     const result: TransactionResult = {
       status: 'success',
       tokenId: params.tokenId,

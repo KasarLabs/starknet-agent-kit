@@ -1,6 +1,8 @@
 import { tool } from '@langchain/core/tools';
 import { registerSignatureToolsAccount } from '../plugins/core/account/tools/tools_signature';
 import { registerSignatureToolsToken } from '../plugins/core/token/tools/tools_signature';
+import { registerSignatureToolsERC721 } from '../plugins/erc721/tools/signatureTools';
+
 
 interface SignatureTool<P = any> {
   name: string;
@@ -32,6 +34,7 @@ export class StarknetSignatureToolRegistry {
 export const RegisterSignatureTools = () => {
   registerSignatureToolsToken();
   registerSignatureToolsAccount();
+  registerSignatureToolsERC721();
 };
 
 RegisterSignatureTools();

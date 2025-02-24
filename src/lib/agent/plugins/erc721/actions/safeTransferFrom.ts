@@ -78,13 +78,13 @@ export const safeTransferFromSignature = async (
     const toAddress = validateAddress(params.toAddress);
     const tokenId = validateAndFormatTokenId(params.tokenId);
     const contractAddress = validateAddress(params.contractAddress);
-    const data = params.data || ['0x0'];
+    const data = params.data || '0x0';
 
     const result = {
       status: 'success',
       transactions: {
         contractAddress: contractAddress,
-        entrypoint: 'safeTransferFrom',
+        entrypoint: 'safe_transfer_from',
         calldata: [
           fromAddress,
           toAddress,

@@ -35,7 +35,7 @@ export const RegisterSignatureTools = async (
     await Promise.all(
       allowed_signature_tools.map(async (tool) => {
         let imported_tool;
-        imported_tool = await import(`@starknet-agent-kit/${tool}`);
+        imported_tool = await import(`@starknet-agent-kit/plugin-${tool}`);
         if (typeof imported_tool.registerSignatureTools !== 'function') {
           console.error(`Tool does not have a registerSignatureTools function ${tool}`);
           return false;

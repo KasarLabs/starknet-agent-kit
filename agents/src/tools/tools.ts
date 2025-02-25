@@ -98,7 +98,7 @@ export const registerTools = async (
     await Promise.all(
       allowed_tools.map(async (tool) => {
         let imported_tool;
-        imported_tool = await import(`@starknet-agent-kit/${tool}`);
+        imported_tool = await import(`@starknet-agent-kit/plugin-${tool}`);
         if (typeof imported_tool.registerTools !== 'function') {
           throw new Error(
             `Tool does not have a registerTools function ${tool}`

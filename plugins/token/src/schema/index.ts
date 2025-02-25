@@ -20,3 +20,10 @@ export const getBalanceSchema = z.object({
     .string()
     .describe('The asset symbol to get the balance of. eg. USDC, ETH'),
 });
+
+
+export const transferSignatureschema = z.object({
+  payloads: z
+    .array(Transferschema)
+    .describe('Array of payloads for a tranfer transaction'),
+});

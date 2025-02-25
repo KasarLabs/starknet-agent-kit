@@ -66,7 +66,7 @@ export const createAgent = async (
 
     let tools;
     if (isSignature === true) {
-      tools = createSignatureTools();
+      tools = await createSignatureTools(json_config.internal_plugins);
     } else {
       const allowedTools = await createAllowedTools(
         starknetAgent,
@@ -87,12 +87,12 @@ export const createAgent = async (
       messageModifier: json_config.prompt,
     });
 
-    return agent; // Return just the agent itself
+    return agent;
   } catch (error) {
     console.error(
       `⚠️ Ensure your environment variables are set correctly according to your config/agent.json file.`
     );
     console.error('Failed to load or parse JSON config:', error);
-    throw error; // Re-throw to handle upstream
+    throw error;
   }
 };

@@ -16,30 +16,19 @@ import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 import { getFilename } from 'src/lib/agent/plugins/atlantic/utils/getFilename';
-import { JsonConfig, load_json_config } from 'src/lib/agent/jsonConfig';
+import { AgentFactory } from './agents.factory';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
   private agent: StarknetAgent;
-  private json_config: JsonConfig | undefined;
+
   constructor(
     private readonly walletService: WalletService,
-    private readonly config: ConfigurationService
+    private readonly agentFactory: AgentFactory
   ) {}
 
   onModuleInit() {
-    this.json_config = load_json_config('default.agent.json');
-    this.agent = new StarknetAgent({
-      provider: this.config.starknet.provider,
-      accountPrivateKey: this.config.starknet.privateKey,
-      accountPublicKey: this.config.starknet.publicKey,
-      aiModel: this.config.ai.model,
-      aiProvider: this.config.ai.provider,
-      aiProviderApiKey: this.config.ai.apiKey,
-      agentconfig: this.json_config,
-      signature: 'wallet',
-      agentMode: 'agent',
-    });
+    this.agent = this.agentFactory.createAgent('wallet', 'agent');
   }
 
   @Post('request')

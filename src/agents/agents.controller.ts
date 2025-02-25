@@ -13,37 +13,25 @@ import {
 import { AgentRequestDTO } from './dto/agents';
 import { StarknetAgent } from '../lib/agent/starknetAgent';
 import { AgentService } from './services/agent.service';
-import { ConfigurationService } from '../config/configuration';
 import { AgentResponseInterceptor } from 'src/lib/interceptors/response';
 import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 import { getFilename } from 'src/lib/agent/plugins/atlantic/utils/getFilename';
-import { JsonConfig, load_json_config } from 'src/lib/agent/jsonConfig';
+import { AgentFactory } from './agents.factory';
 
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
 export class AgentsController implements OnModuleInit {
   private agent: StarknetAgent;
-  private json_config: JsonConfig | undefined;
+
   constructor(
     private readonly agentService: AgentService,
-    private readonly config: ConfigurationService
+    private readonly agentFactory: AgentFactory
   ) {}
 
   onModuleInit() {
-    this.json_config = load_json_config('default.agent.json');
-    this.agent = new StarknetAgent({
-      provider: this.config.starknet.provider,
-      accountPrivateKey: this.config.starknet.privateKey,
-      accountPublicKey: this.config.starknet.publicKey,
-      aiModel: this.config.ai.model,
-      aiProvider: this.config.ai.provider,
-      aiProviderApiKey: this.config.ai.apiKey,
-      signature: 'key',
-      agentMode: 'agent',
-      agentconfig: this.json_config,
-    });
+    this.agent = this.agentFactory.createAgent('key', 'agent');
   }
 
   @Post('request')

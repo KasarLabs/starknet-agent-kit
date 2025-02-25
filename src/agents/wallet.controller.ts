@@ -21,7 +21,7 @@ import { JsonConfig, load_json_config } from 'src/lib/agent/jsonConfig';
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
   private agent: StarknetAgent;
-  private json_config : JsonConfig | undefined;
+  private json_config: JsonConfig | undefined;
   constructor(
     private readonly walletService: WalletService,
     private readonly config: ConfigurationService

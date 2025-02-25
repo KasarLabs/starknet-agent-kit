@@ -19,6 +19,7 @@ import { FileTypeGuard } from './guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 import { JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
+import { throws } from 'assert';
 
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
@@ -43,6 +44,7 @@ export class AgentsController implements OnModuleInit {
       signature: 'key',
       agentMode: 'agent',
     });
+    this.agent.createAgentReactExecutor();
   }
 
   @Post('request')

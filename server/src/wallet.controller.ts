@@ -40,6 +40,7 @@ export class WalletController implements OnModuleInit {
       signature: 'wallet',
       agentMode: 'agent',
     });
+    this.agent.createAgentReactExecutor();
   }
 
   @Post('request')
@@ -73,7 +74,7 @@ export class WalletController implements OnModuleInit {
     const path = process.env.PATH_UPLOAD_DIR;
     if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
-    const fullPath = await "test"
+    const fullPath = await 'test';
     const normalizedPath = fullPath.normalize();
 
     try {

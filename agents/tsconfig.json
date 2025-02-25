@@ -6,15 +6,11 @@
     "paths": {
       "@/*": ["./*"],
       "@common/*": ["./common/*"],
-      "@config/*": ["../config/*"],
-      "@plugins/*": ["../plugins/*"],
-      "@server/*": ["../server/*"],
-      "@client/*": ["../client/*"],
-      "@agents/*": ["../agents/*"]
+      "@src/*": ["./src/*"],
     }
   },
   "include": [
-    "./agent/**/*",
+    "src/**/*",
     "./common/**/*",
     "./local.ts",
     "./index.ts" 

@@ -1,7 +1,4 @@
 import { tool } from '@langchain/core/tools';
-// import { registerSignatureToolsAccount } from '@plugins/core/account/tools/tools_signature';
-// import { registerSignatureToolsToken } from '@plugins/core/token/tools/tools_signature';
-// import { registerSignatureArtpeaceTools } from '@plugins/artpeace/tools/signatureTools';
 export interface SignatureTool<P = any> {
   name: string;
   categorie?: string;

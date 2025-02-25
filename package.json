@@ -30,6 +30,7 @@
     "build:test": "pnpm clean:js && tsc -p tsconfig.build.json agents/local.ts --outDir ./dist",
     "build:local": "tsc agents/local.ts --outDir ./dist",
     "start:local": "pnpm build:local && node dist/local.js",
+    "local" : "pnpm --filter agents local",
     "build:lib": "tsc -p tsconfig.build.json",
     "build": "pnpm -r build",
     "dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\"",

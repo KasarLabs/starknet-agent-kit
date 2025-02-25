@@ -1,11 +1,11 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { createSpinner } from 'nanospinner';
-import { StarknetAgent } from './agent/starknetAgent';
+import { StarknetAgent } from './src/starknetAgent';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
-import { load_json_config } from './agent/jsonConfig';
-import { createBox } from './agent/formatting';
+import { load_json_config } from './src/jsonConfig';
+import { createBox } from './src/formatting';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';

@@ -36,6 +36,7 @@ export class WalletController implements OnModuleInit {
       aiModel: this.config.ai.model,
       aiProvider: this.config.ai.provider,
       aiProviderApiKey: this.config.ai.apiKey,
+      agentconfig: this.json_config,
       signature: 'wallet',
       agentMode: 'agent',
     });

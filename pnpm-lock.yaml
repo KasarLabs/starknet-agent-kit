@@ -243,18 +243,36 @@ importers:
       '@starknet-agent-kit/avnu':
         specifier: workspace:*
         version: link:../plugins/avnu
+      '@starknet-agent-kit/braavos':
+        specifier: workspace:*
+        version: link:../plugins/openzeppelin
       '@starknet-agent-kit/fibrous':
         specifier: workspace:*
         version: link:../plugins/fibrous
+      '@starknet-agent-kit/okx':
+        specifier: workspace:*
+        version: link:../plugins/okx
+      '@starknet-agent-kit/openzeppelin':
+        specifier: workspace:*
+        version: link:../plugins/braavos
       '@starknet-agent-kit/opus':
         specifier: workspace:*
         version: link:../plugins/opus
+      '@starknet-agent-kit/rpc':
+        specifier: workspace:*
+        version: link:../plugins/rpc
       '@starknet-agent-kit/server':
         specifier: workspace:*
         version: link:../server
       '@starknet-agent-kit/telegram':
         specifier: workspace:*
         version: link:../plugins/telegram
+      '@starknet-agent-kit/token':
+        specifier: workspace:*
+        version: link:../plugins/token
+      '@starknet-agent-kit/transaction':
+        specifier: workspace:*
+        version: link:../plugins/transaction
       '@starknet-agent-kit/twitter':
         specifier: workspace:*
         version: link:../plugins/twitter
@@ -380,8 +398,6 @@ importers:
         specifier: workspace:*
         version: link:../../agents
 
-  plugins/core: {}
-
   plugins/fibrous:
     devDependencies:
       '@starknet-agent-kit/agents':
@@ -406,7 +422,25 @@ importers:
         specifier: workspace:*
         version: link:../../agents
 
+  plugins/rpc:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
   plugins/telegram:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/token:
+    devDependencies:
+      '@starknet-agent-kit/agents':
+        specifier: workspace:*
+        version: link:../../agents
+
+  plugins/transaction:
     devDependencies:
       '@starknet-agent-kit/agents':
         specifier: workspace:*

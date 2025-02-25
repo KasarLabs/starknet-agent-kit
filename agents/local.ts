@@ -13,7 +13,6 @@ import path from 'path';
 import { log } from 'console';
 import * as dotenv from 'dotenv';
 
-
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const load_command = async (): Promise<string> => {
@@ -170,6 +169,20 @@ const LocalRun = async () => {
     if (mode === 'agent') {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
+      const agent = new StarknetAgent({
+        provider: new RpcProvider({
+          nodeUrl: process.env.STARKNET_RPC_URL,
+        }),
+        accountPrivateKey: process.env.STARKNET_PRIVATE_KEY as string,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS as string,
+        aiModel: process.env.AI_MODEL as string,
+        aiProvider: 'anthropic',
+        aiProviderApiKey: process.env.AI_PROVIDER_API_KEY as string,
+        signature: 'key',
+        agentMode: 'agent',
+        agentconfig: agent_config,
+      });
+      await agent.createAgentReactExecutor();
       while (true) {
         const { user } = await inquirer.prompt([
           {
@@ -187,20 +200,6 @@ const LocalRun = async () => {
         const executionSpinner = createSpinner('Processing request').start();
 
         try {
-          const agent = new StarknetAgent({
-            provider: new RpcProvider({
-              nodeUrl: process.env.STARKNET_RPC_URL,
-            }),
-            accountPrivateKey: process.env.STARKNET_PRIVATE_KEY as string,
-            accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS as string,
-            aiModel: process.env.AI_MODEL as string,
-            aiProvider: 'anthropic',
-            aiProviderApiKey: process.env.AI_PROVIDER_API_KEY as  string,
-            signature: 'key',
-            agentMode: 'agent',
-            agentconfig: agent_config,
-          });
-          await agent.createAgentReactExecutor();
           const airesponse = await agent.execute(user);
           executionSpinner.success({ text: 'Response received' });
 
@@ -239,7 +238,7 @@ const LocalRun = async () => {
         agentMode: 'auto',
         agentconfig: agent_config,
       });
-      
+
       await agent.createAgentReactExecutor();
       console.log(chalk.dim('\nStarting interactive session...\n'));
       const autoSpinner = createSpinner('Running autonomous mode\n').start();

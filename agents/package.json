@@ -20,7 +20,6 @@
     "dotenv": "^16.4.7",
     "lodash": "^4.17.21",
     "@starknet-agent-kit/server": "workspace:*",
-    "@starknet-agent-kit/argent": "workspace:*",
     "@starknet-agent-kit/fibrous": "workspace:*",
     "@starknet-agent-kit/avnu": "workspace:*",
     "@starknet-agent-kit/vesu": "workspace:*",
@@ -28,7 +27,13 @@
     "@starknet-agent-kit/telegram": "workspace:*",
     "@starknet-agent-kit/artpeace": "workspace:*",
     "@starknet-agent-kit/atlantic": "workspace:*",
-    "@starknet-agent-kit/opus": "workspace:*"
-
+    "@starknet-agent-kit/opus": "workspace:*",
+    "@starknet-agent-kit/argent": "workspace:*",
+    "@starknet-agent-kit/braavos" : "workspace:*",
+    "@starknet-agent-kit/okx" : "workspace:*",
+    "@starknet-agent-kit/openzeppelin" : "workspace:*",
+    "@starknet-agent-kit/rpc" : "workspace:*",
+    "@starknet-agent-kit/transaction" : "workspace:*",
+    "@starknet-agent-kit/token" : "workspace:*"
   }
 }

@@ -8,7 +8,8 @@ import {
   isApprovedForAllSchema,
   getApprovedSchema,
   safeTransferFromSchema,
-  setApprovalForAllSchema
+  setApprovalForAllSchema,
+  declareDeployERC721Schema
 } from '../schemas/schema';
 import { getOwner } from '../actions/ownerOf';
 import { transferFrom } from '../actions/transferFrom';
@@ -18,6 +19,7 @@ import { isApprovedForAll } from '../actions/isApprovedForAll';
 import { getApproved } from '../actions/getApproved';
 import { safeTransferFrom } from '../actions/safeTransferFrom';
 import { setApprovalForAll } from '../actions/setApprovalForAll';
+import { declareAndDeployERC721Contract } from '../actions/declareAndDeploy';
 
 export const registerERC721Tools = () => {
   // Read operations
@@ -84,5 +86,13 @@ export const registerERC721Tools = () => {
     description: 'Set or revoke approval for an operator to manage all NFTs of the caller',
     schema: setApprovalForAllSchema,
     execute: setApprovalForAll,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'erc721_declare_and_deploy',
+    plugins: 'erc721',
+    description: 'Declare and deploy a new ERC721 contract, returns the address of the deployed contract',
+    schema: declareDeployERC721Schema,
+    execute: declareAndDeployERC721Contract
   });
 };

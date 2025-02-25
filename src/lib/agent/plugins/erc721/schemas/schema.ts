@@ -48,3 +48,7 @@ export const setApprovalForAllSchema = z.object({
   approved: z.boolean().describe('True to approve, false to revoke'),
   contractAddress: z.string().describe('The address of the NFT contract'),
 });
+
+export const declareDeployERC721Schema = z.object({
+  totalSupply: z.string().describe('The total supply to mint at the deployment time'),
+});

@@ -77,7 +77,6 @@ export const createAutonomousAgent = async (
       : allowedTools;
     const memory = new MemorySaver();
 
-    console.log(tools);
     const agent = createReactAgent({
       llm: model,
       tools: tools,

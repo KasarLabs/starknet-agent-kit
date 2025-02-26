@@ -30,7 +30,6 @@
     "nanospinner": "^1.2.2",
     "inquirer": "^12.4.1",
 
-    "@starknet-agent-kit/server": "workspace:*",
     "@starknet-agent-kit/plugin-argent": "workspace:*",
     "@starknet-agent-kit/plugin-fibrous": "workspace:*",
     "@starknet-agent-kit/plugin-avnu": "workspace:*",

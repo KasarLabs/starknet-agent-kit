@@ -33,7 +33,7 @@
     "build:client": "lerna run build --scope @starknet-agent-kit/client",
     "build:agents": "lerna run build --scope @starknet-agent-kit/agents",
     "build:plugins": "lerna run build --scope \"@starknet-agent-kit/plugin-*\"",
-    "build": "lerna run build --scope \"@starknet-agent-kit/agents\" --scope \"@starknet-agent-kit/plugin-*\" --parallel",
+    "build": "lerna run build --scope \"@starknet-agent-kit/agents\" && lerna run build --scope \"@starknet-agent-kit/plugin-*\"",
     "start:server": "pnpm build:all && lerna run start --scope \"@starknet-agent-kit/server\" --scope \"@starknet-agent-kit/client\"",
     "dev:server": "pnpm build:all && lerna run dev --scope \"@starknet-agent-kit/server\" --scope \"@starknet-agent-kit/client\"",
     "lint": "lerna run lint",

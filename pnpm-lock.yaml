@@ -174,9 +174,6 @@ importers:
       '@starknet-agent-kit/plugin-vesu':
         specifier: workspace:*
         version: link:../plugins/vesu
-      '@starknet-agent-kit/server':
-        specifier: workspace:*
-        version: link:../server
       discord.js:
         specifier: ^14.17.3
         version: 14.18.0
@@ -10359,7 +10356,7 @@ snapshots:
   axios@1.7.9(debug@4.4.0):
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.0)
-      form-data: 4.0.0
+      form-data: 4.0.2
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug

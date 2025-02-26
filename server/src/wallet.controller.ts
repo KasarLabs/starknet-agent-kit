@@ -15,33 +15,23 @@ import { AgentRequestDTO } from './dto/agents';
 import { FileTypeGuard } from './guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import { JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
 import { getFilename } from './utils';
+import { AgentFactory } from './agents.factory';
+
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
   private agent: StarknetAgent;
-  private json_config: JsonConfig | undefined;
 
   constructor(
     private readonly walletService: WalletService,
-    private readonly config: ConfigurationService
+    private readonly agentFactory: AgentFactory
   ) {}
 
-  onModuleInit() {
-    this.json_config = load_json_config('default.agent.json');
-    this.agent = new StarknetAgent({
-      provider: this.config.starknet.provider,
-      accountPrivateKey: this.config.starknet.privateKey,
-      accountPublicKey: this.config.starknet.publicKey,
-      aiModel: this.config.ai.model,
-      aiProvider: this.config.ai.provider,
-      aiProviderApiKey: this.config.ai.apiKey,
-      agentconfig: this.json_config,
-      signature: 'wallet',
-      agentMode: 'agent',
-    });
+  async onModuleInit() {
+    this.agent = await this.agentFactory.createAgent('wallet', 'agent');
     this.agent.createAgentReactExecutor();
+
   }
 
   @Post('request')

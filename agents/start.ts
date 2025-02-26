@@ -34,12 +34,12 @@ const clearScreen = () => {
 };
 
 const logo = `${chalk.cyan(`
-  ____  _             _               _        _                    _     _  ___ _   
- / ___|| |_ __ _ _ __| | ___ __   ___| |_     / \\   __ _  ___ _ __ | |_  | |/ (_) |_ 
+  ____  _             _               _        _                    _     _  ___ _
+ / ___|| |_ __ _ _ __| | ___ __   ___| |_     / \\   __ _  ___ _ __ | |_  | |/ (_) |_
  \\___ \\| __/ _\` | '__| |/ / '_ \\ / _ \\ __|   / _ \\ / _\` |/ _ \\ '_ \\| __| | ' /| | __|
-  ___) | || (_| | |  |   <| | | |  __/ |_   / ___ \\ (_| |  __/ | | | |_  | . \\| | |_ 
+  ___) | || (_| | |  |   <| | | |  __/ |_   / ___ \\ (_| |  __/ | | | |_  | . \\| | |_
  |____/ \\__\\__,_|_|  |_|\\_\\_| |_|\\___|\\__| /_/   \\_\\__, |\\___|_| |_|\\__| |_|\\_\\_|\\__|
-                                                   |___/                             
+                                                   |___/
 `)}`;
 
 const getTerminalWidth = (): number => {
@@ -87,6 +87,7 @@ const validateEnvVars = async () => {
     'STARKNET_PRIVATE_KEY',
     'STARKNET_PUBLIC_ADDRESS',
     'AI_MODEL',
+    'AI_PROVIDER',
     'AI_PROVIDER_API_KEY',
   ];
   const missings = required.filter((key) => !process.env[key]);
@@ -170,13 +171,11 @@ const LocalRun = async () => {
       console.log(chalk.dim('\nStarting interactive session...\n'));
 
       const agent = new StarknetAgent({
-        provider: new RpcProvider({
-          nodeUrl: process.env.STARKNET_RPC_URL,
-        }),
+        provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY as string,
-        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS as string,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS  as string,
         aiModel: process.env.AI_MODEL as string,
-        aiProvider: 'anthropic',
+        aiProvider: process.env.AI_PROVIDER  as string,
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY as string,
         signature: 'key',
         agentMode: 'agent',
@@ -230,9 +229,9 @@ const LocalRun = async () => {
       const agent = new StarknetAgent({
         provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY as string,
-        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS as string,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS  as string,
         aiModel: process.env.AI_MODEL as string,
-        aiProvider: 'anthropic',
+        aiProvider: process.env.AI_PROVIDER  as string,
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY as string,
         signature: 'key',
         agentMode: 'auto',

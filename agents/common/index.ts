@@ -5,7 +5,7 @@
  * @property {string} aiProvider - Name of the AI service provider
  */
 export type AiConfig = {
-  apiKey: string;
+  aiProviderApiKey: string;
   aiModel: string;
   aiProvider: string;
 };

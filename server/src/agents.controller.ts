@@ -13,38 +13,24 @@ import {
 import { AgentRequestDTO } from './dto/agents';
 import { StarknetAgent } from '@starknet-agent-kit/agents';
 import { AgentService } from './services/agent.service';
-import { ConfigurationService } from '../config/configuration';
 import { AgentResponseInterceptor } from './interceptors/response';
 import { FileTypeGuard } from './guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import { JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
 import { getFilename } from './utils';
-import { throws } from 'assert';
+import { AgentFactory } from './agents.factory';
 
 @Controller('key')
 @UseInterceptors(AgentResponseInterceptor)
 export class AgentsController implements OnModuleInit {
   private agent: StarknetAgent;
-  private json_config: JsonConfig | undefined;
   constructor(
     private readonly agentService: AgentService,
-    private readonly config: ConfigurationService
+    private readonly agentFactory: AgentFactory
   ) {}
 
-  onModuleInit() {
-    this.json_config = load_json_config('default.agent.json');
-    this.agent = new StarknetAgent({
-      provider: this.config.starknet.provider,
-      accountPrivateKey: this.config.starknet.privateKey,
-      accountPublicKey: this.config.starknet.publicKey,
-      aiModel: this.config.ai.model,
-      aiProvider: this.config.ai.provider,
-      aiProviderApiKey: this.config.ai.apiKey,
-      agentconfig: this.json_config,
-      signature: 'key',
-      agentMode: 'agent',
-    });
+  async onModuleInit() {
+    this.agent = await this.agentFactory.createAgent('key', 'agent');
     this.agent.createAgentReactExecutor();
   }
 

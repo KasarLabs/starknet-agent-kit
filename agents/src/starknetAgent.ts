@@ -1,4 +1,4 @@
-import { IAgent } from '../common';
+import { AiConfig, IAgent } from '../common';
 import { createAgent } from './agent';
 import { RpcProvider } from 'starknet';
 import { TransactionMonitor } from '../common';
@@ -57,25 +57,22 @@ export class StarknetAgent implements IAgent {
     this.currentMode = config.agentMode;
     this.agentconfig = config.agentconfig;
 
-    // Initialize managers
     this.transactionMonitor = new TransactionMonitor(this.provider);
     this.contractInteractor = new ContractInteractor(this.provider);
+
   }
 
   public async createAgentReactExecutor() {
-    if (this.agentMode === 'auto') {
-      this.agentReactExecutor = await createAutonomousAgent(this, {
-        aiModel: this.aiModel,
-        apiKey: this.aiProviderApiKey,
-        aiProvider: this.config.aiProvider,
-      });
-    }
-    if (this.agentMode === 'agent') {
-      this.agentReactExecutor = await createAgent(this, {
-        aiModel: this.aiModel,
-        apiKey: this.aiProviderApiKey,
-        aiProvider: this.config.aiProvider,
-      });
+    const config : AiConfig = {
+      aiModel: this.aiModel,
+      aiProviderApiKey: this.aiProviderApiKey,
+      aiProvider: this.config.aiProvider,
+    };
+
+    if (this.currentMode === 'auto') {
+      this.agentReactExecutor = await createAutonomousAgent(this, config);
+    } else if (this.currentMode === 'agent') {
+      this.agentReactExecutor = await createAgent(this, config);
     }
   }
   private validateConfig(config: StarknetAgentConfig) {
@@ -277,14 +274,12 @@ export class StarknetAgent implements IAgent {
   }
 
   async execute(input: string): Promise<unknown> {
-    // Handle mode switching commands
     if (input.toLowerCase().includes('switch to autonomous')) {
       return this.switchMode('auto');
     } else if (input.toLowerCase().includes('switch to interactive')) {
       return this.switchMode('agent');
     }
 
-    // Check current mode for execution
     if (this.currentMode !== 'agent') {
       throw new Error(`Can't use execute with agent_mode: ${this.currentMode}`);
     }

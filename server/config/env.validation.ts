@@ -5,15 +5,11 @@ const AI_PROVIDER_MODELS = {
   openai: [
     'gpt-4o',
     'gpt-4o-2024-08-06',
-    'chatgpt-4o-latest',
     'gpt-4o-mini',
     'gpt-4o-mini-2024-07-18',
-    'o1',
-    'o1-2024-12-17',
     'gpt-3.5-turbo-0125',
     'gpt-3.5-turbo',
     'gpt-3.5-turbo-1106',
-    'gpt-3.5-turbo-instruct',
     'gpt-4-turbo',
     'gpt-4-turbo-2024-04-09',
     'gpt-4-turbo-preview',
@@ -21,10 +17,8 @@ const AI_PROVIDER_MODELS = {
     'gpt-4-1106-preview',
     'gpt-4',
     'gpt-4-0613',
-    'gpt-4-0314',
     'gpt-4o-2024-11-20',
     'gpt-4o-2024-05-13',
-    'chatgpt-4o-latest',
   ],
   anthropic: [
     'claude-3-5-sonnet-latest',
@@ -66,6 +60,7 @@ const AI_PROVIDER_MODELS = {
     'codellama',
     'mistral-nemo',
   ],
+  deepseek: ['deepseek-chat', 'deepseek-reasoner'],
 };
 
 export const envSchema = z
@@ -116,11 +111,12 @@ export const envSchema = z
         z.literal('anthropic'),
         z.literal('ollama'),
         z.literal('gemini'),
+        z.literal('deepseek'),
       ],
       {
         errorMap: () => ({
           message:
-            'Invalid AI model provider. Must be one of: openai, anthropic, ollama, or gemini',
+            'Invalid AI model provider. Must be one of: openai, anthropic, ollama, gemini or deepseek.',
         }),
       }
     ),

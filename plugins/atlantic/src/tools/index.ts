@@ -6,8 +6,8 @@ import { getProofService } from '../actions/getProofService';
 import { GetProofServiceSchema, VerifyProofServiceSchema } from '../schema';
 import { verifyProofService } from '../actions/verifyProofService';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'get_proof_service',
     plugins: 'atlantic',
     description:
@@ -16,7 +16,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getProofService,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'verify_proof_service',
     plugins: 'atlantic',
     description:

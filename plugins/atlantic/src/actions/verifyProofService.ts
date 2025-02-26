@@ -2,10 +2,7 @@ import { StarknetAgentInterface } from '@starknet-agent-kit/agents';
 import { AtlanticRes, VerifierParam } from '../types/Atlantic';
 import { ATLANTIC_URL, DASHBOARD_URL } from '../constants/atlantic';
 import { promises as fs } from 'fs';
-import {
-  ValidationError,
-  NotFoundError,
-} from '@starknet-agent-kit/server';
+import { ValidationError, NotFoundError } from '@starknet-agent-kit/server';
 import { validateJson } from '../utils/validateJson';
 import { getFilename } from '../utils/getFilename';
 /**

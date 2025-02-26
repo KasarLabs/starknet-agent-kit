@@ -32,9 +32,9 @@ import {
   getTwitterProfileFromUsername,
 } from '../actions/twitter_read';
 
-export const registerTools = (tool: StarknetTool[]) => {
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
   // Twitter Tools
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'create_twitter_post',
     plugins: 'twitter',
     description: 'Create new X/Twitter post',
@@ -42,7 +42,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: createTwitterpost,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'reply_twitter_tweet',
     plugins: 'twitter',
     description: 'Reply to specific X/Twitter post by ID',
@@ -50,7 +50,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: ReplyTweet,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_last_tweet',
     plugins: 'twitter',
     description: 'Get most recent post from specified X/Twitter account',
@@ -58,7 +58,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getLastUserTweet,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_last_tweets_options',
     plugins: 'twitter',
     description: 'Get specified number of posts matching search query',
@@ -66,7 +66,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getLastTweetsOptions,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'create_and_post_twitter_thread',
     plugins: 'twitter',
     description: 'Create and publish X/Twitter thread',
@@ -74,7 +74,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: createAndPostTwitterThread,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'follow_twitter_from_username',
     plugins: 'twitter',
     description: 'Follow X/Twitter user by username',
@@ -82,7 +82,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: FollowXUserFromUsername,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_twitter_profile_from_username',
     plugins: 'twitter',
     description: 'Get full X/Twitter profile data by username',
@@ -90,7 +90,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getTwitterProfileFromUsername,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_twitter_user_id_from_username',
     plugins: 'twitter',
     description: 'Get X/Twitter user ID from username',
@@ -98,7 +98,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getTwitterUserIdFromUsername,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_last_tweet_and_replies_from_user',
     plugins: 'twitter',
     description: 'Get recent X/Twitter posts and replies from user',
@@ -106,7 +106,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getLastTweetsAndRepliesFromUser,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_last_tweet_from_user',
     plugins: 'twitter',
     description: 'Get recent X/Twitter posts from user',
@@ -114,7 +114,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getLastTweetsFromUser,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_own_twitter_account_info',
     plugins: 'twitter',
     description: 'Get current account profile data',

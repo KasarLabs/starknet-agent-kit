@@ -7,8 +7,8 @@ import {
 import { DeployBraavosAccount } from '../actions/deployAccount';
 import { CreateBraavosAccount } from '../actions/createAccount';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'create_new_braavos_account',
     description:
       'Create a new Braavos account and return the privateKey/publicKey/contractAddress',
@@ -19,7 +19,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     },
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'deploy_existing_braavos_account',
     description:
       'Deploy an existing Braavos Account return the privateKey/publicKey/contractAddress',

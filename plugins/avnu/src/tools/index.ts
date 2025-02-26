@@ -6,8 +6,8 @@ import { routeSchema, swapSchema } from '../schema';
 import { swapTokens } from '../actions/swap';
 import { getRoute } from '../actions/fetchRoute';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'swap_tokens',
     plugins: 'avnu',
     description: 'Swap a specified amount of one token for another token',
@@ -15,7 +15,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: swapTokens,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_route',
     plugins: 'avnu',
     description: 'Get a specific route for swapping tokens',

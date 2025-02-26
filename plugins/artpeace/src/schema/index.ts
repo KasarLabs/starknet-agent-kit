@@ -31,6 +31,4 @@ export const placePixelSchema = z.object({
     ),
 });
 
-
-
 export type placePixelParam = z.infer<typeof placePixelParamSchema>;

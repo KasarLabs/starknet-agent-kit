@@ -10,7 +10,7 @@ import {
   TwitterInterface,
   TwitterApiConfig,
   TwitterScraperConfig,
-} from '../common' 
+} from '../common';
 import { JsonConfig } from './jsonConfig';
 import { TelegramInterface } from '../common';
 import TelegramBot from 'node-telegram-bot-api';

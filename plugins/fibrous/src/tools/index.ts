@@ -8,8 +8,8 @@ import { batchSwapSchema, routeSchema } from '../schema';
 import { batchSwapTokens } from '../actions/batchSwap';
 import { getRouteFibrous } from '../actions/fetchRoute';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'swap',
     plugins: 'fibrous',
     description: 'Swap a token for another token',
@@ -17,7 +17,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: swapTokensFibrous,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'batch_swap',
     plugins: 'fibrous',
     description: 'Swap multiple tokens for another token',
@@ -25,7 +25,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: batchSwapTokens,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'route',
     plugins: 'fibrous',
     description: 'Get a specific route for swapping tokens',

@@ -129,8 +129,6 @@ export const validateConfig = (config: JsonConfig) => {
 };
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   try {
-
-    // console.log("jkfjdklfd");
     const json = require(path.resolve(`../config/agents/${agent_config_name}`));
     if (!json) {
       throw new Error(`Can't access to ./config/agents/config-agent.json`);

@@ -19,6 +19,7 @@ import { FileTypeGuard } from './guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 import { JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
+import { getFilename } from './utils';
 import { throws } from 'assert';
 
 @Controller('key')
@@ -79,7 +80,7 @@ export class AgentsController implements OnModuleInit {
     const path = process.env.PATH_UPLOAD_DIR;
     if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
-    const fullPath = "test";
+    const fullPath = await getFilename(filename.filename);
     const normalizedPath = fullPath.normalize();
 
     try {

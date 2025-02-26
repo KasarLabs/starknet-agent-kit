@@ -128,7 +128,7 @@ export class AccountManager implements BaseUtilityClass {
  */
 export const wrapAccountCreationResponse = (response: string) => {
   try {
-    const data = JSON.parse(response) as AccountResponse ;
+    const data = JSON.parse(response) as AccountResponse;
     if (data.status === 'success') {
       return JSON.stringify({
         ...data,

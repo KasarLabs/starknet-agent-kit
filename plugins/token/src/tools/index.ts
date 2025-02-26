@@ -1,13 +1,11 @@
-import {
-  StarknetTool,
-} from '@starknet-agent-kit/agents';
+import { StarknetTool } from '@starknet-agent-kit/agents';
 import { getBalanceSchema, Transferschema } from '../schema';
 import { transfer } from '../actions/transfer';
 import { getBalance, getOwnBalance } from '../actions/getBalances';
 import { getOwnBalanceSchema } from '../schema';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'transfer',
     plugins: 'token',
     description: 'Transfer ERC20 tokens to a specific address',
@@ -15,7 +13,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: transfer,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_own_balance',
     plugins: 'token',
     description: 'Get the balance of an asset in your wallet',
@@ -23,7 +21,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getOwnBalance,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_balance',
     plugins: 'token',
     description: 'Get the balance of an asset for a given wallet address',

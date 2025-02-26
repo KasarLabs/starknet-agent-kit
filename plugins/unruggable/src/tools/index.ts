@@ -12,8 +12,8 @@ import { isMemecoin } from '../actions/isMemecoin';
 import { createMemecoin } from '../actions/createMemecoin';
 import { launchOnEkubo } from '../actions/launchOnEkubo';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'is_memecoin',
     plugins: 'unruggable',
     description: 'Check if address is a memecoin',
@@ -21,7 +21,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: isMemecoin,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'get_locked_liquidity',
     plugins: 'unruggable',
     description: 'Get locked liquidity info for token',
@@ -29,7 +29,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: getLockedLiquidity,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'create_memecoin',
     plugins: 'unruggable',
     description: 'Create a new memecoin using the Unruggable Factory',
@@ -37,7 +37,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     execute: createMemecoin,
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'launch_on_ekubo',
     plugins: 'unruggable',
     description: 'Launch a memecoin on Ekubo DEX with concentrated liquidity',

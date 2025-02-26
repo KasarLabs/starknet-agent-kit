@@ -12,7 +12,7 @@
   "include": [
     "src/**/*",
     "./common/**/*",
-    "./local.ts",
+    "./start.ts",
     "./index.ts" 
   ],
   "exclude": ["node_modules", "dist"]

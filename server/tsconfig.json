@@ -4,11 +4,7 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@config/*": ["../config/*"],
-      "@plugins/*": ["../plugins/*"],
-      "@client/*": ["../client/*"],
-      "@agents/*": ["../agents/*"]
+      "@/*": ["./*"]
     }
   },
   "include": [

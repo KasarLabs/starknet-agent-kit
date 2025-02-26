@@ -7,8 +7,8 @@ import {
 import { DeployOKXAccount } from '../actions/deployAccount';
 import { CreateOKXAccount } from '../actions/createAccount';
 
-export const registerTools = (tool: StarknetTool[]) => {
-  tool.push({
+export const registerTools = (StarknetToolRegistry: StarknetTool[]) => {
+  StarknetToolRegistry.push({
     name: 'create_new_okx_account',
     description:
       'Create a new OKX account and return the privateKey/publicKey/contractAddress',
@@ -19,7 +19,7 @@ export const registerTools = (tool: StarknetTool[]) => {
     },
   });
 
-  tool.push({
+  StarknetToolRegistry.push({
     name: 'deploy_existing_okx_account',
     description:
       'Deploy an existing OKX Account return the privateKey/publicKey/contractAddress',

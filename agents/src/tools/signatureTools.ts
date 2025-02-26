@@ -38,9 +38,6 @@ export const RegisterSignatureTools = async (
           `@starknet-agent-kit/plugin-${tool}`
         );
         if (typeof imported_tool.registerSignatureTools !== 'function') {
-          console.error(
-            `Tool does not have a registerSignatureTools function ${tool}`
-          );
           return false;
         }
         imported_tool.registerSignatureTools(tools);

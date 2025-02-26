@@ -89,9 +89,7 @@ export const registerTools = async (
           `@starknet-agent-kit/plugin-${tool}`
         );
         if (typeof imported_tool.registerTools !== 'function') {
-          throw new Error(
-            `Tool does not have a registerTools function ${tool}`
-          );
+          return false;
         }
         await imported_tool.registerTools(tools);
         return true;

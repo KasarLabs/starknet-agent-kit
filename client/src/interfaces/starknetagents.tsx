@@ -36,3 +36,16 @@ export interface WalletApiResponse {
     calldata: string[];
   };
 }
+
+export interface NewContractResponse {
+  transaction_type: 'DECLARE_AND_DEPLOY';
+  results: {
+    status: 'success' | 'failure';
+    transactions: {
+      contractClass: any;
+      classHash: any;
+      compiledClassHash: any;
+      constructorCalldata: string[];
+    };
+  }[];
+}

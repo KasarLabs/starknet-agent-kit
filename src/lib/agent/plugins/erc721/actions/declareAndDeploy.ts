@@ -1,4 +1,4 @@
-import { Account, Contract, CallData } from 'starknet';
+import { Account, Contract, CallData, hash } from 'starknet';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { declareDeployERC721Schema } from '../schemas/schema';
 import fs from 'fs';
@@ -31,9 +31,16 @@ export const declareAndDeployERC721Contract = async (
         accountPrivateKey
     );
 
-    const compiledTestSierra = JSON.parse(
-        fs.readFileSync('src/lib/agent/plugins/erc721/contract/test_MyNFT.contract_class.json').toString('ascii')
-    );
+      const filePath = 'src/lib/agent/plugins/erc721/contract/test_EmptyContract.contract_class.json';
+      console.log("Tentative de lecture du fichier:", filePath);
+      const fileContent = fs.readFileSync(filePath).toString('ascii');
+      console.log("Contenu lu, taille:", fileContent.length);
+      const compiledTestSierra = JSON.parse(fileContent);
+
+    
+    // const compiledTestSierra = JSON.parse(
+    //     fs.readFileSync('src/lib/agent/plugins/erc721/contract/test_MyNFT.contract_class.json').toString('ascii')
+    // );
     const compiledTestCasm = JSON.parse(
         fs.readFileSync('src/lib/agent/plugins/erc721/contract/test_MyNFT.compiled_contract_class.json').toString('ascii')
     );
@@ -83,31 +90,44 @@ export const declareAndDeployERC721Signature = async (
     params: z.infer<typeof declareDeployERC721Schema>
   ): Promise<any> => {
     try {
+      console.log("DECLARE DEPLOY CONTRACT");
       if (!params?.totalSupply) {
         throw new Error('Le supply total est requis');
       }
 
       const totalSupply = params.totalSupply;
       
+
+      const filePath = 'src/lib/agent/plugins/erc721/contract/test_EmptyContract.contract_class.json';
+      console.log("Tentative de lecture du fichier:", filePath);
+      const fileContent = fs.readFileSync(filePath).toString('ascii');
+      console.log("Contenu lu, taille:", fileContent.length);
+      const compiledTestSierra = JSON.parse(fileContent);
       // Lecture des fichiers de compilation
-      const compiledTestSierra = JSON.parse(
-        fs.readFileSync('src/lib/agent/plugins/erc721/contract/test_MyNFT.contract_class.json').toString('ascii')
-      );
+      // const compiledTestSierra = JSON.parse(
+      //   fs.readFileSync('src/lib/agent/plugins/erc721/contract/test_EmptyContract.contract_class.json').toString('ascii')
+      // );
+
+      const compiledTestCasm = JSON.parse(
+        fs.readFileSync('src/lib/agent/plugins/erc721/contract/test_EmptyContract.compiled_contract_class.json').toString('ascii')
+    );
       
-      const contractCallData = new CallData(compiledTestSierra.abi);
-      const constructorCalldata = contractCallData.compile('constructor', {
-        owner: '{accountAddress}', // Sera remplacé par l'adresse réelle lors de l'exécution
-        total_supply: totalSupply
-      });
-  
+      // const contractCallData = new CallData(compiledTestSierra.abi);
+      // const constructorCalldata = contractCallData.compile('constructor', {
+      //   owner: "0x06889CE7127025749Ab8c2F63c4ba26f972b16530B9aCee3255e59055c0B8CFd", // Sera remplacé par l'adresse réelle lors de l'exécution
+      // });
+      
       const result = {
         status: 'success',
         transactions: {
           contractClass: compiledTestSierra,
-          constructorCalldata: constructorCalldata
+          classHash: hash.computeContractClassHash(compiledTestSierra),
+          compiledClassHash: hash.computeCompiledClassHash(compiledTestCasm),
+          constructorCalldata: []
         },
       };
-  
+      console.log("result : ", result);
+      
       return JSON.stringify({ 
         transaction_type: 'DECLARE_AND_DEPLOY', 
         results: [result] 

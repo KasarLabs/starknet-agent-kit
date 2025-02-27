@@ -102,5 +102,7 @@ jobs:
 
       - name: Build agents    
         run: pnpm build:agents
+        
       - name: Build plugins    
         run: pnpm build:plugins
+

@@ -1,5 +1,5 @@
 import { SystemMessage } from '@langchain/core/messages';
-import { createBox, formatSection } from './formatting';
+import { createBox, formatSection } from './formatting.js';
 import chalk from 'chalk';
 import * as path from 'path';
 export interface Token {

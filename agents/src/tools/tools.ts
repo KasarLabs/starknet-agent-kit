@@ -1,10 +1,10 @@
 import { tool } from '@langchain/core/tools';
 import { RpcProvider } from 'starknet';
-import { TransactionMonitor } from '../../common';
-import { ContractInteractor } from '../../common';
-import { TwitterInterface } from '../../common';
-import { JsonConfig } from '../jsonConfig';
-import { TelegramInterface } from '../../common';
+import { TransactionMonitor } from '../../common/index.js';
+import { ContractInteractor } from '../../common/index.js';
+import { TwitterInterface } from '../../common/index.js';
+import { JsonConfig } from '../jsonConfig.js';
+import { TelegramInterface } from '../../common/index.js';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {

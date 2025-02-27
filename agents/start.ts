@@ -1,16 +1,15 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { createSpinner } from 'nanospinner';
-import { StarknetAgent } from './src/starknetAgent';
+import { StarknetAgent } from './src/starknetAgent.js';
 import { RpcProvider } from 'starknet';
 import { config } from 'dotenv';
-import { load_json_config } from './src/jsonConfig';
-import { createBox } from './src/formatting';
+import { load_json_config } from './src/jsonConfig.js';
+import { createBox } from './src/formatting.js';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs';
 import path from 'path';
-import { log } from 'console';
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });

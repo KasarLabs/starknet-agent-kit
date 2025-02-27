@@ -1,18 +1,18 @@
-import { AiConfig, IAgent } from '../common';
-import { createAgent } from './agent';
+import { AiConfig, IAgent } from '../common/index.js';
+import { createAgent } from './agent.js';
 import { RpcProvider } from 'starknet';
-import { TransactionMonitor } from '../common';
-import { ContractInteractor } from '../common';
-import { createAutonomousAgent } from './autonomousAgents';
+import { TransactionMonitor } from '../common/index.js';
+import { ContractInteractor } from '../common/index.js';
+import { createAutonomousAgent } from './autonomousAgents.js';
 import { Scraper } from 'agent-twitter-client';
 import { TwitterApi } from 'twitter-api-v2';
 import {
   TwitterInterface,
   TwitterApiConfig,
   TwitterScraperConfig,
-} from '../common';
-import { JsonConfig } from './jsonConfig';
-import { TelegramInterface } from '../common';
+} from '../common/index.js';
+import { JsonConfig } from './jsonConfig.js';
+import { TelegramInterface } from '../common/index.js';
 import TelegramBot from 'node-telegram-bot-api';
 
 export interface StarknetAgentConfig {

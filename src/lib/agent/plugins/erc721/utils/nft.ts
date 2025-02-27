@@ -1,5 +1,6 @@
 import { validateAndParseAddress, uint256, num, RPC } from 'starknet';
 import { ExecuteV3Args } from '../types/types';
+import { get } from 'http';
 
 export const validateAddress = (address: string): string => {
   try {
@@ -17,6 +18,29 @@ export const validateAndFormatTokenId = (tokenId: string) => {
   }
 };
 
+export const getV3DetailsPayload = () => {
+  const maxL1Gas = 2000n;
+  const maxL1GasPrice = 600000n * 10n ** 9n;
+  
+  return {
+    version: 3,
+    maxFee: 10n ** 16n,  
+    feeDataAvailabilityMode: RPC.EDataAvailabilityMode.L1,
+    tip: 10n ** 14n,
+    paymasterData: [],
+    resourceBounds: {
+      l1_gas: {
+        max_amount: num.toHex(maxL1Gas),
+        max_price_per_unit: num.toHex(maxL1GasPrice),
+      },
+      l2_gas: {
+        max_amount: num.toHex(0n),
+        max_price_per_unit: num.toHex(0n),
+      },
+    }
+  };
+};
+
 /**
  * Executes a V3 transaction with preconfigured gas parameters
  * @param {ExecuteV3Args} args - Contains call and account
@@ -27,26 +51,7 @@ export const executeV3Transaction = async ({
   call,
   account,
 }: ExecuteV3Args): Promise<string> => {
-  const maxL1Gas = 2000n;
-  const maxL1GasPrice = 600000n * 10n ** 9n;
-
-  const { transaction_hash } = await account.execute(call, {
-    version: 3,
-    maxFee: 10 ** 16,
-    feeDataAvailabilityMode: RPC.EDataAvailabilityMode.L1,
-    tip: 10 ** 14,
-    paymasterData: [],
-    resourceBounds: {
-      l1_gas: {
-        max_amount: num.toHex(maxL1Gas),
-        max_price_per_unit: num.toHex(maxL1GasPrice),
-      },
-      l2_gas: {
-        max_amount: num.toHex(0),
-        max_price_per_unit: num.toHex(0),
-      },
-    },
-  });
+  const { transaction_hash } = await account.execute(call, getV3DetailsPayload());
 
   const receipt = await account.waitForTransaction(transaction_hash);
   if (!receipt.isSuccess()) {

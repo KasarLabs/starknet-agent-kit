@@ -21,3 +21,19 @@ export interface ExecuteV3Args {
   call: Call;
   account: Account;
 }
+
+
+export interface ContractDeclareResult {
+  transactionHash: string | undefined;
+  classHash: string | undefined;
+}
+
+export interface ContractDeployResult {
+  transactionHash: string | undefined;
+  contractAddress: string | undefined;
+}
+
+export interface ContractDeclareAndDeployResult {
+  declare: ContractDeclareResult;
+  deploy: ContractDeployResult;
+}

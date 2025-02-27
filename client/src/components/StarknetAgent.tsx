@@ -1,5 +1,4 @@
 'use client';
-import { uint256 } from 'starknet';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -31,8 +30,6 @@ import {
 } from '@/components/ui/select';
 import { FileInfo } from '../interfaces/fileInfo';
 import UploadFile from './ui/uploadFile';
-import { handleDeclareDeployTransactions } from '../transactions/DeclareDeployTransactions';
-import { NewContractResponse } from '@/interfaces/starknetagents';
 
 const md = new MarkdownIt({ breaks: true });
 
@@ -271,13 +268,11 @@ const StarknetAgent = () => {
       }
     }, 10);
   };
-  
 
   const handleSubmitWallet = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    console.log("SUBMIT WALLET");
     setIsLoading(true);
     setShowLoadingMessage(false);
 
@@ -311,7 +306,6 @@ const StarknetAgent = () => {
         }
       }
 
-      console.log("REQUEST, input : ", input);
       const response = await fetch('/api/wallet/request', {
         method: 'POST',
         headers: {
@@ -329,7 +323,6 @@ const StarknetAgent = () => {
         throw new Error('Wallet not initialized. Please connect your wallet.');
       }
 
-      console.log("RESPONSE: ", response);
       // If file is detected we send delete request to the server
       if (selectedFile) {
         const del = await fetch('api/wallet/delete_large_file', {
@@ -340,7 +333,6 @@ const StarknetAgent = () => {
           },
           body: JSON.stringify({ filename: selectedFile.name }),
           credentials: 'include',
-          signal: AbortSignal.timeout(60000)
         });
 
         if (!del.ok) {
@@ -404,30 +396,15 @@ const StarknetAgent = () => {
           ...newResponse,
           text: await deploy_account_response,
         });
-      } else if (result.transaction_type === 'DECLARE_AND_DEPLOY') {
-        try {
-          const declareDeployResult = await handleDeclareDeployTransactions(
-            Wallet,
-            result as NewContractResponse
-          );
-          console.log("declareDeployResult: ", declareDeployResult);
-          typeResponse({
-            ...newResponse,
-            text: declareDeployResult,
-          });
-        } catch (declareError) {
-          throw new Error(
-            `Declare and deploy failed: ${declareError instanceof Error ? declareError.message : String(declareError)}`
-          );
-        }
       }
-
-      
-      const validTransactionTypes = ['READ', 'CREATE_ACCOUNT', 'DECLARE_AND_DEPLOY', 'INVOKE'];
-      if (!validTransactionTypes.includes(result.transaction_type)) {
-        throw new Error('Invalid transaction type');
-      } else if (result.transaction_type === 'INVOKE' && !tx) {
-        throw new Error('Invalid INVOKE transaction format');
+      if (
+        !tx &&
+        result.transaction_type != 'READ' &&
+        result.transaction_type != 'CREATE_ACCOUNT'
+      ) {
+        throw new Error(
+          'The transactions has to be an INVOKE or DeployAccount transaction'
+        );
       }
     } catch (error) {
       console.error('Request error:', error);

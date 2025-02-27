@@ -302,7 +302,6 @@ export class StarknetAgent implements IAgent {
       const parsedResult = JSON.parse(
         aiMessage.messages[aiMessage.messages.length - 2].content
       );
-      console.log("ai message: ", parsedResult);
       return parsedResult;
     } catch (parseError) {
       return {

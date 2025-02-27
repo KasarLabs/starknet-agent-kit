@@ -5,19 +5,19 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pnpm clean:dist && tsc",
+    "build": "tsc",
     "clean": "rm -rf node_modules",
     "clean:dist": "rm -rf dist",
     "clean:all": "pnpm clean && pnpm clean:dist",
-    "start": "ts-node -r tsconfig-paths/register ./start.ts",
+    "start": "ts-node -r tsconfig-paths/register ./start.ts --",
     "lint": "eslint \"src/**/*.ts\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-"@langchain/anthropic": "^0.3.11",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+    "@langchain/anthropic": "^0.3.11",
     "@langchain/community": "^0.3.28",
     "@langchain/core": "^0.3.37",
     "@langchain/deepseek": "^0.0.1",
@@ -39,6 +39,5 @@
     "@starknet-agent-kit/plugin-artpeace": "workspace:*",
     "@starknet-agent-kit/plugin-atlantic": "workspace:*",
     "@starknet-agent-kit/plugin-opus": "workspace:*"
-
   }
 }

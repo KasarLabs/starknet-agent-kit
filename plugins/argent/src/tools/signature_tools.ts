@@ -7,7 +7,7 @@ export const registerSignatureTools = (
   StarknetToolRegistry: SignatureTool[]
 ) => {
   StarknetToolRegistry.push({
-    name: 'create_argent_account',
+    name: 'create_argent_x_account',
     description:
       'create argent account return the privateKey/publicKey/contractAddress',
     execute: CreateArgentAccountSignature,
@@ -15,7 +15,7 @@ export const registerSignatureTools = (
     StarknetToolRegistry.push({
       name: 'deploy_argent_account',
       description:
-        'deploy argent account return the privateKey/publicKey/contractAddress',
+        'deploy ArgentX account return the privateKey/publicKey/contractAddress',
       schema: accountDetailsSchema,
       execute: DeployArgentAccountSignature,
     });

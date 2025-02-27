@@ -173,9 +173,9 @@ const LocalRun = async () => {
       const agent = new StarknetAgent({
         provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY as string,
-        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS  as string,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS as string,
         aiModel: process.env.AI_MODEL as string,
-        aiProvider: process.env.AI_PROVIDER  as string,
+        aiProvider: process.env.AI_PROVIDER as string,
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY as string,
         signature: 'key',
         agentMode: 'agent',
@@ -229,9 +229,9 @@ const LocalRun = async () => {
       const agent = new StarknetAgent({
         provider: new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL }),
         accountPrivateKey: process.env.STARKNET_PRIVATE_KEY as string,
-        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS  as string,
+        accountPublicKey: process.env.STARKNET_PUBLIC_ADDRESS as string,
         aiModel: process.env.AI_MODEL as string,
-        aiProvider: process.env.AI_PROVIDER  as string,
+        aiProvider: process.env.AI_PROVIDER as string,
         aiProviderApiKey: process.env.AI_PROVIDER_API_KEY as string,
         signature: 'key',
         agentMode: 'auto',

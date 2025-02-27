@@ -18,7 +18,6 @@ import { promises as fs } from 'fs';
 import { getFilename } from './utils';
 import { AgentFactory } from './agents.factory';
 
-
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
   private agent: StarknetAgent;
@@ -31,7 +30,6 @@ export class WalletController implements OnModuleInit {
   async onModuleInit() {
     this.agent = await this.agentFactory.createAgent('wallet', 'agent');
     this.agent.createAgentReactExecutor();
-
   }
 
   @Post('request')

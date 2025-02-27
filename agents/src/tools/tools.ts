@@ -83,7 +83,7 @@ export const registerTools = async (
     let index = 0;
     await Promise.all(
       allowed_tools.map(async (tool) => {
-       index = index + 1;
+        index = index + 1;
 
         const imported_tool = await import(
           `@starknet-agent-kit/plugin-${tool}/index.js`

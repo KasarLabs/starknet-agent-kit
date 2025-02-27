@@ -59,11 +59,10 @@ export class StarknetAgent implements IAgent {
 
     this.transactionMonitor = new TransactionMonitor(this.provider);
     this.contractInteractor = new ContractInteractor(this.provider);
-
   }
 
   public async createAgentReactExecutor() {
-    const config : AiConfig = {
+    const config: AiConfig = {
       aiModel: this.aiModel,
       aiProviderApiKey: this.aiProviderApiKey,
       aiProvider: this.config.aiProvider,

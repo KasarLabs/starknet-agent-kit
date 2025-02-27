@@ -1,10 +1,10 @@
-module.exports = {
+export default {
   verbose: true,
   setupFiles: ['<rootDir>/test/jest/setEnvVars.ts'],
   testTimeout: 70000,
   maxWorkers: 1,
   testEnvironment: 'node',
-  moduleFileExtensions: ['js', 'json', 'ts'],
+  moduleFileExtensions: ['js', 'json', 'ts', 'mjs', 'mts'],
   rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
   transform: {
@@ -17,4 +17,5 @@ module.exports = {
     '^src/(.*)$': '<rootDir>/src/$1',
     '^test/(.*)$': '<rootDir>/test/$1',
   },
+  extensionsToTreatAsEsm: ['.ts', '.mts'],
 };

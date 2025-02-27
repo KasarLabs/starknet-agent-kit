@@ -18,7 +18,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-"@langchain/anthropic": "^0.3.11",
+    "@langchain/anthropic": "^0.3.11",
     "@langchain/community": "^0.3.28",
     "@langchain/core": "^0.3.37",
     "@langchain/deepseek": "^0.0.1",
@@ -30,7 +30,6 @@
     "discord.js": "^14.17.3",
     "nanospinner": "^1.2.2",
     "inquirer": "^12.4.1",
-
     "@starknet-agent-kit/plugin-argent": "workspace:*",
     "@starknet-agent-kit/plugin-fibrous": "workspace:*",
     "@starknet-agent-kit/plugin-avnu": "workspace:*",
@@ -40,6 +39,5 @@
     "@starknet-agent-kit/plugin-artpeace": "workspace:*",
     "@starknet-agent-kit/plugin-atlantic": "workspace:*",
     "@starknet-agent-kit/plugin-opus": "workspace:*"
-
   }
 }

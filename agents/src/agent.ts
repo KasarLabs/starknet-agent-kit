@@ -52,16 +52,16 @@ export const createAgent = async (
         return new ChatOllama({
           model: aiConfig.aiModel,
         });
-        case 'deepseek':
-          if (!aiConfig.aiProviderApiKey) {
-            throw new Error(
-              'Valid DeepSeek api key is required https://api-docs.deepseek.com/'
-            );
-          }
-          return new ChatDeepSeek({
-            modelName: aiConfig.aiModel,
-            apiKey: aiConfig.aiProviderApiKey,
-          });
+      case 'deepseek':
+        if (!aiConfig.aiProviderApiKey) {
+          throw new Error(
+            'Valid DeepSeek api key is required https://api-docs.deepseek.com/'
+          );
+        }
+        return new ChatDeepSeek({
+          modelName: aiConfig.aiModel,
+          apiKey: aiConfig.aiProviderApiKey,
+        });
       default:
         throw new Error(`Unsupported AI provider: ${aiConfig.aiProvider}`);
     }

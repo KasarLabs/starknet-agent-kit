@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigurationService } from '../config/configuration';
-import { StarknetAgent, JsonConfig, load_json_config } from '@starknet-agent-kit/agents';
+import {
+  StarknetAgent,
+  JsonConfig,
+  load_json_config,
+} from '@starknet-agent-kit/agents';
 
 @Injectable()
 export class AgentFactory {
@@ -15,7 +19,7 @@ export class AgentFactory {
     this.json_config = json_config;
   }
 
-createAgent(signature: string, agentMode: string = 'agent'): StarknetAgent {
+  createAgent(signature: string, agentMode: string = 'agent'): StarknetAgent {
     if (this.agentInstances.has(signature)) {
       const agentSignature = this.agentInstances.get(signature);
       if (!agentSignature)

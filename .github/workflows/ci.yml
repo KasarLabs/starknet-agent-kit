@@ -100,17 +100,9 @@ jobs:
       - name: Build client
         run: pnpm build:frontend
 
-<<<<<<< HEAD
-      -name: Build agents
-        run: pnpm build:agents
-      
-      -name: Build plugins
-        run: pnpm build:plugins
-=======
       - name: Build agents    
         run: pnpm build:agents
         
       - name: Build plugins    
         run: pnpm build:plugins
 
->>>>>>> 9f86db1513a17b5933941df5585fe566d4e495fb
